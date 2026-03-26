@@ -17,7 +17,7 @@ export default function ArticleEditorPage() {
     cover_image: "",
     category: categories[0],
     author: "",
-    published: false,
+    published: true,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -244,7 +244,7 @@ export default function ArticleEditorPage() {
         </div>
 
         {/* Published toggle */}
-        <div className="flex items-center gap-3">
+        <div className={`flex items-center gap-3 p-4 rounded-xl border ${form.published ? 'border-green-200 bg-green-50' : 'border-orange-200 bg-orange-50'}`}>
           <label className="relative inline-flex items-center cursor-pointer">
             <input
               type="checkbox"
@@ -256,9 +256,16 @@ export default function ArticleEditorPage() {
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#cf5c36]"></div>
           </label>
-          <span className="text-sm font-medium text-gray-700">
-            {form.published ? "Publi\u00e9" : "Brouillon"}
-          </span>
+          <div>
+            <span className="text-sm font-semibold text-gray-700">
+              {form.published ? "Publi\u00e9" : "Brouillon"}
+            </span>
+            <p className="text-xs text-gray-500 mt-0.5">
+              {form.published
+                ? "L'article sera visible sur le site public."
+                : "L'article ne sera PAS visible sur le site. Activez pour le publier."}
+            </p>
+          </div>
         </div>
 
         {/* Actions */}
