@@ -15,6 +15,7 @@ import ArticleEditorPage from "./pages/admin/ArticleEditorPage";
 import SettingsPage from "./pages/admin/SettingsPage";
 import StudentDashboard from "./pages/student/StudentDashboard";
 import StudentQuizPage from "./pages/student/StudentQuizPage";
+import CoursPage from "./pages/student/CoursPage";
 
 export default function App() {
   return (
@@ -40,6 +41,7 @@ export default function App() {
         }
       >
         <Route path="/eleve" element={<StudentDashboard />} />
+        <Route path="/eleve/cours" element={<CoursPage />} />
         <Route path="/eleve/quiz" element={<StudentQuizPage />} />
       </Route>
 

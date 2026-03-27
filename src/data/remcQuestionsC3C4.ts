@@ -3,7 +3,7 @@ import type { REMCQuestion } from "./remcQuestionsTypes";
 export const questionsC3: REMCQuestion[] = [
   {
     id: "c3_001",
-    question: "Quelle est la vitesse maximale autorisée sur autoroute par temps sec pour un conducteur titulaire du permis depuis plus de 2 ans ?",
+    question: "Quelle est la vitesse maximale autorisée sur autoroute par temps sec pour un conducteur titulaire du permis depuis plus de 3 ans ?",
     answers: [
       { label: "A", text: "110 km/h" },
       { label: "B", text: "120 km/h" },
@@ -11,7 +11,7 @@ export const questionsC3: REMCQuestion[] = [
       { label: "D", text: "150 km/h" },
     ],
     correct_answer: "C",
-    explanation: "Sur autoroute par temps sec, la vitesse maximale est de 130 km/h pour les conducteurs titulaires du permis depuis plus de 2 ans. Cette limite est fixée par le Code de la route (art. R413-2). Elle passe à 110 km/h par temps de pluie ou pour les conducteurs en période probatoire.",
+    explanation: "Sur autoroute par temps sec, la vitesse maximale est de 130 km/h pour les conducteurs titulaires du permis depuis plus de 3 ans (hors période probatoire). Cette limite est fixée par le Code de la route (art. R413-2). Elle passe à 110 km/h par temps de pluie ou pour les conducteurs en période probatoire.",
     category: "Autoroute",
     difficulty: "facile",
     competence_id: 3,
@@ -101,22 +101,22 @@ export const questionsC3: REMCQuestion[] = [
       { label: "D", text: "Pas de limite spécifique, adapter sa vitesse suffit" },
     ],
     correct_answer: "C",
-    explanation: "Lorsque la visibilité est inférieure à 50 mètres (brouillard dense), la vitesse est limitée à 50 km/h sur toutes les routes, y compris l'autoroute (art. R413-4). Cette limite s'applique quel que soit le type de route. Il est également obligatoire d'allumer les feux antibrouillard avant dans ces conditions.",
+    explanation: "Lorsque la visibilité est inférieure à 50 mètres (brouillard dense), la vitesse est limitée à 50 km/h sur toutes les routes, y compris l'autoroute (art. R413-4). Cette limite s'applique quel que soit le type de route. Il est obligatoire d'allumer les feux antibrouillard ARRIÈRE dans ces conditions (art. R416-5) ; les feux antibrouillard avant sont autorisés mais non obligatoires.",
     category: "Brouillard",
     difficulty: "moyen",
     competence_id: 3,
   },
   {
     id: "c3_008",
-    question: "Quand est-il obligatoire d'allumer les feux antibrouillard avant ?",
+    question: "Dans quelles conditions est-il autorisé d'utiliser les feux antibrouillard avant ?",
     answers: [
       { label: "A", text: "Dès qu'il pleut légèrement" },
       { label: "B", text: "Uniquement sur autoroute la nuit" },
-      { label: "C", text: "En cas de brouillard, de chute de neige ou de pluie dense réduisant la visibilité" },
+      { label: "C", text: "En cas de brouillard, de chute de neige ou de pluie dense réduisant fortement la visibilité" },
       { label: "D", text: "Toujours la nuit en agglomération" },
     ],
     correct_answer: "C",
-    explanation: "Les feux antibrouillard avant peuvent être utilisés uniquement lorsque la visibilité est fortement réduite par le brouillard, la neige, une pluie dense ou des projections réduisant la visibilité (art. R416-8). Les utiliser par temps clair est une infraction. Les feux antibrouillard arrière sont réservés aux visibilités inférieures à 50 mètres.",
+    explanation: "Les feux antibrouillard avant sont autorisés (mais non obligatoires) uniquement lorsque la visibilité est fortement réduite par le brouillard, la neige, une pluie dense ou des projections réduisant la visibilité (art. R416-8). Les utiliser par temps clair est une infraction. Les feux antibrouillard ARRIÈRE, eux, sont obligatoires lorsque la visibilité est inférieure à 50 mètres (art. R416-5).",
     category: "Brouillard",
     difficulty: "moyen",
     competence_id: 3,
@@ -131,7 +131,7 @@ export const questionsC3: REMCQuestion[] = [
       { label: "D", text: "Dès que la visibilité est inférieure à 200 mètres" },
     ],
     correct_answer: "B",
-    explanation: "Les feux antibrouillard arrière (feu rouge très puissant) ne doivent être allumés que lorsque la visibilité est inférieure à 50 mètres (art. R416-8). Ils éblouissent les conducteurs qui suivent si utilisés dans d'autres conditions. Ne pas les éteindre à la sortie du brouillard est sanctionné.",
+    explanation: "Les feux antibrouillard arrière (feu rouge très puissant) ne doivent être allumés que lorsque la visibilité est inférieure à 50 mètres (art. R416-5). Ils éblouissent les conducteurs qui suivent si utilisés dans d'autres conditions. Ne pas les éteindre à la sortie du brouillard est sanctionné.",
     category: "Brouillard",
     difficulty: "facile",
     competence_id: 3,
@@ -273,7 +273,7 @@ export const questionsC3: REMCQuestion[] = [
   },
   {
     id: "c3_019",
-    question: "Un conducteur novice (permis de moins de 2 ans) est limité à quelle vitesse sur autoroute ?",
+    question: "Un conducteur novice (permis de moins de 3 ans, période probatoire) est limité à quelle vitesse sur autoroute ?",
     answers: [
       { label: "A", text: "100 km/h" },
       { label: "B", text: "110 km/h" },
@@ -381,7 +381,7 @@ export const questionsC3: REMCQuestion[] = [
 export const questionsC4: REMCQuestion[] = [
   {
     id: "c4_001",
-    question: "Quel est le taux d'alcoolémie maximal autorisé pour un conducteur expérimenté (plus de 2 ans de permis) ?",
+    question: "Quel est le taux d'alcoolémie maximal autorisé pour un conducteur expérimenté (plus de 3 ans de permis) ?",
     answers: [
       { label: "A", text: "0,2 g/L de sang" },
       { label: "B", text: "0,5 g/L de sang" },
@@ -568,8 +568,8 @@ export const questionsC4: REMCQuestion[] = [
       { label: "C", text: "50 mètres" },
       { label: "D", text: "100 mètres sur autoroute" },
     ],
-    correct_answer: "C",
-    explanation: "Le triangle de présignalisation doit être posé à au moins 30 mètres du véhicule en panne sur route et à au moins 100 mètres sur autoroute pour être visible à temps. Toutefois, la recommandation générale est de 50 mètres minimum pour assurer une visibilité suffisante. Avant de poser le triangle, il est impératif de revêtir le gilet de sécurité.",
+    correct_answer: "B",
+    explanation: "Le triangle de présignalisation doit être posé à au moins 30 mètres en amont du véhicule en panne (Code de la route). Sur autoroute ou voie rapide, la recommandation est de le placer encore plus loin (100 mètres ou plus) pour laisser aux conducteurs le temps de réagir. Avant de sortir poser le triangle, il est impératif de revêtir le gilet de sécurité haute visibilité.",
     category: "Sécurité",
     difficulty: "moyen",
     competence_id: 4,
@@ -669,12 +669,12 @@ export const questionsC4: REMCQuestion[] = [
     question: "Comment peut-on récupérer des points sur son permis de conduire ?",
     answers: [
       { label: "A", text: "En payant une amende spéciale de récupération" },
-      { label: "B", text: "Par l'écoulement du temps (2 ans sans infraction) ou par stage volontaire" },
+      { label: "B", text: "Par l'écoulement du temps (1 point par an sans infraction, capital complet après 10 ans) ou par stage volontaire" },
       { label: "C", text: "En passant à nouveau l'examen du permis de conduire" },
       { label: "D", text: "Les points perdus ne sont jamais récupérables" },
     ],
     correct_answer: "B",
-    explanation: "Les points se récupèrent de deux façons : automatiquement après 2 ans sans nouvelle infraction entraînant retrait de points (récupération totale à 12 points), ou via un stage de sensibilisation à la sécurité routière volontaire qui permet de récupérer 4 points (dans la limite de 12 points). Ce stage peut être effectué une fois tous les 2 ans.",
+    explanation: "Les points se récupèrent de deux façons : automatiquement, à raison d'1 point récupéré par année complète sans infraction entraînant retrait de points, et le capital complet (12 points) est reconstitué après 10 années consécutives sans infraction grave (art. L223-6). La seconde façon est le stage de sensibilisation à la sécurité routière volontaire, qui permet de récupérer jusqu'à 4 points (dans la limite de 12 points), une fois par an.",
     category: "Permis à points",
     difficulty: "moyen",
     competence_id: 4,

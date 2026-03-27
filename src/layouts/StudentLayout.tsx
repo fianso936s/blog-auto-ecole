@@ -14,6 +14,7 @@ export default function StudentLayout() {
 
   const navItems = [
     { label: "Ma progression", href: "/eleve", icon: LayoutDashboard },
+    { label: "Mes cours", href: "/eleve/cours", icon: BookOpen },
     { label: "Quiz REMC", href: "/eleve/quiz", icon: ClipboardList },
   ];
 
