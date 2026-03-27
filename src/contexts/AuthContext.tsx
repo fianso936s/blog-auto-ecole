@@ -8,6 +8,8 @@ interface RegisterData {
   password: string;
   fullName: string;
   phone: string;
+  postalCode?: string;
+  consentLocalisation?: boolean;
 }
 
 interface AuthContextType {
@@ -105,6 +107,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         data: {
           full_name: data.fullName,
           phone: data.phone,
+          postal_code: data.postalCode || "",
+          consent_localisation: data.consentLocalisation || false,
+          consent_rgpd: true,
+          consent_date: new Date().toISOString(),
         },
       },
     });

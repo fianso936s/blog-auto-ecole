@@ -1,15 +1,18 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
-import { BookOpen, Eye, EyeOff, User, Mail, Phone, Lock, CheckCircle } from "lucide-react";
+import { BookOpen, Eye, EyeOff, User, Mail, Phone, Lock, CheckCircle, MapPin } from "lucide-react";
 
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [consentRgpd, setConsentRgpd] = useState(false);
+  const [consentLocalisation, setConsentLocalisation] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -43,6 +46,11 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!consentRgpd) {
+      setError("Vous devez accepter la politique de confidentialité pour vous inscrire.");
+      return;
+    }
+
     setLoading(true);
 
     const result = await register({
@@ -50,6 +58,8 @@ export default function RegisterPage() {
       password,
       fullName: fullName.trim(),
       phone: phone.trim(),
+      postalCode: postalCode.trim(),
+      consentLocalisation,
     });
 
     if (result.success) {
@@ -250,9 +260,72 @@ export default function RegisterPage() {
               )}
             </div>
 
+            {/* Code postal */}
+            <div>
+              <label htmlFor="postalCode" className="block text-sm font-medium text-gray-700 mb-1.5">
+                Code postal
+              </label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <input
+                  id="postalCode"
+                  type="text"
+                  value={postalCode}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, "").slice(0, 5);
+                    setPostalCode(val);
+                  }}
+                  inputMode="numeric"
+                  maxLength={5}
+                  autoComplete="postal-code"
+                  className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36] transition-colors"
+                  placeholder="75001"
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                Permet de vous proposer une auto-&eacute;cole proche de chez vous.
+              </p>
+            </div>
+
+            {/* RGPD Consentements */}
+            <div className="space-y-3 pt-2">
+              {/* Consentement obligatoire */}
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={consentRgpd}
+                  onChange={(e) => setConsentRgpd(e.target.checked)}
+                  className="w-4 h-4 mt-0.5 rounded border-gray-300 text-[#cf5c36] focus:ring-[#cf5c36] cursor-pointer flex-shrink-0"
+                />
+                <span className="text-xs text-gray-600 leading-relaxed">
+                  J'accepte que mes donn&eacute;es personnelles soient trait&eacute;es conform&eacute;ment &agrave; la{" "}
+                  <Link to="/confidentialite" className="text-[#cf5c36] underline">
+                    politique de confidentialit&eacute;
+                  </Link>
+                  . Mes donn&eacute;es sont utilis&eacute;es uniquement pour le suivi de ma formation.
+                  <span className="text-red-500"> *</span>
+                </span>
+              </label>
+
+              {/* Consentement optionnel — localisation */}
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={consentLocalisation}
+                  onChange={(e) => setConsentLocalisation(e.target.checked)}
+                  className="w-4 h-4 mt-0.5 rounded border-gray-300 text-[#cf5c36] focus:ring-[#cf5c36] cursor-pointer flex-shrink-0"
+                />
+                <span className="text-xs text-gray-600 leading-relaxed">
+                  J'accepte que mon code postal soit utilis&eacute; pour me proposer des auto-&eacute;coles
+                  et contenus adapt&eacute;s &agrave; ma zone g&eacute;ographique.
+                  <span className="text-gray-400"> (optionnel)</span>
+                </span>
+              </label>
+            </div>
+
             <button
               type="submit"
-              disabled={loading || !isPasswordValid || password !== confirmPassword}
+              disabled={loading || !isPasswordValid || password !== confirmPassword || !consentRgpd}
               className="w-full bg-[#cf5c36] text-white font-semibold py-3 rounded-xl hover:bg-[#b8502f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
             >
               {loading ? "Inscription en cours..." : "S'inscrire"}
