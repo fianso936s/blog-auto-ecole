@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { BookOpen, Eye, EyeOff } from "lucide-react";
@@ -9,8 +9,15 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  // Redirection si déjà connecté ou après login, basée sur le rôle
+  useEffect(() => {
+    if (user) {
+      navigate(user.role === "admin" ? "/admin" : "/eleve", { replace: true });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,9 +25,7 @@ export default function LoginPage() {
     setLoading(true);
 
     const success = await login(email, password);
-    if (success) {
-      navigate("/admin");
-    } else {
+    if (!success) {
       setError("Email ou mot de passe incorrect.");
     }
     setLoading(false);
@@ -40,7 +45,7 @@ export default function LoginPage() {
             </span>
           </Link>
           <p className="text-gray-500 text-sm mt-3">
-            Connectez-vous &agrave; l'espace administration
+            Connectez-vous &agrave; votre espace
           </p>
         </div>
 

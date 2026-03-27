@@ -1,6 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
 import AdminLayout from "./layouts/AdminLayout";
+import StudentLayout from "./layouts/StudentLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/public/HomePage";
 import ArticlesPage from "./pages/public/ArticlesPage";
@@ -12,6 +13,7 @@ import DashboardPage from "./pages/admin/DashboardPage";
 import ArticlesAdminPage from "./pages/admin/ArticlesAdminPage";
 import ArticleEditorPage from "./pages/admin/ArticleEditorPage";
 import SettingsPage from "./pages/admin/SettingsPage";
+import StudentDashboard from "./pages/student/StudentDashboard";
 
 export default function App() {
   return (
@@ -28,10 +30,21 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/inscription" element={<RegisterPage />} />
 
-      {/* Pages admin protégées */}
+      {/* Pages élève protégées */}
       <Route
         element={
           <ProtectedRoute>
+            <StudentLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path="/eleve" element={<StudentDashboard />} />
+      </Route>
+
+      {/* Pages admin protégées */}
+      <Route
+        element={
+          <ProtectedRoute adminOnly>
             <AdminLayout />
           </ProtectedRoute>
         }

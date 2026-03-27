@@ -53,7 +53,7 @@ export default function Header() {
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <Link
-                to="/admin"
+                to={user?.role === "admin" ? "/admin" : "/eleve"}
                 className="bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#b8502f] transition-colors duration-200"
               >
                 Dashboard
@@ -107,7 +107,7 @@ export default function Header() {
               <div className="border-t border-gray-100 pt-3 mt-1">
                 {user ? (
                   <Link
-                    to="/admin"
+                    to={user?.role === "admin" ? "/admin" : "/eleve"}
                     onClick={() => setMenuOpen(false)}
                     className="block text-center bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full"
                   >

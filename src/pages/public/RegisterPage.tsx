@@ -54,8 +54,8 @@ export default function RegisterPage() {
 
     if (result.success) {
       setSuccess(true);
-      // Redirection après 2 secondes
-      setTimeout(() => navigate("/"), 2000);
+      // Redirection après 2 secondes vers le dashboard élève
+      setTimeout(() => navigate("/eleve"), 2000);
     } else {
       setError(result.error || "Une erreur est survenue lors de l'inscription.");
     }
