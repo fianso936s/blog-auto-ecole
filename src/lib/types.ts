@@ -40,6 +40,7 @@ export interface QuizQuestion {
   explanation: string;
   category: string;
   difficulty: string;
+  competence_id?: number;
   article_reference: string;
   created_at: string;
 }
