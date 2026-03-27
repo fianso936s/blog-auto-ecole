@@ -105,6 +105,13 @@ export default function LoginPage() {
         </div>
 
         <p className="text-center text-sm text-gray-500 mt-6">
+          Pas encore de compte ?{" "}
+          <Link to="/inscription" className="text-[#cf5c36] font-medium hover:underline">
+            S'inscrire
+          </Link>
+        </p>
+
+        <p className="text-center text-sm text-gray-500 mt-2">
           <Link to="/" className="text-[#cf5c36] hover:underline">
             &larr; Retour au blog
           </Link>

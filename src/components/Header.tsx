@@ -13,6 +13,7 @@ export default function Header() {
     { label: "Articles", href: "/articles" },
     { label: "Code de la Route", href: "/articles?cat=code-de-la-route" },
     { label: "Conduite", href: "/articles?cat=conduite" },
+    { label: "Quiz Code", href: "/quiz" },
   ];
 
   const isActive = (href: string) => location.pathname === href;
@@ -58,12 +59,20 @@ export default function Header() {
                 Dashboard
               </Link>
             ) : (
-              <Link
-                to="/login"
-                className="bg-gray-100 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-200 transition-colors duration-200"
-              >
-                Connexion
-              </Link>
+              <>
+                <Link
+                  to="/login"
+                  className="bg-gray-100 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-200 transition-colors duration-200"
+                >
+                  Connexion
+                </Link>
+                <Link
+                  to="/inscription"
+                  className="bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#b8502f] transition-colors duration-200"
+                >
+                  S'inscrire
+                </Link>
+              </>
             )}
           </div>
 
@@ -105,13 +114,22 @@ export default function Header() {
                     Dashboard
                   </Link>
                 ) : (
-                  <Link
-                    to="/login"
-                    onClick={() => setMenuOpen(false)}
-                    className="block text-center bg-gray-100 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-full"
-                  >
-                    Connexion
-                  </Link>
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      to="/login"
+                      onClick={() => setMenuOpen(false)}
+                      className="block text-center bg-gray-100 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-full"
+                    >
+                      Connexion
+                    </Link>
+                    <Link
+                      to="/inscription"
+                      onClick={() => setMenuOpen(false)}
+                      className="block text-center bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full"
+                    >
+                      S'inscrire
+                    </Link>
+                  </div>
                 )}
               </div>
             </div>

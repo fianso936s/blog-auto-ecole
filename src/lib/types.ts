@@ -26,3 +26,20 @@ export interface AppUser {
   role: "admin" | "user";
   full_name?: string;
 }
+
+export interface QuizAnswer {
+  label: string;
+  text: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  answers: QuizAnswer[];
+  correct_answer: string;
+  explanation: string;
+  category: string;
+  difficulty: string;
+  article_reference: string;
+  created_at: string;
+}

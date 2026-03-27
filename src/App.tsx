@@ -6,6 +6,8 @@ import HomePage from "./pages/public/HomePage";
 import ArticlesPage from "./pages/public/ArticlesPage";
 import ArticleDetailPage from "./pages/public/ArticleDetailPage";
 import LoginPage from "./pages/public/LoginPage";
+import QuizPage from "./pages/public/QuizPage";
+import RegisterPage from "./pages/public/RegisterPage";
 import DashboardPage from "./pages/admin/DashboardPage";
 import ArticlesAdminPage from "./pages/admin/ArticlesAdminPage";
 import ArticleEditorPage from "./pages/admin/ArticleEditorPage";
@@ -19,10 +21,12 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/articles/:slug" element={<ArticleDetailPage />} />
+        <Route path="/quiz" element={<QuizPage />} />
       </Route>
 
-      {/* Login (sans layout) */}
+      {/* Auth pages (sans layout) */}
       <Route path="/login" element={<LoginPage />} />
+      <Route path="/inscription" element={<RegisterPage />} />
 
       {/* Pages admin protégées */}
       <Route

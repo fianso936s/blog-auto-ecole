@@ -3,10 +3,18 @@ import { supabase } from "../lib/supabase";
 import type { AppUser } from "../lib/types";
 import type { User } from "@supabase/supabase-js";
 
+interface RegisterData {
+  email: string;
+  password: string;
+  fullName: string;
+  phone: string;
+}
+
 interface AuthContextType {
   user: AppUser | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
+  register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>;
   logout: () => Promise<void>;
 }
 
@@ -14,6 +22,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   login: async () => false,
+  register: async () => ({ success: false }),
   logout: async () => {},
 });
 
@@ -88,13 +97,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
+  const register = async (data: RegisterData): Promise<{ success: boolean; error?: string }> => {
+    const { data: authData, error } = await supabase.auth.signUp({
+      email: data.email,
+      password: data.password,
+      options: {
+        data: {
+          full_name: data.fullName,
+          phone: data.phone,
+        },
+      },
+    });
+
+    if (error) {
+      if (error.message.includes("already registered")) {
+        return { success: false, error: "Cet email est déjà utilisé." };
+      }
+      return { success: false, error: error.message };
+    }
+
+    if (authData.user) {
+      // Mettre à jour le profil avec le nom complet et le téléphone
+      await supabase
+        .from("profiles")
+        .update({ full_name: data.fullName })
+        .eq("id", authData.user.id);
+
+      const u = await buildUser(authData.user);
+      setUser(u);
+    }
+
+    return { success: true };
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
