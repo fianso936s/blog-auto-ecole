@@ -1,12 +1,21 @@
-import { Link, useLocation } from "react-router-dom";
-import { BookOpen, Menu, X } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { BookOpen, Menu, X, LogOut, LayoutDashboard, User } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    setMenuOpen(false);
+    await logout();
+    navigate("/");
+  };
+
+  const dashboardPath = user?.role === "admin" ? "/admin" : "/eleve";
 
   const navLinks = [
     { label: "Accueil", href: "/" },
@@ -49,15 +58,25 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Actions */}
+          {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-3">
             {user ? (
-              <Link
-                to={user?.role === "admin" ? "/admin" : "/eleve"}
-                className="bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#b8502f] transition-colors duration-200"
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  to={dashboardPath}
+                  className="bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#b8502f] transition-colors duration-200 inline-flex items-center gap-2"
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  Mon espace
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="bg-gray-100 text-gray-700 text-sm font-semibold px-4 py-2.5 rounded-full hover:bg-gray-200 transition-colors duration-200 inline-flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  D&eacute;connexion
+                </button>
+              </>
             ) : (
               <>
                 <Link
@@ -89,13 +108,13 @@ export default function Header() {
         {/* Mobile Navigation */}
         {menuOpen && (
           <nav className="md:hidden pb-4 border-t border-gray-100 pt-4">
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
                   onClick={() => setMenuOpen(false)}
-                  className={`text-sm font-medium px-3 py-2 rounded-lg ${
+                  className={`text-sm font-medium px-3 py-2.5 rounded-lg ${
                     isActive(link.href)
                       ? "text-[#cf5c36] bg-[#fcedea]"
                       : "text-gray-600 hover:bg-gray-50"
@@ -104,15 +123,42 @@ export default function Header() {
                   {link.label}
                 </Link>
               ))}
-              <div className="border-t border-gray-100 pt-3 mt-1">
+
+              <div className="border-t border-gray-100 pt-3 mt-2">
                 {user ? (
-                  <Link
-                    to={user?.role === "admin" ? "/admin" : "/eleve"}
-                    onClick={() => setMenuOpen(false)}
-                    className="block text-center bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full"
-                  >
-                    Dashboard
-                  </Link>
+                  <div className="flex flex-col gap-2">
+                    {/* Info utilisateur */}
+                    <div className="flex items-center gap-3 px-3 py-2 mb-1">
+                      <div className="w-9 h-9 bg-[#fcedea] rounded-full flex items-center justify-center">
+                        <User className="w-4 h-4 text-[#cf5c36]" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 truncate">
+                          {user.full_name || "Utilisateur"}
+                        </p>
+                        <p className="text-xs text-gray-400 truncate">{user.email}</p>
+                      </div>
+                    </div>
+
+                    {/* Bouton Mon espace */}
+                    <Link
+                      to={dashboardPath}
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center justify-center gap-2 bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full"
+                    >
+                      <LayoutDashboard className="w-4 h-4" />
+                      Mon espace
+                    </Link>
+
+                    {/* Bouton Déconnexion */}
+                    <button
+                      onClick={handleLogout}
+                      className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-200 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      D&eacute;connexion
+                    </button>
+                  </div>
                 ) : (
                   <div className="flex flex-col gap-2">
                     <Link
