@@ -13,12 +13,15 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
     year: "numeric",
   });
 
+  const showImage = (article as Article & { show_cover_image?: boolean }).show_cover_image !== false;
+
   if (featured) {
     return (
       <article className="group">
         <Link to={`/articles/${article.slug}`} className="block">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
+          <div className={`grid grid-cols-1 ${showImage ? 'lg:grid-cols-2' : ''} gap-6 lg:gap-10`}>
             {/* Image */}
+            {showImage && (
             <div className="overflow-hidden rounded-xl">
               <img
                 src={article.cover_image}
@@ -26,6 +29,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
                 className="w-full h-64 lg:h-80 object-cover transition-transform duration-700 group-hover:scale-105"
               />
             </div>
+            )}
             {/* Content */}
             <div className="flex flex-col justify-center">
               <span className="text-[#cf5c36] text-xs font-semibold uppercase tracking-wide mb-3">
@@ -53,6 +57,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
     <article className="group">
       <Link to={`/articles/${article.slug}`} className="block">
         {/* Image */}
+        {showImage && (
         <div className="overflow-hidden rounded-xl mb-4">
           <img
             src={article.cover_image}
@@ -60,6 +65,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
             className="w-full h-48 sm:h-52 object-cover transition-transform duration-700 group-hover:scale-105"
           />
         </div>
+        )}
         {/* Content */}
         <span className="text-[#cf5c36] text-xs font-semibold uppercase tracking-wide">
           {article.category}

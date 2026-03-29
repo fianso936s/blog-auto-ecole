@@ -15,6 +15,7 @@ export default function ArticleEditorPage() {
     excerpt: "",
     content: "",
     cover_image: "",
+    show_cover_image: true,
     category: categories[0],
     author: "",
     published: true,
@@ -38,6 +39,7 @@ export default function ArticleEditorPage() {
             excerpt: data.excerpt,
             content: data.content,
             cover_image: data.cover_image,
+            show_cover_image: data.show_cover_image ?? true,
             category: data.category,
             author: data.author,
             published: data.published,
@@ -209,6 +211,22 @@ export default function ArticleEditorPage() {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Show Cover Image checkbox */}
+        <div className="flex items-center gap-3">
+          <input
+            type="checkbox"
+            id="show_cover_image"
+            checked={form.show_cover_image}
+            onChange={(e) =>
+              setForm((prev) => ({ ...prev, show_cover_image: e.target.checked }))
+            }
+            className="w-4 h-4 text-[#cf5c36] border-gray-300 rounded focus:ring-[#cf5c36]"
+          />
+          <label htmlFor="show_cover_image" className="text-sm text-gray-700">
+            Afficher l'image de couverture sur l'article
+          </label>
         </div>
 
         {/* Excerpt */}
