@@ -10,6 +10,7 @@ import LoginPage from "./pages/public/LoginPage";
 import QuizPage from "./pages/public/QuizPage";
 import RegisterPage from "./pages/public/RegisterPage";
 import ResetPasswordPage from "./pages/public/ResetPasswordPage";
+import AuthConfirmPage from "./pages/public/AuthConfirmPage";
 import DashboardPage from "./pages/admin/DashboardPage";
 import ArticlesAdminPage from "./pages/admin/ArticlesAdminPage";
 import ArticleEditorPage from "./pages/admin/ArticleEditorPage";
@@ -33,6 +34,7 @@ export default function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/inscription" element={<RegisterPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/auth/confirm" element={<AuthConfirmPage />} />
 
       {/* Pages élève protégées */}
       <Route

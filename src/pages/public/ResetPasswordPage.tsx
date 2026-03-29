@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
 import { BookOpen, Eye, EyeOff, CheckCircle, AlertCircle, Lock } from "lucide-react";
 
@@ -12,6 +12,8 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState("");
   const [ready, setReady] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromConfirm = (location.state as { fromConfirm?: boolean })?.fromConfirm;
 
   useEffect(() => {
     const {
@@ -22,6 +24,38 @@ export default function ResetPasswordPage() {
       }
     });
 
+    // Handle PKCE flow: exchange token_hash from URL query params
+    const params = new URLSearchParams(window.location.search);
+    const tokenHash = params.get("token_hash");
+    const type = params.get("type");
+
+    if (tokenHash && type === "recovery") {
+      supabase.auth.verifyOtp({ token_hash: tokenHash, type: "recovery" }).then(({ error: otpError }) => {
+        if (!otpError) {
+          setReady(true);
+        } else {
+          console.error("OTP verification failed:", otpError.message);
+        }
+      });
+    }
+
+    // Handle hash fragment flow (older Supabase or implicit grant)
+    const hash = window.location.hash;
+    if (hash && hash.includes("access_token")) {
+      // Supabase client auto-detects hash tokens, just check session
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session) {
+          setReady(true);
+        }
+      });
+    }
+
+    // If redirected from AuthConfirmPage, session is already established
+    if (fromConfirm) {
+      setReady(true);
+    }
+
+    // Fallback: check if already authenticated
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setReady(true);

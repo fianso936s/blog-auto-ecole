@@ -44,8 +44,9 @@ export default function LoginPage() {
     e.preventDefault();
     setResetLoading(true);
     setResetError("");
+    const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
     const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-      redirectTo: `${window.location.origin}/reset-password`,
+      redirectTo: `${siteUrl}/reset-password`,
     });
     if (error) {
       setResetError("Une erreur est survenue. Veuillez réessayer.");
