@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Car, Menu, X, LogOut, LayoutDashboard, User, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
+import ThemeToggle from "./ThemeToggle";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -88,6 +89,7 @@ export default function Header() {
 
             {/* Desktop Actions */}
             <div className="hidden lg:flex items-center gap-3">
+              <ThemeToggle />
               {user ? (
                 <>
                   <Link
@@ -160,13 +162,16 @@ export default function Header() {
             <span className="font-serif font-extrabold text-secondary text-lg tracking-tight">
               Auto-<span className="text-primary">Blog</span>
             </span>
-            <button
-              onClick={() => setMenuOpen(false)}
-              className="p-2 text-text-muted hover:text-text rounded-lg transition-colors"
-              aria-label="Fermer le menu"
-            >
-              <X className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <button
+                onClick={() => setMenuOpen(false)}
+                className="p-2 text-text-muted hover:text-text rounded-lg transition-colors"
+                aria-label="Fermer le menu"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Drawer Content */}

@@ -12,6 +12,7 @@ import {
   BookOpen,
   Star,
 } from "lucide-react";
+import PageMeta from "../../components/PageMeta";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY || "";
@@ -253,6 +254,7 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
 
   return (
     <div className="min-h-screen bg-bg">
+      <PageMeta title="Quiz Code de la Route" />
       {/* Bold hero header with grain overlay */}
       <div className="bg-secondary relative overflow-hidden grain">
         <div className="absolute top-6 right-10 w-20 h-20 border-2 border-white/10 rounded-full" />
@@ -276,7 +278,7 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
               <button
                 key={cat}
                 onClick={() => startQuiz(cat)}
-                className={`text-xs px-4 py-2 rounded-full font-medium transition-all whitespace-nowrap ${
+                className={`text-xs px-4 py-2 rounded-full font-medium transition-all whitespace-nowrap focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
                   category === cat
                     ? "bg-primary text-white shadow-sm"
                     : "bg-surface text-text-muted border border-border hover:border-primary hover:text-primary"
@@ -345,7 +347,7 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
 
               if (!isAnswered) {
                 btnClass +=
-                  "border-border hover:border-primary hover:bg-primary-light cursor-pointer";
+                  "border-border hover:border-primary hover:bg-primary-light cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none";
               } else if (isCorrect) {
                 btnClass += "border-green-500 bg-green-50";
               } else if (isSelected && !isCorrect) {

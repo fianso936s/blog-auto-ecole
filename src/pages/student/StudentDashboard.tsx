@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "../../lib/supabase";
 import { remcCompetences } from "../../data/remc";
+import { badges as allBadges } from "../../data/badges";
+import BadgeCard from "../../components/BadgeCard";
 import {
   Trophy,
   Target,
@@ -12,7 +14,9 @@ import {
   Star,
   ClipboardList,
   Sparkles,
+  Award,
 } from "lucide-react";
+import { SkeletonText, SkeletonCircle } from "../../components/Skeleton";
 
 interface QuizResult {
   id: string;
@@ -87,6 +91,7 @@ export default function StudentDashboard() {
   const { user } = useAuth();
   const [progress, setProgress] = useState<CompetenceProgress[]>([]);
   const [recentSessions, setRecentSessions] = useState<QuizResult[]>([]);
+  const [earnedBadgeIds, setEarnedBadgeIds] = useState<Map<string, string>>(new Map());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -144,7 +149,28 @@ export default function StudentDashboard() {
       setLoading(false);
     };
 
+    const fetchBadges = async () => {
+      if (!user) return;
+      try {
+        const { data } = await supabase
+          .from("user_badges")
+          .select("badge_id, earned_at")
+          .eq("user_id", user.id);
+
+        if (data) {
+          const map = new Map<string, string>();
+          for (const row of data) {
+            map.set(row.badge_id, row.earned_at);
+          }
+          setEarnedBadgeIds(map);
+        }
+      } catch {
+        // Table may not exist yet
+      }
+    };
+
     fetchProgress();
+    fetchBadges();
   }, [user]);
 
   // Calcul progression globale
@@ -168,10 +194,44 @@ export default function StudentDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-text-muted font-medium">Chargement...</p>
+      <div className="max-w-5xl mx-auto">
+        {/* Welcome banner skeleton */}
+        <div className="bg-surface rounded-2xl border border-border p-6 sm:p-8 mb-8">
+          <SkeletonText className="h-4 w-32 mb-3" />
+          <SkeletonText className="h-7 w-64 mb-2" />
+          <SkeletonText className="h-4 w-80" />
+        </div>
+        {/* Stats skeleton */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="bg-surface rounded-2xl border border-border p-5 flex flex-col items-center gap-3">
+              <SkeletonCircle size="w-12 h-12" />
+              <SkeletonText className="h-6 w-12" />
+              <SkeletonText className="h-3 w-24" />
+            </div>
+          ))}
+        </div>
+        {/* Competences skeleton */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="bg-surface rounded-2xl border border-border p-6 flex flex-col items-center gap-4">
+            <SkeletonCircle size="w-[170px] h-[170px]" />
+            <SkeletonText className="h-4 w-32" />
+          </div>
+          <div className="lg:col-span-2 space-y-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-surface rounded-2xl border border-border p-5">
+                <div className="flex items-start gap-4">
+                  <SkeletonCircle size="w-16 h-16" />
+                  <div className="flex-1 space-y-2">
+                    <SkeletonText className="h-4 w-40" />
+                    <SkeletonText className="h-3 w-full" />
+                    <SkeletonText className="h-2.5 w-full rounded-full" />
+                    <SkeletonText className="h-3 w-32" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     );
@@ -342,6 +402,35 @@ export default function StudentDashboard() {
                     </div>
                   </div>
                 </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Mes badges */}
+      <div className="bg-surface rounded-2xl border border-border p-6 mb-8 animate-fade-up delay-100">
+        <h2 className="font-serif font-bold text-secondary mb-5 flex items-center gap-2">
+          <div className="w-8 h-8 bg-gradient-to-br from-amber-light to-primary-light rounded-lg flex items-center justify-center">
+            <Award className="w-4 h-4 text-amber" />
+          </div>
+          Mes badges
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+          {allBadges.map((badge, index) => {
+            const earned = earnedBadgeIds.has(badge.id);
+            const earnedAt = earnedBadgeIds.get(badge.id) || null;
+            const delayClass = [
+              "delay-100",
+              "delay-200",
+              "delay-300",
+              "delay-400",
+              "delay-500",
+              "delay-600",
+            ][index % 6];
+            return (
+              <div key={badge.id} className={`animate-fade-up ${delayClass}`}>
+                <BadgeCard badge={badge} earned={earned} earnedAt={earnedAt} />
               </div>
             );
           })}

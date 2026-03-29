@@ -24,6 +24,23 @@
   --color-border: #E2DDD5;
 }
 
+.dark {
+  --color-primary: #E8654A;
+  --color-primary-dark: #D64327;
+  --color-primary-light: #2A1F1A;
+  --color-secondary: #E2DDD5;
+  --color-accent: #E8654A;
+  --color-accent-light: #2A1F1A;
+  --color-amber: #F2A735;
+  --color-amber-light: #2A2510;
+  --color-bg: #0F1117;
+  --color-surface: #1A1D27;
+  --color-surface-alt: #232733;
+  --color-text: #E2DDD5;
+  --color-text-muted: #8B8FA3;
+  --color-border: #2E3242;
+}
+
 /* Reset body */
 body {
   font-family: var(--font-body);

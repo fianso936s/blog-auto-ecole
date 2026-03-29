@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ArticleCard from "../../components/ArticleCard";
+import { SkeletonCard } from "../../components/Skeleton";
 import CategoryBadge from "../../components/CategoryBadge";
 import Newsletter from "../../components/Newsletter";
 import { sampleArticles, categories } from "../../data/articles";
@@ -7,10 +8,11 @@ import { supabase } from "../../lib/supabase";
 import type { Article } from "../../lib/types";
 import { ArrowRight, BookOpen, Shield, Car } from "lucide-react";
 import { Link } from "react-router-dom";
+import PageMeta from "../../components/PageMeta";
 
 export default function HomePage() {
   const [articles, setArticles] = useState<Article[]>(sampleArticles);
-  const [, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -42,6 +44,7 @@ export default function HomePage() {
 
   return (
     <div>
+      <PageMeta title="Accueil" />
       {/* Hero Section */}
       <section className="relative overflow-hidden grain">
         {/* Background gradient */}
@@ -132,22 +135,28 @@ export default function HomePage() {
         )}
 
         {/* Recent Articles */}
-        {recentArticles.length > 0 && (
-          <section className="pb-16">
-            <div className="flex items-center justify-between mb-10">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-1 bg-primary rounded-full" />
-                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-secondary">
-                  Articles r&eacute;cents
-                </h2>
-              </div>
-              <Link
-                to="/articles"
-                className="flex items-center gap-1.5 text-sm font-semibold text-primary link-underline"
-              >
-                Voir tout <ArrowRight className="w-4 h-4" />
-              </Link>
+        <section className="pb-16">
+          <div className="flex items-center justify-between mb-10">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-1 bg-primary rounded-full" />
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold text-secondary">
+                Articles r&eacute;cents
+              </h2>
             </div>
+            <Link
+              to="/articles"
+              className="flex items-center gap-1.5 text-sm font-semibold text-primary link-underline"
+            >
+              Voir tout <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          {loading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3].map((i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          ) : recentArticles.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {recentArticles.map((article, index) => (
                 <div
@@ -160,8 +169,8 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-          </section>
-        )}
+          ) : null}
+        </section>
 
         {/* Categories Section */}
         <section className="pb-16">

@@ -1,15 +1,38 @@
 import { useState } from "react";
 import { Send, CheckCircle } from "lucide-react";
+import { supabase } from "../lib/supabase";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Connecter à Supabase ou un service newsletter
-    setSubmitted(true);
-    setEmail("");
+    setError(null);
+    setLoading(true);
+
+    try {
+      const { error: insertError } = await supabase
+        .from("newsletter_subscribers")
+        .insert({ email });
+
+      if (insertError) {
+        if (insertError.code === "23505") {
+          setError("Vous êtes déjà inscrit");
+        } else {
+          setError("Une erreur est survenue. Veuillez réessayer.");
+        }
+      } else {
+        setSubmitted(true);
+        setEmail("");
+      }
+    } catch {
+      setError("Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -44,11 +67,15 @@ export default function Newsletter() {
             />
             <button
               type="submit"
-              className="bg-primary text-white text-sm font-semibold font-sans px-6 py-3 rounded-xl hover:bg-primary-dark transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
+              disabled={loading}
+              className="bg-primary text-white text-sm font-semibold font-sans px-6 py-3 rounded-xl hover:bg-primary-dark transition-all duration-200 flex items-center justify-center gap-2 shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none disabled:opacity-50"
             >
               <Send className="w-4 h-4" />
-              S'inscrire
+              {loading ? "Envoi..." : "S'inscrire"}
             </button>
+            {error && (
+              <p className="text-red-500 text-sm font-sans sm:col-span-2 basis-full">{error}</p>
+            )}
           </form>
         )}
       </div>

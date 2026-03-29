@@ -1,0 +1,12 @@
+{
+  "name": "Blog Auto-École",
+  "short_name": "Auto-Blog",
+  "description": "Révisez le code de la route et préparez votre permis",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF7F2",
+  "theme_color": "#D64327",
+  "icons": [
+    { "src": "/vite.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import ArticleCard from "../../components/ArticleCard";
+import { SkeletonCard } from "../../components/Skeleton";
 import { sampleArticles, categories } from "../../data/articles";
 import { supabase } from "../../lib/supabase";
 import type { Article } from "../../lib/types";
+import PageMeta from "../../components/PageMeta";
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState<Article[]>(sampleArticles);
+  const [loading, setLoading] = useState(true);
   const [searchParams] = useSearchParams();
   const activeCategory = searchParams.get("cat");
 
@@ -24,6 +27,8 @@ export default function ArticlesPage() {
         }
       } catch {
         // Fallback to sample articles
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -39,6 +44,7 @@ export default function ArticlesPage() {
 
   return (
     <div>
+      <PageMeta title="Articles" />
       {/* Bold page header with decorative background */}
       <section className="relative overflow-hidden grain">
         <div className="absolute inset-0 bg-gradient-to-b from-primary-light via-primary-light/30 to-bg" />
@@ -100,7 +106,13 @@ export default function ArticlesPage() {
         </div>
 
         {/* Articles Grid */}
-        {filteredArticles.length > 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <SkeletonCard key={i} />
+            ))}
+          </div>
+        ) : filteredArticles.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredArticles.map((article, index) => {
               const delayClass =

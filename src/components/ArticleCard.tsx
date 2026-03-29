@@ -23,7 +23,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
   if (featured) {
     return (
       <article className="group">
-        <Link to={`/articles/${article.slug}`} className="block">
+        <Link to={`/articles/${article.slug}`} className="block focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none rounded-2xl">
           <div className={`grid grid-cols-1 ${showImage ? 'lg:grid-cols-5' : ''} gap-0 bg-surface rounded-2xl overflow-hidden border border-border hover-lift`}>
             {/* Image — takes 3 of 5 columns (60%) */}
             {showImage && (
@@ -71,7 +71,7 @@ export default function ArticleCard({ article, featured = false }: ArticleCardPr
 
   return (
     <article className="group">
-      <Link to={`/articles/${article.slug}`} className="block bg-surface rounded-2xl overflow-hidden border border-border hover-lift">
+      <Link to={`/articles/${article.slug}`} className="block bg-surface rounded-2xl overflow-hidden border border-border hover-lift focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none">
         {/* Image */}
         {showImage && (
           <div className="relative overflow-hidden">

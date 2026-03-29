@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "../../lib/supabase";
 import { BookOpen, Eye, EyeOff, ArrowLeft, CheckCircle, Mail } from "lucide-react";
+import PageMeta from "../../components/PageMeta";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -198,6 +199,7 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-bg flex">
+      <PageMeta title="Connexion" />
       <DecorativePanel />
 
       <div className="w-full lg:w-1/2 flex items-center justify-center px-6 py-12">

@@ -4,6 +4,27 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Blog Auto-École : conseils, quiz et cours pour réussir votre permis de conduire et le code de la route en France." />
+    <meta name="keywords" content="auto-école, permis de conduire, code de la route, quiz code, cours permis, conduite, France" />
+    <meta name="theme-color" content="#D64327" />
+    <link rel="canonical" href="https://example.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="Blog Auto-École | Conseils Permis & Code de la Route" />
+    <meta property="og:description" content="Blog Auto-École : conseils, quiz et cours pour réussir votre permis de conduire et le code de la route en France." />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_FR" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Blog Auto-École | Conseils Permis & Code de la Route" />
+    <meta name="twitter:description" content="Blog Auto-École : conseils, quiz et cours pour réussir votre permis de conduire et le code de la route en France." />
+
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -11,6 +32,11 @@
       rel="stylesheet"
     />
     <title>Blog Auto-École | Conseils Permis & Code de la Route</title>
+    <script>
+      if (localStorage.theme === 'dark' || (!localStorage.theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

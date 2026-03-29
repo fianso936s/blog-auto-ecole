@@ -15,7 +15,11 @@ import {
   BookOpen,
   Target,
   Sparkles,
+  Award,
+  X,
 } from "lucide-react";
+import { checkAndAwardBadges } from "../../lib/badges";
+import { badges as allBadges } from "../../data/badges";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY || "";
@@ -110,6 +114,8 @@ export default function StudentQuizPage() {
   const [aiExplanation, setAiExplanation] = useState("");
   const [aiLoading, setAiLoading] = useState(false);
   const [savingResult, setSavingResult] = useState(false);
+  const [newlyEarnedBadges, setNewlyEarnedBadges] = useState<string[]>([]);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   // Build a shuffled quiz from the selected competence
   const buildQuiz = useCallback((competenceId: number | null) => {
@@ -274,7 +280,7 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
               <button
                 key={comp.id}
                 onClick={() => startQuiz(comp.id)}
-                className={`bg-surface rounded-2xl border-2 ${cardColors.border} ${cardColors.hoverBorder} p-6 text-left hover-lift transition-all duration-300 group animate-fade-up`}
+                className={`bg-surface rounded-2xl border-2 ${cardColors.border} ${cardColors.hoverBorder} p-6 text-left hover-lift transition-all duration-300 group animate-fade-up focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none`}
                 style={{ animationDelay: `${(index + 1) * 100}ms` }}
               >
                 <div className="flex items-start gap-4">
@@ -310,7 +316,7 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
         {/* Tout reviser */}
         <button
           onClick={() => startQuiz(null)}
-          className="w-full bg-surface rounded-2xl border-2 border-border p-6 text-left hover-lift hover:border-primary transition-all duration-300 group animate-fade-up delay-500"
+          className="w-full bg-surface rounded-2xl border-2 border-border p-6 text-left hover-lift hover:border-primary transition-all duration-300 group animate-fade-up delay-500 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-primary-light to-amber-light flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
@@ -565,7 +571,7 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
 
             if (!isAnswered) {
               btnClass +=
-                "border-border hover:border-primary hover:bg-primary-light cursor-pointer";
+                "border-border hover:border-primary hover:bg-primary-light cursor-pointer focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none";
             } else if (isCorrect) {
               btnClass += "border-emerald-500 bg-emerald-50";
             } else if (isSelected && !isCorrect) {

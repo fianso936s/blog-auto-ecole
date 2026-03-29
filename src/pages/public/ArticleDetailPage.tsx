@@ -4,6 +4,7 @@ import { ArrowLeft, Clock, Calendar, User } from "lucide-react";
 import { sampleArticles } from "../../data/articles";
 import { supabase } from "../../lib/supabase";
 import type { Article } from "../../lib/types";
+import PageMeta from "../../components/PageMeta";
 
 export default function ArticleDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -84,6 +85,7 @@ export default function ArticleDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 sm:py-16">
+      <PageMeta title={article.title} />
       {/* Back link */}
       <Link
         to="/articles"
