@@ -203,6 +203,28 @@ export default function StudentQuizPage() {
   useEffect(() => {
     if (isFinished && user && questions.length > 0) {
       saveResult(score);
+
+      // Check and award badges after quiz completion
+      const checkBadges = async () => {
+        try {
+          const { data: allResults } = await supabase
+            .from("quiz_results")
+            .select("id, competence_id, score, total, created_at")
+            .eq("user_id", user.id);
+
+          if (allResults && allResults.length > 0) {
+            const earned = await checkAndAwardBadges(user.id, allResults);
+            if (earned.length > 0) {
+              setNewlyEarnedBadges(earned);
+              setShowCelebration(true);
+            }
+          }
+        } catch {
+          // Silently fail
+        }
+      };
+      // Small delay to let the quiz result insert complete
+      setTimeout(checkBadges, 500);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFinished]);
@@ -443,6 +465,60 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
             </div>
           </div>
         </div>
+
+        {/* Badge celebration modal */}
+        {showCelebration && newlyEarnedBadges.length > 0 && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 animate-fade-up">
+            <div className="bg-surface rounded-2xl border border-border p-8 max-w-sm mx-4 text-center relative shadow-xl animate-scale-in">
+              <button
+                onClick={() => setShowCelebration(false)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface-alt flex items-center justify-center hover:bg-border transition-colors"
+              >
+                <X className="w-4 h-4 text-text-muted" />
+              </button>
+
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-light to-primary-light rounded-full flex items-center justify-center mx-auto mb-4">
+                <Award className="w-8 h-8 text-amber" />
+              </div>
+
+              <h3 className="font-serif text-xl font-bold text-secondary mb-2">
+                {newlyEarnedBadges.length === 1
+                  ? "Nouveau badge obtenu !"
+                  : `${newlyEarnedBadges.length} nouveaux badges !`}
+              </h3>
+
+              <div className="space-y-3 mb-6">
+                {newlyEarnedBadges.map((badgeId) => {
+                  const badge = allBadges.find((b) => b.id === badgeId);
+                  if (!badge) return null;
+                  return (
+                    <div
+                      key={badgeId}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-surface-alt border border-border"
+                    >
+                      <span className="text-3xl">{badge.icon}</span>
+                      <div className="text-left">
+                        <p className="font-serif font-bold text-secondary text-sm">
+                          {badge.name}
+                        </p>
+                        <p className="text-xs text-text-muted">
+                          {badge.description}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <button
+                onClick={() => setShowCelebration(false)}
+                className="inline-flex items-center justify-center gap-2 bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-primary-dark transition-colors text-sm"
+              >
+                Super !
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
