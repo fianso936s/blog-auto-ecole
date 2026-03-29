@@ -3,7 +3,7 @@ import { Car, Mail, Phone, MapPin, ArrowRight, Send } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-secondary text-gray-400 mt-20 relative overflow-hidden">
+    <footer className="bg-secondary text-white/60 mt-20 relative overflow-hidden">
       {/* Warm amber accent line at the top */}
       <div className="h-1 bg-gradient-to-r from-amber via-primary to-amber" />
 
@@ -22,7 +22,7 @@ export default function Footer() {
                 Auto-<span className="text-primary">Blog</span>
               </span>
             </Link>
-            <p className="text-sm leading-relaxed text-gray-400 mb-6 max-w-xs">
+            <p className="text-sm leading-relaxed text-white/60 mb-6 max-w-xs">
               Votre ressource en ligne pour r&eacute;ussir le permis de conduire.
               Conseils, actualit&eacute;s et guides pratiques pour les futurs conducteurs.
             </p>
@@ -32,7 +32,7 @@ export default function Footer() {
               <p className="text-white text-sm font-semibold font-serif mb-2">
                 Restez inform&eacute;
               </p>
-              <p className="text-xs text-gray-400 mb-3">
+              <p className="text-xs text-white/60 mb-3">
                 Recevez nos derniers articles et conseils.
               </p>
               <Link
@@ -62,7 +62,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5 group"
+                    className="text-sm text-white/60 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5 group"
                   >
                     <ArrowRight className="w-3 h-3 text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
                     {link.label}
@@ -87,7 +87,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <Link
                     to={link.href}
-                    className="text-sm text-gray-400 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5 group"
+                    className="text-sm text-white/60 hover:text-white transition-colors duration-200 inline-flex items-center gap-1.5 group"
                   >
                     <ArrowRight className="w-3 h-3 text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-200" />
                     {link.label}
@@ -108,8 +108,8 @@ export default function Footer() {
                   <Mail className="w-4 h-4 text-amber" />
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs mb-0.5">Email</p>
-                  <p className="text-gray-300">contact@auto-blog.fr</p>
+                  <p className="text-white/40 text-xs mb-0.5">Email</p>
+                  <p className="text-white/80">contact@auto-blog.fr</p>
                 </div>
               </li>
               <li className="flex items-start gap-3 text-sm">
@@ -117,8 +117,8 @@ export default function Footer() {
                   <Phone className="w-4 h-4 text-amber" />
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs mb-0.5">T&eacute;l&eacute;phone</p>
-                  <p className="text-gray-300">01 23 45 67 89</p>
+                  <p className="text-white/40 text-xs mb-0.5">T&eacute;l&eacute;phone</p>
+                  <p className="text-white/80">01 23 45 67 89</p>
                 </div>
               </li>
               <li className="flex items-start gap-3 text-sm">
@@ -126,8 +126,8 @@ export default function Footer() {
                   <MapPin className="w-4 h-4 text-amber" />
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs mb-0.5">Adresse</p>
-                  <p className="text-gray-300">Paris, France</p>
+                  <p className="text-white/40 text-xs mb-0.5">Adresse</p>
+                  <p className="text-white/80">Paris, France</p>
                 </div>
               </li>
             </ul>
@@ -136,14 +136,14 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-white/10 mt-14 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-white/40">
             &copy; {new Date().getFullYear()} Auto-Blog. Tous droits r&eacute;serv&eacute;s.
           </p>
           <div className="flex items-center gap-6">
-            <Link to="/articles" className="text-xs text-gray-500 hover:text-gray-300 transition-colors duration-200">
+            <Link to="/articles" className="text-xs text-white/40 hover:text-white/80 transition-colors duration-200">
               Mentions l&eacute;gales
             </Link>
-            <Link to="/articles" className="text-xs text-gray-500 hover:text-gray-300 transition-colors duration-200">
+            <Link to="/articles" className="text-xs text-white/40 hover:text-white/80 transition-colors duration-200">
               Politique de confidentialit&eacute;
             </Link>
           </div>
