@@ -101,137 +101,149 @@ export default function ArticleEditorPage() {
     }
   };
 
+  const inputClasses =
+    "w-full px-4 py-3 rounded-xl border border-border bg-surface text-sm text-text focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all duration-200";
+
   return (
     <div className="max-w-3xl">
       <button
         onClick={() => navigate("/admin/articles")}
-        className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-6 transition-colors"
+        className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary mb-8 transition-colors font-medium animate-fade-in"
       >
         <ArrowLeft className="w-4 h-4" />
         Retour aux articles
       </button>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
+      <h1 className="font-serif text-3xl font-bold text-secondary mb-8 animate-fade-up">
         {isEditing ? "Modifier l'article" : "Nouvel article"}
       </h1>
 
       {error && (
-        <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg mb-6">
+        <div className="bg-red-50 text-red-600 text-sm px-5 py-4 rounded-xl mb-6 border border-red-100 animate-fade-in">
           {error}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Title */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Titre
-          </label>
-          <input
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36]"
-            placeholder="Le titre de votre article"
-          />
-        </div>
+      <form onSubmit={handleSubmit} className="space-y-8">
+        {/* Title & Slug */}
+        <div className="bg-surface rounded-2xl border border-border p-6 space-y-5 animate-fade-up delay-100">
+          <div>
+            <label className="block text-sm font-semibold text-text mb-2">
+              Titre
+            </label>
+            <input
+              name="title"
+              value={form.title}
+              onChange={handleChange}
+              required
+              className={inputClasses}
+              placeholder="Le titre de votre article"
+            />
+          </div>
 
-        {/* Slug */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Slug (URL)
-          </label>
-          <input
-            name="slug"
-            value={form.slug}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36]"
-            placeholder="le-titre-de-votre-article"
-          />
+          <div>
+            <label className="block text-sm font-semibold text-text mb-2">
+              Slug (URL)
+            </label>
+            <input
+              name="slug"
+              value={form.slug}
+              onChange={handleChange}
+              required
+              className={`${inputClasses} font-mono`}
+              placeholder="le-titre-de-votre-article"
+            />
+          </div>
         </div>
 
         {/* Category + Author */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Cat&eacute;gorie
-            </label>
-            <select
-              name="category"
-              value={form.category}
-              onChange={handleChange}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36]"
-            >
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              Auteur
-            </label>
-            <input
-              name="author"
-              value={form.author}
-              onChange={handleChange}
-              required
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36]"
-              placeholder="Nom de l'auteur"
-            />
-          </div>
-        </div>
-
-        {/* Cover Image */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Image de couverture (URL)
-          </label>
-          <div className="flex gap-3">
-            <input
-              name="cover_image"
-              value={form.cover_image}
-              onChange={handleChange}
-              className="flex-1 px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36]"
-              placeholder="https://images.unsplash.com/..."
-            />
-            <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center overflow-hidden">
-              {form.cover_image ? (
-                <img
-                  src={form.cover_image}
-                  alt="Preview"
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <Image className="w-5 h-5 text-gray-400" />
-              )}
+        <div className="bg-surface rounded-2xl border border-border p-6 animate-fade-up delay-200">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div>
+              <label className="block text-sm font-semibold text-text mb-2">
+                Catégorie
+              </label>
+              <select
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                className={inputClasses}
+              >
+                {categories.map((cat) => (
+                  <option key={cat} value={cat}>
+                    {cat}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-semibold text-text mb-2">
+                Auteur
+              </label>
+              <input
+                name="author"
+                value={form.author}
+                onChange={handleChange}
+                required
+                className={inputClasses}
+                placeholder="Nom de l'auteur"
+              />
             </div>
           </div>
         </div>
 
-        {/* Show Cover Image checkbox */}
-        <div className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            id="show_cover_image"
-            checked={form.show_cover_image}
-            onChange={(e) =>
-              setForm((prev) => ({ ...prev, show_cover_image: e.target.checked }))
-            }
-            className="w-4 h-4 text-[#cf5c36] border-gray-300 rounded focus:ring-[#cf5c36]"
-          />
-          <label htmlFor="show_cover_image" className="text-sm text-gray-700">
-            Afficher l'image de couverture sur l'article
+        {/* Cover Image */}
+        <div className="bg-surface rounded-2xl border border-border p-6 space-y-4 animate-fade-up delay-300">
+          <label className="block text-sm font-semibold text-text">
+            Image de couverture
           </label>
+
+          {/* Image preview card */}
+          <div className="rounded-xl bg-surface-alt border border-border overflow-hidden">
+            {form.cover_image ? (
+              <img
+                src={form.cover_image}
+                alt="Preview"
+                className="w-full h-48 object-cover"
+              />
+            ) : (
+              <div className="w-full h-48 flex flex-col items-center justify-center text-text-muted">
+                <Image className="w-8 h-8 mb-2 opacity-40" />
+                <span className="text-sm">Aucune image</span>
+              </div>
+            )}
+          </div>
+
+          <input
+            name="cover_image"
+            value={form.cover_image}
+            onChange={handleChange}
+            className={inputClasses}
+            placeholder="https://images.unsplash.com/..."
+          />
+
+          {/* Show Cover Image toggle */}
+          <div className="flex items-center gap-3 pt-1">
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.show_cover_image}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, show_cover_image: e.target.checked }))
+                }
+                className="sr-only peer"
+              />
+              <div className="w-10 h-5 bg-border rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:shadow-sm after:transition-all peer-checked:bg-primary"></div>
+            </label>
+            <span className="text-sm text-text-muted">
+              Afficher l'image de couverture sur l'article
+            </span>
+          </div>
         </div>
 
         {/* Excerpt */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+        <div className="bg-surface rounded-2xl border border-border p-6 animate-fade-up delay-400">
+          <label className="block text-sm font-semibold text-text mb-2">
             Extrait
           </label>
           <textarea
@@ -240,14 +252,14 @@ export default function ArticleEditorPage() {
             onChange={handleChange}
             rows={3}
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36] resize-none"
-            placeholder="Un court r&eacute;sum&eacute; de l'article..."
+            className={`${inputClasses} resize-none`}
+            placeholder="Un court résumé de l'article..."
           />
         </div>
 
         {/* Content */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+        <div className="bg-surface rounded-2xl border border-border p-6 animate-fade-up delay-500">
+          <label className="block text-sm font-semibold text-text mb-2">
             Contenu (HTML)
           </label>
           <textarea
@@ -256,14 +268,20 @@ export default function ArticleEditorPage() {
             onChange={handleChange}
             rows={15}
             required
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36] resize-y"
+            className={`${inputClasses} font-mono resize-y`}
             placeholder="<p>Le contenu de votre article...</p>"
           />
         </div>
 
         {/* Published toggle */}
-        <div className={`flex items-center gap-3 p-4 rounded-xl border ${form.published ? 'border-green-200 bg-green-50' : 'border-orange-200 bg-orange-50'}`}>
-          <label className="relative inline-flex items-center cursor-pointer">
+        <div
+          className={`flex items-center gap-4 p-5 rounded-2xl border transition-colors animate-fade-up delay-600 ${
+            form.published
+              ? "border-green-200 bg-green-50/50"
+              : "border-amber/30 bg-amber/5"
+          }`}
+        >
+          <label className="relative inline-flex items-center cursor-pointer shrink-0">
             <input
               type="checkbox"
               checked={form.published}
@@ -272,13 +290,13 @@ export default function ArticleEditorPage() {
               }
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#cf5c36]"></div>
+            <div className="w-12 h-6 bg-border rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:rounded-full after:h-[18px] after:w-[18px] after:shadow-sm after:transition-all peer-checked:bg-primary"></div>
           </label>
           <div>
-            <span className="text-sm font-semibold text-gray-700">
-              {form.published ? "Publi\u00e9" : "Brouillon"}
+            <span className="text-sm font-semibold text-text">
+              {form.published ? "Publié" : "Brouillon"}
             </span>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-text-muted mt-0.5">
               {form.published
                 ? "L'article sera visible sur le site public."
                 : "L'article ne sera PAS visible sur le site. Activez pour le publier."}
@@ -287,11 +305,11 @@ export default function ArticleEditorPage() {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-3 pt-4">
+        <div className="flex items-center gap-4 pt-2 pb-8 animate-fade-up delay-600">
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 bg-[#cf5c36] text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#b8502f] transition-colors disabled:opacity-50"
+            className="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-8 py-3.5 rounded-full hover:bg-primary-dark transition-all duration-200 shadow-sm hover:shadow-md disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             {saving ? "Sauvegarde..." : "Sauvegarder"}
@@ -299,7 +317,7 @@ export default function ArticleEditorPage() {
           <button
             type="button"
             onClick={() => navigate("/admin/articles")}
-            className="text-sm font-medium text-gray-500 hover:text-gray-900 px-4 py-3 transition-colors"
+            className="text-sm font-medium text-text-muted hover:text-text px-5 py-3.5 rounded-full hover:bg-surface-alt transition-all duration-200"
           >
             Annuler
           </button>

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import {
-  BookOpen,
   ChevronRight,
   ChevronLeft,
   AlertTriangle,
@@ -10,6 +9,8 @@ import {
   BookMarked,
   Clock,
   List,
+  Info,
+  FileText,
 } from "lucide-react";
 import { remcLessonsAll } from "../../data/remcLessonsAll";
 import { remcCompetences } from "../../data/remc";
@@ -31,7 +32,7 @@ interface CompColor {
 const COMP_COLORS: Record<number, CompColor> = {
   1: {
     tab: "border-blue-200 text-blue-700 hover:bg-blue-50",
-    tabActive: "bg-blue-600 text-white border-blue-600",
+    tabActive: "bg-blue-600 text-white border-blue-600 shadow-sm",
     badge: "bg-blue-50 text-blue-700 border border-blue-200",
     badgeActive: "bg-blue-600 text-white",
     border: "border-blue-400",
@@ -41,7 +42,7 @@ const COMP_COLORS: Record<number, CompColor> = {
   },
   2: {
     tab: "border-emerald-200 text-emerald-700 hover:bg-emerald-50",
-    tabActive: "bg-emerald-600 text-white border-emerald-600",
+    tabActive: "bg-emerald-600 text-white border-emerald-600 shadow-sm",
     badge: "bg-emerald-50 text-emerald-700 border border-emerald-200",
     badgeActive: "bg-emerald-600 text-white",
     border: "border-emerald-400",
@@ -51,7 +52,7 @@ const COMP_COLORS: Record<number, CompColor> = {
   },
   3: {
     tab: "border-amber-200 text-amber-700 hover:bg-amber-50",
-    tabActive: "bg-amber-500 text-white border-amber-500",
+    tabActive: "bg-amber-500 text-white border-amber-500 shadow-sm",
     badge: "bg-amber-50 text-amber-700 border border-amber-200",
     badgeActive: "bg-amber-500 text-white",
     border: "border-amber-400",
@@ -61,7 +62,7 @@ const COMP_COLORS: Record<number, CompColor> = {
   },
   4: {
     tab: "border-purple-200 text-purple-700 hover:bg-purple-50",
-    tabActive: "bg-purple-600 text-white border-purple-600",
+    tabActive: "bg-purple-600 text-white border-purple-600 shadow-sm",
     badge: "bg-purple-50 text-purple-700 border border-purple-200",
     badgeActive: "bg-purple-600 text-white",
     border: "border-purple-400",
@@ -75,13 +76,18 @@ const COMP_COLORS: Record<number, CompColor> = {
 
 function SectionIntro({ section }: { section: LessonSection }) {
   return (
-    <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 flex gap-4">
+    <div className="bg-blue-50/60 border border-blue-200/60 rounded-2xl p-5 sm:p-6 flex gap-4">
       <div className="shrink-0 mt-0.5">
-        <BookOpen className="w-5 h-5 text-gray-500" />
+        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+          <Info className="w-4 h-4 text-blue-600" />
+        </div>
       </div>
-      <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-        {section.content}
-      </p>
+      <div>
+        <p className="text-xs font-semibold text-blue-600 uppercase tracking-wide mb-1.5">Introduction</p>
+        <p className="text-text leading-relaxed text-sm sm:text-base">
+          {section.content}
+        </p>
+      </div>
     </div>
   );
 }
@@ -96,47 +102,57 @@ function SectionRule({
   const colors = COMP_COLORS[compId] ?? COMP_COLORS[1];
   return (
     <div
-      className={`bg-white rounded-xl border-l-4 ${colors.border} shadow-sm p-5`}
+      className={`bg-surface rounded-2xl border-l-4 ${colors.border} shadow-sm p-5 sm:p-6 border border-border/50`}
     >
-      {section.title && (
-        <h3 className="font-semibold text-gray-900 mb-2">{section.title}</h3>
-      )}
-      <p className="text-gray-700 text-sm sm:text-base leading-relaxed mb-3">
-        {section.content}
-      </p>
-      {section.rules && section.rules.length > 0 && (
-        <ul className="space-y-1.5 mb-3">
-          {section.rules.map((rule, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-gray-700">
-              <CheckCircle
-                className={`w-4 h-4 shrink-0 mt-0.5 ${colors.text}`}
-              />
-              <span>{rule}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-      {section.highlight && (
-        <div
-          className={`inline-block rounded-lg border px-3 py-1.5 text-sm font-medium ${colors.highlight}`}
-        >
-          {section.highlight}
+      <div className="flex items-start gap-3">
+        <div className={`w-8 h-8 ${colors.bg} rounded-lg flex items-center justify-center shrink-0 mt-0.5`}>
+          <FileText className={`w-4 h-4 ${colors.text}`} />
         </div>
-      )}
+        <div className="flex-1 min-w-0">
+          {section.title && (
+            <h3 className="font-serif font-bold text-secondary mb-2 text-base">{section.title}</h3>
+          )}
+          <p className="text-text text-sm sm:text-base leading-relaxed mb-3">
+            {section.content}
+          </p>
+          {section.rules && section.rules.length > 0 && (
+            <ul className="space-y-2 mb-3">
+              {section.rules.map((rule, i) => (
+                <li key={i} className="flex items-start gap-2.5 text-sm text-text">
+                  <CheckCircle
+                    className={`w-4 h-4 shrink-0 mt-0.5 ${colors.text}`}
+                  />
+                  <span>{rule}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {section.highlight && (
+            <div
+              className={`inline-block rounded-xl border px-4 py-2 text-sm font-medium ${colors.highlight}`}
+            >
+              {section.highlight}
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
 
 function SectionWarning({ section }: { section: LessonSection }) {
   return (
-    <div className="bg-red-50 border border-red-200 rounded-xl p-5">
+    <div className="bg-amber-light border border-amber/20 rounded-2xl p-5 sm:p-6">
       <div className="flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+        <div className="w-8 h-8 bg-amber/15 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+          <AlertTriangle className="w-4 h-4 text-amber" />
+        </div>
         <div>
+          <p className="text-xs font-semibold text-amber uppercase tracking-wide mb-1">Attention</p>
           {section.title && (
-            <h3 className="font-semibold text-red-800 mb-1">{section.title}</h3>
+            <h3 className="font-serif font-bold text-secondary mb-1.5">{section.title}</h3>
           )}
-          <p className="text-red-700 text-sm sm:text-base leading-relaxed">
+          <p className="text-text text-sm sm:text-base leading-relaxed">
             {section.content}
           </p>
         </div>
@@ -147,14 +163,17 @@ function SectionWarning({ section }: { section: LessonSection }) {
 
 function SectionTip({ section }: { section: LessonSection }) {
   return (
-    <div className="bg-blue-50 border border-blue-200 rounded-xl p-5">
+    <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-5 sm:p-6">
       <div className="flex items-start gap-3">
-        <Lightbulb className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+        <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+          <Lightbulb className="w-4 h-4 text-emerald-600" />
+        </div>
         <div>
+          <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">Conseil</p>
           {section.title && (
-            <h3 className="font-semibold text-blue-800 mb-1">{section.title}</h3>
+            <h3 className="font-serif font-bold text-secondary mb-1.5">{section.title}</h3>
           )}
-          <p className="text-blue-800 text-sm sm:text-base leading-relaxed">
+          <p className="text-text text-sm sm:text-base leading-relaxed">
             {section.content}
           </p>
         </div>
@@ -165,16 +184,19 @@ function SectionTip({ section }: { section: LessonSection }) {
 
 function SectionExample({ section }: { section: LessonSection }) {
   return (
-    <div className="bg-green-50 border border-green-200 rounded-xl p-5">
+    <div className="bg-purple-50 border border-purple-200 rounded-2xl p-5 sm:p-6">
       <div className="flex items-start gap-3">
-        <BookMarked className="w-5 h-5 text-green-600 shrink-0 mt-0.5" />
+        <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
+          <BookMarked className="w-4 h-4 text-purple-600" />
+        </div>
         <div>
+          <p className="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-1">Exemple</p>
           {section.title && (
-            <h3 className="font-semibold text-green-800 mb-1">
+            <h3 className="font-serif font-bold text-secondary mb-1.5">
               {section.title}
             </h3>
           )}
-          <p className="text-green-800 text-sm sm:text-base leading-relaxed">
+          <p className="text-text text-sm sm:text-base leading-relaxed">
             {section.content}
           </p>
         </div>
@@ -185,17 +207,19 @@ function SectionExample({ section }: { section: LessonSection }) {
 
 function SectionSummary({ section }: { section: LessonSection }) {
   return (
-    <div className="bg-gray-800 rounded-xl p-5 text-white">
-      <div className="flex items-center gap-2 mb-3">
-        <List className="w-5 h-5 text-gray-300" />
-        <h3 className="font-semibold text-gray-100">À retenir</h3>
+    <div className="bg-secondary rounded-2xl p-5 sm:p-6 text-white">
+      <div className="flex items-center gap-2.5 mb-3">
+        <div className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center">
+          <List className="w-4 h-4 text-white/80" />
+        </div>
+        <h3 className="font-serif font-bold text-white">A retenir</h3>
       </div>
-      <p className="text-gray-300 text-sm mb-3">{section.content}</p>
+      <p className="text-white/70 text-sm mb-3 leading-relaxed">{section.content}</p>
       {section.rules && section.rules.length > 0 && (
-        <ul className="space-y-1.5">
+        <ul className="space-y-2">
           {section.rules.map((rule, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-gray-200">
-              <CheckCircle className="w-4 h-4 text-green-400 shrink-0 mt-0.5" />
+            <li key={i} className="flex items-start gap-2.5 text-sm text-white/90">
+              <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
               <span>{rule}</span>
             </li>
           ))}
@@ -205,7 +229,7 @@ function SectionSummary({ section }: { section: LessonSection }) {
   );
 }
 
-function LessonSection({
+function LessonSectionRenderer({
   section,
   compId,
 }: {
@@ -249,60 +273,60 @@ function LessonContent({
   return (
     <div className="flex flex-col gap-6">
       {/* Breadcrumb */}
-      <nav className="flex items-center gap-1.5 text-xs text-gray-500 flex-wrap">
+      <nav className="flex items-center gap-1.5 text-xs text-text-muted flex-wrap">
         <span className={`font-medium ${colors.text}`}>
-          C{lesson.competence_id}. {comp?.shortTitle ?? "Compétence"}
+          C{lesson.competence_id}. {comp?.shortTitle ?? "Competence"}
         </span>
         <ChevronRight className="w-3 h-3 shrink-0" />
-        <span className="text-gray-700 font-medium">{lesson.title}</span>
+        <span className="text-secondary font-medium">{lesson.title}</span>
       </nav>
 
       {/* Lesson Header */}
-      <div className={`${colors.bg} rounded-xl p-5 sm:p-6`}>
+      <div className={`${colors.bg} rounded-2xl p-5 sm:p-6 border ${colors.border.replace('border-', 'border-')}/30`}>
         <div className="flex items-start gap-4">
           <span className="text-3xl sm:text-4xl" role="img" aria-label={lesson.title}>
             {lesson.icon}
           </span>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1 flex-wrap">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
               <span
-                className={`text-xs font-semibold px-2 py-0.5 rounded-full ${colors.badge}`}
+                className={`text-xs font-bold px-2.5 py-1 rounded-full ${colors.badge}`}
               >
-                C{lesson.competence_id} · Leçon {lesson.chapter}
+                C{lesson.competence_id} · Lecon {lesson.chapter}
               </span>
-              <span className="flex items-center gap-1 text-xs text-gray-500">
+              <span className="flex items-center gap-1 text-xs text-text-muted">
                 <Clock className="w-3 h-3" />
                 {lesson.readingTime}
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-gray-900 leading-tight">
+            <h1 className="font-serif text-xl sm:text-2xl font-bold text-secondary leading-tight">
               {lesson.title}
             </h1>
-            <p className="text-sm text-gray-600 mt-1">{lesson.subtitle}</p>
+            <p className="text-sm text-text-muted mt-1.5">{lesson.subtitle}</p>
           </div>
         </div>
       </div>
 
       {/* Sections */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-5">
         {lesson.sections.map((section, i) => (
-          <LessonSection key={i} section={section} compId={lesson.competence_id} />
+          <LessonSectionRenderer key={i} section={section} compId={lesson.competence_id} />
         ))}
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between pt-2 border-t border-gray-100 gap-3">
+      <div className="flex items-center justify-between pt-4 border-t border-border gap-3">
         <div className="flex-1">
           {prevLesson && (
             <button
               onClick={() => onNavigate(prevLesson.id)}
-              className="flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 transition-colors group"
+              className="flex items-center gap-2 text-sm text-text-muted hover:text-secondary transition-colors group p-2 -ml-2 rounded-xl hover:bg-surface-alt"
             >
               <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
               <span className="hidden sm:block truncate max-w-[180px]">
                 {prevLesson.title}
               </span>
-              <span className="sm:hidden">Précédent</span>
+              <span className="sm:hidden">Precedent</span>
             </button>
           )}
         </div>
@@ -310,7 +334,7 @@ function LessonContent({
           {nextLesson && (
             <button
               onClick={() => onNavigate(nextLesson.id)}
-              className="flex items-center gap-2 text-sm font-medium text-[#cf5c36] hover:text-[#b54d2c] transition-colors group"
+              className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary-dark transition-colors group p-2 -mr-2 rounded-xl hover:bg-primary-light"
             >
               <span className="hidden sm:block truncate max-w-[180px]">
                 {nextLesson.title}
@@ -345,9 +369,9 @@ function SidebarPanel({
   return (
     <div className="flex flex-col gap-3">
       {/* Competence Tabs */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">
-          Compétences
+      <div className="bg-surface rounded-2xl shadow-sm border border-border p-3">
+        <p className="text-[10px] font-semibold text-text-muted uppercase tracking-widest mb-2 px-2">
+          Competences
         </p>
         <div className="flex flex-col gap-1">
           {remcCompetences.map((comp) => {
@@ -357,7 +381,7 @@ function SidebarPanel({
               <button
                 key={comp.id}
                 onClick={() => onSelectComp(comp.id)}
-                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium border transition-all text-left w-full ${
+                className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-sm font-medium border transition-all duration-200 text-left w-full ${
                   isActive ? colors.tabActive : colors.tab
                 }`}
               >
@@ -366,7 +390,7 @@ function SidebarPanel({
                 </span>
                 <span className="leading-tight">
                   <span className="font-bold">C{comp.id}</span>
-                  <span className="hidden lg:inline"> — {comp.shortTitle}</span>
+                  <span className="hidden lg:inline"> -- {comp.shortTitle}</span>
                 </span>
               </button>
             );
@@ -375,8 +399,8 @@ function SidebarPanel({
       </div>
 
       {/* Lesson List */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-3">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-1">
+      <div className="bg-surface rounded-2xl shadow-sm border border-border p-3">
+        <p className="text-[10px] font-semibold text-text-muted uppercase tracking-widest mb-2 px-2">
           {remcCompetences.find((c) => c.id === selectedCompId)?.shortTitle}
         </p>
         <div className="flex flex-col gap-0.5">
@@ -387,10 +411,10 @@ function SidebarPanel({
               <button
                 key={lesson.id}
                 onClick={() => onSelectLesson(lesson.id)}
-                className={`flex items-start gap-2.5 px-3 py-2.5 rounded-lg text-left w-full transition-all group ${
+                className={`flex items-start gap-2.5 px-3 py-2.5 rounded-xl text-left w-full transition-all duration-200 group ${
                   isActive
-                    ? `${colors.bg} ${colors.text} font-semibold`
-                    : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    ? `${colors.bg} ${colors.text} font-semibold border border-current/10`
+                    : "text-text-muted hover:bg-surface-alt hover:text-secondary"
                 }`}
               >
                 <span className="text-sm mt-0.5 shrink-0">{lesson.icon}</span>
@@ -398,10 +422,10 @@ function SidebarPanel({
                   <p className="text-sm leading-snug truncate">{lesson.title}</p>
                   <p
                     className={`text-xs mt-0.5 ${
-                      isActive ? "opacity-70" : "text-gray-400"
+                      isActive ? "opacity-70" : "text-text-muted"
                     }`}
                   >
-                    Leçon {lesson.chapter} · {lesson.readingTime}
+                    Lecon {lesson.chapter} · {lesson.readingTime}
                   </p>
                 </div>
                 {isActive && (
@@ -448,7 +472,7 @@ function MobileSelector({
                 onSelectComp(comp.id);
                 setListOpen(true);
               }}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border shrink-0 transition-all ${
+              className={`flex items-center gap-1.5 px-3.5 py-2.5 rounded-xl text-sm font-medium border shrink-0 transition-all duration-200 ${
                 isActive ? colors.tabActive : colors.tab
               }`}
             >
@@ -460,23 +484,25 @@ function MobileSelector({
       </div>
 
       {/* Lesson accordion */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div className="bg-surface rounded-2xl border border-border overflow-hidden">
         <button
           onClick={() => setListOpen((v) => !v)}
-          className="flex items-center justify-between w-full px-4 py-3 text-sm font-medium text-gray-800"
+          className="flex items-center justify-between w-full px-4 py-3.5 text-sm font-medium text-secondary"
         >
           <span className="flex items-center gap-2">
-            <List className="w-4 h-4 text-gray-500" />
-            Leçons de C{selectedCompId}
+            <div className="w-6 h-6 bg-surface-alt rounded-lg flex items-center justify-center">
+              <List className="w-3.5 h-3.5 text-text-muted" />
+            </div>
+            Lecons de C{selectedCompId}
           </span>
           <ChevronRight
-            className={`w-4 h-4 text-gray-500 transition-transform ${
+            className={`w-4 h-4 text-text-muted transition-transform duration-200 ${
               listOpen ? "rotate-90" : ""
             }`}
           />
         </button>
         {listOpen && (
-          <div className="border-t border-gray-100 divide-y divide-gray-50">
+          <div className="border-t border-border divide-y divide-border/50">
             {lessonsForComp.map((lesson) => {
               const colors = COMP_COLORS[lesson.competence_id] ?? COMP_COLORS[1];
               const isActive = lesson.id === selectedLessonId;
@@ -487,10 +513,10 @@ function MobileSelector({
                     onSelectLesson(lesson.id);
                     setListOpen(false);
                   }}
-                  className={`flex items-center gap-3 w-full px-4 py-3 text-left text-sm transition-colors ${
+                  className={`flex items-center gap-3 w-full px-4 py-3 text-left text-sm transition-all duration-200 ${
                     isActive
                       ? `${colors.bg} ${colors.text} font-semibold`
-                      : "text-gray-700 hover:bg-gray-50"
+                      : "text-text hover:bg-surface-alt"
                   }`}
                 >
                   <span>{lesson.icon}</span>
@@ -565,12 +591,13 @@ export default function CoursPage() {
   if (!selectedLesson) return null;
 
   return (
-    <div className="max-w-7xl mx-auto">
+    <div className="max-w-7xl mx-auto animate-fade-up">
       {/* Page title */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Mes cours REMC</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          {remcLessonsAll.length} leçons réparties sur 4 compétences
+        <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-1">Formation REMC</p>
+        <h1 className="font-serif text-2xl font-bold text-secondary">Mes cours</h1>
+        <p className="text-sm text-text-muted mt-1">
+          {remcLessonsAll.length} lecons reparties sur 4 competences
         </p>
       </div>
 
@@ -597,7 +624,7 @@ export default function CoursPage() {
         </aside>
 
         {/* Lesson content */}
-        <main className="flex-1 min-w-0 bg-white rounded-xl shadow-sm border border-gray-100 p-5 sm:p-6 lg:p-8">
+        <main className="flex-1 min-w-0 bg-surface rounded-2xl shadow-sm border border-border p-5 sm:p-6 lg:p-8">
           <LessonContent
             lesson={selectedLesson}
             prevLesson={prevLesson}

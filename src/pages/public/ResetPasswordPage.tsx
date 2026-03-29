@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "../../lib/supabase";
-import { BookOpen, Eye, EyeOff, CheckCircle, AlertCircle } from "lucide-react";
+import { BookOpen, Eye, EyeOff, CheckCircle, AlertCircle, Lock } from "lucide-react";
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState("");
@@ -14,7 +14,6 @@ export default function ResetPasswordPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Écouter l'événement PASSWORD_RECOVERY de Supabase
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event) => {
@@ -23,7 +22,6 @@ export default function ResetPasswordPage() {
       }
     });
 
-    // Vérifier s'il y a déjà une session active (l'utilisateur vient de cliquer le lien)
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setReady(true);
@@ -56,41 +54,44 @@ export default function ResetPasswordPage() {
       setError("Erreur lors de la mise à jour du mot de passe. Veuillez réessayer.");
     } else {
       setSuccess(true);
-      // Rediriger vers login après 3 secondes
       setTimeout(() => navigate("/login", { replace: true }), 3000);
     }
     setLoading(false);
   };
 
+  const Logo = () => (
+    <Link to="/" className="inline-flex items-center gap-2.5">
+      <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
+        <BookOpen className="w-5 h-5 text-white" />
+      </div>
+      <span className="font-serif font-bold text-text text-xl">
+        Auto-<span className="text-primary">Blog</span>
+      </span>
+    </Link>
+  );
+
   // Écran de succès
   if (success) {
     return (
-      <div className="min-h-screen bg-[#fcfaf8] flex items-center justify-center px-4">
-        <div className="w-full max-w-md">
+      <div className="min-h-screen bg-bg flex items-center justify-center px-4">
+        <div className="w-full max-w-md animate-scale-in">
           <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-10 h-10 bg-[#cf5c36] rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-serif font-bold text-gray-900 text-xl">
-                Auto-<span className="text-[#cf5c36]">Blog</span>
-              </span>
-            </Link>
+            <Logo />
           </div>
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
-            <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-7 h-7 text-green-600" />
+          <div className="bg-surface rounded-2xl shadow-sm border border-border p-8 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
+              <CheckCircle className="w-8 h-8 text-green-600" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">
+            <h3 className="font-serif font-bold text-text text-xl mb-2">
               Mot de passe modifi&eacute; !
             </h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-text-muted mb-6 leading-relaxed">
               Votre mot de passe a &eacute;t&eacute; mis &agrave; jour avec succ&egrave;s.
               Vous allez &ecirc;tre redirig&eacute; vers la page de connexion.
             </p>
             <Link
               to="/login"
-              className="text-sm text-[#cf5c36] font-medium hover:underline"
+              className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-xl font-semibold hover:bg-primary-dark transition-colors"
             >
               Se connecter maintenant
             </Link>
@@ -100,35 +101,28 @@ export default function ResetPasswordPage() {
     );
   }
 
-  // Écran d'attente si le token n'est pas encore détecté
+  // Écran lien invalide
   if (!ready) {
     return (
-      <div className="min-h-screen bg-[#fcfaf8] flex items-center justify-center px-4">
-        <div className="w-full max-w-md">
+      <div className="min-h-screen bg-bg flex items-center justify-center px-4">
+        <div className="w-full max-w-md animate-fade-up">
           <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-10 h-10 bg-[#cf5c36] rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-white" />
-              </div>
-              <span className="font-serif font-bold text-gray-900 text-xl">
-                Auto-<span className="text-[#cf5c36]">Blog</span>
-              </span>
-            </Link>
+            <Logo />
           </div>
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
-            <div className="w-14 h-14 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertCircle className="w-7 h-7 text-orange-600" />
+          <div className="bg-surface rounded-2xl shadow-sm border border-border p-8 text-center">
+            <div className="w-16 h-16 bg-amber-light rounded-full flex items-center justify-center mx-auto mb-5">
+              <AlertCircle className="w-8 h-8 text-amber" />
             </div>
-            <h3 className="font-semibold text-gray-900 mb-2">
+            <h3 className="font-serif font-bold text-text text-xl mb-2">
               Lien invalide ou expir&eacute;
             </h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-sm text-text-muted mb-6 leading-relaxed">
               Ce lien de r&eacute;initialisation n'est plus valide.
               Veuillez en demander un nouveau.
             </p>
             <Link
               to="/login"
-              className="text-sm text-[#cf5c36] font-medium hover:underline"
+              className="inline-flex items-center gap-2 bg-secondary text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition-opacity"
             >
               Retour &agrave; la connexion
             </Link>
@@ -140,35 +134,33 @@ export default function ResetPasswordPage() {
 
   // Formulaire de nouveau mot de passe
   return (
-    <div className="min-h-screen bg-[#fcfaf8] flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <div className="min-h-screen bg-bg flex items-center justify-center px-4">
+      <div className="w-full max-w-md animate-fade-up">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#cf5c36] rounded-lg flex items-center justify-center">
-              <BookOpen className="w-5 h-5 text-white" />
+          <Logo />
+          <div className="mt-6">
+            <div className="w-14 h-14 bg-primary-light rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-6 h-6 text-primary" />
             </div>
-            <span className="font-serif font-bold text-gray-900 text-xl">
-              Auto-<span className="text-[#cf5c36]">Blog</span>
-            </span>
-          </Link>
-          <h2 className="font-serif text-xl font-bold text-gray-900 mt-4">
-            Nouveau mot de passe
-          </h2>
-          <p className="text-gray-500 text-sm mt-1">
-            Choisissez votre nouveau mot de passe.
-          </p>
+            <h2 className="font-serif text-2xl font-bold text-text">
+              Nouveau mot de passe
+            </h2>
+            <p className="text-text-muted text-sm mt-2">
+              Choisissez votre nouveau mot de passe.
+            </p>
+          </div>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-          <form onSubmit={handleSubmit} className="space-y-5">
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg">
+              <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-xl border border-red-100 animate-fade-in">
                 {error}
               </div>
             )}
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label htmlFor="password" className="block text-sm font-medium text-text mb-2">
                 Nouveau mot de passe
               </label>
               <div className="relative">
@@ -179,13 +171,13 @@ export default function ResetPasswordPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   minLength={6}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36] transition-colors pr-12"
-                  placeholder="Minimum 6 caract&egrave;res"
+                  className="w-full px-4 py-3.5 rounded-xl border border-border bg-bg text-sm text-text focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all pr-12"
+                  placeholder="Minimum 6 caractères"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-muted hover:text-text transition-colors"
                 >
                   {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
@@ -193,7 +185,7 @@ export default function ResetPasswordPage() {
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-text mb-2">
                 Confirmer le mot de passe
               </label>
               <input
@@ -203,20 +195,33 @@ export default function ResetPasswordPage() {
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 minLength={6}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36] transition-colors"
+                className={`w-full px-4 py-3.5 rounded-xl border text-sm text-text bg-bg focus:outline-none focus:ring-2 transition-all ${
+                  confirmPassword && confirmPassword !== password
+                    ? "border-red-300 focus:border-red-500 focus:ring-red-500/20"
+                    : "border-border focus:border-primary focus:ring-primary/20"
+                }`}
                 placeholder="Confirmez votre mot de passe"
               />
+              {confirmPassword && confirmPassword !== password && (
+                <p className="text-xs text-red-500 mt-1.5">Les mots de passe ne correspondent pas</p>
+              )}
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#cf5c36] text-white font-semibold py-3 rounded-xl hover:bg-[#b8502f] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-primary text-white font-semibold py-3.5 rounded-xl hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? "Mise &agrave; jour..." : "Mettre &agrave; jour le mot de passe"}
+              {loading ? "Mise à jour..." : "Mettre à jour le mot de passe"}
             </button>
           </form>
         </div>
+
+        <p className="text-center text-sm text-text-muted mt-6">
+          <Link to="/login" className="text-primary hover:underline font-medium">
+            &larr; Retour &agrave; la connexion
+          </Link>
+        </p>
       </div>
     </div>
   );

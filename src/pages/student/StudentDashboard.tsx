@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Star,
   ClipboardList,
+  Sparkles,
 } from "lucide-react";
 
 interface QuizResult {
@@ -35,11 +36,13 @@ function ProgressCircle({
   size = 120,
   strokeWidth = 8,
   color,
+  trackColor = "var(--color-amber)",
 }: {
   percentage: number;
   size?: number;
   strokeWidth?: number;
   color: string;
+  trackColor?: string;
 }) {
   const radius = (size - strokeWidth) / 2;
   const circumference = radius * 2 * Math.PI;
@@ -51,10 +54,10 @@ function ProgressCircle({
         cx={size / 2}
         cy={size / 2}
         r={radius}
-        stroke="currentColor"
+        stroke={trackColor}
         strokeWidth={strokeWidth}
         fill="none"
-        className="text-gray-100"
+        opacity={0.2}
       />
       <circle
         cx={size / 2}
@@ -71,6 +74,14 @@ function ProgressCircle({
     </svg>
   );
 }
+
+// Couleurs par competence
+const COMP_ACCENT = [
+  { color: "#2563eb", bg: "bg-blue-50", text: "text-blue-600", border: "border-blue-200", lightBg: "bg-blue-100", gradient: "from-blue-500 to-blue-600" },
+  { color: "#059669", bg: "bg-emerald-50", text: "text-emerald-600", border: "border-emerald-200", lightBg: "bg-emerald-100", gradient: "from-emerald-500 to-emerald-600" },
+  { color: "#d97706", bg: "bg-amber-50", text: "text-amber-600", border: "border-amber-200", lightBg: "bg-amber-100", gradient: "from-amber-500 to-amber-600" },
+  { color: "#9333ea", bg: "bg-purple-50", text: "text-purple-600", border: "border-purple-200", lightBg: "bg-purple-100", gradient: "from-purple-500 to-purple-600" },
+];
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -92,7 +103,7 @@ export default function StudentDashboard() {
         if (!error && data) {
           setRecentSessions(data.slice(0, 5));
 
-          // Calculer la progression par compétence
+          // Calculer la progression par competence
           const progressMap = new Map<number, QuizResult[]>();
           for (const result of data) {
             const existing = progressMap.get(result.competence_id) || [];
@@ -146,9 +157,6 @@ export default function StudentDashboard() {
 
   const totalSessions = progress.reduce((sum, p) => sum + p.totalAttempts, 0);
 
-  // Couleurs pour le cercle de progression
-  const circleColors = ["#2563eb", "#059669", "#d97706", "#9333ea"];
-
   // Identifier points forts et faibles
   const sortedProgress = [...progress].sort(
     (a, b) => b.avgScore - a.avgScore
@@ -161,108 +169,135 @@ export default function StudentDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-2 border-[#cf5c36] border-t-transparent rounded-full animate-spin" />
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-text-muted font-medium">Chargement...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      {/* Welcome */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          Bonjour, {user?.full_name || "Élève"} !
-        </h1>
-        <p className="text-gray-500">
-          Suivez votre progression sur les 4 comp&eacute;tences REMC.
-        </p>
+    <div className="max-w-5xl mx-auto animate-fade-up">
+      {/* Welcome banner */}
+      <div className="bg-gradient-to-br from-primary-light via-amber-light to-surface rounded-2xl border border-border p-6 sm:p-8 mb-8 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 opacity-[0.04]">
+          <Sparkles className="w-full h-full text-primary" />
+        </div>
+        <div className="absolute bottom-0 left-0 w-32 h-32 opacity-[0.03]">
+          <Target className="w-full h-full text-amber" />
+        </div>
+        <div className="relative">
+          <p className="text-primary text-sm font-semibold uppercase tracking-wide mb-1 font-sans">Tableau de bord</p>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-secondary mb-2 tracking-tight">
+            Bonjour, {user?.full_name || "Eleve"} !
+          </h1>
+          <p className="text-text-muted font-sans max-w-md">
+            Suivez votre progression sur les 4 competences REMC et identifiez vos axes d'amelioration.
+          </p>
+        </div>
       </div>
 
-      {/* Stats overview */}
+      {/* Stats overview - 4 cards with different accent colors */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="w-10 h-10 bg-[#fcedea] rounded-lg flex items-center justify-center mx-auto mb-2">
-            <Target className="w-5 h-5 text-[#cf5c36]" />
+        <div className="bg-surface rounded-2xl border border-border p-5 text-center hover-lift animate-fade-up delay-100 group">
+          <div className="w-12 h-12 bg-gradient-to-br from-primary-light to-primary/10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+            <Target className="w-5 h-5 text-primary" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">{globalProgress}%</p>
-          <p className="text-xs text-gray-500">Progression globale</p>
+          <p className="text-2xl font-bold text-secondary font-serif">{globalProgress}%</p>
+          <p className="text-xs text-text-muted mt-1 font-medium">Progression globale</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center mx-auto mb-2">
+        <div className="bg-surface rounded-2xl border border-border p-5 text-center hover-lift animate-fade-up delay-200 group">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
             <ClipboardList className="w-5 h-5 text-blue-600" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">{totalSessions}</p>
-          <p className="text-xs text-gray-500">Sessions de quiz</p>
+          <p className="text-2xl font-bold text-secondary font-serif">{totalSessions}</p>
+          <p className="text-xs text-text-muted mt-1 font-medium">Sessions de quiz</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mx-auto mb-2">
-            <Trophy className="w-5 h-5 text-green-600" />
+        <div className="bg-surface rounded-2xl border border-border p-5 text-center hover-lift animate-fade-up delay-300 group">
+          <div className="w-12 h-12 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+            <Trophy className="w-5 h-5 text-emerald-600" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">{strongPoints.length}</p>
-          <p className="text-xs text-gray-500">Points forts</p>
+          <p className="text-2xl font-bold text-secondary font-serif">{strongPoints.length}</p>
+          <p className="text-xs text-text-muted mt-1 font-medium">Points forts</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center mx-auto mb-2">
-            <TrendingUp className="w-5 h-5 text-amber-600" />
+        <div className="bg-surface rounded-2xl border border-border p-5 text-center hover-lift animate-fade-up delay-400 group">
+          <div className="w-12 h-12 bg-gradient-to-br from-amber-light to-amber/10 rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
+            <TrendingUp className="w-5 h-5 text-amber" />
           </div>
-          <p className="text-2xl font-bold text-gray-900">{weakPoints.length}</p>
-          <p className="text-xs text-gray-500">&Agrave; am&eacute;liorer</p>
+          <p className="text-2xl font-bold text-secondary font-serif">{weakPoints.length}</p>
+          <p className="text-xs text-text-muted mt-1 font-medium">A ameliorer</p>
         </div>
       </div>
 
-      {/* Progression globale circulaire + Compétences REMC */}
+      {/* Progression globale circulaire + Competences REMC */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         {/* Cercle global */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 flex flex-col items-center justify-center">
-          <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-4">
+        <div className="bg-surface rounded-2xl border border-border p-6 flex flex-col items-center justify-center animate-scale-in">
+          <h2 className="font-serif text-sm font-semibold text-text-muted uppercase tracking-wide mb-6">
             Progression globale
           </h2>
           <div className="relative">
             <ProgressCircle
               percentage={globalProgress}
-              size={140}
-              strokeWidth={10}
-              color="#cf5c36"
+              size={170}
+              strokeWidth={14}
+              color="var(--color-primary)"
+              trackColor="var(--color-amber)"
             />
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <span className="text-3xl font-bold text-gray-900">
-                  {globalProgress}%
+                <span className="text-5xl font-bold text-secondary font-serif">
+                  {globalProgress}
                 </span>
+                <span className="text-lg text-text-muted font-serif">%</span>
               </div>
             </div>
           </div>
-          <p className="text-sm text-gray-500 mt-4 text-center">
-            {globalProgress >= 75
-              ? "Excellent ! Vous êtes prêt(e) pour l'examen."
-              : globalProgress >= 50
-                ? "Bonne progression, continuez !"
-                : "Continuez vos révisions pour progresser."}
-          </p>
+          <div className="mt-6 text-center">
+            <p className="text-sm text-text-muted leading-relaxed max-w-[200px]">
+              {globalProgress >= 75
+                ? "Excellent ! Vous etes pret(e) pour l'examen."
+                : globalProgress >= 50
+                  ? "Bonne progression, continuez !"
+                  : "Continuez vos revisions pour progresser."}
+            </p>
+            {globalProgress < 75 && (
+              <Link
+                to="/eleve/quiz"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:text-primary-dark mt-3 transition-colors"
+              >
+                Reviser <ArrowRight className="w-3 h-3" />
+              </Link>
+            )}
+          </div>
         </div>
 
-        {/* Cartes compétences REMC */}
+        {/* Cartes competences REMC */}
         <div className="lg:col-span-2 space-y-4">
           {remcCompetences.map((comp, index) => {
             const prog = progress.find((p) => p.competenceId === comp.id);
             const percentage = prog?.avgScore || 0;
+            const accent = COMP_ACCENT[index];
 
             return (
               <div
                 key={comp.id}
-                className={`bg-white rounded-xl border ${comp.borderColor} p-4 hover:shadow-sm transition-shadow`}
+                className={`bg-surface rounded-2xl border ${accent.border} p-5 hover-lift transition-all duration-300 animate-fade-up`}
+                style={{ animationDelay: `${(index + 1) * 100}ms` }}
               >
                 <div className="flex items-start gap-4">
                   {/* Mini cercle progression */}
                   <div className="relative flex-shrink-0">
                     <ProgressCircle
                       percentage={percentage}
-                      size={56}
+                      size={64}
                       strokeWidth={5}
-                      color={circleColors[index]}
+                      color={accent.color}
+                      trackColor={accent.color}
                     />
                     <div className="absolute inset-0 flex items-center justify-center">
-                      <span className="text-xs font-bold text-gray-700">
+                      <span className="text-xs font-bold text-secondary">
                         {percentage}%
                       </span>
                     </div>
@@ -270,29 +305,29 @@ export default function StudentDashboard() {
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1.5">
                       <span className="text-lg">{comp.icon}</span>
-                      <h3 className="font-semibold text-gray-900 text-sm">
+                      <h3 className="font-serif font-bold text-secondary text-sm">
                         C{comp.id}. {comp.shortTitle}
                       </h3>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2 line-clamp-1">
+                    <p className="text-xs text-text-muted mb-3 line-clamp-1">
                       {comp.description}
                     </p>
 
                     {/* Barre progression */}
-                    <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className="w-full bg-surface-alt rounded-full h-2.5 overflow-hidden">
                       <div
-                        className="h-2 rounded-full transition-all duration-500"
+                        className="h-2.5 rounded-full transition-all duration-500"
                         style={{
                           width: `${percentage}%`,
-                          backgroundColor: circleColors[index],
+                          backgroundColor: accent.color,
                         }}
                       />
                     </div>
 
-                    <div className="flex items-center justify-between mt-2">
-                      <span className="text-xs text-gray-400">
+                    <div className="flex items-center justify-between mt-2.5">
+                      <span className="text-xs text-text-muted">
                         {prog?.totalAttempts || 0} session(s)
                         {prog?.bestScore
                           ? ` · Meilleur : ${prog.bestScore}%`
@@ -300,9 +335,9 @@ export default function StudentDashboard() {
                       </span>
                       <Link
                         to={`/eleve/quiz?competence=${comp.id}`}
-                        className={`text-xs font-medium ${comp.color} hover:underline inline-flex items-center gap-1`}
+                        className={`text-xs font-semibold ${accent.text} hover:underline inline-flex items-center gap-1 transition-colors`}
                       >
-                        S'entra&icirc;ner <ArrowRight className="w-3 h-3" />
+                        S'entrainer <ArrowRight className="w-3 h-3" />
                       </Link>
                     </div>
                   </div>
@@ -313,29 +348,34 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* Historique récent + Points forts/faibles */}
+      {/* Historique recent + Points forts/faibles */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Historique récent */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Clock className="w-4 h-4 text-gray-400" />
-            Derni&egrave;res sessions
+        {/* Historique recent */}
+        <div className="bg-surface rounded-2xl border border-border p-6 animate-fade-up delay-200">
+          <h2 className="font-serif font-bold text-secondary mb-4 flex items-center gap-2">
+            <div className="w-8 h-8 bg-primary-light rounded-lg flex items-center justify-center">
+              <Clock className="w-4 h-4 text-primary" />
+            </div>
+            Dernieres sessions
           </h2>
           {recentSessions.length === 0 ? (
-            <div className="text-center py-6">
-              <p className="text-sm text-gray-400 mb-3">
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-primary-light to-amber-light rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <ClipboardList className="w-8 h-8 text-primary" />
+              </div>
+              <p className="text-sm text-text-muted mb-4">
                 Aucune session pour le moment.
               </p>
               <Link
                 to="/eleve/quiz"
-                className="inline-flex items-center gap-2 bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#b8502f] transition-colors"
+                className="inline-flex items-center gap-2 bg-primary text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-primary-dark transition-colors shadow-sm hover:shadow-md"
               >
                 Commencer un quiz
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {recentSessions.map((session) => {
                 const comp = remcCompetences.find(
                   (c) => c.id === session.competence_id
@@ -348,17 +388,17 @@ export default function StudentDashboard() {
                 return (
                   <div
                     key={session.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-gray-50"
+                    className="flex items-center justify-between p-3.5 rounded-xl bg-surface-alt/50 border border-border/50 hover:bg-surface-alt hover:border-border transition-all duration-200"
                   >
                     <div className="flex items-center gap-3">
                       <span className="text-lg">
                         {comp?.icon || "📝"}
                       </span>
                       <div>
-                        <p className="text-sm font-medium text-gray-900">
+                        <p className="text-sm font-medium text-secondary">
                           {comp?.shortTitle || "Quiz"}
                         </p>
-                        <p className="text-xs text-gray-400">
+                        <p className="text-xs text-text-muted">
                           {new Date(session.created_at).toLocaleDateString(
                             "fr-FR",
                             {
@@ -372,11 +412,19 @@ export default function StudentDashboard() {
                     </div>
                     <div className="text-right">
                       <span
-                        className={`text-sm font-bold ${passed ? "text-green-600" : "text-red-500"}`}
+                        className={`text-sm font-bold ${passed ? "text-emerald-600" : "text-primary"}`}
                       >
                         {session.score}/{session.total}
                       </span>
-                      <p className="text-xs text-gray-400">{pct}%</p>
+                      <div className="flex items-center gap-1.5 justify-end mt-0.5">
+                        <div className="w-12 h-1.5 bg-surface-alt rounded-full overflow-hidden">
+                          <div
+                            className={`h-full rounded-full ${passed ? "bg-emerald-500" : "bg-primary"}`}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-text-muted">{pct}%</span>
+                      </div>
                     </div>
                   </div>
                 );
@@ -386,23 +434,31 @@ export default function StudentDashboard() {
         </div>
 
         {/* Points forts / faibles */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Star className="w-4 h-4 text-gray-400" />
+        <div className="bg-surface rounded-2xl border border-border p-6 animate-fade-up delay-300">
+          <h2 className="font-serif font-bold text-secondary mb-4 flex items-center gap-2">
+            <div className="w-8 h-8 bg-amber-light rounded-lg flex items-center justify-center">
+              <Star className="w-4 h-4 text-amber" />
+            </div>
             Points forts &amp; faibles
           </h2>
 
           {totalSessions === 0 ? (
-            <div className="text-center py-6">
-              <p className="text-sm text-gray-400">
+            <div className="text-center py-8">
+              <div className="w-16 h-16 bg-gradient-to-br from-amber-light to-primary-light rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Star className="w-8 h-8 text-amber" />
+              </div>
+              <p className="text-sm text-text-muted">
                 Faites quelques quiz pour voir vos points forts et faibles.
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-5">
               {strongPoints.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-green-600 uppercase tracking-wide mb-2">
+                  <p className="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-2.5 flex items-center gap-1.5">
+                    <div className="w-5 h-5 bg-emerald-100 rounded flex items-center justify-center">
+                      <Trophy className="w-3 h-3" />
+                    </div>
                     Points forts
                   </p>
                   {strongPoints.map((p) => {
@@ -412,13 +468,13 @@ export default function StudentDashboard() {
                     return (
                       <div
                         key={p.competenceId}
-                        className="flex items-center gap-2 mb-2 p-2 rounded-lg bg-green-50"
+                        className="flex items-center gap-2.5 mb-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100 hover:border-emerald-200 transition-colors"
                       >
                         <span>{comp?.icon}</span>
-                        <span className="text-sm text-gray-700 flex-1">
+                        <span className="text-sm text-secondary flex-1 font-medium">
                           {comp?.shortTitle}
                         </span>
-                        <span className="text-sm font-bold text-green-600">
+                        <span className="text-sm font-bold text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
                           {p.avgScore}%
                         </span>
                       </div>
@@ -429,8 +485,11 @@ export default function StudentDashboard() {
 
               {weakPoints.length > 0 && (
                 <div>
-                  <p className="text-xs font-semibold text-amber-600 uppercase tracking-wide mb-2">
-                    &Agrave; am&eacute;liorer
+                  <p className="text-xs font-semibold text-amber uppercase tracking-wide mb-2.5 flex items-center gap-1.5">
+                    <div className="w-5 h-5 bg-amber-light rounded flex items-center justify-center">
+                      <TrendingUp className="w-3 h-3" />
+                    </div>
+                    A ameliorer
                   </p>
                   {weakPoints.map((p) => {
                     const comp = remcCompetences.find(
@@ -439,13 +498,19 @@ export default function StudentDashboard() {
                     return (
                       <div
                         key={p.competenceId}
-                        className="flex items-center gap-2 mb-2 p-2 rounded-lg bg-amber-50"
+                        className="flex items-center gap-2.5 mb-2 p-3 rounded-xl bg-amber-light border border-amber/20 hover:border-amber/40 transition-colors"
                       >
                         <span>{comp?.icon}</span>
-                        <span className="text-sm text-gray-700 flex-1">
+                        <span className="text-sm text-secondary flex-1 font-medium">
                           {comp?.shortTitle}
                         </span>
-                        <span className="text-sm font-bold text-amber-600">
+                        <Link
+                          to={`/eleve/quiz?competence=${p.competenceId}`}
+                          className="text-xs font-semibold text-amber hover:underline inline-flex items-center gap-1"
+                        >
+                          Reviser <ArrowRight className="w-3 h-3" />
+                        </Link>
+                        <span className="text-sm font-bold text-amber bg-amber/10 px-2 py-0.5 rounded-full">
                           {p.avgScore}%
                         </span>
                       </div>
@@ -460,4 +525,3 @@ export default function StudentDashboard() {
     </div>
   );
 }
-

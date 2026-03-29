@@ -19,7 +19,7 @@ export default function SettingsPage() {
           });
         }
       } catch {
-        // Settings pas encore configur\u00e9es
+        // Settings pas encore configurées
       }
     };
     fetchSettings();
@@ -45,56 +45,63 @@ export default function SettingsPage() {
     }
   };
 
+  const inputClasses =
+    "w-full px-4 py-3 rounded-xl border border-border bg-surface text-sm text-text focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/10 transition-all duration-200";
+
   return (
     <div className="max-w-2xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Param&egrave;tres</h1>
-        <p className="text-gray-500 text-sm">
-          Configurez les param&egrave;tres g&eacute;n&eacute;raux de votre blog.
+      <div className="mb-10 animate-fade-up">
+        <h1 className="font-serif text-3xl font-bold text-secondary mb-2">Paramètres</h1>
+        <p className="text-text-muted text-sm">
+          Configurez les paramètres généraux de votre blog.
         </p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
-        <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
-          <h2 className="font-semibold text-gray-900">G&eacute;n&eacute;ral</h2>
+        <div className="bg-surface rounded-2xl border border-border p-6 space-y-6 animate-fade-up delay-100">
+          <h2 className="font-serif text-lg font-bold text-secondary">Général</h2>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-semibold text-text mb-2">
               Nom du blog
             </label>
             <input
               value={blogName}
               onChange={(e) => setBlogName(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36]"
+              className={inputClasses}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-semibold text-text mb-2">
               Email de notification
             </label>
             <input
               type="email"
               value={notificationEmail}
               onChange={(e) => setNotificationEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#cf5c36] focus:ring-1 focus:ring-[#cf5c36]"
+              className={inputClasses}
               placeholder="admin@auto-ecole.fr"
             />
-            <p className="text-xs text-gray-500 mt-1.5">
-              Adresse qui recevra les notifications de nouvelles r&eacute;servations.
+            <p className="text-xs text-text-muted mt-2">
+              Adresse qui recevra les notifications de nouvelles réservations.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4 animate-fade-up delay-200">
           <button
             type="submit"
             disabled={saving}
-            className="inline-flex items-center gap-2 bg-[#cf5c36] text-white text-sm font-semibold px-6 py-3 rounded-full hover:bg-[#b8502f] transition-colors disabled:opacity-50"
+            className={`inline-flex items-center gap-2 text-sm font-semibold px-8 py-3.5 rounded-full transition-all duration-300 shadow-sm disabled:opacity-50 ${
+              saved
+                ? "bg-green-600 text-white hover:bg-green-700"
+                : "bg-primary text-white hover:bg-primary-dark hover:shadow-md"
+            }`}
           >
             {saved ? (
               <>
-                <Check className="w-4 h-4" /> Sauvegard&eacute;
+                <Check className="w-4 h-4" /> Sauvegardé
               </>
             ) : (
               <>

@@ -10,6 +10,7 @@ import {
   Loader2,
   Trophy,
   BookOpen,
+  Star,
 } from "lucide-react";
 
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
@@ -43,7 +44,6 @@ export default function QuizPage() {
   const [aiLoading, setAiLoading] = useState(false);
   const [quizSize] = useState(40);
 
-  // Charger les questions
   useEffect(() => {
     const fetchQuestions = async () => {
       const { data, error } = await supabase
@@ -58,18 +58,15 @@ export default function QuizPage() {
     fetchQuestions();
   }, []);
 
-  // Demarrer une serie
   const startQuiz = useCallback(
     (cat: string) => {
       setCategory(cat);
-      let filtered =
+      const filtered =
         cat === "Toutes"
           ? [...allQuestions]
           : allQuestions.filter((q) => q.category === cat);
 
-      // Melanger aleatoirement
       filtered.sort(() => Math.random() - 0.5);
-      // Prendre 40 questions max (comme le vrai examen)
       setQuestions(filtered.slice(0, quizSize));
       setCurrentIndex(0);
       setSelectedAnswer(null);
@@ -89,7 +86,6 @@ export default function QuizPage() {
 
   const currentQuestion = questions[currentIndex];
 
-  // Soumettre une reponse
   const handleAnswer = (label: string) => {
     if (isAnswered) return;
     setSelectedAnswer(label);
@@ -100,7 +96,6 @@ export default function QuizPage() {
     }
   };
 
-  // Question suivante
   const handleNext = () => {
     if (currentIndex + 1 >= questions.length) {
       setIsFinished(true);
@@ -112,7 +107,6 @@ export default function QuizPage() {
     }
   };
 
-  // Demander une explication IA VERROUILLEE sur la bonne reponse
   const askAI = async () => {
     setAiLoading(true);
     const correctText = currentQuestion.answers.find(
@@ -157,70 +151,92 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
 
   if (loading) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-        <Loader2 className="w-8 h-8 animate-spin text-[#cf5c36] mx-auto mb-4" />
-        <p className="text-gray-500">Chargement des questions...</p>
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <div className="text-center animate-fade-in">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+          <p className="text-text-muted">Chargement des questions...</p>
+        </div>
       </div>
     );
   }
 
-  // Ecran de resultat
+  // Écran de résultat
   if (isFinished) {
     const percentage = Math.round((score / questions.length) * 100);
     const passed = percentage >= 75;
 
     return (
-      <div className="max-w-2xl mx-auto px-4 py-10 sm:py-16">
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
-          <div
-            className={`w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center ${passed ? "bg-green-100" : "bg-red-100"}`}
-          >
-            <Trophy
-              className={`w-10 h-10 ${passed ? "text-green-600" : "text-red-500"}`}
-            />
+      <div className="min-h-screen bg-bg">
+        {/* Hero result header */}
+        <div className="bg-secondary relative overflow-hidden grain">
+          <div className="absolute top-8 right-12 w-24 h-24 border-2 border-white/10 rounded-full" />
+          <div className="absolute bottom-4 left-16 w-16 h-16 bg-primary/20 rounded-full" />
+          <div className="absolute top-1/2 right-1/3 w-6 h-6 bg-amber/15 rounded-full" />
+          <div className="max-w-3xl mx-auto px-4 py-10 text-center relative z-10">
+            <span className="inline-block text-primary text-sm font-semibold uppercase tracking-wider mb-2">
+              R&eacute;sultat du Quiz
+            </span>
+            <h1 className="font-serif text-3xl sm:text-4xl font-bold text-white">
+              {passed ? "F\u00e9licitations !" : "Continuez vos r\u00e9visions !"}
+            </h1>
           </div>
+        </div>
 
-          <h1 className="font-serif text-3xl font-bold text-gray-900 mb-2">
-            {passed ? "F\u00e9licitations !" : "Continuez vos r\u00e9visions !"}
-          </h1>
-
-          <p className="text-gray-600 mb-6">
-            {passed
-              ? "Vous avez r\u00e9ussi cette s\u00e9rie d'entra\u00eenement."
-              : "Il faut au moins 75% de bonnes r\u00e9ponses pour r\u00e9ussir."}
-          </p>
-
-          <div className="flex items-center justify-center gap-8 mb-8">
-            <div>
-              <div className="text-4xl font-bold text-[#cf5c36]">
-                {score}/{questions.length}
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Bonnes r\u00e9ponses</div>
+        <div className="max-w-2xl mx-auto px-4 -mt-8 pb-16">
+          <div className="bg-surface rounded-2xl shadow-sm border border-border p-8 sm:p-10 text-center animate-scale-in">
+            {/* Trophy */}
+            <div className={`w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center ${passed ? "bg-green-100" : "bg-red-50"}`}>
+              <Trophy className={`w-12 h-12 ${passed ? "text-green-600" : "text-red-500"}`} />
             </div>
-            <div>
-              <div
-                className={`text-4xl font-bold ${passed ? "text-green-600" : "text-red-500"}`}
+
+            {/* Confetti-like stars for pass */}
+            {passed && (
+              <div className="flex justify-center gap-2 mb-4">
+                <Star className="w-5 h-5 text-amber animate-scale-in" />
+                <Star className="w-5 h-5 text-primary animate-scale-in delay-100" />
+                <Star className="w-5 h-5 text-amber animate-scale-in delay-200" />
+                <Star className="w-5 h-5 text-primary animate-scale-in delay-300" />
+                <Star className="w-5 h-5 text-amber animate-scale-in delay-400" />
+              </div>
+            )}
+
+            <p className="text-text-muted mb-8">
+              {passed
+                ? "Vous avez r\u00e9ussi cette s\u00e9rie d'entra\u00eenement."
+                : "Il faut au moins 75% de bonnes r\u00e9ponses pour r\u00e9ussir."}
+            </p>
+
+            <div className="flex items-center justify-center gap-10 mb-10">
+              <div>
+                <div className="text-5xl font-bold text-primary font-serif">
+                  {score}/{questions.length}
+                </div>
+                <div className="text-sm text-text-muted mt-1">Bonnes r&eacute;ponses</div>
+              </div>
+              <div className="w-px h-16 bg-border" />
+              <div>
+                <div className={`text-5xl font-bold font-serif ${passed ? "text-green-600" : "text-red-500"}`}>
+                  {percentage}%
+                </div>
+                <div className="text-sm text-text-muted mt-1">Score</div>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => startQuiz(category)}
+                className="inline-flex items-center justify-center gap-2 bg-primary text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-dark transition-colors"
               >
-                {percentage}%
-              </div>
-              <div className="text-sm text-gray-500 mt-1">Score</div>
+                <RotateCcw className="w-4 h-4" />
+                Nouvelle s&eacute;rie
+              </button>
+              <button
+                onClick={() => startQuiz("Toutes")}
+                className="inline-flex items-center justify-center gap-2 bg-surface-alt text-text px-8 py-3.5 rounded-xl font-semibold hover:bg-border transition-colors"
+              >
+                Toutes les cat&eacute;gories
+              </button>
             </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <button
-              onClick={() => startQuiz(category)}
-              className="inline-flex items-center justify-center gap-2 bg-[#cf5c36] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#b8502f] transition-colors"
-            >
-              <RotateCcw className="w-4 h-4" />
-              Nouvelle s\u00e9rie
-            </button>
-            <button
-              onClick={() => startQuiz("Toutes")}
-              className="inline-flex items-center justify-center gap-2 bg-gray-100 text-gray-700 px-6 py-3 rounded-full font-semibold hover:bg-gray-200 transition-colors"
-            >
-              Toutes les cat\u00e9gories
-            </button>
           </div>
         </div>
       </div>
@@ -229,196 +245,212 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
 
   if (!currentQuestion) {
     return (
-      <div className="max-w-3xl mx-auto px-4 py-20 text-center">
-        <p className="text-gray-500">Aucune question disponible.</p>
+      <div className="min-h-screen bg-bg flex items-center justify-center">
+        <p className="text-text-muted">Aucune question disponible.</p>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-10 sm:py-16">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <span className="text-[#cf5c36] text-sm font-semibold uppercase tracking-wide">
-          Quiz Code de la Route
-        </span>
-        <h1 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 mt-2">
-          Testez vos connaissances
-        </h1>
-      </div>
-
-      {/* Filtres categories */}
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => startQuiz(cat)}
-            className={`text-xs px-3 py-1.5 rounded-full font-medium transition-colors ${
-              category === cat
-                ? "bg-[#cf5c36] text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Progress */}
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm text-gray-500">
-          Question {currentIndex + 1}/{questions.length}
-        </span>
-        <span className="text-sm font-semibold text-[#cf5c36]">
-          Score : {score}/{currentIndex + (isAnswered ? 1 : 0)}
-        </span>
-      </div>
-      <div className="w-full bg-gray-100 rounded-full h-2 mb-8">
-        <div
-          className="bg-[#cf5c36] h-2 rounded-full transition-all duration-300"
-          style={{
-            width: `${((currentIndex + (isAnswered ? 1 : 0)) / questions.length) * 100}%`,
-          }}
-        />
-      </div>
-
-      {/* Question */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 mb-6">
-        <div className="flex items-start gap-3 mb-1">
-          <span className="inline-block bg-[#fcedea] text-[#cf5c36] text-xs font-semibold px-2.5 py-1 rounded-full">
-            {currentQuestion.category}
+    <div className="min-h-screen bg-bg">
+      {/* Bold hero header with grain overlay */}
+      <div className="bg-secondary relative overflow-hidden grain">
+        <div className="absolute top-6 right-10 w-20 h-20 border-2 border-white/10 rounded-full" />
+        <div className="absolute bottom-2 left-12 w-12 h-12 bg-primary/20 rounded-full" />
+        <div className="absolute top-1/2 right-1/4 w-6 h-6 bg-amber/15 rounded-full" />
+        <div className="max-w-3xl mx-auto px-4 py-8 sm:py-10 text-center relative z-10">
+          <span className="inline-block text-primary text-sm font-semibold uppercase tracking-wider mb-2">
+            Quiz Code de la Route
           </span>
-          <span
-            className={`inline-block text-xs font-semibold px-2.5 py-1 rounded-full ${
-              currentQuestion.difficulty === "facile"
-                ? "bg-green-50 text-green-600"
-                : currentQuestion.difficulty === "difficile"
-                  ? "bg-red-50 text-red-600"
-                  : "bg-yellow-50 text-yellow-600"
-            }`}
-          >
-            {currentQuestion.difficulty}
-          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-white">
+            Testez vos connaissances
+          </h1>
         </div>
+      </div>
 
-        <h2 className="text-lg font-semibold text-gray-900 mt-4 mb-6">
-          {currentQuestion.question}
-        </h2>
-
-        {/* Reponses */}
-        <div className="space-y-3">
-          {currentQuestion.answers.map((answer) => {
-            const isCorrect = answer.label === currentQuestion.correct_answer;
-            const isSelected = answer.label === selectedAnswer;
-            let btnClass =
-              "w-full text-left p-4 rounded-xl border-2 transition-all duration-200 ";
-
-            if (!isAnswered) {
-              btnClass +=
-                "border-gray-100 hover:border-[#cf5c36] hover:bg-[#fcedea] cursor-pointer";
-            } else if (isCorrect) {
-              btnClass += "border-green-500 bg-green-50";
-            } else if (isSelected && !isCorrect) {
-              btnClass += "border-red-500 bg-red-50";
-            } else {
-              btnClass += "border-gray-100 opacity-50";
-            }
-
-            return (
+      <div className="max-w-3xl mx-auto px-4 py-8 sm:py-10">
+        {/* Category filter pills - horizontal scroll */}
+        <div className="mb-8 -mx-4 px-4 overflow-x-auto">
+          <div className="flex gap-2 min-w-max pb-2">
+            {CATEGORIES.map((cat) => (
               <button
-                key={answer.label}
-                onClick={() => handleAnswer(answer.label)}
-                disabled={isAnswered}
-                className={btnClass}
+                key={cat}
+                onClick={() => startQuiz(cat)}
+                className={`text-xs px-4 py-2 rounded-full font-medium transition-all whitespace-nowrap ${
+                  category === cat
+                    ? "bg-primary text-white shadow-sm"
+                    : "bg-surface text-text-muted border border-border hover:border-primary hover:text-primary"
+                }`}
               >
-                <div className="flex items-center gap-3">
-                  <span
-                    className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 ${
-                      isAnswered && isCorrect
-                        ? "bg-green-500 text-white"
-                        : isAnswered && isSelected && !isCorrect
-                          ? "bg-red-500 text-white"
-                          : "bg-gray-100 text-gray-600"
-                    }`}
-                  >
-                    {isAnswered && isCorrect ? (
-                      <CheckCircle className="w-5 h-5" />
-                    ) : isAnswered && isSelected && !isCorrect ? (
-                      <XCircle className="w-5 h-5" />
-                    ) : (
-                      answer.label
-                    )}
-                  </span>
-                  <span className="text-sm text-gray-800">{answer.text}</span>
-                </div>
+                {cat}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
 
-        {/* Explication apres reponse */}
-        {isAnswered && (
-          <div className="mt-6 space-y-4">
-            {/* Explication de base */}
-            <div
-              className={`p-4 rounded-xl ${selectedAnswer === currentQuestion.correct_answer ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}
+        {/* Progress bar */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm text-text-muted">
+            Question {currentIndex + 1}/{questions.length}
+          </span>
+          <span className="text-sm font-semibold text-primary">
+            Score : {score}/{currentIndex + (isAnswered ? 1 : 0)}
+          </span>
+        </div>
+        <div className="w-full bg-surface-alt rounded-full h-2.5 mb-8">
+          <div
+            className="bg-primary h-2.5 rounded-full transition-all duration-500 ease-out"
+            style={{
+              width: `${((currentIndex + (isAnswered ? 1 : 0)) / questions.length) * 100}%`,
+            }}
+          />
+        </div>
+
+        {/* Question card */}
+        <div className="bg-surface rounded-2xl shadow-sm border border-border p-6 sm:p-8 mb-6 animate-fade-up">
+          <div className="flex items-start gap-2 mb-1 flex-wrap">
+            <span className="inline-block bg-primary-light text-primary text-xs font-semibold px-3 py-1.5 rounded-full">
+              {currentQuestion.category}
+            </span>
+            <span
+              className={`inline-block text-xs font-semibold px-3 py-1.5 rounded-full ${
+                currentQuestion.difficulty === "facile"
+                  ? "bg-green-50 text-green-600"
+                  : currentQuestion.difficulty === "difficile"
+                    ? "bg-red-50 text-red-600"
+                    : "bg-amber-light text-amber"
+              }`}
             >
-              <div className="flex items-center gap-2 mb-2">
-                <BookOpen className="w-4 h-4 text-gray-600" />
-                <span className="text-sm font-semibold text-gray-700">
-                  Explication
-                </span>
-              </div>
-              <p className="text-sm text-gray-600">
-                {currentQuestion.explanation}
-              </p>
-            </div>
+              {currentQuestion.difficulty}
+            </span>
+          </div>
 
-            {/* Bouton IA */}
-            {!aiExplanation && (
-              <button
-                onClick={askAI}
-                disabled={aiLoading}
-                className="inline-flex items-center gap-2 text-sm font-medium text-[#cf5c36] hover:text-[#b8502f] transition-colors"
+          {/* Question number + text */}
+          <div className="flex items-start gap-4 mt-5 mb-8">
+            <span className="flex-shrink-0 w-10 h-10 bg-secondary text-white rounded-xl flex items-center justify-center font-serif font-bold text-sm">
+              {currentIndex + 1}
+            </span>
+            <h2 className="text-lg font-semibold text-text leading-relaxed pt-1.5">
+              {currentQuestion.question}
+            </h2>
+          </div>
+
+          {/* Answer buttons - large clickable areas */}
+          <div className="space-y-3">
+            {currentQuestion.answers.map((answer) => {
+              const isCorrect = answer.label === currentQuestion.correct_answer;
+              const isSelected = answer.label === selectedAnswer;
+              let btnClass =
+                "w-full text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 ";
+
+              if (!isAnswered) {
+                btnClass +=
+                  "border-border hover:border-primary hover:bg-primary-light cursor-pointer";
+              } else if (isCorrect) {
+                btnClass += "border-green-500 bg-green-50";
+              } else if (isSelected && !isCorrect) {
+                btnClass += "border-red-500 bg-red-50";
+              } else {
+                btnClass += "border-border opacity-50";
+              }
+
+              return (
+                <button
+                  key={answer.label}
+                  onClick={() => handleAnswer(answer.label)}
+                  disabled={isAnswered}
+                  className={btnClass}
+                >
+                  <div className="flex items-center gap-4">
+                    <span
+                      className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0 transition-colors ${
+                        isAnswered && isCorrect
+                          ? "bg-green-500 text-white"
+                          : isAnswered && isSelected && !isCorrect
+                            ? "bg-red-500 text-white"
+                            : "bg-surface-alt text-text-muted"
+                      }`}
+                    >
+                      {isAnswered && isCorrect ? (
+                        <CheckCircle className="w-5 h-5" />
+                      ) : isAnswered && isSelected && !isCorrect ? (
+                        <XCircle className="w-5 h-5" />
+                      ) : (
+                        answer.label
+                      )}
+                    </span>
+                    <span className="text-sm text-text">{answer.text}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Post-answer section */}
+          {isAnswered && (
+            <div className="mt-8 space-y-4 animate-fade-up">
+              {/* Base explanation */}
+              <div
+                className={`p-5 rounded-xl ${selectedAnswer === currentQuestion.correct_answer ? "bg-green-50 border border-green-200" : "bg-red-50 border border-red-200"}`}
               >
-                {aiLoading ? (
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                ) : (
-                  <Brain className="w-4 h-4" />
-                )}
-                {aiLoading
-                  ? "L'IA r\u00e9fl\u00e9chit..."
-                  : "Demander une explication d\u00e9taill\u00e9e \u00e0 l'IA"}
-              </button>
-            )}
-
-            {/* Explication IA */}
-            {aiExplanation && (
-              <div className="p-4 rounded-xl bg-blue-50 border border-blue-200">
                 <div className="flex items-center gap-2 mb-2">
-                  <Brain className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm font-semibold text-blue-700">
-                    Explication du moniteur IA
+                  <BookOpen className="w-4 h-4 text-text-muted" />
+                  <span className="text-sm font-semibold text-text">
+                    Explication
                   </span>
                 </div>
-                <p className="text-sm text-gray-700 whitespace-pre-line">
-                  {aiExplanation}
+                <p className="text-sm text-text-muted leading-relaxed">
+                  {currentQuestion.explanation}
                 </p>
               </div>
-            )}
 
-            {/* Bouton suivant */}
-            <button
-              onClick={handleNext}
-              className="inline-flex items-center gap-2 bg-[#cf5c36] text-white px-6 py-3 rounded-full font-semibold hover:bg-[#b8502f] transition-colors"
-            >
-              {currentIndex + 1 >= questions.length
-                ? "Voir le r\u00e9sultat"
-                : "Question suivante"}
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+              {/* AI button */}
+              {!aiExplanation && (
+                <button
+                  onClick={askAI}
+                  disabled={aiLoading}
+                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
+                >
+                  {aiLoading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Brain className="w-4 h-4" />
+                  )}
+                  {aiLoading
+                    ? "L'IA r\u00e9fl\u00e9chit..."
+                    : "Demander une explication d\u00e9taill\u00e9e \u00e0 l'IA"}
+                </button>
+              )}
+
+              {/* AI explanation callout card */}
+              {aiExplanation && (
+                <div className="p-5 rounded-xl bg-secondary/5 border border-secondary/20 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-secondary" />
+                  <div className="flex items-center gap-2 mb-3 pl-3">
+                    <Brain className="w-4 h-4 text-secondary" />
+                    <span className="text-sm font-semibold text-secondary">
+                      Explication du moniteur IA
+                    </span>
+                  </div>
+                  <p className="text-sm text-text whitespace-pre-line leading-relaxed pl-3">
+                    {aiExplanation}
+                  </p>
+                </div>
+              )}
+
+              {/* Next button */}
+              <button
+                onClick={handleNext}
+                className="inline-flex items-center gap-2 bg-primary text-white px-8 py-3.5 rounded-xl font-semibold hover:bg-primary-dark transition-colors"
+              >
+                {currentIndex + 1 >= questions.length
+                  ? "Voir le r\u00e9sultat"
+                  : "Question suivante"}
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

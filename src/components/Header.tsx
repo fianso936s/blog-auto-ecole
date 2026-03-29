@@ -1,13 +1,34 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { BookOpen, Menu, X, LogOut, LayoutDashboard, User } from "lucide-react";
-import { useState } from "react";
+import { Car, Menu, X, LogOut, LayoutDashboard, User, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   const handleLogout = async () => {
     setMenuOpen(false);
@@ -28,160 +49,206 @@ export default function Header() {
   const isActive = (href: string) => location.pathname === href;
 
   return (
-    <header className="bg-[#fcfaf8] border-b border-gray-100 sticky top-0 z-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between h-16 sm:h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 bg-[#cf5c36] rounded-lg flex items-center justify-center">
-              <BookOpen className="w-5 h-5 text-white" />
-            </div>
-            <span className="font-serif font-bold text-gray-900 text-lg">
-              Auto-<span className="text-[#cf5c36]">Blog</span>
-            </span>
-          </Link>
+    <>
+      <header
+        className={`sticky top-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-surface/95 backdrop-blur-md shadow-[0_1px_3px_rgba(0,0,0,0.05)] border-b border-border"
+            : "bg-transparent border-b border-transparent"
+        }`}
+      >
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2.5 group">
+              <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+                <Car className="w-5 h-5 text-white" />
+              </div>
+              <span className="font-serif font-extrabold text-secondary text-xl tracking-tight">
+                Auto-<span className="text-primary">Blog</span>
+              </span>
+            </Link>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={`text-sm font-medium transition-colors duration-200 ${
-                  isActive(link.href)
-                    ? "text-[#cf5c36]"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center gap-3">
-            {user ? (
-              <>
-                <Link
-                  to={dashboardPath}
-                  className="bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#b8502f] transition-colors duration-200 inline-flex items-center gap-2"
-                >
-                  <LayoutDashboard className="w-4 h-4" />
-                  Mon espace
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="bg-gray-100 text-gray-700 text-sm font-semibold px-4 py-2.5 rounded-full hover:bg-gray-200 transition-colors duration-200 inline-flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  D&eacute;connexion
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="bg-gray-100 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-200 transition-colors duration-200"
-                >
-                  Connexion
-                </Link>
-                <Link
-                  to="/inscription"
-                  className="bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-[#b8502f] transition-colors duration-200"
-                >
-                  S'inscrire
-                </Link>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="md:hidden p-2 text-gray-600 hover:text-gray-900"
-            aria-label="Menu"
-          >
-            {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
-        </div>
-
-        {/* Mobile Navigation */}
-        {menuOpen && (
-          <nav className="md:hidden pb-4 border-t border-gray-100 pt-4">
-            <div className="flex flex-col gap-1">
+            {/* Desktop Navigation */}
+            <nav className="hidden lg:flex items-center gap-1">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   to={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={`text-sm font-medium px-3 py-2.5 rounded-lg ${
+                  className={`relative text-sm font-medium px-3 py-2 rounded-lg transition-colors duration-200 ${
                     isActive(link.href)
-                      ? "text-[#cf5c36] bg-[#fcedea]"
-                      : "text-gray-600 hover:bg-gray-50"
+                      ? "text-primary"
+                      : "text-text-muted hover:text-text link-underline"
                   }`}
                 >
                   {link.label}
                 </Link>
               ))}
+            </nav>
 
-              <div className="border-t border-gray-100 pt-3 mt-2">
-                {user ? (
-                  <div className="flex flex-col gap-2">
-                    {/* Info utilisateur */}
-                    <div className="flex items-center gap-3 px-3 py-2 mb-1">
-                      <div className="w-9 h-9 bg-[#fcedea] rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 text-[#cf5c36]" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-semibold text-gray-900 truncate">
-                          {user.full_name || "Utilisateur"}
-                        </p>
-                        <p className="text-xs text-gray-400 truncate">{user.email}</p>
-                      </div>
-                    </div>
-
-                    {/* Bouton Mon espace */}
-                    <Link
-                      to={dashboardPath}
-                      onClick={() => setMenuOpen(false)}
-                      className="flex items-center justify-center gap-2 bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full"
-                    >
-                      <LayoutDashboard className="w-4 h-4" />
-                      Mon espace
-                    </Link>
-
-                    {/* Bouton Déconnexion */}
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-gray-200 transition-colors"
-                    >
-                      <LogOut className="w-4 h-4" />
-                      D&eacute;connexion
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    <Link
-                      to="/login"
-                      onClick={() => setMenuOpen(false)}
-                      className="block text-center bg-gray-100 text-gray-700 text-sm font-semibold px-5 py-2.5 rounded-full"
-                    >
-                      Connexion
-                    </Link>
-                    <Link
-                      to="/inscription"
-                      onClick={() => setMenuOpen(false)}
-                      className="block text-center bg-[#cf5c36] text-white text-sm font-semibold px-5 py-2.5 rounded-full"
-                    >
-                      S'inscrire
-                    </Link>
-                  </div>
-                )}
-              </div>
+            {/* Desktop Actions */}
+            <div className="hidden lg:flex items-center gap-3">
+              {user ? (
+                <>
+                  <Link
+                    to={dashboardPath}
+                    className="bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary-dark transition-all duration-200 hover:scale-[1.03] inline-flex items-center gap-2 shadow-sm"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Mon espace
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="bg-surface-alt text-text-muted text-sm font-semibold px-4 py-2.5 rounded-full hover:bg-border transition-colors duration-200 inline-flex items-center gap-2"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    D&eacute;connexion
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-text-muted text-sm font-semibold px-4 py-2.5 rounded-full hover:text-text transition-colors duration-200"
+                  >
+                    Connexion
+                  </Link>
+                  <Link
+                    to="/inscription"
+                    className="bg-primary text-white text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-primary-dark transition-all duration-200 hover:scale-[1.03] shadow-sm"
+                  >
+                    S'inscrire
+                  </Link>
+                </>
+              )}
             </div>
-          </nav>
-        )}
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden p-2 text-text-muted hover:text-text rounded-lg transition-colors duration-200"
+              aria-label="Menu"
+            >
+              {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Drawer Overlay */}
+      <div
+        className={`fixed inset-0 z-[60] transition-opacity duration-300 lg:hidden ${
+          menuOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-secondary/40 backdrop-blur-sm"
+          onClick={() => setMenuOpen(false)}
+        />
+
+        {/* Drawer Panel */}
+        <div
+          className={`absolute top-0 right-0 h-full w-[85%] max-w-sm bg-surface shadow-2xl transition-transform duration-300 ease-out ${
+            menuOpen ? "translate-x-0" : "translate-x-full"
+          }`}
+        >
+          {/* Drawer Header */}
+          <div className="flex items-center justify-between px-6 h-16 border-b border-border">
+            <span className="font-serif font-extrabold text-secondary text-lg tracking-tight">
+              Auto-<span className="text-primary">Blog</span>
+            </span>
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="p-2 text-text-muted hover:text-text rounded-lg transition-colors"
+              aria-label="Fermer le menu"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          {/* Drawer Content */}
+          <div className="flex flex-col h-[calc(100%-4rem)] overflow-y-auto">
+            {/* Navigation Links */}
+            <nav className="px-4 py-6 space-y-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  onClick={() => setMenuOpen(false)}
+                  className={`flex items-center justify-between text-sm font-medium px-4 py-3 rounded-xl transition-all duration-200 ${
+                    isActive(link.href)
+                      ? "text-primary bg-primary-light"
+                      : "text-text hover:bg-surface-alt"
+                  }`}
+                >
+                  {link.label}
+                  <ChevronRight className={`w-4 h-4 ${isActive(link.href) ? "text-primary" : "text-text-muted/40"}`} />
+                </Link>
+              ))}
+            </nav>
+
+            {/* Divider */}
+            <div className="mx-6 border-t border-border" />
+
+            {/* User Section */}
+            <div className="px-4 py-6 mt-auto">
+              {user ? (
+                <div className="space-y-3">
+                  {/* User Info */}
+                  <div className="flex items-center gap-3 px-4 py-3 bg-surface-alt rounded-xl">
+                    <div className="w-10 h-10 bg-primary-light rounded-full flex items-center justify-center flex-shrink-0">
+                      <User className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-text truncate">
+                        {user.full_name || "Utilisateur"}
+                      </p>
+                      <p className="text-xs text-text-muted truncate">{user.email}</p>
+                    </div>
+                  </div>
+
+                  <Link
+                    to={dashboardPath}
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center justify-center gap-2 bg-primary text-white text-sm font-semibold w-full py-3 rounded-full hover:bg-primary-dark transition-colors"
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    Mon espace
+                  </Link>
+
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center justify-center gap-2 bg-surface-alt text-text-muted text-sm font-semibold w-full py-3 rounded-full hover:bg-border transition-colors"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    D&eacute;connexion
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <Link
+                    to="/inscription"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center justify-center bg-primary text-white text-sm font-semibold w-full py-3 rounded-full hover:bg-primary-dark transition-colors"
+                  >
+                    S'inscrire
+                  </Link>
+                  <Link
+                    to="/login"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center justify-center bg-surface-alt text-text text-sm font-semibold w-full py-3 rounded-full hover:bg-border transition-colors"
+                  >
+                    Connexion
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
-    </header>
+    </>
   );
 }

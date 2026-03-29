@@ -9,10 +9,10 @@ export default function CategoryBadge({ category, active = false }: CategoryBadg
   return (
     <Link
       to={`/articles?cat=${encodeURIComponent(category.toLowerCase().replace(/\s+/g, "-"))}`}
-      className={`inline-block text-sm font-semibold px-4 py-2 rounded-full transition-colors duration-200 ${
+      className={`inline-block text-sm font-semibold font-sans px-5 py-2 rounded-full transition-all duration-300 ease-in-out ${
         active
-          ? "bg-[#cf5c36] text-white"
-          : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+          ? "bg-primary text-white scale-105 shadow-sm"
+          : "bg-surface-alt text-text-muted hover:bg-primary-light hover:text-primary-dark"
       }`}
     >
       {category}
