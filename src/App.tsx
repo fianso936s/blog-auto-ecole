@@ -9,6 +9,7 @@ import ArticleDetailPage from "./pages/public/ArticleDetailPage";
 import LoginPage from "./pages/public/LoginPage";
 import QuizPage from "./pages/public/QuizPage";
 import RegisterPage from "./pages/public/RegisterPage";
+import ResetPasswordPage from "./pages/public/ResetPasswordPage";
 import DashboardPage from "./pages/admin/DashboardPage";
 import ArticlesAdminPage from "./pages/admin/ArticlesAdminPage";
 import ArticleEditorPage from "./pages/admin/ArticleEditorPage";
@@ -31,6 +32,7 @@ export default function App() {
       {/* Auth pages (sans layout) */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/inscription" element={<RegisterPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* Pages élève protégées */}
       <Route

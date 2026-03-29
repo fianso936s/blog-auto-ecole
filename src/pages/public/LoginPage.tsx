@@ -37,13 +37,18 @@ export default function LoginPage() {
     setLoading(false);
   };
 
+  const [resetError, setResetError] = useState("");
+
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setResetLoading(true);
+    setResetError("");
     const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
-      redirectTo: `${window.location.origin}/login`,
+      redirectTo: `${window.location.origin}/reset-password`,
     });
-    if (!error) {
+    if (error) {
+      setResetError("Une erreur est survenue. Veuillez réessayer.");
+    } else {
       setResetSent(true);
     }
     setResetLoading(false);
@@ -72,6 +77,11 @@ export default function LoginPage() {
           </div>
 
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            {resetError && (
+              <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-lg mb-4">
+                {resetError}
+              </div>
+            )}
             {resetSent ? (
               <div className="text-center py-4">
                 <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
