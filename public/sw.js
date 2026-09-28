@@ -1,14 +1,15 @@
-const CACHE_NAME = 'auto-blog-v1';
-const STATIC_ASSETS = ['/', '/index.html'];
+const CACHE_NAME = "webedrive-migration-v1";
 
-self.addEventListener('install', (event) => {
+self.addEventListener("install", () => self.skipWaiting());
+
+self.addEventListener("activate", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    caches.keys()
+      .then((keys) => Promise.all(keys.map((key) => caches.delete(key))))
+      .then(() => self.clients.claim())
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
-  );
+self.addEventListener("fetch", (event) => {
+  event.respondWith(fetch(event.request));
 });
