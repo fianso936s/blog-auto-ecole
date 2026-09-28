@@ -21,3 +21,24 @@ Base: main at 54d725e00f4b25348973bd2c01cdedfd4ce594fb. Existing project: fianso
 The Vercel connector returned no authorized teams and denied the project URL. Use the existing Git integration and its GitHub commit status to observe build/deploy results; do not claim a live visual check or bypass protections. Direct production rendering and the exact production alias revision remain to be verified when authorized access is available.
 
 Next: verify the fully built site on mobile/desktop including blog, theme toggle, menu and all anchors, then refine spacing/micro-interactions on this same design rather than restarting from scratch. Keep approved prices in src/lib/offers.ts unchanged. Do not create another project or reinstate removed CI workflows.
+
+## 2026-09-28 — UX refinement pass 2
+
+Base: main at 4ee95a69c286ba24553f1122cdb2cd657853577d. Candidate: ed81cfd433def164839cb18ac1b2b1e6a82f2be8 on design/ux-clarity-pass-2.
+
+### Implemented
+- Added a separate additive refinement layer after brand.css/editorial.css, keeping the established direction instead of rebuilding the page.
+- Refined the header navigation states, hero scale and automotive visual framing, plus clearer section numbering for offers and method.
+- Added more deliberate offer-card, budget, progress-rail and FAQ interaction states while preserving all existing content and business rules.
+- Upgraded the blog with sticky sub-navigation, stronger editorial hero scale and restrained article-card image/accent interactions.
+- Fixed the smallest mobile budget layout by forcing calculator fields to a single column at 460 px and below; the 13 h/20 h selector remains a two-column touch target.
+- No pricing, routes, authentication, Supabase/data access, dependencies, paid assets, analytics, infrastructure or GitHub Actions workflows changed.
+
+### Verification
+- Git compare before merge: candidate is exactly one commit ahead of main and zero commits behind; only src/index.css and three new refinement stylesheets changed.
+- All three new stylesheet imports resolve on the candidate branch.
+- GitHub reports Vercel status success for candidate ed81cfd433def164839cb18ac1b2b1e6a82f2be8. The repository build command remains npm test + build-info + tsc + vite build, so the successful deployment status validates that pipeline for this candidate.
+- Direct live visual inspection is still unavailable: the Vercel connector denies this project/team and the public deployment cannot be fetched with the available web tool. Do not infer pixel-perfect rendering from the deployment status alone.
+
+### Next priority
+After production promotion is confirmed, inspect the real production rendering on desktop/mobile when project access becomes available. Only then tune spacing or visual motion from observed evidence; keep prices in src/lib/offers.ts and the existing site/project structure unchanged.
