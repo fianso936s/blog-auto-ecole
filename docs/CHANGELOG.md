@@ -17,3 +17,8 @@ Ajout d’un estimateur de budget local sur l’accueil : heures complémentaire
 
 ## WEBEDRIVE unified-3 — 28 septembre 2026
 Migration navigateur rendue non destructive : retrait ciblé des anciens service workers WEBEDRIVE et suppression limitée aux caches appartenant au projet. Ajout d’un `robots.txt` globalement bloquant tant que le site reste un prototype non validé. Contrats de régression associés ajoutés.
+
+## Reprise unified-3 — 28 septembre 2026
+Le commit 17b7496 n’était pas livré : Vercel failure et erreur syntaxique du test reproduite localement (`quality.test.mjs:140`, parenthèse manquante). Correction sans retirer aucun contrôle. Huit tests comportementaux isolés sont ajoutés et passent après correction de la gestion des refus de stockage. La politique prototype est rectifiée : directive HTTP globale `X-Robots-Tag: noindex, nofollow`, avec exploration autorisée pour que les robots lisent cette directive, et non simple `Disallow: /`.
+
+Preuves, couverture, critères et limites : [audit de reprise](audits/2026-09-28-runtime-retry.md). Le statut de publication doit être lu dans la PR et les statuts du commit ; ce journal ne déclare pas par anticipation une fusion ou une recette navigateur réussie.

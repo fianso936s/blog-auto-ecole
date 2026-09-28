@@ -1,2 +1,4 @@
+# Prototype: allow crawling so X-Robots-Tag: noindex can be read.
+# Keep the response header until launch is explicitly validated.
 User-agent: *
-Disallow: /
+Allow: /

@@ -24,22 +24,26 @@ function isWebedriveServiceWorker(registration: ServiceWorkerRegistration): bool
 // WEBEDRIVE migration: retire only the service worker and caches owned by this site.
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", async () => {
-    const registrations = await navigator.serviceWorker.getRegistrations();
-    await Promise.all(
-      registrations
-        .filter(isWebedriveServiceWorker)
-        .map((registration) => registration.unregister())
-    );
-
-    if ("caches" in window) {
-      const keys = await caches.keys();
-      await Promise.all(
-        keys
-          .filter((key) => LEGACY_CACHE_PREFIXES.some((prefix) => key.startsWith(prefix)))
-          .map((key) => caches.delete(key))
+    try {
+      const registrations = await navigator.serviceWorker.getRegistrations();
+      await Promise.allSettled(
+        registrations
+          .filter(isWebedriveServiceWorker)
+          .map((registration) => registration.unregister())
       );
+
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.allSettled(
+          keys
+            .filter((key) => LEGACY_CACHE_PREFIXES.some((prefix) => key.startsWith(prefix)))
+            .map((key) => caches.delete(key))
+        );
+      }
+    } catch {
+      // Browser storage can be denied. Migration is best-effort, never a page failure.
     }
-  });
+  }, { once: true });
 }
 
 createRoot(document.getElementById("root")!).render(
