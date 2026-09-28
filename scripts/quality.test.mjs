@@ -127,3 +127,22 @@ test('Blog fallback content is visibly identified as demonstration material', ()
     assert.ok(home.includes(marker), marker);
   }
 });
+
+
+test('Public quiz uses the shared shuffle helper and accessible fallback states', () => {
+  const quiz = read('src/pages/public/QuizPage.tsx');
+  assert.ok(quiz.includes('shuffleCopy(filtered)'));
+  assert.ok(!quiz.includes('sort(() => Math.random()'));
+  assert.ok((quiz.match(/noIndex/g) || []).length >= 4);
+  assert.ok(quiz.includes('role={loadError ? "alert" : undefined}'));
+  assert.ok(quiz.includes('Revenir à toutes les catégories'));
+  assert.ok(quiz.includes('Explication enregistrée dans le contenu pédagogique du quiz.'));
+});
+
+test('shuffleCopy is deterministic with an injected source and does not mutate input', () => {
+  const helper = load('src/lib/quiz.ts');
+  const source = [1, 2, 3];
+  const shuffled = helper.shuffleCopy(source, () => 0);
+  assert.deepEqual(source, [1, 2, 3]);
+  assert.deepEqual(Array.from(shuffled), [2, 3, 1]);
+});
