@@ -8,7 +8,7 @@ export default function ArticleCard({ article, featured = false }: { article: Ar
   const formattedDate = Number.isNaN(date.getTime()) ? null : date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
   const readTime = Math.max(1, Math.ceil((article.content || "").replace(/<[^>]*>/g, " ").trim().split(/\s+/).length / 200));
   return <article className={`article-card hover-lift ${featured ? "featured" : ""}`}>
-    <Link to={articlePath(article.slug)}>
+    <Link to={articlePath(article.slug)} style={featured && !showImage ? { gridTemplateColumns: "1fr" } : undefined}>
       {showImage && <img src={article.cover_image} alt="" width="800" height="500" loading="lazy" decoding="async" />}
       <div className="article-card-content">
         <span className="article-card-category">{article.category}</span>
