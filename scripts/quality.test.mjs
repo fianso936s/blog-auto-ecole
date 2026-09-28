@@ -4,6 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import vm from 'node:vm';
 import ts from 'typescript';
+import './migration.test.mjs';
 const read = path => readFileSync(path, 'utf8');
 const load = path => {
   const code = ts.transpileModule(read(path), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2020 } }).outputText;
@@ -145,4 +146,29 @@ test('shuffleCopy is deterministic with an injected source and does not mutate i
   const shuffled = helper.shuffleCopy(source, () => 0);
   assert.deepEqual(source, [1, 2, 3]);
   assert.deepEqual(Array.from(shuffled), [2, 3, 1]);
+});
+
+
+test('Legacy service-worker cleanup is scoped to WEBEDRIVE-owned resources', () => {
+  const main = read('src/main.tsx');
+  const sw = read('public/sw.js');
+  for (const marker of ['LEGACY_SERVICE_WORKER_PATHS', 'LEGACY_CACHE_PREFIXES', '.filter(isWebedriveServiceWorker)', 'key.startsWith(prefix)']) {
+    assert.ok(main.includes(marker), marker);
+  }
+  assert.ok(sw.includes('OWNED_CACHE_PREFIXES'));
+  assert.ok(sw.includes('.filter((key) => OWNED_CACHE_PREFIXES.some'));
+  assert.ok(!sw.includes('Promise.all(keys.map((key) => caches.delete(key)))'));
+});
+
+test('Prototype noindex is delivered for every route without blocking crawler access to the directive', () => {
+  const config = JSON.parse(read('vercel.json'));
+  const rule = config.headers.find(item => item.source === '/(.*)');
+  assert.ok(rule, 'site-wide response header');
+  const robotsHeader = rule.headers.find(item => item.key.toLowerCase() === 'x-robots-tag');
+  assert.match(robotsHeader?.value ?? '', /\bnoindex\b/);
+  assert.match(robotsHeader?.value ?? '', /\bnofollow\b/);
+  const robots = read('public/robots.txt');
+  assert.match(robots, /^User-agent:\s*\*\s*$/m);
+  assert.match(robots, /^Allow:\s*\/\s*$/m);
+  assert.doesNotMatch(robots, /^Disallow:\s*\//m);
 });
