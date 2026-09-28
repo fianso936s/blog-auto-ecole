@@ -4,6 +4,7 @@ import AdminLayout from "./layouts/AdminLayout";
 import StudentLayout from "./layouts/StudentLayout";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/public/HomePage";
+import WebedriveLanding from "./pages/WebedriveLanding";
 import ArticlesPage from "./pages/public/ArticlesPage";
 import ArticleDetailPage from "./pages/public/ArticleDetailPage";
 import LoginPage from "./pages/public/LoginPage";
@@ -23,7 +24,7 @@ export default function App() {
   return (
     <Routes>
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<WebedriveLanding />} />
         <Route path="/blog" element={<HomePage />} />
         <Route path="/blog/articles" element={<ArticlesPage />} />
         <Route path="/blog/articles/:slug" element={<ArticleDetailPage />} />
