@@ -1,23 +1,15 @@
-import { Outlet, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Outlet, NavLink } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import RouteEffects from "../components/RouteEffects";
 
 export default function PublicLayout() {
-  const location = useLocation();
-
-  // Scroll to top on route change for a smooth page transition feel
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [location.pathname]);
-
-  return (
-    <div className="min-h-screen flex flex-col bg-bg">
-      <Header />
-      <main className="flex-1 animate-fade-in">
-        <Outlet />
-      </main>
-      <Footer />
-    </div>
-  );
+  return <div className="site-shell">
+    <RouteEffects /><Header />
+    <nav className="site-blog-nav" aria-label="Rubriques du blog">
+      <span>Le journal</span><NavLink to="/blog" end>À la une</NavLink><NavLink to="/blog/articles">Tous les articles</NavLink><NavLink to="/blog/quiz">Quiz code</NavLink>
+    </nav>
+    <main id="site-content" tabIndex={-1} className="site-content"><Outlet /></main>
+    <Footer />
+  </div>;
 }
