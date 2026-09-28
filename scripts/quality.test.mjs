@@ -127,3 +127,21 @@ test('Blog fallback content is visibly identified as demonstration material', ()
     assert.ok(home.includes(marker), marker);
   }
 });
+
+
+test('Legacy service-worker cleanup is scoped to WEBEDRIVE-owned resources', () => {
+  const main = read('src/main.tsx');
+  const sw = read('public/sw.js');
+  for (const marker of ['LEGACY_SERVICE_WORKER_PATHS', 'LEGACY_CACHE_PREFIXES', '.filter(isWebedriveServiceWorker)', 'key.startsWith(prefix)']) {
+    assert.ok(main.includes(marker), marker);
+  }
+  assert.ok(sw.includes('OWNED_CACHE_PREFIXES'));
+  assert.ok(sw.includes('.filter((key) => OWNED_CACHE_PREFIXES.some'));
+  assert.ok(!sw.includes('Promise.all(keys.map((key) => caches.delete(key)))');
+});
+
+test('Prototype publishes crawler-wide noindex policy', () => {
+  const robots = read('public/robots.txt');
+  assert.match(robots, /User-agent:\s*\*/);
+  assert.match(robots, /Disallow:\s*\//);
+});

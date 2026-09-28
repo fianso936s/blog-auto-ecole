@@ -46,3 +46,13 @@ Un workflow GitHub Actions a été créé sur la branche de travail. Son premier
 
 ### Recette visée
 Les contrats Node couvrent le modèle de calcul et le marquage du fallback. Le build Vercel de la branche doit valider ces contrats, TypeScript et Vite avant toute fusion. La visite navigateur live reste non revendiquée tant que l’accès HTTP Vercel est refusé au connecteur.
+
+
+## Passe migration cache / indexation — 28 septembre 2026
+- **Non-régression stockage navigateur — `src/main.tsx`** : le nettoyage de migration ne désinscrit plus tous les service workers du même origin. Il cible uniquement les chemins historiques WEBEDRIVE (`/sw.js`, `/service-worker.js`) et ne supprime que les caches portant les préfixes du projet.
+- **Service worker de migration — `public/sw.js`** : l’activation ne vide plus tous les caches disponibles ; seuls les caches `auto-blog-` et `webedrive-migration-` sont concernés.
+- **Prototype / SEO — `public/robots.txt`** : ajout d’un blocage crawler global cohérent avec le statut non validé du site. Cette mesure complète les métadonnées `noindex` mais ne constitue pas une garantie de désindexation d’URL déjà connues.
+- **Recette source** : contrats ajoutés pour empêcher le retour d’un nettoyage global du stockage et pour conserver la politique robots du prototype.
+
+### Limite
+Aucun navigateur réel n’a été utilisé pour créer des registrations/caches factices sur le déploiement de production. Le contrôle reste source/build jusqu’à disponibilité d’un environnement navigateur isolé.

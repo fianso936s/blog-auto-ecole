@@ -13,3 +13,7 @@ Manrope est référencé via Google Fonts, aucun fichier de police n’est embar
 
 ## WEBEDRIVE unified-2 — 28 septembre 2026
 Ajout d’un estimateur de budget local sur l’accueil : heures complémentaires et tentatives de code mettent à jour les totaux Classique/Accélérée à partir des tarifs approuvés, sans collecte ni réservation. Le blog identifie maintenant explicitement les articles de démonstration lorsque la base de contenu réel n’a rien fourni. Styles responsive partagés et contrats de régression ajoutés.
+
+
+## WEBEDRIVE unified-3 — 28 septembre 2026
+Migration navigateur rendue non destructive : retrait ciblé des anciens service workers WEBEDRIVE et suppression limitée aux caches appartenant au projet. Ajout d’un `robots.txt` globalement bloquant tant que le site reste un prototype non validé. Contrats de régression associés ajoutés.

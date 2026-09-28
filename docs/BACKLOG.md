@@ -10,7 +10,7 @@ Priorités maintenues après la passe unified-2.
 ## P2
 - Terminer l’unification visuelle des écrans connexion, inscription, élève et admin sans toucher aux protections métier.
 - Exécuter la recette navigateur complète 320 / 390 / 768 / 1440, navigation clavier, focus, thèmes et reduced-motion lorsque l’environnement de preview est accessible.
-- Restreindre et tester la migration du service worker avant changement.
+- Exécuter un test navigateur isolé de la migration service worker/caches avec plusieurs registrations factices ; la logique source est désormais restreinte aux ressources WEBEDRIVE.
 
 ## P3
 - Mesurer la scène automobile sur appareil réel avant tout passage à une 3D plus coûteuse.
