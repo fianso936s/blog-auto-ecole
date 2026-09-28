@@ -22,41 +22,27 @@ import CoursPage from "./pages/student/CoursPage";
 export default function App() {
   return (
     <Routes>
-      {/* Pages publiques */}
       <Route element={<PublicLayout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/blog" element={<HomePage />} />
+        <Route path="/blog/articles" element={<ArticlesPage />} />
+        <Route path="/blog/articles/:slug" element={<ArticleDetailPage />} />
+        <Route path="/blog/quiz" element={<QuizPage />} />
+        {/* Legacy URLs preserved during WEBEDRIVE migration */}
         <Route path="/articles" element={<ArticlesPage />} />
         <Route path="/articles/:slug" element={<ArticleDetailPage />} />
         <Route path="/quiz" element={<QuizPage />} />
       </Route>
-
-      {/* Auth pages (sans layout) */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/inscription" element={<RegisterPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/auth/confirm" element={<AuthConfirmPage />} />
-
-      {/* Pages élève protégées */}
-      <Route
-        element={
-          <ProtectedRoute>
-            <StudentLayout />
-          </ProtectedRoute>
-        }
-      >
+      <Route element={<ProtectedRoute><StudentLayout /></ProtectedRoute>}>
         <Route path="/eleve" element={<StudentDashboard />} />
         <Route path="/eleve/cours" element={<CoursPage />} />
         <Route path="/eleve/quiz" element={<StudentQuizPage />} />
       </Route>
-
-      {/* Pages admin protégées */}
-      <Route
-        element={
-          <ProtectedRoute adminOnly>
-            <AdminLayout />
-          </ProtectedRoute>
-        }
-      >
+      <Route element={<ProtectedRoute adminOnly><AdminLayout /></ProtectedRoute>}>
         <Route path="/admin" element={<DashboardPage />} />
         <Route path="/admin/articles" element={<ArticlesAdminPage />} />
         <Route path="/admin/articles/new" element={<ArticleEditorPage />} />
