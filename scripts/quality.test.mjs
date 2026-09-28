@@ -112,3 +112,18 @@ test('All application TypeScript and TSX files parse without syntax errors', () 
     assert.equal(errors.length, 0, `${path}: ${errors.map(item => ts.flattenDiagnosticMessageText(item.messageText, '\n')).join(';')}`);
   }
 });
+
+
+test('Budget estimator uses the approved local fee model', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  for (const marker of ['extraHours * EXTRA_HOUR_PRICE', 'codeAttempts * CODE_EXAM_PRICE', 'classicTotal', 'acceleratedTotal', 'Estimation locale uniquement']) {
+    assert.ok(landing.includes(marker), marker);
+  }
+});
+
+test('Blog fallback content is visibly identified as demonstration material', () => {
+  const home = read('src/pages/public/HomePage.tsx');
+  for (const marker of ['contentSource', 'setContentSource("live")', 'Aperçu éditorial', 'exemples de démonstration']) {
+    assert.ok(home.includes(marker), marker);
+  }
+});

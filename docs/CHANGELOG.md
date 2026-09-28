@@ -9,3 +9,7 @@ Unification du design system et des composants publics ; logo raster récupéré
 Le premier preview 1d1b4a1265e6ec0a920db2002a39f3220833cbe3 est READY sur Vercel. Les logs de build du connecteur sont indisponibles (tool not found). Les Actions GitHub échouent avant les étapes ; cause non établie. La suite Playwright est fournie pour preview local mocké, non déclarée exécutée tant que ses résultats ne sont pas accessibles. Aucun test ne doit écrire en production.
 
 Manrope est référencé via Google Fonts, aucun fichier de police n’est embarqué. Les versions majeures des dépendances et le lockfile restent inchangés ; ne pas annoncer React 19.3 ou Vite 8.1 comme installés. Migration séparée documentée dans WORKFLOWS.md.
+
+
+## WEBEDRIVE unified-2 — 28 septembre 2026
+Ajout d’un estimateur de budget local sur l’accueil : heures complémentaires et tentatives de code mettent à jour les totaux Classique/Accélérée à partir des tarifs approuvés, sans collecte ni réservation. Le blog identifie maintenant explicitement les articles de démonstration lorsque la base de contenu réel n’a rien fourni. Styles responsive partagés et contrats de régression ajoutés.

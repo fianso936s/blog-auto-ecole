@@ -18,6 +18,8 @@ function OfferCard({ title, note, price, dark = false, children }: { title: stri
 export default function WebedriveLanding() {
   const [hours, setHours] = useState<13 | 20>(20);
   const [paused, setPaused] = useState(false);
+  const [extraHours, setExtraHours] = useState(0);
+  const [codeAttempts, setCodeAttempts] = useState(0);
   const [reduced, setReduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -25,6 +27,13 @@ export default function WebedriveLanding() {
     media.addEventListener("change", sync); return () => media.removeEventListener("change", sync);
   }, []);
   const price = PRICES[hours];
+  const clampCount = (value: string, maximum: number) => {
+    const parsed = Number.parseInt(value, 10);
+    return Number.isFinite(parsed) ? Math.min(maximum, Math.max(0, parsed)) : 0;
+  };
+  const extrasTotal = extraHours * EXTRA_HOUR_PRICE + codeAttempts * CODE_EXAM_PRICE;
+  const classicTotal = price.classic + extrasTotal;
+  const acceleratedTotal = price.accelerated + extrasTotal;
 
   return <div className="site-shell wd-site">
     <PageMeta title="Votre permis, en plus clair" noIndex /><RouteEffects /><Header />
@@ -53,6 +62,32 @@ export default function WebedriveLanding() {
           <OfferCard dark title="ACCÉLÉRÉE" note={`${hours} h · supplément de 200 €`} price={price.accelerated}><p>Les mêmes inclusions, avec des séances regroupées lorsque le planning le permet.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}<li><Check aria-hidden="true" />Créneaux validés avant engagement. Aucune date d’examen garantie.</li></ul></OfferCard>
         </div>
         <p className="wd-fine">À prévoir séparément : examen du code {CODE_EXAM_PRICE} € par tentative · heures complémentaires {EXTRA_HOUR_PRICE} € par heure.</p>
+        <section className="wd-budget" aria-labelledby="budget-title">
+          <div>
+            <span className="site-eyebrow">Estimer sans engagement</span>
+            <h3 id="budget-title">Ajustez votre budget, sans rien envoyer.</h3>
+            <p className="wd-budget-copy">Ajoutez uniquement les options que vous souhaitez simuler. Le calcul reste dans votre navigateur et ne réserve aucun créneau.</p>
+            <fieldset className="wd-budget-fields">
+              <legend className="sr-only">Options de l’estimation</legend>
+              <label className="wd-budget-field">
+                <span>Heures complémentaires</span>
+                <input type="number" inputMode="numeric" min="0" max="20" step="1" value={extraHours} onChange={(event) => setExtraHours(clampCount(event.target.value, 20))} aria-describedby="budget-extra-help" />
+                <small id="budget-extra-help">{EXTRA_HOUR_PRICE} € par heure</small>
+              </label>
+              <label className="wd-budget-field">
+                <span>Tentatives code</span>
+                <input type="number" inputMode="numeric" min="0" max="10" step="1" value={codeAttempts} onChange={(event) => setCodeAttempts(clampCount(event.target.value, 10))} aria-describedby="budget-code-help" />
+                <small id="budget-code-help">{CODE_EXAM_PRICE} € par tentative</small>
+              </label>
+            </fieldset>
+          </div>
+          <div className="wd-budget-summary" role="status" aria-live="polite" aria-atomic="true">
+            <span>Estimation pour {hours} h</span>
+            <div className="wd-budget-total"><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div>
+            <div className="wd-budget-total"><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div>
+            <p className="wd-budget-note">Inclut les options saisies ci-dessus. Estimation locale uniquement : aucun envoi, aucune réservation, aucun paiement.</p>
+          </div>
+        </section>
       </section>
       <section id="methode" className="wd-method" aria-labelledby="method-title">
         <span>La méthode</span><h2 id="method-title">La prochaine étape<br />n’est jamais cachée.</h2>

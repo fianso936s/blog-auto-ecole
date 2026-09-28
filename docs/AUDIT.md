@@ -36,3 +36,13 @@ La compilation/syntaxe couvre les sources applicatives, mais ne vaut pas revue l
 
 ## Infrastructure de test
 Un workflow GitHub Actions a été créé sur la branche de travail. Son premier run 36405763188 échoue avant les étapes (liste vide), sans logs récupérables ; cause non établie. Ne pas payer un plan ni désactiver un contrôle pour masquer cela. Les tests Node font aussi partie du prebuild Vercel. Le build et ses journaux doivent être vérifiés avant fusion.
+
+
+## Passe budget & transparence éditoriale — 28 septembre 2026
+- **Conversion / compréhension — `src/pages/WebedriveLanding.tsx`** : les tarifs étaient exacts mais l’utilisateur devait calculer mentalement les heures complémentaires et tentatives de code. Ajout d’un estimateur strictement local : 13/20 h, heures complémentaires à 65 € et code à 30 € ; aucune réservation, aucun envoi et aucun paiement.
+- **Accessibilité — estimateur** : champs numériques nommés, aides liées par `aria-describedby`, bornes de saisie et total annoncé via une zone live. Le changement de volume 13/20 h met à jour les deux rythmes sans modifier les options saisies.
+- **Véracité éditoriale — `src/pages/public/HomePage.tsx`** : le fallback `sampleArticles` pouvait ressembler à une publication réelle lorsque l’API était vide ou indisponible. Un avertissement visible indique désormais explicitement le mode démonstration et disparaît seulement quand des articles publiés réels sont chargés.
+- **Design system — `src/styles/brand.css`** : l’estimateur et la note éditoriale utilisent exclusivement les tokens WEBEDRIVE existants et restent sur une colonne en petit écran.
+
+### Recette visée
+Les contrats Node couvrent le modèle de calcul et le marquage du fallback. Le build Vercel de la branche doit valider ces contrats, TypeScript et Vite avant toute fusion. La visite navigateur live reste non revendiquée tant que l’accès HTTP Vercel est refusé au connecteur.
