@@ -6,16 +6,14 @@ import {
   XCircle,
   ArrowRight,
   RotateCcw,
-  Brain,
   Loader2,
   Trophy,
   BookOpen,
   Star,
 } from "lucide-react";
 import PageMeta from "../../components/PageMeta";
+import { shuffleCopy } from "../../lib/quiz";
 
-const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-const GROQ_KEY = import.meta.env.VITE_GROQ_API_KEY || "";
 
 const CATEGORIES = [
   "Toutes",
@@ -40,23 +38,39 @@ export default function QuizPage() {
   const [score, setScore] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [category, setCategory] = useState("Toutes");
-  const [aiExplanation, setAiExplanation] = useState("");
-  const [aiLoading, setAiLoading] = useState(false);
   const [quizSize] = useState(40);
 
   useEffect(() => {
-    const fetchQuestions = async () => {
-      const { data, error } = await supabase
-        .from("quiz_questions")
-        .select("*");
+    let cancelled = false;
 
-      if (!error && data) {
-        setAllQuestions(data);
+    const fetchQuestions = async () => {
+      setLoadError("");
+      try {
+        const { data, error } = await supabase
+          .from("quiz_questions")
+          .select("*");
+
+        if (cancelled) return;
+        if (error) {
+          setLoadError("Impossible de charger les questions pour le moment.");
+          return;
+        }
+        setAllQuestions(data ?? []);
+      } catch {
+        if (!cancelled) {
+          setLoadError("Impossible de charger les questions pour le moment.");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
       }
-      setLoading(false);
     };
-    fetchQuestions();
+
+    void fetchQuestions();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const startQuiz = useCallback(
@@ -67,14 +81,13 @@ export default function QuizPage() {
           ? [...allQuestions]
           : allQuestions.filter((q) => q.category === cat);
 
-      filtered.sort(() => Math.random() - 0.5);
-      setQuestions(filtered.slice(0, quizSize));
+      const shuffled = shuffleCopy(filtered);
+      setQuestions(shuffled.slice(0, quizSize));
       setCurrentIndex(0);
       setSelectedAnswer(null);
       setIsAnswered(false);
       setScore(0);
       setIsFinished(false);
-      setAiExplanation("");
     },
     [allQuestions, quizSize]
   );
@@ -91,7 +104,6 @@ export default function QuizPage() {
     if (isAnswered) return;
     setSelectedAnswer(label);
     setIsAnswered(true);
-    setAiExplanation("");
     if (label === currentQuestion.correct_answer) {
       setScore((s) => s + 1);
     }
@@ -104,57 +116,16 @@ export default function QuizPage() {
       setCurrentIndex((i) => i + 1);
       setSelectedAnswer(null);
       setIsAnswered(false);
-      setAiExplanation("");
     }
-  };
-
-  const askAI = async () => {
-    setAiLoading(true);
-    const correctText = currentQuestion.answers.find(
-      (a) => a.label === currentQuestion.correct_answer
-    )?.text;
-
-    try {
-      const res = await fetch(GROQ_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${GROQ_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
-          messages: [
-            {
-              role: "system",
-              content: `Tu es un moniteur d'auto-ecole bienveillant et pedagogue. Tu expliques les regles du code de la route de maniere simple et claire.
-
-REGLE ABSOLUE : La bonne reponse a cette question est "${currentQuestion.correct_answer}" (${correctText}). Tu dois UNIQUEMENT expliquer pourquoi cette reponse est correcte. Tu ne dois JAMAIS contredire ou remettre en question cette reponse. C'est la reponse officielle du code de la route francais.
-
-Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle du code de la route si possible. Utilise le vouvoiement.`,
-            },
-            {
-              role: "user",
-              content: `Question : ${currentQuestion.question}\nReponse correcte : ${currentQuestion.correct_answer}. ${correctText}\nExplique-moi pourquoi c'est la bonne reponse.`,
-            },
-          ],
-          max_tokens: 300,
-          temperature: 0.3,
-        }),
-      });
-
-      const data = await res.json();
-      setAiExplanation(data.choices[0].message.content.trim());
-    } catch {
-      setAiExplanation(currentQuestion.explanation);
-    }
-    setAiLoading(false);
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-bg flex items-center justify-center">
-        <div className="text-center animate-fade-in">
-          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+        <PageMeta title="Quiz Code de la Route" noIndex />
+        <div className="text-center animate-fade-in" role="status" aria-live="polite">
+          <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" aria-hidden="true" />
+          <h1 className="text-xl font-bold text-secondary mb-2">Quiz Code de la Route</h1>
           <p className="text-text-muted">Chargement des questions...</p>
         </div>
       </div>
@@ -168,6 +139,7 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
 
     return (
       <div className="min-h-screen bg-bg">
+        <PageMeta title="Résultat du quiz Code de la Route" noIndex />
         {/* Hero result header */}
         <div className="bg-secondary relative overflow-hidden grain">
           <div className="absolute top-8 right-12 w-24 h-24 border-2 border-white/10 rounded-full" />
@@ -246,15 +218,30 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
 
   if (!currentQuestion) {
     return (
-      <div className="min-h-screen bg-bg flex items-center justify-center">
-        <p className="text-text-muted">Aucune question disponible.</p>
+      <div className="min-h-screen bg-bg flex items-center justify-center px-4">
+        <PageMeta title="Quiz Code de la Route" noIndex />
+        <div className="max-w-lg text-center">
+          <h1 className="text-2xl font-bold text-secondary mb-3">Quiz Code de la Route</h1>
+          <p className="text-text-muted" role={loadError ? "alert" : undefined}>
+            {loadError || "Aucune question n’est disponible pour cette catégorie."}
+          </p>
+          {category !== "Toutes" && (
+            <button
+              type="button"
+              onClick={() => startQuiz("Toutes")}
+              className="mt-5 inline-flex items-center justify-center rounded-xl border border-border bg-surface px-5 py-3 text-sm font-semibold text-primary hover:border-primary"
+            >
+              Revenir à toutes les catégories
+            </button>
+          )}
+        </div>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-bg">
-      <PageMeta title="Quiz Code de la Route" />
+      <PageMeta title="Quiz Code de la Route" noIndex />
       {/* Bold hero header with grain overlay */}
       <div className="bg-secondary relative overflow-hidden grain">
         <div className="absolute top-6 right-10 w-20 h-20 border-2 border-white/10 rounded-full" />
@@ -406,39 +393,9 @@ Explique en 3-4 phrases courtes pourquoi c'est la bonne reponse. Cite la regle d
                 </p>
               </div>
 
-              {/* AI button */}
-              {!aiExplanation && (
-                <button
-                  onClick={askAI}
-                  disabled={aiLoading}
-                  className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary-dark transition-colors"
-                >
-                  {aiLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Brain className="w-4 h-4" />
-                  )}
-                  {aiLoading
-                    ? "L'IA r\u00e9fl\u00e9chit..."
-                    : "Demander une explication d\u00e9taill\u00e9e \u00e0 l'IA"}
-                </button>
-              )}
-
-              {/* AI explanation callout card */}
-              {aiExplanation && (
-                <div className="p-5 rounded-xl bg-secondary/5 border border-secondary/20 relative overflow-hidden">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-secondary" />
-                  <div className="flex items-center gap-2 mb-3 pl-3">
-                    <Brain className="w-4 h-4 text-secondary" />
-                    <span className="text-sm font-semibold text-secondary">
-                      Explication du moniteur IA
-                    </span>
-                  </div>
-                  <p className="text-sm text-text whitespace-pre-line leading-relaxed pl-3">
-                    {aiExplanation}
-                  </p>
-                </div>
-              )}
+              <p className="text-xs text-text-muted">
+                Explication enregistrée dans le contenu pédagogique du quiz.
+              </p>
 
               {/* Next button */}
               <button
