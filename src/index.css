@@ -4,6 +4,7 @@
 @import "./styles/refinement-layout.css";
 @import "./styles/refinement-components.css";
 @import "./styles/refinement-blog.css";
+@import "./styles/refinement-mobile.css";
 
 /* Compatibility aliases: every existing page consumes the same brand tokens. */
 @theme inline {
