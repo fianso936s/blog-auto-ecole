@@ -1,0 +1,63 @@
+name: WEBEDRIVE quality
+on:
+  push:
+    branches: [main, 'work/webedrive-*']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: webedrive-quality-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Preserve exact source snapshot without secrets or fonts
+        run: |
+          mkdir -p quality
+          python3 - <<'PY'
+          import pathlib, subprocess, zipfile
+          names = subprocess.check_output(['git','ls-files','-z']).decode().split('\0')
+          with zipfile.ZipFile('quality/source.zip','w',zipfile.ZIP_DEFLATED) as archive:
+              for name in names:
+                  p=pathlib.Path(name)
+                  if name and p.is_file() and not p.name.startswith('.env') and p.suffix.lower() not in {'.ttf','.otf','.woff','.woff2','.eot'}:
+                      archive.write(p,name)
+          PY
+          git rev-parse HEAD > quality/commit.txt
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Audit dependencies (evidence, not automatic fixes)
+        run: |
+          npm audit --json > quality/npm-audit.json || true
+          npm outdated --json > quality/npm-outdated.json || true
+          npm ls --depth=0 --json > quality/dependencies.json || true
+      - name: Static and business tests when present
+        run: npm run test --if-present
+      - name: Typecheck and production build
+        run: npm run build
+      - name: Browser acceptance when present
+        run: |
+          if [ -f scripts/browser-qa.mjs ]; then
+            npm install --no-save --package-lock=false playwright@1.56.1 @axe-core/playwright@4.10.2
+            npx playwright install --with-deps chromium
+            npm run preview -- --host 127.0.0.1 --port 4173 > quality/preview.log 2>&1 &
+            node scripts/browser-qa.mjs
+          fi
+      - name: Archive evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webedrive-quality-${{ github.sha }}
+          path: |
+            quality/
+            dist/
+          retention-days: 7
+          if-no-files-found: error
