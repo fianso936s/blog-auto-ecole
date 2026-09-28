@@ -49,7 +49,7 @@ export default function WebedriveLanding() {
           <p>Moins de flou.<br className="wd-mobile-break" /> Plus de confiance au volant.</p>
           <p className="wd-hero-description">Un budget lisible, un rythme qui vous correspond et un accompagnement à chaque étape.</p>
           <div className="wd-actions"><Link className="wd-pill" to="/#formules">Trouver ma formule <ArrowRight size={18} aria-hidden="true" /></Link><Link className="wd-ghost" to="/#methode">Découvrir l’approche <span aria-hidden="true">↗</span></Link></div>
-          <div className="wd-progress"><span><b>01</b> Comprendre</span><i aria-hidden="true" /><span><b>02</b> Organiser</span><i aria-hidden="true" /><span><b>03</b> Avancer</span></div>
+          <nav className="wd-progress" aria-label="Accès rapide au parcours"><Link to="/#formules"><b>01</b> Formules</Link><i aria-hidden="true" /><Link to="/#budget"><b>02</b> Budget</Link><i aria-hidden="true" /><Link to="/#methode"><b>03</b> Méthode</Link></nav>
         </div>
         <div className="wd-visual">
           <DriveVisual paused={paused || reduced} />
@@ -61,6 +61,12 @@ export default function WebedriveLanding() {
         <div className="wd-head"><div><span>01 — Les formules · boîte automatique</span><h2 id="formules-title">Votre rythme.<br />Votre point de départ.</h2></div><p>L’évaluation détermine le volume conseillé. Choisissez ensuite comment répartir vos séances : les inclusions restent les mêmes.</p></div>
         <div className="wd-offer-controls"><fieldset className="wd-volume"><legend>Votre volume de conduite</legend><div className="wd-switch">{([13, 20] as const).map(value => <label key={value}><input type="radio" name="formation-hours" checked={hours === value} onChange={() => setHours(value)} />{value} heures</label>)}</div></fieldset><p>Deux formules.<br /><strong>Tout est posé, avant de commencer.</strong></p></div>
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{hours} heures : classique {price.classic} euros, accélérée {price.accelerated} euros.</p>
+        <div className="wd-selection-band" aria-label="Résumé de la sélection">
+          <span><small>Volume choisi</small><strong>{hours} h</strong></span>
+          <span><small>Classique</small><strong>{price.classic.toLocaleString("fr-FR")} €</strong></span>
+          <span><small>Accélérée</small><strong>{price.accelerated.toLocaleString("fr-FR")} €</strong></span>
+          <Link to="/#budget">Ajuster l’estimation <ArrowRight size={17} aria-hidden="true" /></Link>
+        </div>
         <div className="wd-cards">
           <OfferCard title="Classique" note={`${hours} h · à votre rythme`} price={price.classic}><p>Le temps de progresser, avec des séances réparties selon les disponibilités communes.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}</ul></OfferCard>
           <OfferCard dark title="Accélérée" note={`${hours} h · supplément de 200 €`} price={price.accelerated}><p>Les mêmes inclusions, avec des séances regroupées lorsque le planning le permet.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}<li><Check aria-hidden="true" />Créneaux validés avant engagement. Aucune date d’examen garantie.</li></ul></OfferCard>
