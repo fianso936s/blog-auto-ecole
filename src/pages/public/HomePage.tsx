@@ -60,7 +60,7 @@ export default function HomePage() {
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-20 sm:pb-28">
           <div className="max-w-3xl">
             <span className="inline-block text-primary text-sm font-semibold uppercase tracking-widest mb-4 animate-fade-up">
-              WEBEDRIVE · Asnières-sur-Seine · TEST LIVE
+              Blog Auto-&Eacute;cole
             </span>
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary leading-tight mb-6 animate-fade-up delay-100">
               R&eacute;ussissez votre permis
@@ -72,14 +72,14 @@ export default function HomePage() {
             </p>
             <div className="flex flex-wrap gap-4 animate-fade-up delay-300">
               <Link
-                to="/articles"
+                to="/blog/articles"
                 className="inline-flex items-center gap-2 bg-primary text-white font-semibold px-7 py-3.5 rounded-full hover:bg-primary-dark transition-colors duration-300 text-sm"
               >
                 D&eacute;couvrir les articles
                 <ArrowRight className="w-4 h-4" />
               </Link>
               <Link
-                to="/quiz"
+                to="/blog/quiz"
                 className="inline-flex items-center gap-2 bg-surface text-secondary font-semibold px-7 py-3.5 rounded-full border border-border hover:border-primary/30 hover:text-primary transition-colors duration-300 text-sm"
               >
                 Tester vos connaissances
