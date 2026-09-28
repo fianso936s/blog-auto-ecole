@@ -3,18 +3,10 @@ import { useTheme } from "../contexts/ThemeContext";
 
 export default function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
-
-  return (
-    <button
-      onClick={toggleTheme}
-      className="w-9 h-9 flex items-center justify-center rounded-full bg-surface-alt hover:bg-border text-text-muted hover:text-text transition-colors duration-200"
-      aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
-    >
-      {theme === "dark" ? (
-        <Sun className="w-[18px] h-[18px]" />
-      ) : (
-        <Moon className="w-[18px] h-[18px]" />
-      )}
-    </button>
-  );
+  return <button type="button" onClick={toggleTheme}
+    className="inline-flex min-h-12 min-w-12 items-center justify-center rounded-xl border border-current/20 bg-transparent hover:bg-current/10 transition-colors duration-150"
+    aria-label="Mode sombre" aria-pressed={theme === "dark"}
+    title={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}>
+    {theme === "dark" ? <Sun size={20} aria-hidden="true" /> : <Moon size={20} aria-hidden="true" />}
+  </button>;
 }
