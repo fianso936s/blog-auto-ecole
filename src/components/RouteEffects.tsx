@@ -1,14 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigationType } from "react-router-dom";
 
 export default function RouteEffects() {
   const location = useLocation();
   const navigation = useNavigationType();
-  const initial = useRef(true);
   useEffect(() => {
-    const first = initial.current;
-    initial.current = false;
-    if (!location.hash && (first || navigation === "POP")) return;
+    // Preserve browser history restoration; a PUSH between layouts still receives focus.
+    if (!location.hash && navigation === "POP") return;
     const frame = requestAnimationFrame(() => {
       let target: HTMLElement | null = null;
       if (location.hash) {
