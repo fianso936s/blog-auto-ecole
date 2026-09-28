@@ -23,8 +23,8 @@ import CoursPage from "./pages/student/CoursPage";
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<WebedriveLanding />} />
       <Route element={<PublicLayout />}>
-        <Route path="/" element={<WebedriveLanding />} />
         <Route path="/blog" element={<HomePage />} />
         <Route path="/blog/articles" element={<ArticlesPage />} />
         <Route path="/blog/articles/:slug" element={<ArticleDetailPage />} />
