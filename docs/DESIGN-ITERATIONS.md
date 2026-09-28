@@ -42,3 +42,24 @@ Base: main at 4ee95a69c286ba24553f1122cdb2cd657853577d. Candidate: ed81cfd433def
 
 ### Next priority
 After production promotion is confirmed, inspect the real production rendering on desktop/mobile when project access becomes available. Only then tune spacing or visual motion from observed evidence; keep prices in src/lib/offers.ts and the existing site/project structure unchanged.
+
+## 2026-09-28 — Decision cockpit pass 3
+
+Base: main at 051ae5dd31d8eea47b5c6c91ce42ae9613416fbe. Candidate branch: design/decision-cockpit-pass-3.
+
+### Implemented
+- Converted the hero’s decorative three-step line into keyboard-accessible shortcuts to Formules, Budget and Méthode.
+- Added a compact selection cockpit between the 13 h/20 h choice and the offer cards. It reflects the current volume and both package prices from the existing PRICES source, then links directly to the local estimator.
+- Desktop keeps the cockpit visible while comparing plans; tablet/mobile returns it to normal flow and collapses it cleanly.
+- Added explicit focus treatment, reduced-motion handling and narrow-screen overflow protection.
+- No tariff, route, authentication, Supabase/data, dependency, workflow or infrastructure change.
+
+### Verification completed
+- Git compare against main before merge: candidate is ahead only, zero commits behind; changed production files are WebedriveLanding.tsx plus the new refinement-decision.css.
+- The landing imports the new stylesheet directly, so no global stylesheet ordering outside this page was altered.
+- Vercel preview status for exact candidate commit 4b9201bdc4c43348b691f79c369e71b10d772acc: success. The project build pipeline still runs npm test, build-info generation, TypeScript build and Vite build.
+- Direct public-browser inspection remains unavailable from the current web and Vercel fetch paths; do not treat build success as pixel-level proof.
+
+### Next
+Merge only after rechecking main has not advanced unexpectedly, then verify Vercel success for the resulting merge commit. Re-attempt /version.json and live rendering verification after deployment; keep that item open if access remains blocked.
+
