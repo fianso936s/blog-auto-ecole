@@ -7,6 +7,7 @@ import PageMeta from "../components/PageMeta";
 import RouteEffects from "../components/RouteEffects";
 import DriveVisual from "../components/DriveVisual";
 import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offers";
+import "../styles/refinement-decision.css";
 
 function OfferCard({ title, note, price, dark = false, children }: { title: string; note: string; price: number; dark?: boolean; children: ReactNode }) {
   const titleId = dark ? "accelerated-title" : "classic-title";
