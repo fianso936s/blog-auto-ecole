@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./styles/brand.css";
+@import "./styles/editorial.css";
 
 /* Compatibility aliases: every existing page consumes the same brand tokens. */
 @theme inline {
