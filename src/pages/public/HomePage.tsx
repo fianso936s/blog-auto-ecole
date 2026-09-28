@@ -60,7 +60,7 @@ export default function HomePage() {
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-20 sm:pb-28">
           <div className="max-w-3xl">
             <span className="inline-block text-primary text-sm font-semibold uppercase tracking-widest mb-4 animate-fade-up">
-              Blog Auto-&Eacute;cole
+              WEBEDRIVE · Asnières-sur-Seine · TEST LIVE
             </span>
             <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary leading-tight mb-6 animate-fade-up delay-100">
               R&eacute;ussissez votre permis
