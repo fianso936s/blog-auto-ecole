@@ -40,11 +40,11 @@ export default function Header() {
   const dashboardPath = user?.role === "admin" ? "/admin" : "/eleve";
 
   const navLinks = [
-    { label: "Accueil", href: "/" },
-    { label: "Articles", href: "/articles" },
-    { label: "Code de la Route", href: "/articles?cat=code-de-la-route" },
-    { label: "Conduite", href: "/articles?cat=conduite" },
-    { label: "Quiz Code", href: "/quiz" },
+    { label: "Accueil", href: "/blog" },
+    { label: "Articles", href: "/blog/articles" },
+    { label: "Code de la Route", href: "/blog/articles?cat=code-de-la-route" },
+    { label: "Conduite", href: "/blog/articles?cat=conduite" },
+    { label: "Quiz Code", href: "/blog/quiz" },
   ];
 
   const isActive = (href: string) => location.pathname === href;
