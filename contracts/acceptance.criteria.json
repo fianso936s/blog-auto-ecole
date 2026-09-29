@@ -1,0 +1,31 @@
+{
+  "_source": "Partial reconstruction from the uploaded WEBEDRIVE execution PDF. The original acceptance.criteria.json from the referenced ZIP was not attached.",
+  "_status": "PARTIAL_RECONSTRUCTION",
+  "internalReview": {
+    "dimensions": ["composition", "identity", "modelling-light", "movement", "commercial-readability"],
+    "pointsPerDimension": 20,
+    "targetTotal": 85,
+    "minimumPerDimension": 15,
+    "note": "Detailed original 0-5 subcriteria are unavailable and are intentionally not invented."
+  },
+  "blockingDefects": [
+    "altered-logo",
+    "invented-commercial-data",
+    "misleading-button",
+    "broken-route",
+    "missing-fallback",
+    "unreadable-content",
+    "strong-budget-overrun-without-qualification",
+    "asset-without-usage-rights",
+    "placeholder-car-presented-as-final",
+    "tests-claimed-without-evidence"
+  ],
+  "accessibility": {
+    "target": "WCAG 2.2 AA",
+    "normalTextContrast": 4.5,
+    "usefulComponentContrast": 3,
+    "touchTargetPx": 48,
+    "focusOutlinePx": 3,
+    "focusOffsetPx": 3
+  }
+}
