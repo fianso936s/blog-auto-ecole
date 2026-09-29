@@ -305,3 +305,78 @@
     transform:none!important;
   }
 }
+
+
+/* Pass 20 — narrow decision controls: denser selection, unchanged tap targets. */
+.wd-site .wd-switch label:focus-within{
+  outline:2px solid var(--wd-field);
+  outline-offset:3px;
+}
+@media(max-width:420px){
+  .wd-offer-controls{display:block;margin:28px 0 20px}
+  .wd-site .wd-volume{width:100%}
+  .wd-site .wd-switch{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    width:100%;
+    padding:4px;
+  }
+  .wd-site .wd-switch label{
+    min-width:0;
+    min-height:48px;
+    padding:10px 12px;
+  }
+  .wd-site .wd-selection-band{
+    grid-template-columns:.72fr 1fr 1fr;
+  }
+  .wd-site .wd-selection-band>span{
+    padding:12px 9px;
+    border-bottom:0;
+  }
+  .wd-site .wd-selection-band>span:first-child{
+    grid-column:auto;
+    border-right:1px solid var(--wd-border);
+    border-bottom:0;
+  }
+  .wd-site .wd-selection-band small{
+    font-size:8px;
+    line-height:1.25;
+    letter-spacing:.09em;
+  }
+  .wd-site .wd-selection-band strong{
+    font-size:clamp(14px,4.5vw,17px);
+  }
+  .wd-site .wd-selection-band>a{
+    grid-column:1/-1;
+    min-height:52px;
+    justify-content:space-between;
+    padding:12px 14px;
+  }
+  .wd-budget-plan{margin-top:20px}
+  .wd-budget-plan-switch{
+    width:100%;
+    padding:3px;
+    border-radius:12px;
+  }
+  .wd-budget-plan-switch label{
+    min-height:48px;
+    border-radius:9px;
+    padding-inline:10px;
+  }
+}
+@media(max-width:340px){
+  .wd-site .wd-selection-band>span{padding-inline:7px}
+  .wd-site .wd-selection-band small{letter-spacing:.06em}
+  .wd-site .wd-selection-band strong{font-size:14px}
+  .wd-site .wd-selection-band>a{font-size:11px}
+}
+@media(forced-colors:active){
+  .wd-site .wd-switch label:has(input:checked),
+  .wd-budget-plan-switch label:has(input:checked){
+    outline:2px solid ButtonText;
+    outline-offset:-3px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .wd-site .wd-switch label{transition:none!important;transform:none!important}
+}
