@@ -392,3 +392,19 @@
   .wd-road-markers,.wd-site .wd-copy,.wd-site .wd-visual { animation: none !important; }
   .article-card,.wd-pill svg,.wd-plan-link svg,.wd-question-list summary,.wd-closing-secondary { transition: none !important; transform: none !important; }
 }
+
+
+/* Pass 18 — tactile budget controls */
+.wd-site .wd-selection-band{top:calc(var(--wd-header-height) + 12px)}
+.wd-counter{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;min-height:48px;overflow:hidden;border:1px solid var(--wd-field);border-radius:12px;background:var(--wd-surface)}
+.wd-counter:focus-within{border-color:var(--wd-primary);box-shadow:0 0 0 3px rgb(21 61 88/.11)}
+.wd-counter button{min-width:48px;min-height:48px;display:grid;place-items:center;border:0;background:var(--wd-primary-light);color:var(--wd-primary);cursor:pointer}
+.wd-counter button:first-child{border-right:1px solid var(--wd-border)}
+.wd-counter button:last-child{border-left:1px solid var(--wd-border)}
+.wd-counter button:disabled{color:var(--wd-muted);cursor:not-allowed;opacity:.48}
+.wd-counter button:focus-visible{position:relative;z-index:1;outline:3px solid var(--wd-sand);outline-offset:-4px}
+.wd-counter input{min-width:0;width:100%;min-height:48px;margin:0;padding:0 8px;border:0!important;border-radius:0!important;outline:0;background:transparent;color:var(--wd-ink);text-align:center;font-size:16px;font-weight:780;font-variant-numeric:tabular-nums;appearance:textfield;-moz-appearance:textfield}
+.wd-counter input::-webkit-inner-spin-button,.wd-counter input::-webkit-outer-spin-button{margin:0;-webkit-appearance:none}
+@media(hover:hover){.wd-counter button:not(:disabled):hover{background:var(--wd-accent-surface);color:var(--wd-accent-text)}}
+@media(forced-colors:active){.wd-counter{border:1px solid ButtonText}.wd-counter button:first-child,.wd-counter button:last-child{border-color:ButtonText}}
+@media(prefers-reduced-motion:reduce){.wd-counter,.wd-counter button{transition:none!important;transform:none!important}}
