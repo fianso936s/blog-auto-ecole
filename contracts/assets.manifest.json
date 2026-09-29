@@ -2,13 +2,49 @@
   "_source": "Requirements reconstructed from the uploaded WEBEDRIVE execution PDF. No final 3D asset was attached.",
   "_status": "ASSET_MANQUANT",
   "required": [
-    { "id": "editable-source", "kind": "editable-3d-source", "status": "MISSING" },
-    { "id": "desktop-glb", "kind": "glb", "status": "MISSING", "quality": "desktopFull" },
-    { "id": "lite-glb", "kind": "glb", "status": "MISSING", "quality": "desktopLite" },
-    { "id": "mobile-glb", "kind": "glb", "status": "MISSING", "quality": "mobileActivated" },
-    { "id": "poster-desktop", "kind": "poster", "status": "IMPLEMENTED_AS_DOM_SVG_FALLBACK", "path": "src/features/experience3d/ExperiencePoster.tsx" },
-    { "id": "poster-mobile", "kind": "poster", "status": "IMPLEMENTED_AS_DOM_SVG_FALLBACK", "path": "src/features/experience3d/ExperiencePoster.tsx" },
-    { "id": "license-manifest", "kind": "license-manifest", "status": "MISSING" }
+    {
+      "id": "editable-source",
+      "kind": "editable-3d-source",
+      "status": "IMPLEMENTED_AS_PROCEDURAL_SOURCE",
+      "path": "tools/generate-ribbon-assets.py",
+      "tooling": "numpy + trimesh",
+      "note": "Generated GLBs still require visual review and repository upload."
+    },
+    {
+      "id": "desktop-glb",
+      "kind": "glb",
+      "status": "MISSING",
+      "quality": "desktopFull"
+    },
+    {
+      "id": "lite-glb",
+      "kind": "glb",
+      "status": "MISSING",
+      "quality": "desktopLite"
+    },
+    {
+      "id": "mobile-glb",
+      "kind": "glb",
+      "status": "MISSING",
+      "quality": "mobileActivated"
+    },
+    {
+      "id": "poster-desktop",
+      "kind": "poster",
+      "status": "IMPLEMENTED_AS_DOM_SVG_FALLBACK",
+      "path": "src/features/experience3d/ExperiencePoster.tsx"
+    },
+    {
+      "id": "poster-mobile",
+      "kind": "poster",
+      "status": "IMPLEMENTED_AS_DOM_SVG_FALLBACK",
+      "path": "src/features/experience3d/ExperiencePoster.tsx"
+    },
+    {
+      "id": "license-manifest",
+      "kind": "license-manifest",
+      "status": "MISSING"
+    }
   ],
   "requiredNodeNames": [
     "SceneRoot",
