@@ -137,10 +137,127 @@
   color:#F6F3ED;
 }
 
+
+/* Pass 12 — make the desktop decision area read as one continuous cockpit. */
+.wd-site .wd-budget{
+  position:relative;
+  overflow:hidden;
+  box-shadow:0 22px 60px rgb(9 36 53/.07);
+}
+.wd-site .wd-budget::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto;
+  height:3px;
+  background:linear-gradient(90deg,var(--wd-sand) 0 22%,var(--wd-field) 22% 58%,transparent 58%);
+  opacity:.9;
+  pointer-events:none;
+}
+.wd-site .wd-budget>div:first-child{min-width:0;padding:6px 2px}
+.wd-budget-bridge{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin:-4px 0 18px;
+  padding-bottom:16px;
+  border-bottom:1px solid #426076;
+}
+.wd-budget-bridge small{
+  color:#B4C7D2;
+  font-size:9px;
+  font-weight:750;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.wd-budget-bridge strong{
+  color:var(--wd-sand);
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:-.02em;
+  white-space:nowrap;
+}
+.wd-site .wd-budget-summary{
+  border:1px solid #426076;
+  box-shadow:0 18px 48px rgb(0 0 0/.13);
+}
+.wd-site .wd-budget-summary>span{color:#B4C7D2}
+.wd-site .wd-budget-total[data-active="true"] strong{color:var(--wd-sand)}
+.wd-site .wd-budget-note{
+  padding-top:16px;
+  border-top:1px solid rgb(180 199 210/.18);
+}
+.wd-budget-handoff{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:32px;
+  margin-top:24px;
+  padding:24px 28px;
+  overflow:hidden;
+  border:1px solid var(--wd-border);
+  border-radius:10px;
+  background:linear-gradient(135deg,var(--wd-surface) 0%,var(--wd-surface-alt) 100%);
+}
+.wd-budget-handoff::before{
+  content:"";
+  position:absolute;
+  inset:0 auto 0 0;
+  width:3px;
+  background:var(--wd-sand);
+}
+.wd-budget-handoff>div{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(220px,.9fr);
+  align-items:center;
+  gap:8px 24px;
+  min-width:0;
+}
+.wd-budget-handoff small{
+  grid-column:1/-1;
+  color:var(--wd-muted);
+  font-size:9px;
+  font-weight:750;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.wd-budget-handoff strong{
+  color:var(--wd-ink);
+  font-size:20px;
+  line-height:1.3;
+  letter-spacing:-.035em;
+}
+.wd-budget-handoff span{
+  color:var(--wd-muted);
+  font-size:12px;
+  line-height:1.7;
+}
+.wd-budget-handoff>a{
+  display:inline-flex;
+  min-height:48px;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  padding:12px 18px;
+  border-radius:999px;
+  background:var(--wd-dark);
+  color:#F6F3ED;
+  font-size:12px;
+  font-weight:750;
+  text-decoration:none;
+  white-space:nowrap;
+}
+.wd-budget-handoff>a:focus-visible{
+  outline:3px solid var(--wd-field);
+  outline-offset:3px;
+}
+
 @media(hover:hover){
   .wd-site .wd-progress a:hover{transform:translateY(-1px)}
-  .wd-site .wd-selection-band>a svg{transition:transform 160ms var(--wd-ease)}
-  .wd-site .wd-selection-band>a:hover svg{transform:translateX(3px)}
+  .wd-site .wd-selection-band>a svg,.wd-budget-handoff>a svg{transition:transform 160ms var(--wd-ease)}
+  .wd-site .wd-selection-band>a:hover svg,.wd-budget-handoff>a:hover svg{transform:translateX(3px)}
+  .wd-budget-handoff>a:hover{background:var(--wd-blue)}
 }
 @media(max-width:800px){
   .wd-site .wd-selection-band{
@@ -152,6 +269,10 @@
   .wd-site .wd-selection-band>span{padding:14px 16px}
   .wd-site .wd-selection-band>span:nth-child(3){border-right:0}
   .wd-site .wd-selection-band>a{grid-column:1/-1;min-height:54px}
+  .wd-budget-handoff{grid-template-columns:1fr;gap:20px;padding:22px 24px}
+  .wd-budget-handoff>div{grid-template-columns:1fr}
+  .wd-budget-handoff small{grid-column:auto}
+  .wd-budget-handoff>a{width:min(100%,320px);justify-content:space-between}
 }
 @media(max-width:520px){
   .wd-site .wd-progress{overflow-x:auto;scrollbar-width:none;padding-bottom:4px}
@@ -167,13 +288,19 @@
   .wd-site .wd-selection-band>span:nth-child(3){border-right:0}
   .wd-site .wd-selection-band strong{font-size:17px}
   .wd-budget-plan-switch{width:100%}
+  .wd-site .wd-budget{gap:22px}
+  .wd-budget-handoff{margin-top:18px;padding:20px}
+  .wd-budget-handoff strong{font-size:18px}
+  .wd-budget-handoff>a{width:100%}
 }
 @media(prefers-reduced-motion:reduce){
   .wd-site .wd-progress a,
   .wd-site .wd-selection-band>a,
   .wd-site .wd-selection-band>a svg,
   .wd-budget-plan-switch label,
-  .wd-site .wd-budget-total{
+  .wd-site .wd-budget-total,
+  .wd-budget-handoff>a,
+  .wd-budget-handoff>a svg{
     transition:none!important;
     transform:none!important;
   }
