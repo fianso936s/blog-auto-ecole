@@ -74,6 +74,35 @@
   border-color:var(--wd-sand);
   box-shadow:0 0 0 3px rgb(215 185 142/.12),0 18px 48px rgb(9 36 53/.12);
 }
+.wd-plan-state{
+  display:inline-flex;
+  min-height:28px;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:5px 9px;
+  border:1px solid var(--wd-border);
+  border-radius:999px;
+  color:var(--wd-muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.07em;
+  line-height:1;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.wd-plan-state svg{flex:none}
+.wd-site .wd-card[data-selected="true"] .wd-plan-state{
+  border-color:rgb(21 61 88/.2);
+  background:var(--wd-accent-surface);
+  color:var(--wd-primary);
+}
+.wd-site .wd-card-dark .wd-plan-state{border-color:#526C7D;color:#D7E2E8}
+.wd-site .wd-card-dark[data-selected="true"] .wd-plan-state{
+  border-color:var(--wd-sand);
+  background:var(--wd-sand);
+  color:var(--wd-dark);
+}
 .wd-budget-plan{
   margin:24px 0 20px;
   padding:0;
@@ -124,18 +153,28 @@
   outline-offset:3px;
 }
 .wd-site .wd-budget-total{
+  align-items:center;
   margin-inline:-12px;
   padding-inline:12px;
   border-radius:8px;
   transition:background 160ms var(--wd-ease),box-shadow 160ms var(--wd-ease);
 }
+.wd-budget-total-copy{display:grid;min-width:0;gap:3px}
+.wd-budget-total-copy small{
+  color:#93AABA;
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:.1em;
+  line-height:1.2;
+  text-transform:uppercase;
+}
+.wd-budget-total-copy>span{line-height:1.25}
 .wd-site .wd-budget-total[data-active="true"]{
   background:rgb(255 255 255/.055);
   box-shadow:inset 3px 0 0 var(--wd-sand);
 }
-.wd-site .wd-budget-total[data-active="true"]>span{
-  color:#F6F3ED;
-}
+.wd-site .wd-budget-total[data-active="true"] .wd-budget-total-copy>span{color:#F6F3ED}
+.wd-site .wd-budget-total[data-active="true"] .wd-budget-total-copy>small{color:var(--wd-sand)}
 
 
 /* Pass 12 — make the desktop decision area read as one continuous cockpit. */
@@ -304,4 +343,79 @@
     transition:none!important;
     transform:none!important;
   }
+}
+
+
+/* Pass 20 — narrow decision controls: denser selection, unchanged tap targets. */
+.wd-site .wd-switch label:focus-within{
+  outline:2px solid var(--wd-field);
+  outline-offset:3px;
+}
+@media(max-width:420px){
+  .wd-offer-controls{display:block;margin:28px 0 20px}
+  .wd-site .wd-volume{width:100%}
+  .wd-site .wd-switch{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    width:100%;
+    padding:4px;
+  }
+  .wd-site .wd-switch label{
+    min-width:0;
+    min-height:48px;
+    padding:10px 12px;
+  }
+  .wd-site .wd-selection-band{
+    grid-template-columns:.72fr 1fr 1fr;
+  }
+  .wd-site .wd-selection-band>span{
+    padding:12px 9px;
+    border-bottom:0;
+  }
+  .wd-site .wd-selection-band>span:first-child{
+    grid-column:auto;
+    border-right:1px solid var(--wd-border);
+    border-bottom:0;
+  }
+  .wd-site .wd-selection-band small{
+    font-size:8px;
+    line-height:1.25;
+    letter-spacing:.09em;
+  }
+  .wd-site .wd-selection-band strong{
+    font-size:clamp(14px,4.5vw,17px);
+  }
+  .wd-site .wd-selection-band>a{
+    grid-column:1/-1;
+    min-height:52px;
+    justify-content:space-between;
+    padding:12px 14px;
+  }
+  .wd-budget-plan{margin-top:20px}
+  .wd-budget-plan-switch{
+    width:100%;
+    padding:3px;
+    border-radius:12px;
+  }
+  .wd-budget-plan-switch label{
+    min-height:48px;
+    border-radius:9px;
+    padding-inline:10px;
+  }
+}
+@media(max-width:340px){
+  .wd-site .wd-selection-band>span{padding-inline:7px}
+  .wd-site .wd-selection-band small{letter-spacing:.06em}
+  .wd-site .wd-selection-band strong{font-size:14px}
+  .wd-site .wd-selection-band>a{font-size:11px}
+}
+@media(forced-colors:active){
+  .wd-site .wd-switch label:has(input:checked),
+  .wd-budget-plan-switch label:has(input:checked){
+    outline:2px solid ButtonText;
+    outline-offset:-3px;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .wd-site .wd-switch label{transition:none!important;transform:none!important}
 }
