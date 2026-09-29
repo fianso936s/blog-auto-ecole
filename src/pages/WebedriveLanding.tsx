@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { ArrowRight, Check, Pause, Play } from "lucide-react";
+import { ArrowRight, Check, Minus, Pause, Play, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
@@ -10,6 +10,33 @@ import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offe
 import "../styles/refinement-decision.css";
 
 type Plan = "classic" | "accelerated";
+
+function clampCount(value: string, maximum: number) {
+  const parsed = Number.parseInt(value, 10);
+  return Number.isFinite(parsed) ? Math.min(maximum, Math.max(0, parsed)) : 0;
+}
+
+function BudgetCounter({ id, label, help, value, max, minusLabel, plusLabel, onChange }: {
+  id: string;
+  label: string;
+  help: string;
+  value: number;
+  max: number;
+  minusLabel: string;
+  plusLabel: string;
+  onChange: (value: number) => void;
+}) {
+  const helpId = `${id}-help`;
+  return <div className="wd-budget-field">
+    <label htmlFor={id}>{label}</label>
+    <div className="wd-counter">
+      <button type="button" onClick={() => onChange(Math.max(0, value - 1))} disabled={value <= 0} aria-label={minusLabel}><Minus size={18} aria-hidden="true" /></button>
+      <input id={id} type="number" inputMode="numeric" min="0" max={max} step="1" value={value} onChange={(event) => onChange(clampCount(event.target.value, max))} aria-describedby={helpId} />
+      <button type="button" onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max} aria-label={plusLabel}><Plus size={18} aria-hidden="true" /></button>
+    </div>
+    <small id={helpId}>{help}</small>
+  </div>;
+}
 
 function OfferCard({ title, note, price, plan, selected, dark = false, onSelect, children }: { title: string; note: string; price: number; plan: Plan; selected: boolean; dark?: boolean; onSelect: (plan: Plan) => void; children: ReactNode }) {
   const titleId = dark ? "accelerated-title" : "classic-title";
@@ -35,10 +62,6 @@ export default function WebedriveLanding() {
     media.addEventListener("change", sync); return () => media.removeEventListener("change", sync);
   }, []);
   const price = PRICES[hours];
-  const clampCount = (value: string, maximum: number) => {
-    const parsed = Number.parseInt(value, 10);
-    return Number.isFinite(parsed) ? Math.min(maximum, Math.max(0, parsed)) : 0;
-  };
   const extrasTotal = extraHours * EXTRA_HOUR_PRICE + codeAttempts * CODE_EXAM_PRICE;
   const classicTotal = price.classic + extrasTotal;
   const acceleratedTotal = price.accelerated + extrasTotal;
@@ -89,8 +112,8 @@ export default function WebedriveLanding() {
               <label><input type="radio" name="budget-plan" value="accelerated" checked={plan === "accelerated"} onChange={() => setPlan("accelerated")} />Accélérée</label>
             </div></fieldset>
             <fieldset className="wd-budget-fields"><legend className="sr-only">Options de l’estimation</legend>
-              <label className="wd-budget-field"><span>Heures complémentaires</span><input type="number" inputMode="numeric" min="0" max="20" step="1" value={extraHours} onChange={(event) => setExtraHours(clampCount(event.target.value, 20))} aria-describedby="budget-extra-help" /><small id="budget-extra-help">{EXTRA_HOUR_PRICE} € par heure</small></label>
-              <label className="wd-budget-field"><span>Tentatives code</span><input type="number" inputMode="numeric" min="0" max="10" step="1" value={codeAttempts} onChange={(event) => setCodeAttempts(clampCount(event.target.value, 10))} aria-describedby="budget-code-help" /><small id="budget-code-help">{CODE_EXAM_PRICE} € par tentative</small></label>
+              <BudgetCounter id="budget-extra-hours" label="Heures complémentaires" help={`${EXTRA_HOUR_PRICE} € par heure`} value={extraHours} max={20} minusLabel="Retirer une heure complémentaire" plusLabel="Ajouter une heure complémentaire" onChange={setExtraHours} />
+              <BudgetCounter id="budget-code-attempts" label="Tentatives code" help={`${CODE_EXAM_PRICE} € par tentative`} value={codeAttempts} max={10} minusLabel="Retirer une tentative code" plusLabel="Ajouter une tentative code" onChange={setCodeAttempts} />
             </fieldset>
           </div>
           <div className="wd-budget-summary"><div className="wd-budget-bridge"><small>Étape suivante</small><strong>{hours} h · {selectedPlanLabel}</strong></div><span>Votre estimation / {hours} h / {selectedPlanLabel}</span><div className="wd-budget-total" data-active={plan === "classic" ? "true" : "false"}><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total" data-active={plan === "accelerated" ? "true" : "false"}><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p><p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{selectedPlanLabel}, {hours} heures : estimation {selectedTotal.toLocaleString("fr-FR")} euros.</p></div>
