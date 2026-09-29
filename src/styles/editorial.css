@@ -408,3 +408,24 @@
 @media(hover:hover){.wd-counter button:not(:disabled):hover{background:var(--wd-accent-surface);color:var(--wd-accent-text)}}
 @media(forced-colors:active){.wd-counter{border:1px solid ButtonText}.wd-counter button:first-child,.wd-counter button:last-child{border-color:ButtonText}}
 @media(prefers-reduced-motion:reduce){.wd-counter,.wd-counter button{transition:none!important;transform:none!important}}
+
+/* Pass 19 — compact mobile budget cockpit */
+@media(max-width:460px){
+  .wd-site .wd-budget{padding:22px 16px;gap:20px}
+  .wd-site .wd-budget-fields{grid-template-columns:1fr;gap:14px}
+  .wd-site .wd-budget-field>span{min-height:0}
+  .wd-site .wd-budget-summary{padding:18px 16px;border-radius:10px}
+  .wd-budget-bridge{margin:0 0 12px;padding-bottom:12px;gap:10px}
+  .wd-budget-bridge strong{font-size:13px}
+  .wd-site .wd-budget-summary>span{margin-bottom:10px;line-height:1.45}
+  .wd-site .wd-budget-total{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px;margin-inline:-6px;padding:13px 8px}
+  .wd-site .wd-budget-total strong{font-size:24px}
+  .wd-site .wd-budget-note{margin-top:10px;padding-top:12px;line-height:1.65}
+  .wd-counter{grid-template-columns:48px minmax(72px,1fr) 48px}
+}
+@media(max-width:340px){
+  .wd-site .wd-budget{padding-inline:14px}
+  .wd-site .wd-budget-summary{padding-inline:14px}
+  .wd-site .wd-budget-total strong{font-size:22px}
+}
+
