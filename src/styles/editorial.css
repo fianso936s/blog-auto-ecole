@@ -395,7 +395,7 @@
 
 
 /* Pass 18 — tactile budget controls */
-.wd-site .wd-offers .wd-selection-band{top:calc(var(--wd-header-height) + 12px)}
+@media (min-width:801px){.wd-site .wd-offers .wd-selection-band{top:calc(var(--wd-header-height) + 12px)}}
 .wd-counter{display:grid;grid-template-columns:48px minmax(0,1fr) 48px;min-height:48px;overflow:hidden;border:1px solid var(--wd-field);border-radius:12px;background:var(--wd-surface)}
 .wd-counter:focus-within{border-color:var(--wd-primary);box-shadow:0 0 0 3px rgb(21 61 88/.11)}
 .wd-counter button{min-width:48px;min-height:48px;display:grid;place-items:center;border:0;background:var(--wd-primary-light);color:var(--wd-primary);cursor:pointer}
