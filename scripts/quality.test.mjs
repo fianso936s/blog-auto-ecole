@@ -162,3 +162,50 @@ test('Landing closes with an accessible journal handoff and a route back to offe
     assert.ok(landing.includes(marker), marker);
   }
 });
+
+
+test('P1 ribbon progression keeps the three fixed chapters and a mobile poster fallback', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const css = read('src/features/experience3d/experience3d.css');
+  for (const marker of [
+    'wd-experience-grid',
+    'Votre permis, avec une vision claire à chaque étape.',
+    'Un planning qui s’organise avec vous.',
+    'Des acquis. Un prochain objectif.',
+    'ExperiencePoster variant="mobile"',
+    'Illustration du parcours'
+  ]) assert.ok(landing.includes(marker) || read('src/features/experience3d/ExperiencePoster.tsx').includes(marker), marker);
+  assert.ok(css.includes('grid-template-columns: repeat(12'));
+  assert.ok(css.includes('min-height: calc(100svh - 72px)'));
+  assert.ok(css.includes('aspect-ratio: 5 / 4'));
+  assert.ok(!landing.includes('DriveVisual'));
+});
+
+test('Formation comparison shows both approved volumes without hiding prices behind the selector', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  for (const marker of [
+    'PRICES[13].classic',
+    'PRICES[20].classic',
+    'PRICES[13].accelerated',
+    'PRICES[20].accelerated',
+    'Inclus dans les deux rythmes',
+    'id="formations"',
+    'id="formules"'
+  ]) assert.ok(landing.includes(marker), marker);
+});
+
+test('Missing contact channel is exposed as unavailable instead of inventing coordinates or an endpoint', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  assert.ok(landing.includes('wd-experience-contact-pending'));
+  assert.ok(landing.includes('Canal de contact à confirmer'));
+  assert.ok(!landing.includes('to="/#contact"'));
+});
+
+test('Shared header uses the execution-grid heights on desktop and small mobile', () => {
+  const brand = read('src/styles/brand.css');
+  const blog = read('src/styles/refinement-blog.css');
+  assert.ok(brand.includes('height: 72px; margin: auto;'));
+  assert.ok(brand.includes('height: 64px; padding-inline: 20px;'));
+  assert.ok(blog.includes('top:72px'));
+  assert.ok(blog.includes('top:64px'));
+});
