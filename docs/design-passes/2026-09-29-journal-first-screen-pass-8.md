@@ -199,3 +199,27 @@ Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. 
 ### Next priority
 Continue on `design/mobile-budget-pass-19` while unmerged. Next useful pass: refine the 320–390 px selection band and plan switch without reducing tap targets, then re-check focus/reduced-motion behavior and preview overflow when inspectable.
 
+
+
+## Pass 20 — narrow decision controls
+- Continued from published main on `design/mobile-selection-pass-20`.
+- On 320–420 px widths, the 13 h / 20 h control keeps full-width 48 px targets and the selection summary stays compact without hiding either Classique or Accélérée pricing.
+- The budget Classique / Accélérée switch keeps 48 px targets, explicit keyboard focus, forced-colors selection and reduced-motion handling.
+- Code commit `4ec0167f1299f5aa4f5ca88701750390fa13b7b4` was confirmed on GitHub and received Vercel `success`.
+
+## Pass 21 — selected-plan clarity
+- Made each offer card expose its current state directly in the card header: “Sélectionnée” for the active rhythm and “À comparer” for the alternative, while preserving the existing card content and pricing.
+- The card CTA now reflects intent: the active card offers to adjust the current estimate, while the alternative explicitly offers to choose and simulate it.
+- Improved the budget summary hierarchy by labeling each total as “Choix actuel” or “Comparatif”; both totals remain visible at all times.
+- Added restrained pill styling for card state and stronger selected-state contrast without changing the WEBEDRIVE palette, commercial data, routes, payment, authentication, Supabase, dependencies or infrastructure.
+
+### Checks actually performed for pass 21
+- Re-read `main`, the cumulative branch, recent PRs and this journal before editing. The branch was 1 commit ahead and 0 behind `main` at the start of the pass.
+- Confirmed Vercel `success` for the starting head `4ec0167f1299f5aa4f5ca88701750390fa13b7b4`; that status is not reused as proof for the new code.
+- Wrote the JSX change in `938bb1684a2258e46cee20f58b69e4188e3f77b4` and the CSS change in `ac2dbe4b190547393479d0f789d55eb121e5da0d`.
+- Static CSS brace validation passed after the CSS write: 103 opening / 103 closing braces.
+- A repository quality-test assertion for the new selection markers was prepared, but the connector rejected that write before any change to `scripts/quality.test.mjs`; the existing test suite remains untouched.
+- No browser screenshot, pixel-level overflow check, local npm test or local full build is claimed for this pass.
+
+## Next priority
+Keep `design/mobile-selection-pass-20` as the cumulative branch while it remains unmerged. Next useful pass: inspect the selected-card and budget-summary rhythm at 320/390/768 px from a readable preview, then refine only observed spacing or overflow defects; otherwise continue with the sticky decision band and anchor handoff without changing approved commercial data.
