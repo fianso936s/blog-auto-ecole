@@ -132,3 +132,21 @@ Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. 
 - La relecture du CSS après le premier commit du pass a détecté une collision de spécificité : les règles génériques `.site-footer nav` auraient pu écraser la grille et la hauteur des cellules du nouveau rail de parcours.
 - Correction appliquée avant validation finale : les règles de colonne sont désormais limitées à `.site-footer-grid nav`, ce qui laisse `.site-footer-route` gouverner sa propre grille 4 colonnes / 2 × 2 mobile.
 - Le garde-fou de qualité vérifie désormais explicitement l’absence de cette règle générique conflictuelle.
+
+
+## Pass 16 — pile sticky cohérente et fin de lecture
+- Corrigé un défaut de pile sticky dans le journal : la sous-navigation utilisait des offsets fixes différents du header. Le header et la navigation journal partagent désormais un même token de hauteur pour éviter chevauchement ou espace parasite entre 561 et 1099 px.
+- Le scroll-padding suit aussi cette hauteur partagée pour garder les cibles d'ancre cohérentes entre desktop et mobile.
+- Amélioré la sous-navigation du journal sur écrans tactiles/intermédiaires avec scroll horizontal contenu, snap léger et scrollbar visuelle masquée.
+- Recompose la fin des pages article en panneau éditorial premium avec deux choix explicites : tous les articles ou retour à la une.
+- Le panneau repasse en une colonne sur mobile avec actions pleine largeur et focus global conservé.
+- Aucun tarif, paiement, authentification, donnée Supabase, dépendance, workflow GitHub Actions ni infrastructure n'a été modifié.
+
+### Contrôles réellement effectués pour le pass 16
+- Tête canonique revérifiée avant préparation : `23574837c222a05845e25a534cc6041b03a2924f`, identique à `design/journal-first-screen-pass-8`, 21 commits devant et 0 derrière `main`.
+- Le SHA de départ avait un statut Vercel `success`; ce résultat n'est pas utilisé comme validation du nouveau commit.
+- Tentative d'inspection directe Vercel : refus 403 sur le scope du projet, donc aucune capture ni validation visuelle navigateur n'est revendiquée.
+- Validation statique de la proposition : remplacements uniques contrôlés, accolades CSS équilibrées sur les deux feuilles modifiées, offsets sticky centralisés et structure responsive du panneau article vérifiée.
+
+## Next priority
+Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. Prochain gain utile : raffiner les états de chargement/absence du blog et les transitions de densité entre 800 et 1100 px, puis contrôler le parcours clavier complet dès qu'une preview de branche devient inspectable.

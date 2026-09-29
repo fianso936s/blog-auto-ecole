@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { sampleArticles } from "../../data/articles";
 import { supabase } from "../../lib/supabase";
 import type { Article } from "../../lib/types";
@@ -40,7 +40,17 @@ export default function ArticleDetailPage() {
       </header>
       {showImage && <figure className="article-detail-cover"><img src={article.cover_image} alt="" width="900" height="560" loading="eager" fetchPriority="high" decoding="async" /></figure>}
       <div className="article-detail-body"><ArticleBody html={article.content} /></div>
-      <footer className="article-detail-footer"><Link className="site-button" to="/blog/articles">Découvrir les autres articles</Link></footer>
+      <footer className="article-detail-footer" aria-labelledby="article-next-title">
+        <div>
+          <span className="site-eyebrow">Suite du journal</span>
+          <h2 id="article-next-title">Continuer votre lecture.</h2>
+          <p>Retrouvez les autres repères pratiques du journal WEBEDRIVE.</p>
+        </div>
+        <div className="article-detail-actions">
+          <Link className="site-button" to="/blog/articles">Tous les articles <ArrowRight size={18} aria-hidden="true" /></Link>
+          <Link className="article-detail-secondary" to="/blog">À la une</Link>
+        </div>
+      </footer>
     </div>
   </article>;
 }
