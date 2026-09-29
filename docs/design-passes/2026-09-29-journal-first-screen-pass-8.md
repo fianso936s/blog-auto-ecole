@@ -150,3 +150,20 @@ Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. 
 
 ## Next priority
 Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. Prochain gain utile : raffiner les états de chargement/absence du blog et les transitions de densité entre 800 et 1100 px, puis contrôler le parcours clavier complet dès qu'une preview de branche devient inspectable.
+
+
+## Pass 17 — état éditorial lisible et densité tablette
+- Le journal distingue maintenant explicitement la vérification des publications de son état de démonstration : l’aperçu reste visible pendant la lecture, puis le bandeau confirme le fallback éditorial lorsque les publications live ne sont pas disponibles.
+- Le bandeau d’information a été recomposé comme un rail éditorial premium avec repère, hiérarchie courte et variante responsive une colonne sur mobile.
+- Entre 801 et 1040 px, la grille d’articles passe à deux colonnes au lieu de conserver trois cartes trop étroites ; la carte à la une garde une composition équilibrée avant son basculement une colonne à 800 px.
+- Sous 600 px, le raffinement impose explicitement une seule colonne afin d’éviter qu’une règle tablette ne réintroduise deux colonnes.
+- Aucun contenu d’article, tarif, route, paiement, authentification, écriture Supabase, dépendance, workflow ou infrastructure n’a été modifié.
+
+### Contrôles réellement effectués pour le pass 17
+- Tête distante relue avant chaque écriture, avec avancement séquentiel sur la même branche et sans force-push.
+- Le SHA de départ 932078d16073aa7c2867e85efed439deb46238ec avait un statut Vercel success ; ce résultat n’est pas réutilisé comme validation du nouveau code.
+- La tentative d’ajouter un garde-fou supplémentaire dans scripts/quality.test.mjs a été refusée par la couche de sécurité du connecteur avant modification ; la suite existante n’a pas été altérée.
+- Validation de la proposition par relecture du code distant et contrôle statique des breakpoints et états ; aucune capture navigateur de cette branche n’est revendiquée.
+
+## Next priority
+Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. Prochain gain utile : aligner le bandeau de sélection des formules sur le token partagé de hauteur du header, puis améliorer les contrôles numériques du simulateur pour les écrans tactiles sans changer le modèle tarifaire.
