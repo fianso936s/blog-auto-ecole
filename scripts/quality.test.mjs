@@ -213,5 +213,6 @@ test('Shared mobile navigation and footer keep route hierarchy usable at narrow 
   const styles = read('src/styles/brand.css');
   for (const marker of ['site-mobile-overline', 'site-mobile-link-label', 'String(index + 1).padStart(2, "0")']) assert.ok(header.includes(marker), marker);
   for (const marker of ['site-footer-head', 'site-footer-route', 'aria-label="Repères du parcours"', 'to="/#budget"', 'WEBEDRIVE · VOTRE PARCOURS']) assert.ok(footer.includes(marker), marker);
-  for (const marker of ['overscroll-behavior: contain', 'env(safe-area-inset-top)', 'grid-template-columns: repeat(2,minmax(0,1fr))', '.site-footer summary::after', '@media(max-width:380px)']) assert.ok(styles.includes(marker), marker);
+  for (const marker of ['overscroll-behavior: contain', 'env(safe-area-inset-top)', 'grid-template-columns: repeat(2,minmax(0,1fr))', '.site-footer summary::after', '@media(max-width:380px)', '.site-footer-grid nav {']) assert.ok(styles.includes(marker), marker);
+  assert.ok(!styles.includes('.site-footer nav {'), 'route rail must not inherit column nav layout');
 });

@@ -126,3 +126,9 @@ Si la branche reste non fusionnée, poursuivre sur la même base cumulative. Pro
 
 ## Next priority
 Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. Prochain gain utile : vérifier et raffiner le comportement du header sticky + navigation blog sur les largeurs intermédiaires 768–1099 px, puis réduire les écarts de densité entre la landing et les pages article sans changer le contenu éditorial.
+
+
+### Correction ciblée du pass 15
+- La relecture du CSS après le premier commit du pass a détecté une collision de spécificité : les règles génériques `.site-footer nav` auraient pu écraser la grille et la hauteur des cellules du nouveau rail de parcours.
+- Correction appliquée avant validation finale : les règles de colonne sont désormais limitées à `.site-footer-grid nav`, ce qui laisse `.site-footer-route` gouverner sa propre grille 4 colonnes / 2 × 2 mobile.
+- Le garde-fou de qualité vérifie désormais explicitement l’absence de cette règle générique conflictuelle.
