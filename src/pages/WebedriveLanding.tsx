@@ -40,12 +40,16 @@ function BudgetCounter({ id, label, help, value, max, minusLabel, plusLabel, onC
 
 function OfferCard({ title, note, price, plan, selected, dark = false, onSelect, children }: { title: string; note: string; price: number; plan: Plan; selected: boolean; dark?: boolean; onSelect: (plan: Plan) => void; children: ReactNode }) {
   const titleId = dark ? "accelerated-title" : "classic-title";
-  return <article className={`wd-card ${dark ? "wd-card-dark" : ""}`} aria-labelledby={titleId} data-selected={selected ? "true" : "false"}>
-    <div className="wd-plan-top"><span>{dark ? "02 / SÉANCES REGROUPÉES" : "01 / SÉANCES RÉPARTIES"}</span><ArrowRight size={22} aria-hidden="true" /></div>
+  const stateId = `${titleId}-state`;
+  return <article className={`wd-card ${dark ? "wd-card-dark" : ""}`} aria-labelledby={titleId} aria-describedby={stateId} data-selected={selected ? "true" : "false"}>
+    <div className="wd-plan-top">
+      <span>{dark ? "02 / SÉANCES REGROUPÉES" : "01 / SÉANCES RÉPARTIES"}</span>
+      <span id={stateId} className="wd-plan-state">{selected ? <><Check size={13} aria-hidden="true" />Sélectionnée</> : <><span>À comparer</span><ArrowRight size={13} aria-hidden="true" /></>}</span>
+    </div>
     <div className="wd-card-head"><h3 id={titleId}>{title}</h3><small>{note}</small></div>
     <div className="wd-price">{price.toLocaleString("fr-FR")} <span>€</span></div>
     {children}
-    <Link className="wd-plan-link" to="/#budget" onClick={() => onSelect(plan)} aria-label={`Simuler le budget de la formule ${title.toLowerCase()}`}>Simuler mon budget <ArrowRight size={18} aria-hidden="true" /></Link>
+    <Link className="wd-plan-link" to="/#budget" onClick={() => onSelect(plan)} aria-label={selected ? `Ajuster le budget de la formule ${title.toLowerCase()}` : `Choisir et simuler la formule ${title.toLowerCase()}`}>{selected ? "Ajuster cette estimation" : "Choisir et simuler"} <ArrowRight size={18} aria-hidden="true" /></Link>
   </article>;
 }
 
@@ -116,7 +120,7 @@ export default function WebedriveLanding() {
               <BudgetCounter id="budget-code-attempts" label="Tentatives code" help={`${CODE_EXAM_PRICE} € par tentative`} value={codeAttempts} max={10} minusLabel="Retirer une tentative code" plusLabel="Ajouter une tentative code" onChange={setCodeAttempts} />
             </fieldset>
           </div>
-          <div className="wd-budget-summary"><div className="wd-budget-bridge"><small>Étape suivante</small><strong>{hours} h · {selectedPlanLabel}</strong></div><span>Votre estimation / {hours} h / {selectedPlanLabel}</span><div className="wd-budget-total" data-active={plan === "classic" ? "true" : "false"}><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total" data-active={plan === "accelerated" ? "true" : "false"}><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p><p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{selectedPlanLabel}, {hours} heures : estimation {selectedTotal.toLocaleString("fr-FR")} euros.</p></div>
+          <div className="wd-budget-summary"><div className="wd-budget-bridge"><small>Étape suivante</small><strong>{hours} h · {selectedPlanLabel}</strong></div><span>Votre estimation / {hours} h / {selectedPlanLabel}</span><div className="wd-budget-total" data-active={plan === "classic" ? "true" : "false"}><div className="wd-budget-total-copy"><small>{plan === "classic" ? "Choix actuel" : "Comparatif"}</small><span>Classique</span></div><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total" data-active={plan === "accelerated" ? "true" : "false"}><div className="wd-budget-total-copy"><small>{plan === "accelerated" ? "Choix actuel" : "Comparatif"}</small><span>Accélérée</span></div><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p><p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{selectedPlanLabel}, {hours} heures : estimation {selectedTotal.toLocaleString("fr-FR")} euros.</p></div>
         </section>
         <div className="wd-budget-handoff" aria-label="Suite du parcours">
           <div><small>Prochaine étape · 02</small><strong>Le budget est posé. La progression reste lisible.</strong><span>Évaluation, organisation, bilans : voyez comment la méthode s’enchaîne.</span></div>
