@@ -36,13 +36,12 @@
 .blog-grid .article-card h2{font-size:clamp(20px,1.75vw,24px);line-height:1.28;margin-bottom:10px}
 .blog-grid .article-card p{font-size:14px;line-height:1.7}
 .blog-grid .article-card-meta{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 12px;font-size:12px}
-.blog-grid .article-card-meta>span:first-child{grid-column:1/-1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.blog-grid .article-card-meta>span:first-child{grid-column:1/-1;overflow-wrap:anywhere}
 .blog-grid .article-card-meta>time,.blog-grid .article-card-meta>span:last-child{white-space:nowrap}
 .blog-filters{gap:8px;align-items:center;max-width:100%}
 .blog-filters a{background:var(--wd-surface);transition:background 160ms var(--wd-ease),border-color 160ms var(--wd-ease),transform 160ms var(--wd-ease),box-shadow 160ms var(--wd-ease)}
 .blog-filters a[aria-current="page"]{box-shadow:0 8px 20px rgb(9 36 53/.12)}
 .article-card:focus-within{border-color:var(--wd-primary);box-shadow:0 0 0 3px rgb(21 61 88/.12)}
-.article-card>a:focus-visible{outline:none}
 .site-newsletter{margin-top:18px;box-shadow:inset 0 0 0 1px rgb(255 255 255/.28)}
 @media(hover:hover){
   .article-card:hover::after{transform:scaleX(1)}
