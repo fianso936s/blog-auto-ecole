@@ -29,12 +29,18 @@ export default function ArticleDetailPage() {
   const date = new Date(article.created_at);
   const formattedDate = Number.isNaN(date.getTime()) ? null : date.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
   const showImage = (article as Article & { show_cover_image?: boolean }).show_cover_image !== false && Boolean(article.cover_image);
-  return <article className="max-w-3xl mx-auto px-5 sm:px-6 py-10 sm:py-16">
+  return <article className="article-detail">
     <PageMeta title={article.title} description={article.excerpt} />
-    <Link to="/blog/articles" className="inline-flex min-h-12 items-center gap-2 text-primary font-semibold mb-6"><ArrowLeft size={18} aria-hidden="true" />Retour aux articles</Link>
-    <header><span className="site-eyebrow">{article.category}</span><h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight my-5">{article.title}</h1><div className="flex gap-4 flex-wrap text-sm text-text-muted mb-8"><span>{article.author}</span>{formattedDate && <time dateTime={date.toISOString()}>{formattedDate}</time>}</div></header>
-    {showImage && <img src={article.cover_image} alt="" width="900" height="560" className="w-full rounded-2xl mb-10" decoding="async" />}
-    <ArticleBody html={article.content} />
-    <div className="mt-12 pt-8 border-t border-border"><Link className="site-button" to="/blog/articles">Découvrir les autres articles</Link></div>
+    <div className="article-detail-shell">
+      <Link to="/blog/articles" className="article-detail-back"><ArrowLeft size={18} aria-hidden="true" />Retour aux articles</Link>
+      <header className="article-detail-header">
+        <span className="site-eyebrow">{article.category}</span>
+        <h1>{article.title}</h1>
+        <div className="article-detail-meta"><span>{article.author}</span>{formattedDate && <time dateTime={date.toISOString()}>{formattedDate}</time>}</div>
+      </header>
+      {showImage && <figure className="article-detail-cover"><img src={article.cover_image} alt="" width="900" height="560" loading="eager" fetchPriority="high" decoding="async" /></figure>}
+      <div className="article-detail-body"><ArticleBody html={article.content} /></div>
+      <footer className="article-detail-footer"><Link className="site-button" to="/blog/articles">Découvrir les autres articles</Link></footer>
+    </div>
   </article>;
 }
