@@ -90,3 +90,21 @@ Keep this same cumulative branch while unmerged. Next useful pass: refine the de
 
 ## Next priority
 Si la branche reste non fusionnée, poursuivre sur la même base cumulative. Prochain gain utile : raffiner le bloc FAQ → journal sur mobile (densité, rythme et CTA final) puis contrôler le débordement 320/375/390/768 px si une preview de branche devient lisible.
+
+
+## Pass 14 — FAQ numérotée et journal mobile premium
+- Raffiné la transition FAQ → journal sans toucher aux routes, contenus éditoriaux, tarifs ou engagements : la FAQ gagne des repères numérotés discrets, un état ouvert plus lisible et un rythme plus compact sur petit écran.
+- Recompose le bloc final du journal en vraie zone de handoff premium : grille éditoriale, tags de ressources, actions alignées et fond technique subtil, tout en conservant les deux CTA existants.
+- Sur tablette et mobile, le panneau d’actions passe sous le texte, prend la largeur disponible et supprime la bordure verticale ; à 600 px puis 380 px, les espacements et tailles sont resserrés pour rester lisibles sans largeur fixe.
+- Conservé le focus clavier des résumés FAQ, ajouté un focus explicite au CTA secondaire et neutralisé les nouvelles transitions lorsque `prefers-reduced-motion` est actif.
+- Aucun nouveau composant, aucune dépendance, aucun workflow, aucune donnée Supabase, aucun paiement, aucune authentification ni infrastructure n’a été modifié.
+
+### Contrôles réellement effectués pour le pass 14
+- Tête distante relue avant écriture : `13262ed36e465101106c56d7e80ba8588cd0c3be`, branche 17 commits devant et 0 derrière `main`.
+- Le statut Vercel de cette tête de départ était `success` ; il n’est pas utilisé comme preuve pour les commits de ce passage.
+- Validation statique avant écriture : accolades CSS équilibrées (297/297), présence des repères FAQ, des règles 800/600/380 px, du focus secondaire et de la neutralisation reduced-motion.
+- Ajout d’une assertion de qualité qui protège les principaux marqueurs de densité mobile et le handoff journal.
+- Aucune capture navigateur de la branche n’est revendiquée dans ce passage ; le contrôle de débordement est limité aux contraintes CSS explicites et aux checks distants disponibles.
+
+## Next priority
+Si la branche reste non fusionnée, poursuivre sur la même base cumulative. Prochain gain utile : harmoniser la densité du footer et du menu mobile avec ce nouveau niveau de finition, puis vérifier le parcours complet clavier du header au journal si une preview de branche devient directement inspectable.

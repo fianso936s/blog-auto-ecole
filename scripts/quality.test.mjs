@@ -190,3 +190,18 @@ test('Landing keeps the simulated journey visible through the method handoff', (
   assert.ok(styles.includes('.wd-question-list summary:focus-visible'));
   assert.ok(styles.includes('.wd-site .wd-method .wd-steps article::before'));
 });
+
+
+test('FAQ and journal handoff stay dense and operable on narrow screens', () => {
+  const styles = read('src/styles/editorial.css');
+  for (const marker of [
+    'counter-reset: wd-question',
+    'counter(wd-question, decimal-leading-zero)',
+    '.wd-question-list details[open]>summary',
+    'grid-template-columns: minmax(0,1.18fr) minmax(270px,.72fr)',
+    '.wd-closing-actions',
+    '.wd-closing-secondary:focus-visible',
+    '.wd-question-list details>p { padding: 0 30px 20px 36px;',
+    '.wd-closing-actions { width: 100%;'
+  ]) assert.ok(styles.includes(marker), marker);
+});

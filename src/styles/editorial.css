@@ -194,20 +194,53 @@
 .wd-site .wd-steps p { font-size: 14px; line-height: 1.8; max-width: 290px; }
 .wd-questions { display: grid; grid-template-columns: minmax(0,.82fr) minmax(0,1.18fr); gap: clamp(48px,7vw,104px); padding: 96px var(--wd-gutter); border-top: 1px solid var(--wd-border); background: var(--wd-bg); align-items: start; }
 .wd-questions>div:first-child { position: sticky; top: 120px; align-self: start; }
-.wd-question-list { padding: 6px 28px; border: 1px solid var(--wd-border); border-radius: 12px; background: var(--wd-surface); box-shadow: 0 18px 48px rgb(9 36 53 / .045); }
+.wd-question-list { counter-reset: wd-question; padding: 0 28px; border: 1px solid var(--wd-border); border-radius: 12px; background: var(--wd-surface); box-shadow: 0 18px 48px rgb(9 36 53 / .045); }
 .wd-questions .site-eyebrow { font-size: 10px; }
 .wd-questions h2 { font-size: clamp(30px,3vw,42px); }
-.wd-question-list details { border-bottom: 1px solid var(--wd-border); }
-.wd-question-list details:first-child { border-top: 0; }
-.wd-question-list summary { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 24px 0; min-height: 72px; list-style: none; font-size: 14px; font-weight: 650; line-height: 1.6; cursor: pointer; }
+.wd-question-list details { counter-increment: wd-question; border-bottom: 1px solid var(--wd-border); }
+.wd-question-list details:last-child { border-bottom: 0; }
+.wd-question-list summary { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 23px 0; min-height: 72px; list-style: none; font-size: 14px; font-weight: 650; line-height: 1.6; cursor: pointer; transition: color 160ms var(--wd-ease); }
 .wd-question-list summary:focus-visible { outline: 2px solid var(--wd-field); outline-offset: 5px; border-radius: 4px; }
 .wd-question-list summary::-webkit-details-marker { display: none; }
+.wd-question-list summary::before { content: counter(wd-question, decimal-leading-zero); flex: 0 0 26px; color: var(--wd-accent-text); font-family: ui-monospace,monospace; font-size: 10px; font-weight: 700; letter-spacing: .08em; }
 .wd-question-list summary::after { content: "+"; font-size: 24px; line-height: 1; font-weight: 400; flex: none; }
-.wd-question-list details[open]>summary::after { content: "−"; }
-.wd-question-list details>p { padding: 0 30px 24px 0; color: var(--wd-muted); font-size: 14px; line-height: 1.8; margin: 0; }
-.wd-site .wd-closing { padding: 80px var(--wd-gutter); background: var(--wd-primary-light); gap: 40px; }
-.wd-site .wd-closing p { margin: 18px 0 0; color: var(--wd-muted); font-size: 14px; line-height: 1.8; max-width: 440px; }
-.wd-site .wd-closing .wd-pill { flex-shrink: 0; }
+.wd-question-list details[open]>summary { color: var(--wd-primary); }
+.wd-question-list details[open]>summary::after { content: "−"; color: var(--wd-primary); }
+.wd-question-list details>p { padding: 0 34px 24px 44px; color: var(--wd-muted); font-size: 14px; line-height: 1.8; margin: 0; }
+.wd-site .wd-closing {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0,1.18fr) minmax(270px,.72fr);
+  align-items: end;
+  gap: clamp(36px,6vw,84px);
+  padding: 84px var(--wd-gutter);
+  overflow: hidden;
+  border-top: 1px solid var(--wd-border);
+  background: linear-gradient(135deg,var(--wd-primary-light) 0 64%,var(--wd-accent-surface) 100%);
+}
+.wd-site .wd-closing::after {
+  content: "";
+  position: absolute;
+  width: 330px;
+  height: 330px;
+  right: -150px;
+  bottom: -190px;
+  border: 1px solid color-mix(in srgb,var(--wd-primary) 22%,transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 48px color-mix(in srgb,var(--wd-primary) 5%,transparent),0 0 0 96px color-mix(in srgb,var(--wd-primary) 3%,transparent);
+  pointer-events: none;
+}
+.wd-closing-copy,.wd-closing-actions { position: relative; z-index: 1; min-width: 0; }
+.wd-site .wd-closing h2 { max-width: 720px; margin: 14px 0 0; }
+.wd-site .wd-closing p { margin: 18px 0 0; color: var(--wd-muted); font-size: 14px; line-height: 1.8; max-width: 500px; }
+.wd-closing-topics { display: flex; flex-wrap: wrap; gap: 8px 10px; margin: 24px 0 0; padding: 0; list-style: none; }
+.wd-closing-topics li { display: inline-flex; min-height: 34px; align-items: center; gap: 8px; padding: 7px 11px; border: 1px solid var(--wd-border); border-radius: 999px; background: color-mix(in srgb,var(--wd-surface) 72%,transparent); color: var(--wd-muted); font-size: 11px; font-weight: 700; }
+.wd-closing-topics li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--wd-sand); flex: none; }
+.wd-closing-actions { display: grid; gap: 10px; width: min(100%,360px); justify-self: end; padding-left: 28px; border-left: 1px solid var(--wd-border); }
+.wd-site .wd-closing .wd-pill { width: 100%; justify-content: space-between; flex-shrink: 0; margin: 0; }
+.wd-closing-secondary { display: inline-flex; min-height: 50px; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 18px; border: 1px solid var(--wd-border); border-radius: 999px; color: var(--wd-ink); font-size: 12px; font-weight: 750; text-decoration: none; transition: background 160ms var(--wd-ease),border-color 160ms var(--wd-ease); }
+.wd-closing-secondary:hover { background: var(--wd-surface); border-color: var(--wd-field); }
+.wd-closing-secondary:focus-visible { outline: 3px solid var(--wd-field); outline-offset: 3px; }
 /* The journal remains part of the same brand, rather than a separate template. */
 .blog-hero { position: relative; overflow: hidden; background: var(--wd-dark); color: #F6F3ED; padding-block: 82px 74px; }
 .blog-hero::after { content: ""; position: absolute; width: 440px; height: 440px; right: -160px; top: -130px; border: 1px solid #426076; border-radius: 50%; box-shadow: 0 0 0 55px rgb(66 96 118 / .12),0 0 0 110px rgb(66 96 118 / .06); pointer-events: none; }
@@ -276,11 +309,12 @@
   .wd-site .wd-method .wd-steps article+article::before { left: 0; }
   .wd-step-top { margin-bottom: 18px; }
   .wd-site .wd-steps p { max-width: 480px; }
-  .wd-questions { grid-template-columns: 1fr; gap: 32px; padding-block: 60px; }
+  .wd-questions { grid-template-columns: 1fr; gap: 28px; padding-block: 60px; }
   .wd-questions>div:first-child { position: static; }
   .wd-question-list { padding-inline: 20px; }
-  .wd-site .wd-closing { display: block; padding-block: 60px; }
-  .wd-site .wd-closing .wd-pill { margin-top: 28px; }
+  .wd-site .wd-closing { grid-template-columns: minmax(0,1fr); gap: 32px; padding-block: 60px; }
+  .wd-closing-actions { width: min(100%,420px); justify-self: start; padding: 24px 0 0; border-left: 0; border-top: 1px solid var(--wd-border); }
+  .wd-site .wd-closing .wd-pill { margin-top: 0; }
   .blog-hero { padding-block: 54px; }
 }
 @media (max-width:600px) {
@@ -310,6 +344,16 @@
   .wd-hero-footer>span { max-width: 148px; font-size: 8px; line-height: 1.55; }
   .wd-hero-footer>a { font-size: 10px; gap: 12px; }
   .wd-site .wd-offers { padding-top: 58px; }
+  .wd-questions { gap: 22px; padding-block: 52px; }
+  .wd-question-list { padding-inline: 18px; }
+  .wd-question-list summary { min-height: 62px; gap: 12px; padding: 18px 0; font-size: 13.5px; }
+  .wd-question-list summary::before { flex-basis: 24px; font-size: 9px; }
+  .wd-question-list details>p { padding: 0 30px 20px 36px; font-size: 13.5px; line-height: 1.75; }
+  .wd-site .wd-closing { padding-block: 54px; gap: 28px; }
+  .wd-site .wd-closing h2 { max-width: 11ch; }
+  .wd-closing-topics { margin-top: 20px; }
+  .wd-closing-actions { width: 100%; padding-top: 20px; }
+  .wd-closing-secondary { min-height: 52px; }
   .wd-method-context { grid-template-columns: 1fr; }
   .wd-method-context>div { padding: 13px 0; }
   .wd-method-context>div+div { padding-left: 0; border-left: 0; border-top: 1px solid #426076; }
@@ -338,8 +382,13 @@
   .wd-art-heading>strong { font-size: 19px; }
   .wd-art-note { bottom: 28px; max-width: 88%; }
   .wd-hero-footer>span { max-width: 132px; }
+  .wd-question-list { padding-inline: 14px; }
+  .wd-question-list summary { gap: 10px; font-size: 13px; }
+  .wd-question-list details>p { padding-left: 34px; padding-right: 24px; }
+  .wd-site .wd-closing { padding-block: 48px; }
+  .wd-site .wd-closing h2 { font-size: 32px; }
 }
 @media (prefers-reduced-motion:reduce) {
   .wd-road-markers,.wd-site .wd-copy,.wd-site .wd-visual { animation: none !important; }
-  .article-card,.wd-pill svg,.wd-plan-link svg { transition: none !important; transform: none !important; }
+  .article-card,.wd-pill svg,.wd-plan-link svg,.wd-question-list summary,.wd-closing-secondary { transition: none !important; transform: none !important; }
 }
