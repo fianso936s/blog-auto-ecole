@@ -36,3 +36,20 @@ Working branch: `design/premium-contrast-pass-5`
 - No prices, routes, claims, data, dependencies, authentication, payments, infrastructure or GitHub Actions changed.
 - Vercel status for commit `2296678de1099274593ce5a158f0f0d50b9e8d13`: success. The repository build command includes the existing test command before TypeScript/Vite build.
 - Next priority: refine offer-comparison hierarchy and the handoff into the budget estimator without duplicating the mobile decision dock from pass 4.
+
+
+## Follow-up — 2026-09-29 / offer comparison & budget handoff pass 6
+
+Working branch: `design/premium-contrast-pass-5`
+
+- Added a concise comparison cue above the two offer cards so the selected {hours} context reads as one decision rather than two disconnected price blocks.
+- Preserved the existing prices and inclusions; the new copy only clarifies that the inclusions stay the same while the session rhythm changes.
+- Carried the selected-hours context into the budget summary with an explicit “Étape suivante” bridge, improving continuity from formula choice to local estimation.
+- Added `:focus-within` treatment on offer cards so keyboard navigation produces a visible card-level focus state without adding motion.
+- Added responsive rules for the comparison cue and budget bridge so they stack cleanly on mobile without duplicating the sticky mobile selection dock.
+- Added a repository quality-test assertion covering the new comparison and budget-handoff markers.
+- Remote branch verification after the design commit: branch was 4 commits ahead of `main`, 0 behind, and all expected modified files were present.
+- Vercel status for design commit `fb84d5346dfaca203e995906e665db3654df498e`: success. The project build command runs the existing Node test suite before build-info generation, TypeScript compilation and Vite build.
+- No prices, routes, offer logic, authentication, payments, data access, dependencies, infrastructure or GitHub Actions were changed.
+- Visual validation in this pass relied on code/diff inspection plus the successful Vercel pipeline; no screenshot-based regression comparison was available.
+- Next priority: refine the closing CTA and blog handoff so the page ends with the same premium decision rhythm without increasing visual density.
