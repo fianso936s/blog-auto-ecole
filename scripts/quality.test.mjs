@@ -146,3 +146,11 @@ test('shuffleCopy is deterministic with an injected source and does not mutate i
   assert.deepEqual(source, [1, 2, 3]);
   assert.deepEqual(Array.from(shuffled), [2, 3, 1]);
 });
+
+
+test('Landing comparison keeps the selected volume visible into the budget step', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  for (const marker of ['wd-comparison-intro', 'Comparaison des formules pour', 'wd-budget-bridge', 'Étape suivante', 'h sélectionnées']) {
+    assert.ok(landing.includes(marker), marker);
+  }
+});

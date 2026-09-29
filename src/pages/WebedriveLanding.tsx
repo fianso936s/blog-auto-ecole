@@ -68,7 +68,11 @@ export default function WebedriveLanding() {
           <span><small>Accélérée</small><strong>{price.accelerated.toLocaleString("fr-FR")} €</strong></span>
           <Link to="/#budget">Ajuster l’estimation <ArrowRight size={17} aria-hidden="true" /></Link>
         </div>
-        <div className="wd-cards">
+        <div className="wd-comparison-intro">
+          <span>Comparer sans jargon</span>
+          <p><strong>{hours} h sélectionnées.</strong> Les inclusions restent les mêmes ; seul le rythme des séances change.</p>
+        </div>
+        <div className="wd-cards" aria-label={`Comparaison des formules pour ${hours} heures`}>
           <OfferCard title="Classique" note={`${hours} h · à votre rythme`} price={price.classic}><p>Le temps de progresser, avec des séances réparties selon les disponibilités communes.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}</ul></OfferCard>
           <OfferCard dark title="Accélérée" note={`${hours} h · supplément de 200 €`} price={price.accelerated}><p>Les mêmes inclusions, avec des séances regroupées lorsque le planning le permet.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}<li><Check aria-hidden="true" />Créneaux validés avant engagement. Aucune date d’examen garantie.</li></ul></OfferCard>
         </div>
@@ -80,7 +84,7 @@ export default function WebedriveLanding() {
               <label className="wd-budget-field"><span>Tentatives code</span><input type="number" inputMode="numeric" min="0" max="10" step="1" value={codeAttempts} onChange={(event) => setCodeAttempts(clampCount(event.target.value, 10))} aria-describedby="budget-code-help" /><small id="budget-code-help">{CODE_EXAM_PRICE} € par tentative</small></label>
             </fieldset>
           </div>
-          <div className="wd-budget-summary" role="status" aria-live="polite" aria-atomic="true"><span>Votre estimation / {hours} h</span><div className="wd-budget-total"><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total"><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p></div>
+          <div className="wd-budget-summary" role="status" aria-live="polite" aria-atomic="true"><div className="wd-budget-bridge"><small>Étape suivante</small><strong>{hours} h sélectionnées</strong></div><span>Votre estimation / {hours} h</span><div className="wd-budget-total"><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total"><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p></div>
         </section>
       </section>
       <section id="methode" className="wd-method" aria-labelledby="method-title">
