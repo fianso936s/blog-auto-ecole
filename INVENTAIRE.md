@@ -126,3 +126,15 @@ Statuts :
 - P2 : ASSET MANQUANT
 - P3 : NON IMPLÉMENTÉ
 - Publication : NON PUBLIÉE
+
+
+## 12. Préparation P2
+
+Ajout d’une source éditable procédurale :
+- `tools/generate-ribbon-assets.py`
+- `tools/requirements-3d.txt`
+- `docs/experience3d/ASSET-SOURCE.md`
+
+La session a généré localement des variantes desktop/lite/mobile et vérifié les noms de nœuds requis. Ces binaires ne sont pas encore enregistrés dans GitHub et ne sont pas déclarés finaux.
+
+Statut P2 : EN COURS — source implémentée, exports/revue finale encore manquants.
