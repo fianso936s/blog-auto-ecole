@@ -69,7 +69,7 @@ Keep this cumulative branch if it remains unmerged. Next useful pass: inspect th
 - Static CSS validation on the proposed mobile refinements found balanced braces (251 opening / 251 closing) before commit.
 - Remote diff review confirmed only the intended landing, decision/editorial CSS and quality-test changes in code commit `0bc34a9b2cc30d2d4a54db391319d5c9ab92f447`.
 - GitHub reports the cumulative branch 12 commits ahead and 0 behind `main` at the code commit.
-- Vercel reported `success` for `0bc34a9b2cc30d2d4a54db391319d5c9ab92f447`. In this repository, `npm run build` runs `npm test` first, then TypeScript and Vite, so the reported build success covers the repository quality suite and compile/build pipeline for that SHA.
+- Vercel reported `success` for `0bc34a9b2cc30d2d4a54db391319d5c9ab92f447`. The repository’s default `npm run build` script is `npm test && node scripts/build-info.mjs && tsc -b && vite build`; direct Vercel build logs were not accessible in this run, so the status is recorded as a successful Vercel signal rather than a claim that each build step was independently observed.
 - A direct Vercel project inspection was attempted after GitHub exposed the deployment target, but the connector returned 403 for the project scope. No branch-preview screenshot or browser-overflow claim is therefore made.
 
 ## Next priority
