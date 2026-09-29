@@ -52,3 +52,25 @@ Continue on this same branch while it is unmerged. Next useful pass: refine the 
 
 ## Next priority
 Keep this cumulative branch if it remains unmerged. Next useful pass: inspect the landing mobile first viewport and offer-to-budget handoff for density, tap ergonomics and visual continuity, then refine only defects that are actually observed.
+
+
+## Pass 11 — mobile hero and offer-to-budget handoff
+- Tightened the mobile first viewport without changing the approved brand direction: shorter vertical rhythm, denser title/copy spacing, a full-width primary CTA, a reduced decorative driving canvas and a quieter hero footer.
+- Kept the automobile/road visual instead of removing it, but reduced its mobile footprint from 360 px to 300 px (270 px below 380 px) so the offer section arrives sooner.
+- Added an explicit `Classique / Accélérée` choice to the budget simulator while preserving the existing 13 h / 20 h selector and all approved prices.
+- Connected each offer-card “Simuler mon budget” link to the same plan state, so choosing a card carries that rhythm into the budget step instead of making the user choose again from scratch.
+- Kept both totals visible for comparison, while visually marking the active plan and repeating the selected rhythm in the budget summary.
+- Added 44 px plan targets, focus-visible treatment, selected-card feedback and reduced-motion coverage. No routes, prices, inclusions, payment, authentication, Supabase data, dependencies or infrastructure were changed.
+- Added a repository quality assertion covering the plan handoff markers so future builds guard this interaction.
+
+### Checks actually run for pass 11
+- Re-read `main`, the cumulative work branch, recent PR state and this journal before writing. The branch head was confirmed exactly at `c367f03ede877c3b628fad143e3c5ec214b1ffbc` before the code commit.
+- Built the change as a Git tree against that exact parent and advanced the branch with a non-force fast-forward only.
+- Static CSS validation on the proposed mobile refinements found balanced braces (251 opening / 251 closing) before commit.
+- Remote diff review confirmed only the intended landing, decision/editorial CSS and quality-test changes in code commit `0bc34a9b2cc30d2d4a54db391319d5c9ab92f447`.
+- GitHub reports the cumulative branch 12 commits ahead and 0 behind `main` at the code commit.
+- Vercel reported `success` for `0bc34a9b2cc30d2d4a54db391319d5c9ab92f447`. In this repository, `npm run build` runs `npm test` first, then TypeScript and Vite, so the reported build success covers the repository quality suite and compile/build pipeline for that SHA.
+- A direct Vercel project inspection was attempted after GitHub exposed the deployment target, but the connector returned 403 for the project scope. No branch-preview screenshot or browser-overflow claim is therefore made.
+
+## Next priority
+Keep this same cumulative branch while unmerged. Next useful pass: refine the desktop offer/budget composition and the transition into the method section, then inspect 320/375/390/768 px overflow and sticky behavior if a branch preview becomes readable; preserve the now-linked plan selector and all approved commercial data.
