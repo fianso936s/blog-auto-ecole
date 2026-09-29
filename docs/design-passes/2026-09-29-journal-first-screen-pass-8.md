@@ -167,3 +167,22 @@ Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. 
 
 ## Next priority
 Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. Prochain gain utile : aligner le bandeau de sélection des formules sur le token partagé de hauteur du header, puis améliorer les contrôles numériques du simulateur pour les écrans tactiles sans changer le modèle tarifaire.
+
+
+## Pass 18 — sélection sticky et simulateur tactile
+- Aligné le bandeau sticky des formules sur le token partagé `--wd-header-height` au lieu de conserver l’offset fixe historique. La règle est limitée aux largeurs desktop (`min-width: 801px`) afin de préserver le retour non-sticky déjà prévu sous 800 px.
+- Remplacé les deux champs numériques bruts du simulateur par des contrôles tactiles dédiés : boutons − / + de 48 px, saisie directe conservée, bornes 0–20 et 0–10 inchangées et même calcul tarifaire.
+- Ajouté des libellés explicites aux commandes, des états disabled aux bornes, un focus visible pour le groupe et les boutons, un rendu tabulaire des chiffres, la suppression des spinners natifs redondants et un fallback forced-colors.
+- Le premier ajustement CSS a révélé à la relecture un conflit de spécificité mobile : le nouvel offset sticky aurait pu rester actif sous 800 px. Le correctif `min-width: 801px` a été appliqué avant de considérer la passe comme candidate.
+- Aucun tarif, route, contenu éditorial, paiement, authentification, écriture Supabase, dépendance, workflow GitHub Actions ou infrastructure n’a été modifié.
+
+### Contrôles réellement effectués pour le pass 18
+- Tête distante relue avant les écritures et branche avancée uniquement par commits normaux, sans force-push.
+- Le clone local a été retenté et a encore échoué sur la résolution DNS de `github.com`; aucun `npm test`, `npm run build` local ni capture Chromium n’est donc revendiqué.
+- Relecture distante finale de `WebedriveLanding.tsx` et `editorial.css` : composant compteur présent, deux bornes conservées, libellés des boutons présents, sticky limité au desktop, focus/forced-colors présents.
+- Contrôle statique de `editorial.css` : 315 accolades ouvrantes / 315 fermantes.
+- La tentative d’ajouter un garde-fou supplémentaire dans `scripts/quality.test.mjs` a été refusée par la couche de sécurité du connecteur avant modification ; la suite existante n’a pas été altérée.
+- Le SHA de code `b3a064ba3da962acb38eb1b3789e059bef170203` est enregistré sur la branche distante. Son statut Vercel était encore `pending` lors de la vérification de cette passe.
+
+## Next priority
+Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. Prochain gain utile : compacter le résumé budget à 320–390 px sans masquer la comparaison Classique/Accélérée, puis raffiner l’ordre de tabulation et les annonces du simulateur si une preview inspectable devient disponible.
