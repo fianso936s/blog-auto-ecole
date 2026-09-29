@@ -74,3 +74,16 @@ Le manifeste marque explicitement les GLB, la source éditable et le manifeste d
 Cette branche est une branche de travail. Aucune publication n'est nécessaire pour déclarer P0/P1 enregistrés.
 
 Une réussite de build confirme les tests/compilation, pas la qualité visuelle finale ni l'existence d'un asset 3D.
+
+
+## D09 / Source d’asset procédurale
+
+Une source éditable programmatique est maintenant enregistrée : `tools/generate-ribbon-assets.py`.
+
+Elle génère la route, une compacte illustrative et les nœuds contractuels sans modèle tiers ni texture externe. Les exports locaux mesurés pendant la session sont très inférieurs aux budgets de triangles et de transfert, mais ils ne sont pas encore intégrés au dépôt ni validés comme asset final.
+
+Statut :
+- source éditable : IMPLÉMENTÉE
+- GLB desktop/lite/mobile : GÉNÉRÉS LOCALEMENT, NON COMMITÉS
+- revue visuelle contractuelle : À FAIRE
+- licence : géométrie originale procédurale, aucun asset tiers
