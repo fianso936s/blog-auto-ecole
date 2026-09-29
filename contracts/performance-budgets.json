@@ -1,0 +1,47 @@
+{
+  "_source": "Reconstructed only from WEBEDRIVE_Benchmark_3D_Cahier_IA v1.0 PDF.",
+  "_status": "RECONSTRUCTED_FROM_PDF",
+  "qualityLevels": {
+    "desktopFull": {
+      "maxVisibleTriangles": 110000,
+      "maxDrawCalls": 60,
+      "maxDpr": 1.5,
+      "maxTextureDimension": 2048,
+      "maxAdditional3DTransferMiB": 3,
+      "targetMedianFrameIntervalMs": 16.7,
+      "targetP95FrameIntervalMs": 25
+    },
+    "desktopLite": {
+      "maxVisibleTriangles": 60000,
+      "maxDrawCalls": 35,
+      "maxDpr": 1,
+      "maxTextureDimension": 1024,
+      "maxAdditional3DTransferMiB": 2.2,
+      "targetMedianFrameIntervalMs": 33.3,
+      "targetP95FrameIntervalMs": 40
+    },
+    "mobileActivated": {
+      "maxVisibleTriangles": 35000,
+      "maxDrawCalls": 25,
+      "maxDpr": 1,
+      "maxTextureDimension": 1024,
+      "maxAdditional3DTransferMiB": 1.6,
+      "targetMedianFrameIntervalMs": 33.3,
+      "targetP95FrameIntervalMs": 40
+    }
+  },
+  "landingBudgets": {
+    "initialJsGzipKiB": 230,
+    "initialCssGzipKiB": 40,
+    "openingFontKiB": 60,
+    "posterDesktopKiB": 130,
+    "posterMobileKiB": 80,
+    "lcpCriticalPathTransferKiB": 320
+  },
+  "fieldTargets": {
+    "lcpMs75p": 2500,
+    "inpMs75p": 200,
+    "cls75p": 0.1,
+    "statusUntilMeasured": "NON_MESURE"
+  }
+}
