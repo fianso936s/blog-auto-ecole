@@ -154,3 +154,11 @@ test('Landing comparison keeps the selected volume visible into the budget step'
     assert.ok(landing.includes(marker), marker);
   }
 });
+
+
+test('Landing closes with an accessible journal handoff and a route back to offers', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  for (const marker of ['aria-labelledby="journal-title"', 'wd-closing-topics', 'wd-closing-actions', 'to="/blog"', 'to="/#formules"', 'Explorer le journal', 'Revoir les formules']) {
+    assert.ok(landing.includes(marker), marker);
+  }
+});

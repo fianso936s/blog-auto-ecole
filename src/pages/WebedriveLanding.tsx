@@ -96,7 +96,18 @@ export default function WebedriveLanding() {
         <details><summary>L’accéléré garantit-il une date d’examen ?</summary><p>Non. Il concerne le regroupement des séances, selon le planning. Les créneaux sont validés avant engagement et aucune date d’examen n’est garantie.</p></details>
         <details><summary>Le simulateur m’engage-t-il ?</summary><p>Non. Il calcule une estimation dans votre navigateur. Il ne transmet aucune demande, ne réserve aucun créneau et ne déclenche aucun paiement.</p></details>
       </div></section>
-      <section className="wd-closing"><div><span>03 — Le journal WEBEDRIVE</span><h2>Les bons réflexes<br />commencent ici.</h2><p>Des repères pour apprendre, comprendre et avancer entre deux séances.</p></div><Link className="wd-pill" to="/blog">Explorer le blog & les guides <ArrowRight size={18} aria-hidden="true" /></Link></section>
+      <section className="wd-closing" aria-labelledby="journal-title">
+        <div className="wd-closing-copy">
+          <span>03 — Le journal WEBEDRIVE</span>
+          <h2 id="journal-title">Continuez à progresser.<br />Même entre deux séances.</h2>
+          <p>Guides pratiques, rappels utiles et quiz pour garder les bons repères avant de reprendre le volant.</p>
+          <ul className="wd-closing-topics" aria-label="Ressources du journal"><li>Guides pratiques</li><li>Quiz code</li><li>Conseils de conduite</li></ul>
+        </div>
+        <div className="wd-closing-actions">
+          <Link className="wd-pill" to="/blog">Explorer le journal <ArrowRight size={18} aria-hidden="true" /></Link>
+          <Link className="wd-closing-secondary" to="/#formules">Revoir les formules <ArrowRight size={17} aria-hidden="true" /></Link>
+        </div>
+      </section>
     </main><Footer />
   </div>;
 }
