@@ -179,3 +179,14 @@ test('Offer cards hand their selected rhythm into the budget simulator', () => {
     assert.ok(landing.includes(marker), marker);
   }
 });
+
+
+test('Landing keeps the simulated journey visible through the method handoff', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const styles = read('src/styles/editorial.css');
+  for (const marker of ['wd-method-context', 'Parcours simulé', 'Estimation actuelle', 'selectedTotal.toLocaleString("fr-FR")', 'Ajuster le budget']) {
+    assert.ok(landing.includes(marker), marker);
+  }
+  assert.ok(styles.includes('.wd-question-list summary:focus-visible'));
+  assert.ok(styles.includes('.wd-site .wd-method .wd-steps article::before'));
+});

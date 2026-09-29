@@ -74,3 +74,19 @@ Keep this cumulative branch if it remains unmerged. Next useful pass: inspect th
 
 ## Next priority
 Keep this same cumulative branch while unmerged. Next useful pass: refine the desktop offer/budget composition and the transition into the method section, then inspect 320/375/390/768 px overflow and sticky behavior if a branch preview becomes readable; preserve the now-linked plan selector and all approved commercial data.
+
+## Pass 13 — méthode contextualisée et FAQ clavier
+- Prolongé le contexte de décision jusque dans la section Méthode : la sélection active affiche désormais le volume, le rythme et l’estimation courante, avec un retour direct vers le budget.
+- Resseré la transition visuelle budget → méthode et transformé la séquence en progression plus architecturale avec repères sable continus, sans inventer de disponibilité ni de promesse commerciale.
+- Ajouté un vrai focus clavier visible aux résumés de FAQ et conservé des cibles tactiles confortables.
+- Adapté le nouveau contexte à 800 px puis 600 px pour éviter les colonnes compressées et garder le CTA lisible sur mobile.
+- Aucun tarif, route, contenu éditorial, authentification, paiement, donnée Supabase, dépendance, workflow ou infrastructure n’a été modifié.
+
+### Contrôles réellement effectués pour le pass 13
+- Tête distante relue juste avant écriture : `42dedc414c2067e463514355d468afef445234be`, branche toujours 16 commits devant et 0 derrière `main`.
+- Prévisualisation Vercel de cette tête signalée `success` par GitHub, mais l’accès direct au projet Vercel a renvoyé 403 ; aucune capture ni validation visuelle pixel par pixel n’est revendiquée.
+- Validation statique avant commit : accolades CSS équilibrées, présence du contexte Méthode, règles responsive 800/600 px, focus FAQ et assertion de qualité associée.
+- Commit construit contre l’arbre exact de la tête observée et avancé sans force-push.
+
+## Next priority
+Si la branche reste non fusionnée, poursuivre sur la même base cumulative. Prochain gain utile : raffiner le bloc FAQ → journal sur mobile (densité, rythme et CTA final) puis contrôler le débordement 320/375/390/768 px si une preview de branche devient lisible.

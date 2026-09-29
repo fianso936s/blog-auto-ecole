@@ -102,6 +102,11 @@ export default function WebedriveLanding() {
       </section>
       <section id="methode" className="wd-method" aria-labelledby="method-title">
         <div className="wd-head"><div><span>02 — L’approche WEBEDRIVE</span><h2 id="method-title">Apprendre à conduire.<br />Savoir où l’on va.</h2></div><p>De la première évaluation aux bilans de progression, la prochaine étape reste lisible.</p></div>
+        <div className="wd-method-context" aria-label="Parcours actuellement simulé">
+          <div><small>Parcours simulé</small><strong>{hours} h · {selectedPlanLabel}</strong></div>
+          <div><small>Estimation actuelle</small><strong>{selectedTotal.toLocaleString("fr-FR")} €</strong></div>
+          <Link to="/#budget">Ajuster le budget <ArrowRight size={17} aria-hidden="true" /></Link>
+        </div>
         <div className="wd-steps">{[["01", "Comprendre", "Votre point de départ", "Évaluation, besoins et budget : les bons repères avant de décider."], ["02", "Organiser", "Votre rythme", "Une organisation cohérente avec la formule choisie et les disponibilités."], ["03", "Avancer", "Votre progression", "Des bilans pour savoir ce qui est acquis et ce qui vient ensuite."]].map(([number, title, label, text]) => <article key={number}><div className="wd-step-top"><b>{number}</b><ArrowRight size={20} aria-hidden="true" /></div><small>{label}</small><h3>{title}</h3><p>{text}</p></article>)}</div>
       </section>
       <section className="wd-questions" aria-labelledby="questions-title"><div><span className="site-eyebrow">Avant de démarrer</span><h2 id="questions-title">C’est plus simple<br />quand c’est clair.</h2></div><div className="wd-question-list">
