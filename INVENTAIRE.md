@@ -107,3 +107,22 @@ Il ne déclare pas P2/P3 terminés tant que le modèle 3D et les contrats/ressou
 - `npm run build`
 
 La branche doit ensuite être vérifiée par le pipeline existant. Une réussite de build ne remplace pas une inspection visuelle navigateur.
+
+
+## 11. État après exécution P1
+
+Implémenté sur la branche :
+- `src/features/experience3d/ExperiencePoster.tsx`
+- `src/features/experience3d/experience3d.css`
+- landing restructurée autour des trois chapitres
+- comparaison des quatre tarifs en une seule vue
+- header 72 px desktop / 64 px petit mobile
+- contrats reconstruits depuis le PDF
+- math de progression déterministe et tests associés
+
+Statuts :
+- P0 : IMPLÉMENTÉ
+- P1 : IMPLÉMENTÉ, vérification build à confirmer sur le dernier commit
+- P2 : ASSET MANQUANT
+- P3 : NON IMPLÉMENTÉ
+- Publication : NON PUBLIÉE
