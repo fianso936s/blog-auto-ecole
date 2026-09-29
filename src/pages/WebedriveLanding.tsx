@@ -9,19 +9,22 @@ import DriveVisual from "../components/DriveVisual";
 import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offers";
 import "../styles/refinement-decision.css";
 
-function OfferCard({ title, note, price, dark = false, children }: { title: string; note: string; price: number; dark?: boolean; children: ReactNode }) {
+type Plan = "classic" | "accelerated";
+
+function OfferCard({ title, note, price, plan, selected, dark = false, onSelect, children }: { title: string; note: string; price: number; plan: Plan; selected: boolean; dark?: boolean; onSelect: (plan: Plan) => void; children: ReactNode }) {
   const titleId = dark ? "accelerated-title" : "classic-title";
-  return <article className={`wd-card ${dark ? "wd-card-dark" : ""}`} aria-labelledby={titleId}>
+  return <article className={`wd-card ${dark ? "wd-card-dark" : ""}`} aria-labelledby={titleId} data-selected={selected ? "true" : "false"}>
     <div className="wd-plan-top"><span>{dark ? "02 / SÉANCES REGROUPÉES" : "01 / SÉANCES RÉPARTIES"}</span><ArrowRight size={22} aria-hidden="true" /></div>
     <div className="wd-card-head"><h3 id={titleId}>{title}</h3><small>{note}</small></div>
     <div className="wd-price">{price.toLocaleString("fr-FR")} <span>€</span></div>
     {children}
-    <Link className="wd-plan-link" to="/#budget" aria-label={`Simuler le budget de la formule ${title.toLowerCase()}`}>Simuler mon budget <ArrowRight size={18} aria-hidden="true" /></Link>
+    <Link className="wd-plan-link" to="/#budget" onClick={() => onSelect(plan)} aria-label={`Simuler le budget de la formule ${title.toLowerCase()}`}>Simuler mon budget <ArrowRight size={18} aria-hidden="true" /></Link>
   </article>;
 }
 
 export default function WebedriveLanding() {
   const [hours, setHours] = useState<13 | 20>(20);
+  const [plan, setPlan] = useState<Plan>("classic");
   const [paused, setPaused] = useState(false);
   const [extraHours, setExtraHours] = useState(0);
   const [codeAttempts, setCodeAttempts] = useState(0);
@@ -39,6 +42,7 @@ export default function WebedriveLanding() {
   const extrasTotal = extraHours * EXTRA_HOUR_PRICE + codeAttempts * CODE_EXAM_PRICE;
   const classicTotal = price.classic + extrasTotal;
   const acceleratedTotal = price.accelerated + extrasTotal;
+  const selectedPlanLabel = plan === "classic" ? "Classique" : "Accélérée";
 
   return <div className="site-shell wd-site">
     <PageMeta title="Votre permis, en plus clair" noIndex /><RouteEffects /><Header />
@@ -73,18 +77,22 @@ export default function WebedriveLanding() {
           <p><strong>{hours} h sélectionnées.</strong> Les inclusions restent les mêmes ; seul le rythme des séances change.</p>
         </div>
         <div className="wd-cards" aria-label={`Comparaison des formules pour ${hours} heures`}>
-          <OfferCard title="Classique" note={`${hours} h · à votre rythme`} price={price.classic}><p>Le temps de progresser, avec des séances réparties selon les disponibilités communes.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}</ul></OfferCard>
-          <OfferCard dark title="Accélérée" note={`${hours} h · supplément de 200 €`} price={price.accelerated}><p>Les mêmes inclusions, avec des séances regroupées lorsque le planning le permet.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}<li><Check aria-hidden="true" />Créneaux validés avant engagement. Aucune date d’examen garantie.</li></ul></OfferCard>
+          <OfferCard title="Classique" note={`${hours} h · à votre rythme`} price={price.classic} plan="classic" selected={plan === "classic"} onSelect={setPlan}><p>Le temps de progresser, avec des séances réparties selon les disponibilités communes.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}</ul></OfferCard>
+          <OfferCard dark title="Accélérée" note={`${hours} h · supplément de 200 €`} price={price.accelerated} plan="accelerated" selected={plan === "accelerated"} onSelect={setPlan}><p>Les mêmes inclusions, avec des séances regroupées lorsque le planning le permet.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}<li><Check aria-hidden="true" />Créneaux validés avant engagement. Aucune date d’examen garantie.</li></ul></OfferCard>
         </div>
         <p className="wd-fine">À prévoir séparément : examen du code {CODE_EXAM_PRICE} € par tentative · heures complémentaires {EXTRA_HOUR_PRICE} € par heure.</p>
         <section id="budget" className="wd-budget" aria-labelledby="budget-title" tabIndex={-1}>
-          <div><span className="site-eyebrow">Votre budget, en clair</span><h3 id="budget-title">Tout se calcule.<br />Rien ne s’envoie.</h3><p className="wd-budget-copy">Ajoutez les options à simuler. Le calcul reste dans votre navigateur et ne réserve aucun créneau.</p>
+          <div><span className="site-eyebrow">Votre budget, en clair</span><h3 id="budget-title">Tout se calcule.<br />Rien ne s’envoie.</h3><p className="wd-budget-copy">Choisissez votre rythme, puis ajoutez les options à simuler. Le calcul reste dans votre navigateur et ne réserve aucun créneau.</p>
+            <fieldset className="wd-budget-plan"><legend>Formule à simuler</legend><div className="wd-budget-plan-switch">
+              <label><input type="radio" name="budget-plan" value="classic" checked={plan === "classic"} onChange={() => setPlan("classic")} />Classique</label>
+              <label><input type="radio" name="budget-plan" value="accelerated" checked={plan === "accelerated"} onChange={() => setPlan("accelerated")} />Accélérée</label>
+            </div></fieldset>
             <fieldset className="wd-budget-fields"><legend className="sr-only">Options de l’estimation</legend>
               <label className="wd-budget-field"><span>Heures complémentaires</span><input type="number" inputMode="numeric" min="0" max="20" step="1" value={extraHours} onChange={(event) => setExtraHours(clampCount(event.target.value, 20))} aria-describedby="budget-extra-help" /><small id="budget-extra-help">{EXTRA_HOUR_PRICE} € par heure</small></label>
               <label className="wd-budget-field"><span>Tentatives code</span><input type="number" inputMode="numeric" min="0" max="10" step="1" value={codeAttempts} onChange={(event) => setCodeAttempts(clampCount(event.target.value, 10))} aria-describedby="budget-code-help" /><small id="budget-code-help">{CODE_EXAM_PRICE} € par tentative</small></label>
             </fieldset>
           </div>
-          <div className="wd-budget-summary" role="status" aria-live="polite" aria-atomic="true"><div className="wd-budget-bridge"><small>Étape suivante</small><strong>{hours} h sélectionnées</strong></div><span>Votre estimation / {hours} h</span><div className="wd-budget-total"><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total"><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p></div>
+          <div className="wd-budget-summary" role="status" aria-live="polite" aria-atomic="true"><div className="wd-budget-bridge"><small>Étape suivante</small><strong>{hours} h · {selectedPlanLabel}</strong></div><span>Votre estimation / {hours} h / {selectedPlanLabel}</span><div className="wd-budget-total" data-active={plan === "classic" ? "true" : "false"}><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total" data-active={plan === "accelerated" ? "true" : "false"}><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p></div>
         </section>
       </section>
       <section id="methode" className="wd-method" aria-labelledby="method-title">

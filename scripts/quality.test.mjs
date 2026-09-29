@@ -162,3 +162,20 @@ test('Landing closes with an accessible journal handoff and a route back to offe
     assert.ok(landing.includes(marker), marker);
   }
 });
+
+
+test('Offer cards hand their selected rhythm into the budget simulator', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  for (const marker of [
+    'type Plan = "classic" | "accelerated"',
+    'name="budget-plan"',
+    'onClick={() => onSelect(plan)}',
+    'selected={plan === "classic"}',
+    'selected={plan === "accelerated"}',
+    'data-active={plan === "classic"',
+    'data-active={plan === "accelerated"',
+    'selectedPlanLabel'
+  ]) {
+    assert.ok(landing.includes(marker), marker);
+  }
+});

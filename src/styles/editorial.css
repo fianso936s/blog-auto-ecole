@@ -221,25 +221,30 @@
 @media (max-width:600px) {
   .site-header-inner { height: 76px; padding-inline: 20px; }
   .wd-site { --wd-gutter: 20px; }
-  .wd-site .wd-copy h1 { font-size: clamp(43px,10.5vw,63px); margin-top: 26px; }
-  .wd-site .wd-copy>p { font-size: 19px; }
-  .wd-site .wd-copy>.wd-hero-description { font-size: 14px; max-width: 350px; }
+  .wd-site .wd-hero { padding-top: 30px; }
+  .wd-site .wd-copy { padding-bottom: 12px; }
+  .wd-site .wd-copy h1 { max-width: 10ch; font-size: clamp(41px,10vw,58px); margin: 22px 0 18px; }
+  .wd-site .wd-copy>p { font-size: 18px; line-height: 1.48; }
+  .wd-site .wd-copy>.wd-hero-description { margin-top: 10px; font-size: 13.5px; line-height: 1.68; max-width: 340px; }
   .wd-mobile-break { display: block; }
   .wd-site .wd-eyebrow { font-size: 9px; letter-spacing: .09em; gap: 9px; }
-  .wd-site .wd-hero .wd-actions { align-items: flex-start; flex-direction: column; gap: 8px; margin-top: 26px; }
-  .wd-site .wd-hero .wd-ghost { min-height: 48px; padding: 10px 2px; }
-  .wd-site .wd-progress { gap: 7px; font-size: 10px; margin-top: 22px; }
+  .wd-site .wd-hero .wd-actions { width: min(100%,360px); align-items: stretch; flex-direction: column; gap: 6px; margin-top: 22px; }
+  .wd-site .wd-hero .wd-pill { width: 100%; min-height: 52px; justify-content: space-between; }
+  .wd-site .wd-hero .wd-ghost { min-height: 44px; padding: 8px 2px; }
+  .wd-site .wd-progress { gap: 7px; font-size: 10px; margin-top: 17px; }
   .wd-site .wd-progress i { width: 10px; }
-  .wd-site .wd-visual { height: 360px; margin-top: 12px; }
-  .wd-art-heading { left: 4px; top: 12px; }
-  .wd-art-heading>span { font-size: 8px; }
-  .wd-art-heading>strong { font-size: 24px; }
-  .wd-art-note { bottom: 48px; padding: 14px 18px; }
-  .wd-art-note strong { font-size: 11px; }
-  .wd-art-bottom { font-size: 7px; letter-spacing: .04em; }
-  .wd-hero-footer { min-height: 66px; margin-top: 16px; }
-  .wd-hero-footer>span { max-width: 150px; font-size: 8px; line-height: 1.7; }
+  .wd-site .wd-visual { height: 300px; margin-top: 4px; }
+  .wd-art-heading { left: 0; top: 6px; }
+  .wd-art-heading>span { font-size: 7px; }
+  .wd-art-heading>strong { margin-top: 8px; font-size: 21px; }
+  .wd-art-note { bottom: 34px; padding: 12px 15px; }
+  .wd-art-note small { margin-bottom: 3px; font-size: 8px; }
+  .wd-art-note strong { font-size: 10px; }
+  .wd-art-bottom { display: none; }
+  .wd-hero-footer { min-height: 58px; margin-top: 6px; }
+  .wd-hero-footer>span { max-width: 148px; font-size: 8px; line-height: 1.55; }
   .wd-hero-footer>a { font-size: 10px; gap: 12px; }
+  .wd-site .wd-offers { padding-top: 58px; }
   .wd-site .wd-head h2,.wd-site .wd-closing h2 { font-size: 36px; }
   .wd-site .wd-head>div>span { font-size: 9px; }
   .wd-offer-controls { margin-top: 30px; }
@@ -257,6 +262,13 @@
   .wd-site .wd-budget-total strong { font-size: 26px; }
   .wd-site .wd-closing .wd-pill { font-size: 13px; gap: 14px; }
   .article-card.featured .article-card-content,.article-card-content { padding: 24px; }
+}
+@media (max-width:380px) {
+  .wd-site .wd-visual { height: 270px; }
+  .wd-site .wd-copy h1 { font-size: clamp(39px,11vw,50px); }
+  .wd-art-heading>strong { font-size: 19px; }
+  .wd-art-note { bottom: 28px; max-width: 88%; }
+  .wd-hero-footer>span { max-width: 132px; }
 }
 @media (prefers-reduced-motion:reduce) {
   .wd-road-markers,.wd-site .wd-copy,.wd-site .wd-visual { animation: none !important; }
