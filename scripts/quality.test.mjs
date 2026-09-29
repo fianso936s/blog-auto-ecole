@@ -216,3 +216,13 @@ test('Shared mobile navigation and footer keep route hierarchy usable at narrow 
   for (const marker of ['overscroll-behavior: contain', 'env(safe-area-inset-top)', 'grid-template-columns: repeat(2,minmax(0,1fr))', '.site-footer summary::after', '@media(max-width:380px)', '.site-footer-grid nav {']) assert.ok(styles.includes(marker), marker);
   assert.ok(!styles.includes('.site-footer nav {'), 'route rail must not inherit column nav layout');
 });
+
+
+test('Shared header height keeps journal navigation aligned', () => {
+  const brand = read('src/styles/brand.css');
+  const blog = read('src/styles/refinement-blog.css');
+  assert.ok(brand.includes('--wd-header-height: 84px'));
+  assert.ok(brand.includes('--wd-header-height: 76px'));
+  assert.ok(blog.includes('top:var(--wd-header-height)'));
+  assert.ok(blog.includes('article-detail-actions'));
+});
