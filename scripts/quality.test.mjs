@@ -162,3 +162,67 @@ test('Landing closes with an accessible journal handoff and a route back to offe
     assert.ok(landing.includes(marker), marker);
   }
 });
+
+
+test('Offer cards hand their selected rhythm into the budget simulator', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  for (const marker of [
+    'type Plan = "classic" | "accelerated"',
+    'name="budget-plan"',
+    'onClick={() => onSelect(plan)}',
+    'selected={plan === "classic"}',
+    'selected={plan === "accelerated"}',
+    'data-active={plan === "classic"',
+    'data-active={plan === "accelerated"',
+    'selectedPlanLabel'
+  ]) {
+    assert.ok(landing.includes(marker), marker);
+  }
+});
+
+
+test('Landing keeps the simulated journey visible through the method handoff', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const styles = read('src/styles/editorial.css');
+  for (const marker of ['wd-method-context', 'Parcours simulé', 'Estimation actuelle', 'selectedTotal.toLocaleString("fr-FR")', 'Ajuster le budget']) {
+    assert.ok(landing.includes(marker), marker);
+  }
+  assert.ok(styles.includes('.wd-question-list summary:focus-visible'));
+  assert.ok(styles.includes('.wd-site .wd-method .wd-steps article::before'));
+});
+
+
+test('FAQ and journal handoff stay dense and operable on narrow screens', () => {
+  const styles = read('src/styles/editorial.css');
+  for (const marker of [
+    'counter-reset: wd-question',
+    'counter(wd-question, decimal-leading-zero)',
+    '.wd-question-list details[open]>summary',
+    'grid-template-columns: minmax(0,1.18fr) minmax(270px,.72fr)',
+    '.wd-closing-actions',
+    '.wd-closing-secondary:focus-visible',
+    '.wd-question-list details>p { padding: 0 30px 20px 36px;',
+    '.wd-closing-actions { width: 100%;'
+  ]) assert.ok(styles.includes(marker), marker);
+});
+
+
+test('Shared mobile navigation and footer keep route hierarchy usable at narrow widths', () => {
+  const header = read('src/components/Header.tsx');
+  const footer = read('src/components/Footer.tsx');
+  const styles = read('src/styles/brand.css');
+  for (const marker of ['site-mobile-overline', 'site-mobile-link-label', 'String(index + 1).padStart(2, "0")']) assert.ok(header.includes(marker), marker);
+  for (const marker of ['site-footer-head', 'site-footer-route', 'aria-label="Repères du parcours"', 'to="/#budget"', 'WEBEDRIVE · VOTRE PARCOURS']) assert.ok(footer.includes(marker), marker);
+  for (const marker of ['overscroll-behavior: contain', 'env(safe-area-inset-top)', 'grid-template-columns: repeat(2,minmax(0,1fr))', '.site-footer summary::after', '@media(max-width:380px)', '.site-footer-grid nav {']) assert.ok(styles.includes(marker), marker);
+  assert.ok(!styles.includes('.site-footer nav {'), 'route rail must not inherit column nav layout');
+});
+
+
+test('Shared header height keeps journal navigation aligned', () => {
+  const brand = read('src/styles/brand.css');
+  const blog = read('src/styles/refinement-blog.css');
+  assert.ok(brand.includes('--wd-header-height: 84px'));
+  assert.ok(brand.includes('--wd-header-height: 76px'));
+  assert.ok(blog.includes('top:var(--wd-header-height)'));
+  assert.ok(blog.includes('article-detail-actions'));
+});
