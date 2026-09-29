@@ -29,11 +29,14 @@ export default function Header() {
     return () => screen.removeEventListener("change", onResize);
   }, []);
 
-  const links = (mobile = false) => MAIN_NAV.map(item => <Link
+  const links = (mobile = false) => MAIN_NAV.map((item, index) => <Link
     key={item.href} to={item.href}
     aria-current={isNavigationActive(location.pathname, location.hash, item.href) ? (item.href.includes("#") ? "location" : "page") : undefined}
     onClick={mobile ? close : undefined}>
-    {item.label}{mobile && <ArrowRight size={18} aria-hidden="true" />}
+    {mobile ? <>
+      <span className="site-mobile-link-label"><b aria-hidden="true">{String(index + 1).padStart(2, "0")}</b><span>{item.label}</span></span>
+      <ArrowRight size={18} aria-hidden="true" />
+    </> : item.label}
   </Link>);
 
   return <>
@@ -51,8 +54,9 @@ export default function Header() {
     </header>
     <dialog ref={dialog} id="site-mobile-menu" className="site-mobile-menu" aria-labelledby="site-menu-title" onClose={() => setOpen(false)} onClick={e => { if (e.target === dialog.current) close(); }}>
       <div className="site-mobile-panel">
-        <div className="site-mobile-heading"><h2 id="site-menu-title">Votre parcours</h2><button type="button" aria-label="Fermer le menu" onClick={close}><X size={24} aria-hidden="true" /></button></div>
-        <p className="site-mobile-description">Une auto-école. Tous vos repères.</p>
+        <div className="site-mobile-overline"><span>WEBEDRIVE</span><i aria-hidden="true" /><span>Asnières-sur-Seine</span></div>
+        <div className="site-mobile-heading"><h2 id="site-menu-title">Votre parcours</h2><button type="button" className="site-mobile-close" aria-label="Fermer le menu" onClick={close}><X size={24} aria-hidden="true" /></button></div>
+        <p className="site-mobile-description">Un parcours clair, de la formule au journal.</p>
         <nav aria-label="Navigation mobile">{links(true)}</nav>
         <Link className="site-button" to={accountPath} onClick={close}>{user ? "Mon espace" : "Espace élève"}<ArrowRight size={18} aria-hidden="true" /></Link>
         <p className="site-mobile-location">WEBEDRIVE · Asnières-sur-Seine</p>

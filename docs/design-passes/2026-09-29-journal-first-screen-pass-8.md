@@ -108,3 +108,21 @@ Si la branche reste non fusionnée, poursuivre sur la même base cumulative. Pro
 
 ## Next priority
 Si la branche reste non fusionnée, poursuivre sur la même base cumulative. Prochain gain utile : harmoniser la densité du footer et du menu mobile avec ce nouveau niveau de finition, puis vérifier le parcours complet clavier du header au journal si une preview de branche devient directement inspectable.
+
+
+## Pass 15 — menu mobile et footer unifiés
+- Réconcilié d’abord la branche cumulative canonique avec le pass 14 : `design/journal-first-screen-pass-8` a été avancée en fast-forward sur `c53e4cd43146dce38a14bd4a577fa0a7e4771f90`, sans force-push.
+- Refondu la hiérarchie du menu mobile partagé sans changer ses routes ni sa logique de dialog : repères numérotés, état actif plus lisible, CTA élève pleine largeur, composition plus premium et panneau scrollable contenu.
+- Ajouté des marges tenant compte des safe areas mobiles, une densité spécifique sous 560 px puis 380 px et des cibles tactiles conservées au-dessus du seuil utile.
+- Recompose le footer partagé en deux niveaux : introduction de marque + rail de parcours (Formules, Budget, Méthode, Journal), puis liens de formation/ressources. Sur mobile, le rail passe en grille 2 × 2 et les colonnes de liens deviennent une seule colonne pour éviter l’écrasement à 320–390 px.
+- Clarifié le bloc « Informations du site » avec un vrai affordance de disclosure, sans inventer de coordonnées, mentions légales, avis ou promesses.
+- Aucun tarif, route, authentification, paiement, donnée Supabase, dépendance, workflow GitHub Actions ni infrastructure n’a été modifié.
+
+### Contrôles réellement effectués pour le pass 15
+- Lecture de `main`, des deux branches cumulatives, des PR récentes et du journal avant écriture ; `automation/ref-forward-c53e` était exactement un commit devant la branche canonique, puis la réconciliation fast-forward a réussi.
+- Le clone local a été retenté et a échoué sur la résolution DNS de `github.com`; aucun build npm local ni capture Chromium de cette branche n’est donc revendiqué.
+- Validation statique avant commit : accolades CSS équilibrées, anciennes règles footer/menu remplacées une seule fois, présence des safe areas 560 px, garde-fou 380 px, focus global conservé et reduced-motion neutralisant les translations hover.
+- Une assertion de qualité protège désormais les marqueurs JSX/CSS du menu mobile et du footer.
+
+## Next priority
+Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. Prochain gain utile : vérifier et raffiner le comportement du header sticky + navigation blog sur les largeurs intermédiaires 768–1099 px, puis réduire les écarts de densité entre la landing et les pages article sans changer le contenu éditorial.

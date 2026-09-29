@@ -4,8 +4,21 @@ import BrandMark from "./BrandMark";
 
 export default function Footer() {
   return <footer className="site-footer">
+    <div className="site-footer-head">
+      <div className="site-footer-intro">
+        <span className="site-footer-eyebrow">WEBEDRIVE · VOTRE PARCOURS</span>
+        <BrandMark />
+        <p>Votre permis, avec une vision claire à chaque étape.</p>
+        <span className="site-footer-location">Auto-école · Asnières-sur-Seine</span>
+      </div>
+      <nav className="site-footer-route" aria-label="Repères du parcours">
+        <Link to="/#formules"><b>01</b><span>Formules</span><ArrowRight size={16} aria-hidden="true" /></Link>
+        <Link to="/#budget"><b>02</b><span>Budget</span><ArrowRight size={16} aria-hidden="true" /></Link>
+        <Link to="/#methode"><b>03</b><span>Méthode</span><ArrowRight size={16} aria-hidden="true" /></Link>
+        <Link to="/blog"><b>04</b><span>Journal</span><ArrowRight size={16} aria-hidden="true" /></Link>
+      </nav>
+    </div>
     <div className="site-footer-grid">
-      <div><BrandMark /><p>Votre permis, avec une vision claire à chaque étape.</p><span className="site-footer-location">Auto-école · Asnières-sur-Seine</span></div>
       <nav aria-label="La formation"><h2>Votre formation</h2><Link to="/">L’auto-école</Link><Link to="/#formules">Formules et tarifs</Link><Link to="/#methode">Notre méthode</Link><Link to="/login">Espace élève</Link></nav>
       <nav aria-label="Les ressources"><h2>Pour progresser</h2><Link to="/blog">Blog & guides</Link><Link to="/blog/articles">Tous les articles</Link><Link to="/blog/quiz">Quiz code</Link><Link to="/#formules" className="site-footer-cta">Comparer les formules <ArrowRight size={16} aria-hidden="true" /></Link></nav>
     </div>
