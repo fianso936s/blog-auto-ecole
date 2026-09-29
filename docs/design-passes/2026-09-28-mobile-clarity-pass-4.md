@@ -53,3 +53,18 @@ Working branch: `design/premium-contrast-pass-5`
 - No prices, routes, offer logic, authentication, payments, data access, dependencies, infrastructure or GitHub Actions were changed.
 - Visual validation in this pass relied on code/diff inspection plus the successful Vercel pipeline; no screenshot-based regression comparison was available.
 - Next priority: refine the closing CTA and blog handoff so the page ends with the same premium decision rhythm without increasing visual density.
+
+
+## Follow-up — 2026-09-29 / closing CTA & journal handoff pass 7
+
+Working branch: `design/editorial-handoff-pass-7`
+
+- Reworked the final landing section into a stronger dark editorial bridge that visually connects the auto-école journey to the existing `/blog` experience.
+- Replaced the single isolated blog button with a two-action decision block: primary access to the journal and a secondary route back to the offers, so visitors are never left at a dead end.
+- Added compact resource cues for guides, quiz and driving advice using only destinations/content types that already exist in the project.
+- Added a labelled section heading, list semantics and visible focus treatment; no new motion was introduced.
+- Added responsive rules so the handoff becomes a single-column, full-width action stack on smaller screens without horizontal overflow.
+- Added a repository quality assertion covering the journal route, the return-to-offers route and the new accessibility markers.
+- Public rendering could not be fetched through the available Vercel/web readers in this pass, so no screenshot-based visual claim is made. Validation continues through repository review and the existing Vercel build/test pipeline after this commit.
+- No prices, offers, routes, authentication, payments, data access, dependencies, infrastructure or GitHub Actions were changed.
+- Next priority: refine the blog landing’s first screen and article hierarchy only if the same brand continuity can be improved without changing editorial data.
