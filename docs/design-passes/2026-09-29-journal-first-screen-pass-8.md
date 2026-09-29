@@ -32,3 +32,23 @@ Base inspected before work: `main` at `403cb45e1b758140ff37b81250846138110b7e03`
 
 ## Next priority
 Continue on this same branch while it is unmerged. Next useful pass: refine the article-detail reading experience (line measure, heading rhythm, media/table overflow and mobile sticky-nav interaction) without changing article data or routes.
+
+## Pass 10 — article reading experience
+- Reworked the article-detail page into a dedicated premium reading shell instead of generic utility spacing.
+- Tightened title measure and metadata hierarchy, added a framed cover treatment, and constrained long-form text to a comfortable reading width.
+- Improved heading rhythm, lists, blockquotes, links, code, tables and embedded-image treatment while keeping the existing constrained ArticleBody renderer unchanged.
+- Contained table and code overflow on narrow screens, kept 20 px mobile gutters, and made the final journal CTA full-width on small screens.
+- Prioritized the article cover as the above-the-fold image with eager/high-priority loading; article-body images remain lazy.
+- No routes, article data, prices, authentication, Supabase writes, dependencies, workflows or infrastructure were changed.
+
+### Checks actually run for pass 10
+- Re-read main, the cumulative branch head, recent PR state and this journal before editing; the branch was 8 commits ahead and 0 behind main before the pass.
+- A direct container clone was retried and failed because github.com could not be resolved, so no full local checkout/build claim is made.
+- The proposed ArticleDetailPage.tsx was transpiled with the locally installed TypeScript 5.8.3 compiler with zero syntax diagnostics.
+- Static CSS checks passed for balanced braces, narrow-screen media containment, mobile breakpoint rules and the reduced-motion rule.
+- After the two code writes, the remote branch was re-read at 7c5432c3f301298f7682a88912014a3d8cb0a405 and compared against main: 10 commits ahead, 0 behind. The expected files were present in the GitHub diff.
+- No Vercel status had been reported yet for that code head when checked, so no deployment/build success is claimed for this pass.
+- A repository quality-test assertion was prepared but its write was rejected by the connector before any test-file change occurred; the existing test suite was not modified.
+
+## Next priority
+Keep this cumulative branch if it remains unmerged. Next useful pass: inspect the landing mobile first viewport and offer-to-budget handoff for density, tap ergonomics and visual continuity, then refine only defects that are actually observed.
