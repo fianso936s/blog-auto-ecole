@@ -186,3 +186,16 @@ Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. 
 
 ## Next priority
 Si la branche reste non fusionnée, poursuivre sur cette même base cumulative. Prochain gain utile : compacter le résumé budget à 320–390 px sans masquer la comparaison Classique/Accélérée, puis raffiner l’ordre de tabulation et les annonces du simulateur si une preview inspectable devient disponible.
+
+## Post-publication pass 19 — mobile budget cockpit
+- Previous cumulative branch was merged through PR #9; this pass starts from published `main` at `08646f720bd17d37d2e826374eab6712e71759d4` on new branch `design/mobile-budget-pass-19`.
+- Compacted the budget cockpit below 460 px while keeping both Classique and Accélérée totals visible.
+- Stacked the two option counters on narrow phones, preserved 48 px −/+ targets, and added a 340 px density safeguard.
+- Static CSS validation passed with 331 opening / 331 closing braces before commit.
+- Remote diff review confirms only `src/styles/editorial.css` changed in code commit `7de83b84fc662cfbb611a804bef6cc7e7aa47648`; GitHub reports Vercel `success` for that exact SHA.
+- The public alias was not readable through the web inspection tool, so no browser screenshot or pixel-level overflow claim is made.
+- A quality-test guard write was unavailable in this run; the existing test suite was left unchanged.
+
+### Next priority
+Continue on `design/mobile-budget-pass-19` while unmerged. Next useful pass: refine the 320–390 px selection band and plan switch without reducing tap targets, then re-check focus/reduced-motion behavior and preview overflow when inspectable.
+
