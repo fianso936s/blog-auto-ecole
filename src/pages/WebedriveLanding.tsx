@@ -43,6 +43,7 @@ export default function WebedriveLanding() {
   const classicTotal = price.classic + extrasTotal;
   const acceleratedTotal = price.accelerated + extrasTotal;
   const selectedPlanLabel = plan === "classic" ? "Classique" : "Accélérée";
+  const selectedTotal = plan === "classic" ? classicTotal : acceleratedTotal;
 
   return <div className="site-shell wd-site">
     <PageMeta title="Votre permis, en plus clair" noIndex /><RouteEffects /><Header />
@@ -92,8 +93,12 @@ export default function WebedriveLanding() {
               <label className="wd-budget-field"><span>Tentatives code</span><input type="number" inputMode="numeric" min="0" max="10" step="1" value={codeAttempts} onChange={(event) => setCodeAttempts(clampCount(event.target.value, 10))} aria-describedby="budget-code-help" /><small id="budget-code-help">{CODE_EXAM_PRICE} € par tentative</small></label>
             </fieldset>
           </div>
-          <div className="wd-budget-summary" role="status" aria-live="polite" aria-atomic="true"><div className="wd-budget-bridge"><small>Étape suivante</small><strong>{hours} h · {selectedPlanLabel}</strong></div><span>Votre estimation / {hours} h / {selectedPlanLabel}</span><div className="wd-budget-total" data-active={plan === "classic" ? "true" : "false"}><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total" data-active={plan === "accelerated" ? "true" : "false"}><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p></div>
+          <div className="wd-budget-summary"><div className="wd-budget-bridge"><small>Étape suivante</small><strong>{hours} h · {selectedPlanLabel}</strong></div><span>Votre estimation / {hours} h / {selectedPlanLabel}</span><div className="wd-budget-total" data-active={plan === "classic" ? "true" : "false"}><span>Classique</span><strong>{classicTotal.toLocaleString("fr-FR")} €</strong></div><div className="wd-budget-total" data-active={plan === "accelerated" ? "true" : "false"}><span>Accélérée</span><strong>{acceleratedTotal.toLocaleString("fr-FR")} €</strong></div><p className="wd-budget-note">Estimation locale uniquement : options saisies incluses. Aucun envoi, aucune réservation, aucun paiement.</p><p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{selectedPlanLabel}, {hours} heures : estimation {selectedTotal.toLocaleString("fr-FR")} euros.</p></div>
         </section>
+        <div className="wd-budget-handoff" aria-label="Suite du parcours">
+          <div><small>Prochaine étape · 02</small><strong>Le budget est posé. La progression reste lisible.</strong><span>Évaluation, organisation, bilans : voyez comment la méthode s’enchaîne.</span></div>
+          <Link to="/#methode">Découvrir la méthode <ArrowRight size={17} aria-hidden="true" /></Link>
+        </div>
       </section>
       <section id="methode" className="wd-method" aria-labelledby="method-title">
         <div className="wd-head"><div><span>02 — L’approche WEBEDRIVE</span><h2 id="method-title">Apprendre à conduire.<br />Savoir où l’on va.</h2></div><p>De la première évaluation aux bilans de progression, la prochaine étape reste lisible.</p></div>
