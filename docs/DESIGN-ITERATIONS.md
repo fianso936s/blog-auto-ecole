@@ -177,3 +177,23 @@ Inspect the exact candidate visually when browser access becomes available. Othe
 - Re-reading the versioned quality suite found the regression immediately: the established 3D contract already asserts the accessible phrase “Les trois étapes du parcours”, while the first pass renamed that label to “Navigation dans les étapes du parcours”.
 - Restored the established accessible label and aligned the new pass-27 guard with it. The rail remains a real three-link navigation; no interaction or visual improvement was removed and no test was disabled.
 - The correction SHA must pass the same remote build gate before this pass is considered ready to publish.
+
+
+## 2026-09-30 — Decision continuity pass 28
+
+Branch: `design/experience-polish-pass-22`, continuing cumulatively from the green pass-27 correction.
+
+### Implemented
+- Made the sticky decision summary reflect the actual Classique/Accélérée state already used by the offer cards and budget simulator instead of presenting both prices with identical visual weight.
+- The selected plan cell now receives a restrained WEBEDRIVE accent treatment and a compact checked “Choisie” cue; on very narrow screens the text collapses to the check while the accessible label remains explicit.
+- The handoff action now reads “Ajuster mon choix” and exposes the selected plan plus current computed amount in its accessible label, improving continuity before the budget section.
+- Preserved all approved prices, 13 h / 20 h behavior, plan arithmetic, cards, simulator, blog, routes, 3D behavior and infrastructure.
+
+### Checks performed before commit
+- Re-read `main`, the cumulative branch head, recent PRs, the design journal and the exact decision-flow source/styles before editing.
+- Confirmed the branch head was still `d26e82fc82da3da20b6c5faeccb155c3188d0b3c` immediately before preparing the commit, preventing accidental overwrite of concurrent work.
+- Added source-level guards for both selected-plan states, the compact selected cue, narrow-screen treatment, reduced-motion coverage and the budget handoff label.
+- Local full clone/build remains unavailable because this runtime cannot resolve `github.com`; no local npm build or browser screenshot is claimed. The exact resulting SHA must be checked through the existing remote Vercel status.
+
+### Next priority
+Inspect the exact candidate visually when browser access is available. If not, continue with measurable mobile decision-flow, keyboard and responsive defects rather than adding decorative layers.

@@ -112,10 +112,16 @@ export default function WebedriveLanding() {
         <div className="wd-offer-controls"><fieldset className="wd-volume"><legend>Votre volume de conduite</legend><div className="wd-switch">{([13, 20] as const).map(value => <label key={value}><input type="radio" name="formation-hours" checked={hours === value} onChange={() => setHours(value)} />{value} heures</label>)}</div></fieldset><p>Deux formules.<br /><strong>Tout est posé, avant de commencer.</strong></p></div>
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{hours} heures : classique {price.classic} euros, accélérée {price.accelerated} euros.</p>
         <div className="wd-selection-band" aria-label="Résumé de la sélection">
-          <span><small>Volume choisi</small><strong>{hours} h</strong></span>
-          <span><small>Classique</small><strong>{price.classic.toLocaleString("fr-FR")} €</strong></span>
-          <span><small>Accélérée</small><strong>{price.accelerated.toLocaleString("fr-FR")} €</strong></span>
-          <Link to="/#budget">Ajuster l’estimation <ArrowRight size={17} aria-hidden="true" /></Link>
+          <span className="wd-selection-volume"><small>Volume choisi</small><strong>{hours} h</strong></span>
+          <span className="wd-selection-plan" data-selected={plan === "classic" ? "true" : "false"}>
+            <small>Classique {plan === "classic" && <span className="wd-selection-picked" aria-label="Choisie"><Check size={11} aria-hidden="true" /><span>Choisie</span></span>}</small>
+            <strong>{price.classic.toLocaleString("fr-FR")} €</strong>
+          </span>
+          <span className="wd-selection-plan" data-selected={plan === "accelerated" ? "true" : "false"}>
+            <small>Accélérée {plan === "accelerated" && <span className="wd-selection-picked" aria-label="Choisie"><Check size={11} aria-hidden="true" /><span>Choisie</span></span>}</small>
+            <strong>{price.accelerated.toLocaleString("fr-FR")} €</strong>
+          </span>
+          <Link to="/#budget" aria-label={`Ajuster l’estimation ${selectedPlanLabel.toLowerCase()} de ${selectedTotal.toLocaleString("fr-FR")} euros`}>Ajuster mon choix <ArrowRight size={17} aria-hidden="true" /></Link>
         </div>
         <div className="wd-comparison-intro">
           <span>Comparer sans jargon</span>

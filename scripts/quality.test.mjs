@@ -373,3 +373,24 @@ test('Mobile journey rail replaces duplicate proof labels with navigable step ta
     'transition: none !important;'
   ]) assert.ok(styles.includes(marker), marker);
 });
+
+
+test('Decision cockpit keeps the selected plan visible from comparison to budget', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const styles = read('src/styles/refinement-decision.css');
+  for (const marker of [
+    'className="wd-selection-plan"',
+    'data-selected={plan === "classic" ? "true" : "false"}',
+    'data-selected={plan === "accelerated" ? "true" : "false"}',
+    'className="wd-selection-picked"',
+    'Ajuster mon choix',
+    'selectedTotal.toLocaleString("fr-FR")'
+  ]) assert.ok(landing.includes(marker), marker);
+  for (const marker of [
+    '.wd-site .wd-selection-plan[data-selected="true"]',
+    'box-shadow:inset 0 3px 0 var(--wd-field);',
+    '.wd-selection-picked',
+    '.wd-selection-picked>span{display:none}',
+    '.wd-site .wd-selection-plan,'
+  ]) assert.ok(styles.includes(marker), marker);
+});
