@@ -101,3 +101,22 @@ Branch: `design/experience-polish-pass-22`, continuing cumulatively from pass 23
 
 ### Next priority
 Once the exact pass-24 SHA is green, inspect the real candidate in a browser-capable environment and tune only observed spacing/camera density issues rather than changing the established direction.
+
+
+## 2026-09-30 — Runtime visibility & HUD state pass 25
+
+Branch: `design/experience-polish-pass-22`, continuing cumulatively from pass 24.
+
+### Implemented
+- Fixed the 3D visibility lifecycle so returning to the tab no longer resumes the renderer merely because the visual is mounted; the loop now follows the last real IntersectionObserver state.
+- Added a stable stage target and `aria-controls` links from both 3D actions to the visual surface they control.
+- Refined the HUD state indicator with distinct loading, active and blocked treatments while keeping the existing WEBEDRIVE palette and layout.
+- Kept poster-first fallback, explicit mobile activation, reversible opt-out, reduced-motion / Save-Data behavior, offers, prices, simulator, routes and blog unchanged.
+
+### Checks actually performed
+- Re-read the current `main`, cumulative branch head, recent PRs, project journal, full 3D component and responsive stylesheet before writing.
+- Added source-level regression guards for the intersection/visibility lifecycle, stage association and HUD state selectors.
+- No local full `npm test`, TypeScript build or browser screenshot is claimed in this pass; the final exact branch SHA must be judged from the existing remote build status plus the source checks recorded here.
+
+### Next priority
+When an exact candidate can be rendered in a browser-capable environment, inspect desktop and mobile composition before any further visual spacing changes. Otherwise continue with measurable interaction, accessibility and performance defects rather than decorative churn.
