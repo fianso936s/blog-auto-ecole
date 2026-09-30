@@ -1,5 +1,4 @@
-/* WEBEDRIVE — P1 fixed composition for the “ruban de progression”.
-   The WebGL runtime is deliberately not loaded in this phase. */
+/* WEBEDRIVE — “ruban de progression” composition and progressive Three.js layer. */
 
 .wd-experience {
   background: var(--wd-bg);
@@ -493,4 +492,79 @@
   .wd-experience-contact-pending {
     border: 1px solid CanvasText;
   }
+}
+
+
+/* P3 — live Three.js layer. The poster remains the first paint and fallback. */
+.wd-experience-stage {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+.wd-experience-stage > .wd-experience-poster {
+  position: relative;
+  z-index: 1;
+  transition: opacity 240ms var(--wd-ease);
+}
+.wd-experience-webgl {
+  position: absolute;
+  inset: 0 0 31px;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #e8edeb;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 240ms var(--wd-ease);
+  box-shadow: 0 28px 70px rgb(9 36 53 / .18);
+}
+.wd-experience-stage[data-status="active"] .wd-experience-webgl { opacity: 1; }
+.wd-experience-stage[data-status="active"] > .wd-experience-poster .wd-experience-poster-art { opacity: 0; }
+.wd-experience-canvas { display: block; width: 100%; height: 100%; }
+.wd-experience-controls {
+  position: absolute;
+  z-index: 4;
+  right: 14px;
+  bottom: 44px;
+  display: flex;
+  max-width: calc(100% - 28px);
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.wd-experience-toggle {
+  min-height: 48px;
+  padding: 11px 16px;
+  border: 1px solid rgb(246 243 237 / .58);
+  border-radius: 999px;
+  background: rgb(9 36 53 / .88);
+  color: #f6f3ed;
+  box-shadow: 0 12px 30px rgb(9 36 53 / .16);
+  font-size: 12px;
+  font-weight: 750;
+  backdrop-filter: blur(10px);
+}
+.wd-experience-toggle:hover:not(:disabled) { background: #153d58; }
+.wd-experience-toggle:disabled { cursor: not-allowed; opacity: .72; }
+.wd-experience-toggle:focus-visible { outline: 3px solid var(--wd-sand); outline-offset: 3px; }
+.wd-experience-disabled-note {
+  max-width: 240px;
+  padding: 8px 11px;
+  border-radius: 10px;
+  background: rgb(246 243 237 / .92);
+  color: var(--wd-muted);
+  font-size: 10px;
+  line-height: 1.4;
+  box-shadow: 0 8px 24px rgb(9 36 53 / .1);
+}
+
+@media (max-width: 1023px) {
+  .wd-experience-webgl { inset: 0 0 31px; border-radius: 16px; }
+  .wd-experience-controls { bottom: 42px; }
+  .wd-experience-stage > .wd-experience-poster .wd-experience-poster-art { aspect-ratio: 5 / 4; object-fit: cover; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wd-experience-stage > .wd-experience-poster,
+  .wd-experience-webgl { transition: none !important; }
 }
