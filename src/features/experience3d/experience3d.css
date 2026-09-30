@@ -568,3 +568,29 @@
   .wd-experience-stage > .wd-experience-poster,
   .wd-experience-webgl { transition: none !important; }
 }
+
+
+/* Runtime mobile order: one component, poster first, optional 3D on explicit action. */
+#formations, #formules { scroll-margin-top: calc(var(--wd-header-height) + 24px); }
+@media (max-width: 1023px) {
+  .wd-experience-grid {
+    display: flex;
+    flex-direction: column;
+  }
+  .wd-experience-story { display: contents; }
+  .wd-experience-panel--lead { order: 1; }
+  .wd-experience-visual {
+    display: block;
+    order: 2;
+    width: 100%;
+    min-width: 0;
+  }
+  .wd-experience-visual-inner {
+    position: relative;
+    top: auto;
+    height: auto;
+    padding: 0 0 22px;
+  }
+  .wd-experience-panel--compact { order: 3; }
+  .wd-experience-mobile-poster { display: none; }
+}
