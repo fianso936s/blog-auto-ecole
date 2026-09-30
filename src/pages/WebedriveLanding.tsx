@@ -134,11 +134,16 @@ export default function WebedriveLanding() {
         </div>
         <p className="wd-fine">À prévoir séparément : examen du code {CODE_EXAM_PRICE} € par tentative · heures complémentaires {EXTRA_HOUR_PRICE} € par heure.</p>
         <section id="budget" className="wd-budget" aria-labelledby="budget-title" tabIndex={-1}>
-          <div><span className="site-eyebrow">Votre budget, en clair</span><h3 id="budget-title">Tout se calcule.<br />Rien ne s’envoie.</h3><p className="wd-budget-copy">Choisissez votre rythme, puis ajoutez les options à simuler. Le calcul reste dans votre navigateur et ne réserve aucun créneau.</p>
-            <fieldset className="wd-budget-plan"><legend>Formule à simuler</legend><div className="wd-budget-plan-switch">
-              <label><input type="radio" name="budget-plan" value="classic" checked={plan === "classic"} onChange={() => setPlan("classic")} />Classique</label>
-              <label><input type="radio" name="budget-plan" value="accelerated" checked={plan === "accelerated"} onChange={() => setPlan("accelerated")} />Accélérée</label>
-            </div></fieldset>
+          <div><span className="site-eyebrow">Votre budget, en clair</span><h3 id="budget-title">Tout se calcule.<br />Rien ne s’envoie.</h3><p className="wd-budget-copy">Ajustez ici le volume et le rythme, puis ajoutez les options à simuler. Le calcul reste dans votre navigateur et ne réserve aucun créneau.</p>
+            <div className="wd-budget-choice-grid" aria-label="Paramètres principaux de l’estimation">
+              <fieldset className="wd-budget-hours"><legend>Volume à simuler</legend><div className="wd-budget-hours-switch wd-budget-choice-switch">
+                {([13, 20] as const).map(value => <label key={value}><input type="radio" name="budget-hours" value={value} checked={hours === value} onChange={() => setHours(value)} />{value} h</label>)}
+              </div></fieldset>
+              <fieldset className="wd-budget-plan"><legend>Formule à simuler</legend><div className="wd-budget-plan-switch wd-budget-choice-switch">
+                <label><input type="radio" name="budget-plan" value="classic" checked={plan === "classic"} onChange={() => setPlan("classic")} />Classique</label>
+                <label><input type="radio" name="budget-plan" value="accelerated" checked={plan === "accelerated"} onChange={() => setPlan("accelerated")} />Accélérée</label>
+              </div></fieldset>
+            </div>
             <fieldset className="wd-budget-fields"><legend className="sr-only">Options de l’estimation</legend>
               <BudgetCounter id="budget-extra-hours" label="Heures complémentaires" help={`${EXTRA_HOUR_PRICE} € par heure`} value={extraHours} max={20} minusLabel="Retirer une heure complémentaire" plusLabel="Ajouter une heure complémentaire" onChange={setExtraHours} />
               <BudgetCounter id="budget-code-attempts" label="Tentatives code" help={`${CODE_EXAM_PRICE} € par tentative`} value={codeAttempts} max={10} minusLabel="Retirer une tentative code" plusLabel="Ajouter une tentative code" onChange={setCodeAttempts} />
