@@ -594,3 +594,12 @@
   .wd-experience-panel--compact { order: 3; }
   .wd-experience-mobile-poster { display: none; }
 }
+
+
+/* Master composition header height for the landing only. */
+.wd-site { --wd-header-height: 72px; }
+.wd-site .site-header-inner { height: 72px; }
+@media (max-width: 767px) {
+  .wd-site { --wd-header-height: 64px; }
+  .wd-site .site-header-inner { height: 64px; }
+}
