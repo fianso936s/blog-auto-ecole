@@ -7,7 +7,8 @@ import PageMeta from "../components/PageMeta";
 import RouteEffects from "../components/RouteEffects";
 import Experience3D from "../features/experience3d/Experience3D";
 import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offers";
-import "../styles/refinement-decision.css";\nimport "../features/experience3d/experience3d.css";
+import "../styles/refinement-decision.css";
+import "../features/experience3d/experience3d.css";
 
 type Plan = "classic" | "accelerated";
 
@@ -112,7 +113,8 @@ export default function WebedriveLanding() {
           </aside>
         </div>
       </section>
-      <section id="formations" className="wd-offers" aria-labelledby="formules-title">\n        <span id="formules" className="wd-anchor-alias" aria-hidden="true" />
+      <section id="formations" className="wd-offers" aria-labelledby="formules-title">
+        <span id="formules" className="wd-anchor-alias" aria-hidden="true" />
         <div className="wd-head"><div><span>01 — Les formules · boîte automatique</span><h2 id="formules-title">Votre rythme.<br />Votre point de départ.</h2></div><p>L’évaluation détermine le volume conseillé. Choisissez ensuite comment répartir vos séances : les inclusions restent les mêmes.</p></div>
         <div className="wd-offer-controls"><fieldset className="wd-volume"><legend>Votre volume de conduite</legend><div className="wd-switch">{([13, 20] as const).map(value => <label key={value}><input type="radio" name="formation-hours" checked={hours === value} onChange={() => setHours(value)} />{value} heures</label>)}</div></fieldset><p>Deux formules.<br /><strong>Tout est posé, avant de commencer.</strong></p></div>
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{hours} heures : classique {price.classic} euros, accélérée {price.accelerated} euros.</p>
