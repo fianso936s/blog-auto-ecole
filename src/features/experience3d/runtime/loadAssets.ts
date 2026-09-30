@@ -10,12 +10,14 @@ export type RuntimeModules = {
 
 let runtimePromise: Promise<RuntimeModules> | null = null;
 
+const runtimeImport = new Function("url", "return import(url)") as (url: string) => Promise<any>;
+
 export function loadRuntimeModules(): Promise<RuntimeModules> {
   if (runtimePromise) return runtimePromise;
   runtimePromise = Promise.all([
-    import(/* @vite-ignore */ THREE_MODULE_URL),
-    import(/* @vite-ignore */ GSAP_MODULE_URL),
-    import(/* @vite-ignore */ SCROLL_TRIGGER_URL),
+    runtimeImport(THREE_MODULE_URL),
+    runtimeImport(GSAP_MODULE_URL),
+    runtimeImport(SCROLL_TRIGGER_URL),
   ]).then(([THREE, gsapModule, scrollModule]) => {
     const gsap = gsapModule.gsap ?? gsapModule.default ?? gsapModule;
     const ScrollTrigger = scrollModule.ScrollTrigger ?? scrollModule.default;
