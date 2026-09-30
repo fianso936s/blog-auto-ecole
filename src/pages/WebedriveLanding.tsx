@@ -5,7 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageMeta from "../components/PageMeta";
 import RouteEffects from "../components/RouteEffects";
-import Experience3D from "../features/experience3d/Experience3D";
+import ExperiencePoster from "../features/experience3d/ExperiencePoster";
 import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offers";
 import "../styles/refinement-decision.css";
 import "../features/experience3d/experience3d.css";
@@ -108,7 +108,7 @@ export default function WebedriveLanding() {
 
           <aside className="wd-experience-visual" aria-label="Illustration du parcours">
             <div className="wd-experience-visual-inner">
-              <Experience3D />
+              <ExperiencePoster />
             </div>
           </aside>
         </div>
