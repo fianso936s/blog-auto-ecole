@@ -243,3 +243,23 @@ Inspect the real desktop/mobile summary interaction when exact-candidate renderi
 - Source-level review isolated the regression to a contract-string mismatch in the compact mobile CSS: the new implementation grouped `.wd-selection-picked>span` with `.wd-selection-action`, while the established quality suite intentionally guards the historical selector as an exact marker.
 - Restored the guarded selector verbatim and kept the new decorative action label hidden with its own adjacent rule. No interaction, accessibility or visual behavior was removed, and no test was disabled.
 - This correction keeps the direct summary plan switching introduced in pass 30 unchanged.
+
+
+## 2026-09-30 — Sticky volume switching pass 32
+
+Branch: `design/selection-hierarchy-pass-29`.
+
+### Implemented
+- Replaced the passive volume value in the decision summary with compact 13 h / 20 h controls.
+- The summary now lets users change training volume and Classique/Accélérée rhythm without scrolling back to the top controls.
+- Added pressed-state semantics, explicit accessible labels, keyboard focus, narrow-screen sizing, forced-colors support and reduced-motion coverage.
+- Prices, inclusions, simulator arithmetic, blog routes and 3D behavior are unchanged.
+
+### Checks
+- Started from the green pass-31 head `d3041dbe639f894128b48a8ac0d4c1b5e05f1682`.
+- Landing markup was recorded in `4dd93f5f3dc4279e0caa9eabc77f7da57b95093f`; responsive styling was recorded in `a82c431664e6b03027dcf1379197bf8b8fbc532f`.
+- An attempted update to the source-level quality suite was refused by the GitHub write path in this runtime, so no new test marker is claimed.
+- No local browser screenshot or npm build is claimed; the exact final SHA is verified remotely after this journal commit.
+
+### Next priority
+Continue with measurable mobile hierarchy, keyboard and decision-flow defects; add the pass-32 source guard when the write path permits it.
