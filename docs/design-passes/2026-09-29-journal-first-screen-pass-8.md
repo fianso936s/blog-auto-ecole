@@ -223,3 +223,23 @@ Continue on `design/mobile-budget-pass-19` while unmerged. Next useful pass: ref
 
 ## Next priority
 Keep `design/mobile-selection-pass-20` as the cumulative branch while it remains unmerged. Next useful pass: inspect the selected-card and budget-summary rhythm at 320/390/768 px from a readable preview, then refine only observed spacing or overflow defects; otherwise continue with the sticky decision band and anchor handoff without changing approved commercial data.
+
+## Pass 22 — master 3D / ruban de progression
+- Rebased the implementation effort on published `main@6770a3a730b245432527e99603287e084c16f5ed` and selectively reconciled the useful 3D work from `feature/ribbon-progression-p0-p1`; the old feature branch was not merged because it is 40 commits behind current main.
+- Restored the versioned scene contracts, budgets, content contract, acceptance criteria, deterministic camera math, poster artwork and original procedural asset generator.
+- Replaced the old SVG hero composition on the working branch with the three-chapter master story: Comprendre, Organiser, Avancer, while preserving the current formula selector, plan selection, budget simulator, method, FAQ, journal, blog and application routes.
+- Added an isolated deferred WebGL runtime under `src/features/experience3d/`: Catmull-Rom road, illustrative WEBEDRIVE compact, contractual node names/materials, five camera anchors, ACES/sRGB rendering, scroll-driven story progression and a single animation loop that stops when idle.
+- Desktop starts only after load/idle. Mobile starts from the fixed poster and requires the explicit “Explorer en 3D” action. Reduced motion, Save-Data, missing WebGL2, load timeout and context loss keep or restore the poster instead of blocking commercial content.
+- The runtime keeps all commercial copy and controls in HTML; the canvas is decorative and isolated from `/blog`.
+
+### Checks actually performed for pass 22
+- GitHub comparison currently shows the cumulative branch ahead of `main` and 0 behind; no force-push was used.
+- Static `experience3d.css` brace check passed: 114 opening / 114 closing braces at the check point.
+- A landing integration regression was detected from the Vercel build statuses: stale `useEffect` / pause state remained after moving animation ownership to the 3D component. It was removed rather than masking the test.
+- Commit `2718b6e85142551bab93eab65ac6cea98cc8fe6b` received Vercel `success` after that correction and contains the live 3D landing integration.
+- Deterministic scene-math tests and repository guard assertions were then restored on later commits. No browser screenshot or pixel-level visual review is claimed for those later heads yet.
+- The source asset generator was also executed in the available local tooling environment. Candidate desktop/lite/mobile GLBs were generated at 99,696 / 40,488 / 36,592 bytes with 5,500 / 2,220 / 1,900 triangles; all required contractual node names were present. Those binary exports are not yet committed, so the runtime currently builds the same procedural geometry directly.
+
+### Next priority
+Confirm the final branch-head build status, then inspect an accessible preview at desktop and mobile sizes. If the visual review passes, commit the generated GLB variants and switch the loader to those files while retaining the procedural/poster fallback.
+

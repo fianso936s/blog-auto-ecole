@@ -1,0 +1,26 @@
+{
+  "_source": "Commercial values reconstructed from the uploaded WEBEDRIVE execution PDF and cross-checked against src/lib/offers.ts.",
+  "_status": "RECONSTRUCTED_FROM_PDF_AND_REPO",
+  "vehicleTransmission": "boite automatique",
+  "prices": {
+    "classic13": 890,
+    "classic20": 1290,
+    "accelerated13": 1090,
+    "accelerated20": 1490,
+    "extraHour": 65,
+    "codeExamAttempt": 30
+  },
+  "included": [
+    "Evaluation prealable en plus des heures de formation",
+    "Code en ligne six mois",
+    "Demarches administratives et livret numerique",
+    "Suivi et bilans",
+    "Un accompagnement a l'examen pratique en plus des heures de formation"
+  ],
+  "acceleratedCondition": "Regroupement vise sur deux a trois semaines si le planning le permet, avec creneaux valides avant engagement.",
+  "acceleratedDisclaimer": "Le supplement accelere de 200 euros ne garantit pas une date d'examen.",
+  "contact": {
+    "status": "NON_LIVRABLE",
+    "reason": "No verified public contact channel was found during repository inventory; do not invent coordinates or an endpoint."
+  }
+}

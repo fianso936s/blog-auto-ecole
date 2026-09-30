@@ -1,13 +1,14 @@
-import { useEffect, useState, type ReactNode } from "react";
-import { ArrowRight, Check, Minus, Pause, Play, Plus } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { ArrowRight, Check, Minus, Plus } from "lucide-react";
 import { Link } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageMeta from "../components/PageMeta";
 import RouteEffects from "../components/RouteEffects";
-import DriveVisual from "../components/DriveVisual";
+import Experience3D from "../features/experience3d/Experience3D";
 import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offers";
 import "../styles/refinement-decision.css";
+import "../features/experience3d/experience3d.css";
 
 type Plan = "classic" | "accelerated";
 
@@ -56,15 +57,8 @@ function OfferCard({ title, note, price, plan, selected, dark = false, onSelect,
 export default function WebedriveLanding() {
   const [hours, setHours] = useState<13 | 20>(20);
   const [plan, setPlan] = useState<Plan>("classic");
-  const [paused, setPaused] = useState(false);
   const [extraHours, setExtraHours] = useState(0);
   const [codeAttempts, setCodeAttempts] = useState(0);
-  const [reduced, setReduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduced(media.matches);
-    media.addEventListener("change", sync); return () => media.removeEventListener("change", sync);
-  }, []);
   const price = PRICES[hours];
   const extrasTotal = extraHours * EXTRA_HOUR_PRICE + codeAttempts * CODE_EXAM_PRICE;
   const classicTotal = price.classic + extrasTotal;
@@ -73,24 +67,47 @@ export default function WebedriveLanding() {
   const selectedTotal = plan === "classic" ? classicTotal : acceleratedTotal;
 
   return <div className="site-shell wd-site">
-    <PageMeta title="Votre permis, en plus clair" noIndex /><RouteEffects /><Header />
+    <PageMeta title="Votre permis, avec une vision claire à chaque étape" noIndex /><RouteEffects /><Header />
     <main id="site-content" tabIndex={-1}>
-      <section id="top" className="wd-hero" aria-labelledby="hero-title">
-        <div className="wd-copy">
-          <div className="wd-eyebrow"><i aria-hidden="true" />Auto-école · Asnières-sur-Seine</div>
-          <h1 id="hero-title">Votre permis.<br /><em>En plus clair.</em></h1>
-          <p>Moins de flou.<br className="wd-mobile-break" /> Plus de confiance au volant.</p>
-          <p className="wd-hero-description">Un budget lisible, un rythme qui vous correspond et un accompagnement à chaque étape.</p>
-          <div className="wd-actions"><Link className="wd-pill" to="/#formules">Trouver ma formule <ArrowRight size={18} aria-hidden="true" /></Link><Link className="wd-ghost" to="/#methode">Découvrir l’approche <span aria-hidden="true">↗</span></Link></div>
-          <nav className="wd-progress" aria-label="Accès rapide au parcours"><Link to="/#formules"><b>01</b> Formules</Link><i aria-hidden="true" /><Link to="/#budget"><b>02</b> Budget</Link><i aria-hidden="true" /><Link to="/#methode"><b>03</b> Méthode</Link></nav>
+      <section id="experience" className="wd-experience" aria-label="Le ruban de progression WEBEDRIVE">
+        <span id="top" className="wd-anchor-alias" aria-hidden="true" />
+        <div className="wd-experience-grid">
+          <div className="wd-experience-story">
+            <article className="wd-experience-panel wd-experience-panel--lead" aria-labelledby="experience-title">
+              <span className="wd-experience-kicker">Auto-école · Asnières-sur-Seine</span>
+              <h1 id="experience-title">Votre permis, avec une vision claire à chaque étape.</h1>
+              <p>Comprendre votre budget. Organiser vos séances. Avancer avec des objectifs clairs.</p>
+              <div className="wd-experience-actions">
+                <Link className="wd-pill" to="/#formations">Voir les formations <ArrowRight size={18} aria-hidden="true" /></Link>
+                <Link className="wd-ghost" to="/#methode">Découvrir notre méthode <span aria-hidden="true">↗</span></Link>
+              </div>
+              <div className="wd-experience-proofline" aria-label="Les trois temps du parcours">
+                <span>Comprendre</span><span>Organiser</span><span>Avancer</span>
+              </div>
+            </article>
+
+            <article className="wd-experience-panel wd-experience-panel--compact" aria-labelledby="organiser-title">
+              <span className="wd-experience-index">02 — Organiser</span>
+              <h2 id="organiser-title">Un planning qui s’organise avec vous.</h2>
+              <p>Un rythme de formation adapté aux disponibilités communes, avec des créneaux validés avant engagement.</p>
+            </article>
+
+            <article className="wd-experience-panel wd-experience-panel--compact" aria-labelledby="avancer-title">
+              <span className="wd-experience-index">03 — Avancer</span>
+              <h2 id="avancer-title">Des acquis. Un prochain objectif.</h2>
+              <p>Des bilans pour comprendre votre progression et préparer la suite de votre formation.</p>
+            </article>
+          </div>
+
+          <aside className="wd-experience-visual" aria-label="Illustration du parcours">
+            <div className="wd-experience-visual-inner">
+              <Experience3D />
+            </div>
+          </aside>
         </div>
-        <div className="wd-visual">
-          <DriveVisual paused={paused || reduced} />
-          <button type="button" className="wd-motion" disabled={reduced} aria-label={reduced ? "Animation arrêtée selon vos préférences" : paused ? "Reprendre l’animation" : "Mettre en pause l’animation"} aria-pressed={paused || reduced} onClick={() => setPaused(value => !value)}>{paused || reduced ? <Play size={17} aria-hidden="true" /> : <Pause size={17} aria-hidden="true" />}</button>
-        </div>
-        <div className="wd-hero-footer"><span>LA ROUTE COMMENCE AVEC LES BONS REPÈRES.</span><Link to="/#formules">À vous de choisir <span aria-hidden="true">↓</span></Link></div>
       </section>
-      <section id="formules" className="wd-offers" aria-labelledby="formules-title">
+      <section id="formations" className="wd-offers" aria-labelledby="formules-title">
+        <span id="formules" className="wd-anchor-alias" aria-hidden="true" />
         <div className="wd-head"><div><span>01 — Les formules · boîte automatique</span><h2 id="formules-title">Votre rythme.<br />Votre point de départ.</h2></div><p>L’évaluation détermine le volume conseillé. Choisissez ensuite comment répartir vos séances : les inclusions restent les mêmes.</p></div>
         <div className="wd-offer-controls"><fieldset className="wd-volume"><legend>Votre volume de conduite</legend><div className="wd-switch">{([13, 20] as const).map(value => <label key={value}><input type="radio" name="formation-hours" checked={hours === value} onChange={() => setHours(value)} />{value} heures</label>)}</div></fieldset><p>Deux formules.<br /><strong>Tout est posé, avant de commencer.</strong></p></div>
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{hours} heures : classique {price.classic} euros, accélérée {price.accelerated} euros.</p>

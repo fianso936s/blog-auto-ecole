@@ -1,0 +1,86 @@
+{
+  "_source": "Reconstructed only from WEBEDRIVE_Benchmark_3D_Cahier_IA v1.0 PDF because the referenced ZIP/contracts were not attached.",
+  "_status": "RECONSTRUCTED_FROM_PDF",
+  "world": {
+    "upAxis": "Y",
+    "unit": "meter"
+  },
+  "car": {
+    "localForward": "+Z",
+    "localRight": "+X",
+    "dimensions": { "length": 4.05, "width": 1.78, "height": 1.45 },
+    "wheelRadius": 0.31,
+    "maxFrontSteeringDeg": 22,
+    "requiredNodes": [
+      "SceneRoot",
+      "RoadRoot",
+      "RoadSurface",
+      "CarRoot",
+      "Body",
+      "Glass",
+      "Wheel_FL",
+      "Wheel_FR",
+      "Wheel_RL",
+      "Wheel_RR",
+      "Marker_01",
+      "Marker_02"
+    ]
+  },
+  "road": {
+    "type": "CatmullRom",
+    "centripetal": true,
+    "closed": false,
+    "width": 3.4,
+    "thickness": 0.14,
+    "points": [
+      [-18, 0, 8],
+      [-12, 0, 8],
+      [-5, 0, 4],
+      [2, 0, 0],
+      [8, 0, 2],
+      [13, 0, 4],
+      [20, 0, 2]
+    ]
+  },
+  "anchors": [
+    { "p": 0.0, "u": 0.12, "camera": [8, 5, 11], "target": [0, 0.6, 0], "fov": 32 },
+    { "p": 0.25, "u": 0.29, "camera": [9, 8, 12], "target": [0, 0.6, 0.8], "fov": 34 },
+    { "p": 0.5, "u": 0.5, "camera": [8.5, 13, 10], "target": [0, 0.6, 1], "fov": 36 },
+    { "p": 0.75, "u": 0.69, "camera": [1.5, 8, 13], "target": [0, 0.65, 1], "fov": 34 },
+    { "p": 1.0, "u": 0.86, "camera": [-7, 4, 12], "target": [0, 0.65, 1], "fov": 32 }
+  ],
+  "motion": {
+    "progressDistance": "2H",
+    "smoothing": "smoothstep between anchors",
+    "inertiaTimeConstantSeconds": 0.12,
+    "progressEpsilon": 0.0005,
+    "scrollTriggerScrub": false,
+    "mobileCarU": 0.12,
+    "mobileCameraArcDeg": [-8, 8]
+  },
+  "materials": {
+    "body": { "color": "#153D58", "metalness": 0.35, "roughness": 0.32, "clearcoat": 0.35 },
+    "road": { "color": "#516675", "metalness": 0.0, "roughness": 0.88 },
+    "tires": { "color": "#1B2024", "roughness": 0.92 },
+    "glass": { "color": "#243844", "metalness": 0.1, "roughness": 0.18, "transmission": 0.0 },
+    "markers": { "color": "#D7B98E", "roughness": 0.7 }
+  },
+  "render": {
+    "outputColorSpace": "sRGB",
+    "toneMapping": "ACESFilmic",
+    "exposure": 1.0,
+    "postProcessing": false,
+    "directionalLight": { "position": [6, 10, 8], "intensity": 2.4 },
+    "ambientFill": 0.35,
+    "environmentIntensity": 0.8,
+    "desktopShadowMap": 1024,
+    "liteDynamicShadows": false,
+    "mobileDynamicShadows": false
+  },
+  "validation": {
+    "minVisualMarginPercent": 6,
+    "vehicleWidthPercent": [28, 40],
+    "cameraMustNotIntersectGeometry": true,
+    "wheelsMustContactRoad": true
+  }
+}

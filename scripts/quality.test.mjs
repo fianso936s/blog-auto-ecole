@@ -100,9 +100,10 @@ test('Footer contains no invented phone/email or misleading legal links', () => 
   assert.ok(source.includes('restent à valider')); assert.ok(!source.includes('Politique de confidentialit'));
 });
 test('Animation lifecycle declares visibility, resize and reduced-motion handling', () => {
-  const scene = read('src/components/RoadScene.tsx');
-  for (const marker of ['visibilitychange', 'IntersectionObserver', 'ResizeObserver', 'cancelAnimationFrame', 'Math.round']) assert.ok(scene.includes(marker));
-  assert.ok(read('src/pages/WebedriveLanding.tsx').includes('prefers-reduced-motion'));
+  const legacyScene = read('src/components/RoadScene.tsx');
+  for (const marker of ['visibilitychange', 'IntersectionObserver', 'ResizeObserver', 'cancelAnimationFrame', 'Math.round']) assert.ok(legacyScene.includes(marker));
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  for (const marker of ['prefers-reduced-motion', 'visibilitychange', 'IntersectionObserver', 'ResizeObserver']) assert.ok(experience.includes(marker), marker);
 });
 test('All application TypeScript and TSX files parse without syntax errors', () => {
   const sources = files('src').filter(path => /\.tsx?$/.test(path) && !path.endsWith('.d.ts'));
@@ -226,3 +227,23 @@ test('Shared header height keeps journal navigation aligned', () => {
   assert.ok(blog.includes('top:var(--wd-header-height)'));
   assert.ok(blog.includes('article-detail-actions'));
 });
+
+test('Ribbon experience uses one accessible poster fallback and a deferred 3D runtime', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  const scene = read('src/features/experience3d/runtime/createScene.ts');
+  for (const marker of ['id="experience"', 'Experience3D', 'Un planning qui s’organise avec vous.', 'Des acquis. Un prochain objectif.']) assert.ok(landing.includes(marker), marker);
+  for (const marker of ['prefers-reduced-motion', 'saveData', 'webgl2Available', 'Explorer en 3D', 'Désactiver l’animation', 'IntersectionObserver', 'webglcontextlost']) assert.ok(experience.includes(marker), marker);
+  for (const marker of ['CatmullRomCurve3', 'CarRoot', 'RoadSurface', 'Wheel_FL', 'ACESFilmicToneMapping', 'setAnimationLoop']) assert.ok(scene.includes(marker), marker);
+});
+
+test('3D contracts and deterministic story reference stay versioned with the site', () => {
+  for (const path of ['contracts/scene.config.json', 'contracts/performance-budgets.json', 'reference/scene-math.mjs', 'reference/scene-math.test.mjs']) {
+    assert.ok(read(path).length > 100, path);
+  }
+  const scene = JSON.parse(read('contracts/scene.config.json'));
+  assert.equal(scene.car.dimensions.length, 4.05);
+  assert.equal(scene.road.width, 3.4);
+  assert.equal(scene.anchors.length, 5);
+});
+
