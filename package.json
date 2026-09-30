@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "test": "node --test scripts/quality.test.mjs",
+    "test": "node --test scripts/quality.test.mjs reference/scene-math.test.mjs",
     "build": "npm test && node scripts/build-info.mjs && tsc -b && vite build",
     "preview": "vite preview",
     "audit:deps": "npm audit"
