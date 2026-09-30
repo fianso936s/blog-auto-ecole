@@ -247,3 +247,150 @@ test('3D contracts and deterministic story reference stay versioned with the sit
   assert.equal(scene.anchors.length, 5);
 });
 
+
+test('Mobile 3D stage stays singular and adds a compact journey rail', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  const styles = read('src/features/experience3d/experience3d.css');
+  assert.ok(!landing.includes('import ExperiencePoster from "../features/experience3d/ExperiencePoster";'));
+  assert.ok(!landing.includes('<div className="wd-experience-mobile-poster">'));
+  for (const marker of [
+    'wd-experience-shell',
+    '<ExperiencePoster variant={mobile ? "mobile" : "desktop"} />',
+    'wd-experience-journey-rail',
+    'Les trois étapes du parcours',
+    '<strong>Comprendre</strong>',
+    '<strong>Organiser</strong>',
+    '<strong>Avancer</strong>'
+  ]) assert.ok(experience.includes(marker), marker);
+  for (const marker of [
+    '.wd-experience-shell {',
+    '.wd-experience-journey-rail {',
+    'grid-template-columns: repeat(3, minmax(0, 1fr));',
+    '.wd-experience-visual {\n    display: block;\n    order: 2;'
+  ]) assert.ok(styles.includes(marker), marker);
+});
+
+
+test('3D visual controls stay reversible and poster labelling stays singular', () => {
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  const poster = read('src/features/experience3d/ExperiencePoster.tsx');
+  const styles = read('src/features/experience3d/experience3d.css');
+  assert.ok(experience.includes('aria-busy={status === "loading"}'));
+  assert.ok(experience.includes('cleanupScene(); setRetryUsed(false); setViewStatus("poster")'));
+  assert.ok(!experience.includes('const [disabled, setDisabled]'));
+  assert.ok(poster.includes('aria-hidden="true"'));
+  assert.ok(!poster.includes('role="img"'));
+  assert.ok(styles.includes('.wd-experience-webgl {'));
+  assert.ok(styles.includes('inset: 0;'));
+  assert.ok(styles.includes('background: rgb(9 36 53 / .74)'));
+});
+
+
+test('Responsive 3D HUD stays outside the artwork on touch layouts', () => {
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  const styles = read('src/features/experience3d/experience3d.css');
+  for (const marker of ['wd-experience-toolbar', 'Vue du parcours', '3D interactive activée', 'aria-live="polite"']) {
+    assert.ok(experience.includes(marker), marker);
+  }
+  assert.ok(styles.includes('Responsive HUD: keep controls outside the artwork on touch layouts.'));
+  assert.ok(styles.includes('.wd-experience-toggle { width: 100%; }'));
+});
+
+
+test('3D renderer visibility follows the actual intersection after tab changes', () => {
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  for (const marker of [
+    'const visibleRef = useRef(false);',
+    'visibleRef.current = entry.isIntersecting;',
+    'controller.setVisible(entry.isIntersecting && !document.hidden);',
+    'controller.setVisible(!document.hidden && visibleRef.current);',
+    'id="wd-experience-stage"',
+    'aria-controls="wd-experience-stage"',
+    'data-mode={viewMode}'
+  ]) assert.ok(experience.includes(marker), marker);
+});
+
+test('3D HUD differentiates loading, active and blocked states', () => {
+  const styles = read('src/features/experience3d/experience3d.css');
+  for (const marker of [
+    '.wd-experience-toolbar[data-status="loading"] .wd-experience-toolbar-copy::before',
+    '.wd-experience-toolbar[data-status="active"] .wd-experience-toolbar-copy::before',
+    '.wd-experience-toolbar[data-mode="blocked"] .wd-experience-toolbar-copy::before'
+  ]) assert.ok(styles.includes(marker), marker);
+});
+
+
+test('Hash navigation focuses visible section content instead of hidden aliases', () => {
+  const source = read('src/components/RouteEffects.tsx');
+  const styles = read('src/styles/brand.css');
+  for (const marker of [
+    'target.classList.contains("wd-anchor-alias")',
+    'target.closest<HTMLElement>("section")',
+    'scrollTarget.querySelector<HTMLElement>("h1, h2, h3")',
+    'data-route-focus-target',
+    'focusTarget.focus({ preventScroll: true })',
+    'scrollTarget.scrollIntoView'
+  ]) assert.ok(source.includes(marker), marker);
+  assert.ok(styles.includes('[data-route-focus-target="true"]:focus-visible'));
+});
+
+test('3D startup rejects stale launches and live blocked-motion changes', () => {
+  const source = read('src/features/experience3d/Experience3D.tsx');
+  for (const marker of [
+    'const statusRef = useRef<Status>("poster");',
+    'const launchRef = useRef(0);',
+    'statusRef.current === "active"',
+    'const launchId = ++launchRef.current;',
+    'launchId !== launchRef.current',
+    'cleanupScene(false);',
+    'blockedNow()',
+    'setRetryUsed(false);'
+  ]) assert.ok(source.includes(marker), marker);
+});
+
+
+test('Mobile journey rail replaces duplicate proof labels with navigable step targets', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  const styles = read('src/features/experience3d/experience3d.css');
+  for (const marker of [
+    'id="organiser"',
+    'id="avancer"'
+  ]) assert.ok(landing.includes(marker), marker);
+  for (const marker of [
+    'wd-experience-journey-nav',
+    'to="/#experience"',
+    'to="/#organiser"',
+    'to="/#avancer"',
+    'aria-label="Les trois étapes du parcours"'
+  ]) assert.ok(experience.includes(marker), marker);
+  for (const marker of [
+    '.wd-experience-proofline {\n    display: none;',
+    '.wd-experience-journey-nav {\n    display: block;',
+    '.wd-experience-journey-rail a:focus-visible',
+    '#organiser,\n  #avancer {',
+    'transition: none !important;'
+  ]) assert.ok(styles.includes(marker), marker);
+});
+
+
+test('Decision cockpit keeps the selected plan visible from comparison to budget', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const styles = read('src/styles/refinement-decision.css');
+  for (const marker of [
+    'className="wd-selection-plan"',
+    'data-selected={plan === "classic" ? "true" : "false"}',
+    'data-selected={plan === "accelerated" ? "true" : "false"}',
+    'className="wd-selection-picked"',
+    'Ajuster mon choix',
+    'selectedTotal.toLocaleString("fr-FR")'
+  ]) assert.ok(landing.includes(marker), marker);
+  for (const marker of [
+    '.wd-site .wd-selection-plan[data-selected="true"]',
+    'box-shadow:inset 0 3px 0 var(--wd-field);',
+    '.wd-selection-picked',
+    '.wd-selection-picked>span{display:none}',
+    '.wd-site .wd-selection-plan,'
+  ]) assert.ok(styles.includes(marker), marker);
+});

@@ -158,6 +158,7 @@
 }
 
 .wd-experience-poster {
+  position: relative;
   width: 100%;
   margin: 0;
 }
@@ -171,10 +172,23 @@
 }
 
 .wd-experience-poster figcaption {
-  margin-top: 12px;
-  color: var(--wd-muted);
-  font-size: 11px;
-  line-height: 1.5;
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 4;
+  max-width: calc(100% - 28px);
+  margin: 0;
+  padding: 7px 10px;
+  border: 1px solid rgb(246 243 237 / .22);
+  border-radius: 999px;
+  background: rgb(9 36 53 / .74);
+  color: #F6F3ED;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: .01em;
+  pointer-events: none;
+  backdrop-filter: blur(10px);
 }
 
 .wd-experience-poster--desktop .wd-experience-poster-art {
@@ -496,19 +510,30 @@
 
 
 /* P3 — live Three.js layer. The poster remains the first paint and fallback. */
+.wd-experience-shell {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
 .wd-experience-stage {
   position: relative;
   width: 100%;
   min-width: 0;
 }
+
+.wd-experience-journey-nav,
+.wd-experience-journey-rail {
+  display: none;
+}
 .wd-experience-stage > .wd-experience-poster {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   transition: opacity 240ms var(--wd-ease);
 }
 .wd-experience-webgl {
   position: absolute;
-  inset: 0 0 31px;
+  inset: 0;
   z-index: 2;
   overflow: hidden;
   border-radius: 20px;
@@ -521,13 +546,72 @@
 .wd-experience-stage[data-status="active"] .wd-experience-webgl { opacity: 1; }
 .wd-experience-stage[data-status="active"] > .wd-experience-poster .wd-experience-poster-art { opacity: 0; }
 .wd-experience-canvas { display: block; width: 100%; height: 100%; }
-.wd-experience-controls {
+.wd-experience-toolbar {
   position: absolute;
-  z-index: 4;
+  z-index: 5;
   right: 14px;
-  bottom: 44px;
+  bottom: 14px;
+  left: 14px;
   display: flex;
-  max-width: calc(100% - 28px);
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  min-width: 0;
+  padding: 8px 8px 8px 14px;
+  border: 1px solid rgb(246 243 237 / .2);
+  border-radius: 16px;
+  background: rgb(9 36 53 / .82);
+  color: #f6f3ed;
+  box-shadow: 0 16px 40px rgb(5 21 31 / .2);
+  backdrop-filter: blur(14px);
+}
+
+.wd-experience-toolbar-copy {
+  position: relative;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  padding-left: 13px;
+}
+
+.wd-experience-toolbar-copy::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--wd-sand);
+  box-shadow: 0 0 0 4px rgb(246 243 237 / .08);
+}
+
+.wd-experience-toolbar[data-status="loading"] .wd-experience-toolbar-copy::before { opacity: .58; }
+.wd-experience-toolbar[data-status="active"] .wd-experience-toolbar-copy::before { box-shadow: 0 0 0 5px rgb(246 243 237 / .14); }
+.wd-experience-toolbar[data-mode="blocked"] .wd-experience-toolbar-copy::before { opacity: .44; }
+
+.wd-experience-toolbar-copy span {
+  color: rgb(246 243 237 / .66);
+  font-size: 9px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.wd-experience-toolbar-copy strong {
+  overflow: hidden;
+  color: #f6f3ed;
+  font-size: 12px;
+  font-weight: 760;
+  line-height: 1.3;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wd-experience-controls {
+  display: flex;
+  min-width: 0;
   align-items: center;
   justify-content: flex-end;
   gap: 8px;
@@ -559,8 +643,9 @@
 }
 
 @media (max-width: 1023px) {
-  .wd-experience-webgl { inset: 0 0 31px; border-radius: 16px; }
-  .wd-experience-controls { bottom: 42px; }
+  .wd-experience-webgl { inset: 0; border-radius: 16px; }
+  .wd-experience-controls { right: 10px; bottom: 10px; }
+  .wd-experience-poster figcaption { top: 10px; left: 10px; max-width: calc(100% - 20px); }
   .wd-experience-stage > .wd-experience-poster .wd-experience-poster-art { aspect-ratio: 5 / 4; object-fit: cover; }
 }
 
@@ -591,6 +676,78 @@
     height: auto;
     padding: 0 0 22px;
   }
+  .wd-experience-shell {
+    display: grid;
+    gap: 10px;
+  }
+  .wd-experience-proofline {
+    display: none;
+  }
+  .wd-experience-journey-nav {
+    display: block;
+  }
+  .wd-experience-journey-rail {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--wd-border);
+    border-radius: 14px;
+    background: var(--wd-surface);
+    list-style: none;
+  }
+  .wd-experience-journey-rail li {
+    min-width: 0;
+  }
+  .wd-experience-journey-rail li + li {
+    border-left: 1px solid var(--wd-border);
+  }
+  .wd-experience-journey-rail a {
+    position: relative;
+    display: grid;
+    min-height: 62px;
+    align-content: center;
+    gap: 5px;
+    padding: 11px 13px 12px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .wd-experience-journey-rail a::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    margin-bottom: 1px;
+    background: var(--wd-sand);
+    transition: width 160ms var(--wd-ease), background 160ms var(--wd-ease);
+  }
+  .wd-experience-journey-rail a:hover::before {
+    width: 30px;
+    background: var(--wd-field);
+  }
+  .wd-experience-journey-rail a:focus-visible {
+    z-index: 1;
+    outline: 2px solid var(--wd-field);
+    outline-offset: -3px;
+  }
+  .wd-experience-journey-rail span {
+    color: var(--wd-accent-text);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .12em;
+  }
+  .wd-experience-journey-rail strong {
+    min-width: 0;
+    color: var(--wd-ink);
+    font-size: 11px;
+    font-weight: 760;
+    line-height: 1.25;
+    letter-spacing: -.01em;
+  }
+  #organiser,
+  #avancer {
+    scroll-margin-top: calc(var(--wd-header-height) + 18px);
+  }
   .wd-experience-panel--compact { order: 3; }
   .wd-experience-mobile-poster { display: none; }
 }
@@ -602,4 +759,39 @@
 @media (max-width: 767px) {
   .wd-site { --wd-header-height: 64px; }
   .wd-site .site-header-inner { height: 64px; }
+}
+
+
+/* Responsive HUD: keep controls outside the artwork on touch layouts. */
+@media (max-width: 1023px) {
+  .wd-experience-toolbar {
+    position: relative;
+    inset: auto;
+    padding: 10px 12px;
+  }
+  .wd-experience-toggle { min-height: 44px; }
+}
+
+@media (max-width: 420px) {
+  .wd-experience-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .wd-experience-controls { width: 100%; }
+  .wd-experience-toggle { width: 100%; }
+}
+
+
+/* Pass 27 — mobile journey rail replaces duplicate step labels with useful navigation. */
+@media (hover: none) {
+  .wd-experience-journey-rail a:hover::before {
+    width: 18px;
+    background: var(--wd-sand);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-experience-journey-rail a::before {
+    transition: none !important;
+  }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import ExperiencePoster from "./ExperiencePoster";
 import { createScene } from "./runtime/createScene";
 import { chooseExperienceQuality, saveDataEnabled, webgl2Available } from "./runtime/quality";
@@ -31,14 +32,24 @@ export default function Experience3D() {
   const mountRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<SceneController | null>(null);
   const triggerRef = useRef<{ kill: () => void } | null>(null);
+  const visibleRef = useRef(false);
+  const statusRef = useRef<Status>("poster");
+  const launchRef = useRef(0);
   const [status, setStatus] = useState<Status>("poster");
-  const [disabled, setDisabled] = useState(false);
   const [retryUsed, setRetryUsed] = useState(false);
   const [reduced, setReduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [saveData, setSaveData] = useState(() => saveDataEnabled());
   const [mobile, setMobile] = useState(() => window.matchMedia("(max-width: 1023px)").matches);
 
-  const cleanupScene = () => {
+  const setViewStatus = (next: Status) => {
+    statusRef.current = next;
+    setStatus(next);
+  };
+  const blockedNow = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches || saveDataEnabled();
+
+  const cleanupScene = (invalidatePending = true) => {
+    if (invalidatePending) launchRef.current += 1;
+    visibleRef.current = false;
     triggerRef.current?.kill();
     triggerRef.current = null;
     controllerRef.current?.dispose();
@@ -64,28 +75,36 @@ export default function Experience3D() {
   }, []);
 
   useEffect(() => {
-    if (reduced || saveData || disabled) {
+    if (reduced || saveData) {
       cleanupScene();
-      setStatus("poster");
+      setRetryUsed(false);
+      setViewStatus("poster");
     }
-  }, [reduced, saveData, disabled]);
+  }, [reduced, saveData]);
 
   useEffect(() => () => cleanupScene(), []);
 
   const start = async () => {
-    if (status === "loading" || reduced || saveData || disabled || !mountRef.current) return;
+    if (statusRef.current === "loading" || statusRef.current === "active" || reduced || saveData || blockedNow() || !mountRef.current) return;
     if (!webgl2Available()) {
-      setStatus("error");
+      setViewStatus("error");
       return;
     }
-    setStatus("loading");
+    const launchId = ++launchRef.current;
+    setViewStatus("loading");
     try {
       const runtime = await Promise.race([
         loadRuntimeModules(),
         new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("3D runtime timeout")), 8000)),
       ]);
-      if (!mountRef.current || reduced || saveData || disabled) return;
-      cleanupScene();
+      if (!mountRef.current || launchId !== launchRef.current || blockedNow()) {
+        if (launchId === launchRef.current && blockedNow()) {
+          setRetryUsed(false);
+          setViewStatus("poster");
+        }
+        return;
+      }
+      cleanupScene(false);
       const quality = chooseExperienceQuality();
       const controller = createScene(runtime.THREE, mountRef.current, quality);
       controllerRef.current = controller;
@@ -107,7 +126,10 @@ export default function Experience3D() {
       });
       triggerRef.current = trigger;
 
-      const observer = new IntersectionObserver(([entry]) => controller.setVisible(entry.isIntersecting), { rootMargin: "120px" });
+      const observer = new IntersectionObserver(([entry]) => {
+        visibleRef.current = entry.isIntersecting;
+        controller.setVisible(entry.isIntersecting && !document.hidden);
+      }, { rootMargin: "120px" });
       if (visual) observer.observe(visual);
       const resize = new ResizeObserver(() => controller.resize());
       resize.observe(mountRef.current);
@@ -118,11 +140,11 @@ export default function Experience3D() {
         observer.disconnect();
         resize.disconnect();
         cleanupScene();
-        setStatus("error");
+        setViewStatus("error");
       };
       canvas?.addEventListener("webglcontextlost", onContextLost, { once: true });
 
-      const onVisibility = () => controller.setVisible(!document.hidden && Boolean(visual?.getBoundingClientRect()));
+      const onVisibility = () => controller.setVisible(!document.hidden && visibleRef.current);
       document.addEventListener("visibilitychange", onVisibility);
       const originalDispose = controller.dispose;
       controller.dispose = () => {
@@ -133,39 +155,68 @@ export default function Experience3D() {
         originalDispose();
       };
 
-      setStatus("active");
+      setRetryUsed(false);
+      setViewStatus("active");
       runtime.ScrollTrigger.refresh();
     } catch {
       cleanupScene();
-      setStatus("error");
+      setViewStatus("error");
     }
   };
 
   useEffect(() => {
-    if (mobile || reduced || saveData || disabled) return;
+    if (mobile || reduced || saveData) return;
     return scheduleAfterLoad(() => { void start(); });
-  }, [mobile, reduced, saveData, disabled]);
+  }, [mobile, reduced, saveData]);
 
   const animationBlocked = reduced || saveData;
   const label = reduced ? "Animation désactivée selon vos préférences de mouvement." : saveData ? "Animation désactivée pour économiser les données." : null;
+  const viewMode = animationBlocked ? "blocked" : status;
+  const viewState = reduced
+    ? "Vue fixe · mouvement réduit"
+    : saveData
+      ? "Vue fixe · économie de données"
+      : status === "active"
+        ? "3D interactive activée"
+        : status === "loading"
+          ? "Chargement de la vue 3D"
+          : status === "error"
+            ? "Vue fixe disponible"
+            : "Aperçu illustré";
 
-  return <div className="wd-experience-stage" data-status={status}>
-    <ExperiencePoster variant={mobile ? "mobile" : "desktop"} />
-    <div ref={mountRef} className="wd-experience-webgl" aria-hidden="true" />
-    <div className="wd-experience-controls">
-      {label && <span className="wd-experience-disabled-note">{label}</span>}
-      {!animationBlocked && status !== "active" && !disabled && <button
-        type="button"
-        className="wd-experience-toggle"
-        onClick={() => {
-          if (status === "error") setRetryUsed(true);
-          void start();
-        }}
-        disabled={status === "loading" || (status === "error" && retryUsed)}
-      >
-        {status === "loading" ? "Chargement de la 3D…" : status === "error" ? (retryUsed ? "Animation indisponible" : "Réessayer la 3D") : "Explorer en 3D"}
-      </button>}
-      {status === "active" && <button type="button" className="wd-experience-toggle" onClick={() => setDisabled(true)}>Désactiver l’animation</button>}
+  return <div className="wd-experience-shell">
+    <div id="wd-experience-stage" className="wd-experience-stage" data-status={status} aria-busy={status === "loading"}>
+      <ExperiencePoster variant={mobile ? "mobile" : "desktop"} />
+      <div ref={mountRef} className="wd-experience-webgl" aria-hidden="true" />
     </div>
+    <div className="wd-experience-toolbar" data-status={status} data-mode={viewMode}>
+      <div className="wd-experience-toolbar-copy">
+        <span>Vue du parcours</span>
+        <strong aria-live="polite">{viewState}</strong>
+      </div>
+      <div className="wd-experience-controls">
+        {label && <span className="wd-experience-disabled-note">{label}</span>}
+        {!animationBlocked && status !== "active" && <button
+          type="button"
+          className="wd-experience-toggle"
+          onClick={() => {
+            if (status === "error") setRetryUsed(true);
+            void start();
+          }}
+          aria-controls="wd-experience-stage"
+          disabled={status === "loading" || (status === "error" && retryUsed)}
+        >
+          {status === "loading" ? "Chargement de la 3D…" : status === "error" ? (retryUsed ? "Animation indisponible" : "Réessayer la 3D") : "Explorer en 3D"}
+        </button>}
+        {status === "active" && <button type="button" className="wd-experience-toggle" aria-controls="wd-experience-stage" onClick={() => { cleanupScene(); setRetryUsed(false); setViewStatus("poster"); }}>Désactiver l’animation</button>}
+      </div>
+    </div>
+    <nav className="wd-experience-journey-nav" aria-label="Les trois étapes du parcours">
+      <ol className="wd-experience-journey-rail">
+        <li><Link to="/#experience" aria-label="Aller à l’étape Comprendre"><span>01</span><strong>Comprendre</strong></Link></li>
+        <li><Link to="/#organiser" aria-label="Aller à l’étape Organiser"><span>02</span><strong>Organiser</strong></Link></li>
+        <li><Link to="/#avancer" aria-label="Aller à l’étape Avancer"><span>03</span><strong>Avancer</strong></Link></li>
+      </ol>
+    </nav>
   </div>;
 }
