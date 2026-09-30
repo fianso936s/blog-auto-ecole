@@ -394,3 +394,26 @@ test('Decision cockpit keeps the selected plan visible from comparison to budget
     '.wd-site .wd-selection-plan,'
   ]) assert.ok(styles.includes(marker), marker);
 });
+
+
+test('Offer comparison gives visual priority to the actual selected rhythm', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const styles = read('src/styles/refinement-decision.css');
+  for (const marker of [
+    'data-plan={plan}',
+    'data-selected={selected ? "true" : "false"}',
+    'aria-describedby={stateId}',
+    'Sélectionnée',
+    'À comparer'
+  ]) assert.ok(landing.includes(marker), marker);
+  assert.ok(!landing.includes('wd-card-dark'), 'offer markup must not hard-code accelerated visual dominance');
+  assert.ok(!landing.includes('<OfferCard dark'), 'accelerated card must not receive a permanent dark variant');
+  for (const marker of [
+    '.wd-site .wd-card[data-selected="true"]{',
+    'background:linear-gradient(145deg,var(--wd-blue),var(--wd-dark))',
+    '.wd-site .wd-card[data-selected="true"] .wd-plan-link',
+    '.wd-site .wd-card[data-selected="true"] .wd-plan-state',
+    '.wd-site .wd-card::before',
+    '.wd-site .wd-card::before{transition:none!important}'
+  ]) assert.ok(styles.includes(marker), marker);
+});

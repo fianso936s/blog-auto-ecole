@@ -39,12 +39,13 @@ function BudgetCounter({ id, label, help, value, max, minusLabel, plusLabel, onC
   </div>;
 }
 
-function OfferCard({ title, note, price, plan, selected, dark = false, onSelect, children }: { title: string; note: string; price: number; plan: Plan; selected: boolean; dark?: boolean; onSelect: (plan: Plan) => void; children: ReactNode }) {
-  const titleId = dark ? "accelerated-title" : "classic-title";
+function OfferCard({ title, note, price, plan, selected, onSelect, children }: { title: string; note: string; price: number; plan: Plan; selected: boolean; onSelect: (plan: Plan) => void; children: ReactNode }) {
+  const accelerated = plan === "accelerated";
+  const titleId = `${plan}-title`;
   const stateId = `${titleId}-state`;
-  return <article className={`wd-card ${dark ? "wd-card-dark" : ""}`} aria-labelledby={titleId} aria-describedby={stateId} data-selected={selected ? "true" : "false"}>
+  return <article className="wd-card" aria-labelledby={titleId} aria-describedby={stateId} data-plan={plan} data-selected={selected ? "true" : "false"}>
     <div className="wd-plan-top">
-      <span>{dark ? "02 / SÉANCES REGROUPÉES" : "01 / SÉANCES RÉPARTIES"}</span>
+      <span>{accelerated ? "02 / SÉANCES REGROUPÉES" : "01 / SÉANCES RÉPARTIES"}</span>
       <span id={stateId} className="wd-plan-state">{selected ? <><Check size={13} aria-hidden="true" />Sélectionnée</> : <><span>À comparer</span><ArrowRight size={13} aria-hidden="true" /></>}</span>
     </div>
     <div className="wd-card-head"><h3 id={titleId}>{title}</h3><small>{note}</small></div>
@@ -129,7 +130,7 @@ export default function WebedriveLanding() {
         </div>
         <div className="wd-cards" aria-label={`Comparaison des formules pour ${hours} heures`}>
           <OfferCard title="Classique" note={`${hours} h · à votre rythme`} price={price.classic} plan="classic" selected={plan === "classic"} onSelect={setPlan}><p>Le temps de progresser, avec des séances réparties selon les disponibilités communes.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}</ul></OfferCard>
-          <OfferCard dark title="Accélérée" note={`${hours} h · supplément de 200 €`} price={price.accelerated} plan="accelerated" selected={plan === "accelerated"} onSelect={setPlan}><p>Les mêmes inclusions, avec des séances regroupées lorsque le planning le permet.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}<li><Check aria-hidden="true" />Créneaux validés avant engagement. Aucune date d’examen garantie.</li></ul></OfferCard>
+          <OfferCard title="Accélérée" note={`${hours} h · supplément de 200 €`} price={price.accelerated} plan="accelerated" selected={plan === "accelerated"} onSelect={setPlan}><p>Les mêmes inclusions, avec des séances regroupées lorsque le planning le permet.</p><ul>{INCLUDED.map(item => <li key={item}><Check aria-hidden="true" />{item}</li>)}<li><Check aria-hidden="true" />Créneaux validés avant engagement. Aucune date d’examen garantie.</li></ul></OfferCard>
         </div>
         <p className="wd-fine">À prévoir séparément : examen du code {CODE_EXAM_PRICE} € par tentative · heures complémentaires {EXTRA_HOUR_PRICE} € par heure.</p>
         <section id="budget" className="wd-budget" aria-labelledby="budget-title" tabIndex={-1}>

@@ -94,15 +94,44 @@
 .wd-site .wd-selection-band>a:hover{background:var(--wd-blue);color:#fff}
 .wd-site .wd-selection-band>a:focus-visible{outline:3px solid var(--wd-sand);outline-offset:-4px}
 
-/* The chosen rhythm now follows the user from comparison into the budget simulator. */
+/* The chosen rhythm now controls the visual hierarchy instead of a fixed dark accelerated card. */
+.wd-site .wd-card{
+  position:relative;
+  overflow:hidden;
+  transition:background 180ms var(--wd-ease),color 180ms var(--wd-ease),border-color 180ms var(--wd-ease),box-shadow 180ms var(--wd-ease);
+}
+.wd-site .wd-card::before{
+  content:"";
+  position:absolute;
+  inset:0 0 auto;
+  height:3px;
+  background:var(--wd-sand);
+  opacity:0;
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:opacity 180ms var(--wd-ease),transform 180ms var(--wd-ease);
+  pointer-events:none;
+}
 .wd-site .wd-card[data-selected="true"]{
-  border-color:var(--wd-field);
-  box-shadow:0 0 0 3px rgb(21 61 88/.07),0 18px 48px rgb(9 36 53/.065);
+  background:linear-gradient(145deg,var(--wd-blue),var(--wd-dark));
+  color:#F6F3ED;
+  border-color:var(--wd-blue);
+  box-shadow:0 0 0 3px rgb(21 61 88/.08),0 20px 54px rgb(9 36 53/.13);
 }
-.wd-site .wd-card-dark[data-selected="true"]{
-  border-color:var(--wd-sand);
-  box-shadow:0 0 0 3px rgb(215 185 142/.12),0 18px 48px rgb(9 36 53/.12);
+.wd-site .wd-card[data-selected="true"]::before{
+  opacity:1;
+  transform:scaleX(1);
 }
+.wd-site .wd-card[data-selected="true"] .wd-plan-top,
+.wd-site .wd-card[data-selected="true"] .wd-card-head small,
+.wd-site .wd-card[data-selected="true"]>p{color:#D7E2E8}
+.wd-site .wd-card[data-selected="true"] ul{border-color:#526C7D}
+.wd-site .wd-card[data-selected="true"] li svg{color:var(--wd-sand)}
+.wd-site .wd-card[data-selected="true"] .wd-plan-link{
+  border-color:#526C7D;
+  color:#F6F3ED;
+}
+.wd-site .wd-card[data-selected="true"] :focus-visible{outline-color:var(--wd-sand)}
 .wd-plan-state{
   display:inline-flex;
   min-height:28px;
@@ -122,12 +151,6 @@
 }
 .wd-plan-state svg{flex:none}
 .wd-site .wd-card[data-selected="true"] .wd-plan-state{
-  border-color:rgb(21 61 88/.2);
-  background:var(--wd-accent-surface);
-  color:var(--wd-primary);
-}
-.wd-site .wd-card-dark .wd-plan-state{border-color:#526C7D;color:#D7E2E8}
-.wd-site .wd-card-dark[data-selected="true"] .wd-plan-state{
   border-color:var(--wd-sand);
   background:var(--wd-sand);
   color:var(--wd-dark);
@@ -362,6 +385,8 @@
   .wd-budget-handoff>a{width:100%}
 }
 @media(prefers-reduced-motion:reduce){
+  .wd-site .wd-card,
+  .wd-site .wd-card::before{transition:none!important}
   .wd-site .wd-progress a,
   .wd-site .wd-selection-band>a,
   .wd-site .wd-selection-band>a svg,

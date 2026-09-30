@@ -197,3 +197,20 @@ Branch: `design/experience-polish-pass-22`, continuing cumulatively from the gre
 
 ### Next priority
 Inspect the exact candidate visually when browser access is available. If not, continue with measurable mobile decision-flow, keyboard and responsive defects rather than adding decorative layers.
+
+
+## 2026-09-30 — Selected-plan visual hierarchy pass 29
+
+Branch: `design/selection-hierarchy-pass-29`.
+
+### Implemented
+- The active Classique/Accélérée choice now controls card emphasis; Accélérée no longer stays permanently dark when unselected.
+- Selected cards use the WEBEDRIVE blue/sand hierarchy, while the unselected card returns to the neutral surface.
+- Prices, offers, simulator arithmetic, routes, blog and 3D behavior are unchanged.
+- Reduced-motion coverage was added for the new card-state transition.
+
+### Checks
+- Started from published `main` after PR #13 was merged.
+- Source-level regression guards were added for state-driven card emphasis and reduced motion.
+- Browser rendering and local npm build were not available in this runtime.
+- Next: inspect desktop/mobile selected-card balance when exact-candidate rendering is available.
