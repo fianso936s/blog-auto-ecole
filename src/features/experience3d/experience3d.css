@@ -582,7 +582,12 @@
   height: 6px;
   border-radius: 50%;
   background: var(--wd-sand);
+  box-shadow: 0 0 0 4px rgb(246 243 237 / .08);
 }
+
+.wd-experience-toolbar[data-status="loading"] .wd-experience-toolbar-copy::before { opacity: .58; }
+.wd-experience-toolbar[data-status="active"] .wd-experience-toolbar-copy::before { box-shadow: 0 0 0 5px rgb(246 243 237 / .14); }
+.wd-experience-toolbar[data-mode="blocked"] .wd-experience-toolbar-copy::before { opacity: .44; }
 
 .wd-experience-toolbar-copy span {
   color: rgb(246 243 237 / .66);
