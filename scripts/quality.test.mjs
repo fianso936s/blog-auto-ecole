@@ -285,3 +285,14 @@ test('3D visual controls stay reversible and poster labelling stays singular', (
   assert.ok(styles.includes('inset: 0;'));
   assert.ok(styles.includes('background: rgb(9 36 53 / .74)'));
 });
+
+
+test('Responsive 3D HUD stays outside the artwork on touch layouts', () => {
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  const styles = read('src/features/experience3d/experience3d.css');
+  for (const marker of ['wd-experience-toolbar', 'Vue du parcours', '3D interactive activée', 'aria-live="polite"']) {
+    assert.ok(experience.includes(marker), marker);
+  }
+  assert.ok(styles.includes('Responsive HUD: keep controls outside the artwork on touch layouts.'));
+  assert.ok(styles.includes('.wd-experience-toggle { width: 100%; }'));
+});
