@@ -148,23 +148,30 @@ export default function Experience3D() {
   const animationBlocked = reduced || saveData;
   const label = reduced ? "Animation désactivée selon vos préférences de mouvement." : saveData ? "Animation désactivée pour économiser les données." : null;
 
-  return <div className="wd-experience-stage" data-status={status} aria-busy={status === "loading"}>
-    <ExperiencePoster variant={mobile ? "mobile" : "desktop"} />
-    <div ref={mountRef} className="wd-experience-webgl" aria-hidden="true" />
-    <div className="wd-experience-controls">
-      {label && <span className="wd-experience-disabled-note">{label}</span>}
-      {!animationBlocked && status !== "active" && <button
-        type="button"
-        className="wd-experience-toggle"
-        onClick={() => {
-          if (status === "error") setRetryUsed(true);
-          void start();
-        }}
-        disabled={status === "loading" || (status === "error" && retryUsed)}
-      >
-        {status === "loading" ? "Chargement de la 3D…" : status === "error" ? (retryUsed ? "Animation indisponible" : "Réessayer la 3D") : "Explorer en 3D"}
-      </button>}
-      {status === "active" && <button type="button" className="wd-experience-toggle" onClick={() => { cleanupScene(); setStatus("poster"); }}>Désactiver l’animation</button>}
+  return <div className="wd-experience-shell">
+    <div className="wd-experience-stage" data-status={status} aria-busy={status === "loading"}>
+      <ExperiencePoster variant={mobile ? "mobile" : "desktop"} />
+      <div ref={mountRef} className="wd-experience-webgl" aria-hidden="true" />
+      <div className="wd-experience-controls">
+        {label && <span className="wd-experience-disabled-note">{label}</span>}
+        {!animationBlocked && status !== "active" && <button
+          type="button"
+          className="wd-experience-toggle"
+          onClick={() => {
+            if (status === "error") setRetryUsed(true);
+            void start();
+          }}
+          disabled={status === "loading" || (status === "error" && retryUsed)}
+        >
+          {status === "loading" ? "Chargement de la 3D…" : status === "error" ? (retryUsed ? "Animation indisponible" : "Réessayer la 3D") : "Explorer en 3D"}
+        </button>}
+        {status === "active" && <button type="button" className="wd-experience-toggle" onClick={() => { cleanupScene(); setStatus("poster"); }}>Désactiver l’animation</button>}
+      </div>
     </div>
+    <ol className="wd-experience-journey-rail" aria-label="Les trois étapes du parcours">
+      <li><span>01</span><strong>Comprendre</strong></li>
+      <li><span>02</span><strong>Organiser</strong></li>
+      <li><span>03</span><strong>Avancer</strong></li>
+    </ol>
   </div>;
 }

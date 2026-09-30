@@ -248,27 +248,27 @@ test('3D contracts and deterministic story reference stay versioned with the sit
 });
 
 
-test('Mobile ribbon keeps the automotive visual and progression rail', () => {
+test('Mobile 3D stage stays singular and adds a compact journey rail', () => {
   const landing = read('src/pages/WebedriveLanding.tsx');
+  const experience = read('src/features/experience3d/Experience3D.tsx');
   const styles = read('src/features/experience3d/experience3d.css');
+  assert.ok(!landing.includes('import ExperiencePoster from "../features/experience3d/ExperiencePoster";'));
+  assert.ok(!landing.includes('<div className="wd-experience-mobile-poster">'));
   for (const marker of [
-    'import ExperiencePoster from "../features/experience3d/ExperiencePoster";',
-    'wd-experience-mobile-poster',
-    '<ExperiencePoster variant="mobile" />',
-    'wd-experience-mobile-rail',
+    'wd-experience-shell',
+    '<ExperiencePoster variant={mobile ? "mobile" : "desktop"} />',
+    'wd-experience-journey-rail',
     'Les trois étapes du parcours',
     '<strong>Comprendre</strong>',
     '<strong>Organiser</strong>',
     '<strong>Avancer</strong>'
-  ]) assert.ok(landing.includes(marker), marker);
+  ]) assert.ok(experience.includes(marker), marker);
   for (const marker of [
-    'display: grid;',
-    'width: min(100%, 560px);',
-    'aspect-ratio: 4 / 5;',
-    'object-fit: contain;',
-    'grid-template-columns: repeat(3, minmax(0, 1fr));'
+    '.wd-experience-shell {',
+    '.wd-experience-journey-rail {',
+    'grid-template-columns: repeat(3, minmax(0, 1fr));',
+    '.wd-experience-visual {\n    display: block;\n    order: 2;'
   ]) assert.ok(styles.includes(marker), marker);
-  assert.ok(!styles.includes('aspect-ratio: 5 / 4;'));
 });
 
 

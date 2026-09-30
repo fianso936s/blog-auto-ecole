@@ -6,7 +6,6 @@ import Footer from "../components/Footer";
 import PageMeta from "../components/PageMeta";
 import RouteEffects from "../components/RouteEffects";
 import Experience3D from "../features/experience3d/Experience3D";
-import ExperiencePoster from "../features/experience3d/ExperiencePoster";
 import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offers";
 import "../styles/refinement-decision.css";
 import "../features/experience3d/experience3d.css";
@@ -86,15 +85,6 @@ export default function WebedriveLanding() {
                 <span>Comprendre</span><span>Organiser</span><span>Avancer</span>
               </div>
             </article>
-
-            <div className="wd-experience-mobile-poster">
-              <ExperiencePoster variant="mobile" />
-              <ol className="wd-experience-mobile-rail" aria-label="Les trois étapes du parcours">
-                <li><span>01</span><strong>Comprendre</strong></li>
-                <li><span>02</span><strong>Organiser</strong></li>
-                <li><span>03</span><strong>Avancer</strong></li>
-              </ol>
-            </div>
 
             <article className="wd-experience-panel wd-experience-panel--compact" aria-labelledby="organiser-title">
               <span className="wd-experience-index">02 — Organiser</span>

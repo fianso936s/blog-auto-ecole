@@ -63,21 +63,21 @@ Inspect the exact built candidate on desktop/mobile when browser access is avail
 
 ## 2026-09-30 — Mobile automotive continuity pass 23
 
-Branch: `design/experience-polish-pass-22`, continuing cumulatively from `27714d73de0a8255483a303c2d50121e66a85bda`.
+Branch: `design/experience-polish-pass-22`, continuing cumulatively from the validated pass-22 candidate.
 
-### Observed defect
-Source inspection showed that the desktop visual is hidden below 1024 px while the existing `.wd-experience-mobile-poster` styles had no corresponding element in the landing markup. The result was a mobile-first section with no automotive visual at all. The mobile poster CSS also forced a 5:4 landscape box onto artwork authored with a 4:5 mobile viewBox.
+### Diagnosis and correction
+The first pass-23 candidate (`7c9f8421d417ac300482860726301bb2df56f766`) failed its Vercel check. A full stylesheet re-read found that the earlier source inspection had stopped before the later runtime mobile override: the real `.wd-experience-visual` is deliberately restored to `display: block` below 1024 px, and `Experience3D` already renders the mobile poster. The failed candidate therefore duplicated that visual and also added an invalid test assumption about the existing 5:4 runtime crop.
 
 ### Implemented
-- Added the existing WEBEDRIVE automotive poster to the mobile/tablet story without loading WebGL.
-- Added a compact three-step progression rail — Comprendre, Organiser, Avancer — directly under the artwork to connect the visual with the surrounding narrative.
-- Restored the authored 4:5 poster ratio, capped the mobile visual width at 560 px, and added a restrained framed treatment using the current WEBEDRIVE palette.
-- Preserved all prices, offer selectors, budget logic, routes, blog, reduced-motion and Save-Data behavior.
+- Removed the duplicate landing-level poster from the failed candidate and kept one canonical automotive visual through `Experience3D`.
+- Added a compact three-step rail — Comprendre, Organiser, Avancer — directly under the real mobile/tablet 3D/poster stage.
+- Kept the existing poster-first fallback, explicit mobile 3D activation, reduced-motion / Save-Data behavior, offers, prices, simulator, routes and blog unchanged.
+- Kept the rail hidden on desktop so the existing sticky composition remains untouched.
 
-### Checks prepared before commit
-- Re-read the exact branch head and source blobs before writing; no concurrent branch revision was overwritten.
-- Added source-level regression guards for the mobile poster, 4:5 ratio and three-step rail.
-- Public/live rendering remains unavailable to the current readers, so no desktop/mobile screenshot is claimed. The exact branch SHA must pass the existing Vercel build pipeline after the commit.
+### Checks before the correction commit
+- Re-read the exact failed branch head, the full later mobile runtime CSS override and the four touched source blobs before writing.
+- Replaced the guaranteed-failing source assertion with guards for one canonical visual and the mobile journey rail.
+- No live screenshot is claimed because the current readers still cannot render the protected/public candidate. The exact correction SHA must pass the existing Vercel build pipeline after commit.
 
 ### Next priority
-Inspect the exact built candidate on real desktop/mobile rendering when available, then tune spacing or camera density only from observed evidence rather than changing direction.
+Once the corrected candidate is green, inspect its real desktop/mobile rendering when browser access is available and tune spacing or 3D camera density only from observed evidence.
