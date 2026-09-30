@@ -263,11 +263,25 @@
   outline-offset:3px;
 }
 .wd-site .wd-budget-total{
+  appearance:none;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
   align-items:center;
+  gap:12px;
   margin-inline:-12px;
   padding-inline:12px;
+  border:0;
   border-radius:8px;
+  background:transparent;
+  color:inherit;
+  font:inherit;
+  text-align:left;
+  cursor:pointer;
   transition:background 160ms var(--wd-ease),box-shadow 160ms var(--wd-ease);
+}
+.wd-site .wd-budget-total:focus-visible{
+  outline:2px solid var(--wd-sand);
+  outline-offset:2px;
 }
 .wd-budget-total-copy{display:grid;min-width:0;gap:3px}
 .wd-budget-total-copy small{
@@ -407,6 +421,7 @@
   .wd-site .wd-selection-band>a svg,.wd-budget-handoff>a svg{transition:transform 160ms var(--wd-ease)}
   .wd-site .wd-selection-band>a:hover svg,.wd-budget-handoff>a:hover svg{transform:translateX(3px)}
   .wd-site .wd-selection-plan[data-selected="false"]:hover{background:var(--wd-surface-alt)}
+  .wd-site .wd-budget-total[data-active="false"]:hover{background:rgb(255 255 255/.045)}
   .wd-budget-handoff>a:hover{background:var(--wd-blue)}
 }
 @media(max-width:800px){
@@ -547,7 +562,8 @@
     outline:2px solid ButtonText;
     outline-offset:-3px;
   }
-  .wd-selection-hours button[aria-pressed="true"]{
+  .wd-selection-hours button[aria-pressed="true"],
+  .wd-site .wd-budget-total[aria-pressed="true"]{
     outline:2px solid ButtonText;
     outline-offset:-3px;
   }
