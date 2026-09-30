@@ -31,6 +31,7 @@ export default function Experience3D() {
   const mountRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<SceneController | null>(null);
   const triggerRef = useRef<{ kill: () => void } | null>(null);
+  const visibleRef = useRef(false);
   const [status, setStatus] = useState<Status>("poster");
   const [retryUsed, setRetryUsed] = useState(false);
   const [reduced, setReduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
@@ -38,6 +39,7 @@ export default function Experience3D() {
   const [mobile, setMobile] = useState(() => window.matchMedia("(max-width: 1023px)").matches);
 
   const cleanupScene = () => {
+    visibleRef.current = false;
     triggerRef.current?.kill();
     triggerRef.current = null;
     controllerRef.current?.dispose();
@@ -106,7 +108,10 @@ export default function Experience3D() {
       });
       triggerRef.current = trigger;
 
-      const observer = new IntersectionObserver(([entry]) => controller.setVisible(entry.isIntersecting), { rootMargin: "120px" });
+      const observer = new IntersectionObserver(([entry]) => {
+        visibleRef.current = entry.isIntersecting;
+        controller.setVisible(entry.isIntersecting && !document.hidden);
+      }, { rootMargin: "120px" });
       if (visual) observer.observe(visual);
       const resize = new ResizeObserver(() => controller.resize());
       resize.observe(mountRef.current);
@@ -121,7 +126,7 @@ export default function Experience3D() {
       };
       canvas?.addEventListener("webglcontextlost", onContextLost, { once: true });
 
-      const onVisibility = () => controller.setVisible(!document.hidden && Boolean(visual?.getBoundingClientRect()));
+      const onVisibility = () => controller.setVisible(!document.hidden && visibleRef.current);
       document.addEventListener("visibilitychange", onVisibility);
       const originalDispose = controller.dispose;
       controller.dispose = () => {
@@ -147,6 +152,7 @@ export default function Experience3D() {
 
   const animationBlocked = reduced || saveData;
   const label = reduced ? "Animation désactivée selon vos préférences de mouvement." : saveData ? "Animation désactivée pour économiser les données." : null;
+  const viewMode = animationBlocked ? "blocked" : status;
   const viewState = reduced
     ? "Vue fixe · mouvement réduit"
     : saveData
@@ -160,11 +166,11 @@ export default function Experience3D() {
             : "Aperçu illustré";
 
   return <div className="wd-experience-shell">
-    <div className="wd-experience-stage" data-status={status} aria-busy={status === "loading"}>
+    <div id="wd-experience-stage" className="wd-experience-stage" data-status={status} aria-busy={status === "loading"}>
       <ExperiencePoster variant={mobile ? "mobile" : "desktop"} />
       <div ref={mountRef} className="wd-experience-webgl" aria-hidden="true" />
     </div>
-    <div className="wd-experience-toolbar" data-status={status}>
+    <div className="wd-experience-toolbar" data-status={status} data-mode={viewMode}>
       <div className="wd-experience-toolbar-copy">
         <span>Vue du parcours</span>
         <strong aria-live="polite">{viewState}</strong>
@@ -178,11 +184,12 @@ export default function Experience3D() {
             if (status === "error") setRetryUsed(true);
             void start();
           }}
+          aria-controls="wd-experience-stage"
           disabled={status === "loading" || (status === "error" && retryUsed)}
         >
           {status === "loading" ? "Chargement de la 3D…" : status === "error" ? (retryUsed ? "Animation indisponible" : "Réessayer la 3D") : "Explorer en 3D"}
         </button>}
-        {status === "active" && <button type="button" className="wd-experience-toggle" onClick={() => { cleanupScene(); setStatus("poster"); }}>Désactiver l’animation</button>}
+        {status === "active" && <button type="button" className="wd-experience-toggle" aria-controls="wd-experience-stage" onClick={() => { cleanupScene(); setStatus("poster"); }}>Désactiver l’animation</button>}
       </div>
     </div>
     <ol className="wd-experience-journey-rail" aria-label="Les trois étapes du parcours">
