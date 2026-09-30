@@ -5,8 +5,10 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageMeta from "../components/PageMeta";
 import RouteEffects from "../components/RouteEffects";
+import Experience3D from "../features/experience3d/Experience3D";
 import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offers";
 import "../styles/refinement-decision.css";
+import "../features/experience3d/experience3d.css";
 
 type Plan = "classic" | "accelerated";
 
@@ -55,15 +57,8 @@ function OfferCard({ title, note, price, plan, selected, dark = false, onSelect,
 export default function WebedriveLanding() {
   const [hours, setHours] = useState<13 | 20>(20);
   const [plan, setPlan] = useState<Plan>("classic");
-  const [paused, setPaused] = useState(false);
   const [extraHours, setExtraHours] = useState(0);
   const [codeAttempts, setCodeAttempts] = useState(0);
-  const [reduced, setReduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const sync = () => setReduced(media.matches);
-    media.addEventListener("change", sync); return () => media.removeEventListener("change", sync);
-  }, []);
   const price = PRICES[hours];
   const extrasTotal = extraHours * EXTRA_HOUR_PRICE + codeAttempts * CODE_EXAM_PRICE;
   const classicTotal = price.classic + extrasTotal;
@@ -106,7 +101,7 @@ export default function WebedriveLanding() {
 
           <aside className="wd-experience-visual" aria-label="Illustration du parcours">
             <div className="wd-experience-visual-inner">
-              <div className="wd-experience-debug-placeholder" aria-hidden="true" />
+              <Experience3D />
             </div>
           </aside>
         </div>
