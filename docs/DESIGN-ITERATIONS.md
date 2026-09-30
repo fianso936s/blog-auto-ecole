@@ -142,3 +142,10 @@ Branch: `design/experience-polish-pass-22`, continuing cumulatively from pass 25
 
 ### Next priority
 When the exact candidate can be rendered, inspect the resulting keyboard arrival cue and 3D loading/disable transitions on desktop and mobile. Otherwise continue with observed interaction/accessibility defects rather than decorative churn.
+
+
+### Pass 26 correction after remote build
+- The first pass-26 SHA `f4258e66ba33cc7cec568aa55d43de06da92b91b` failed the existing Vercel build gate.
+- Source re-read found a stale quality assertion that still required the pre-refactor string `cleanupScene(); setStatus("poster")`. The interaction itself had intentionally moved to synchronized `setViewStatus` plus retry reset, so the guard—not the behavior—was outdated.
+- Updated that guard to assert the new reversible opt-out path (`cleanupScene(); setRetryUsed(false); setViewStatus("poster")`) without removing or weakening the test suite.
+- No production merge or infrastructure change is part of this correction; the exact correction SHA must pass the remote build before being treated as ready.

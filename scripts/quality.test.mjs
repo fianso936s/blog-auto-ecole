@@ -277,7 +277,7 @@ test('3D visual controls stay reversible and poster labelling stays singular', (
   const poster = read('src/features/experience3d/ExperiencePoster.tsx');
   const styles = read('src/features/experience3d/experience3d.css');
   assert.ok(experience.includes('aria-busy={status === "loading"}'));
-  assert.ok(experience.includes('cleanupScene(); setStatus("poster")'));
+  assert.ok(experience.includes('cleanupScene(); setRetryUsed(false); setViewStatus("poster")'));
   assert.ok(!experience.includes('const [disabled, setDisabled]'));
   assert.ok(poster.includes('aria-hidden="true"'));
   assert.ok(!poster.includes('role="img"'));
