@@ -100,9 +100,10 @@ test('Footer contains no invented phone/email or misleading legal links', () => 
   assert.ok(source.includes('restent à valider')); assert.ok(!source.includes('Politique de confidentialit'));
 });
 test('Animation lifecycle declares visibility, resize and reduced-motion handling', () => {
-  const scene = read('src/components/RoadScene.tsx');
-  for (const marker of ['visibilitychange', 'IntersectionObserver', 'ResizeObserver', 'cancelAnimationFrame', 'Math.round']) assert.ok(scene.includes(marker));
-  assert.ok(read('src/pages/WebedriveLanding.tsx').includes('prefers-reduced-motion'));
+  const legacyScene = read('src/components/RoadScene.tsx');
+  for (const marker of ['visibilitychange', 'IntersectionObserver', 'ResizeObserver', 'cancelAnimationFrame', 'Math.round']) assert.ok(legacyScene.includes(marker));
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  for (const marker of ['prefers-reduced-motion', 'visibilitychange', 'IntersectionObserver', 'ResizeObserver']) assert.ok(experience.includes(marker), marker);
 });
 test('All application TypeScript and TSX files parse without syntax errors', () => {
   const sources = files('src').filter(path => /\.tsx?$/.test(path) && !path.endsWith('.d.ts'));
