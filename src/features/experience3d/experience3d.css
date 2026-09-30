@@ -511,6 +511,7 @@
 
 /* P3 — live Three.js layer. The poster remains the first paint and fallback. */
 .wd-experience-shell {
+  position: relative;
   width: 100%;
   min-width: 0;
 }
