@@ -296,3 +296,26 @@ test('Responsive 3D HUD stays outside the artwork on touch layouts', () => {
   assert.ok(styles.includes('Responsive HUD: keep controls outside the artwork on touch layouts.'));
   assert.ok(styles.includes('.wd-experience-toggle { width: 100%; }'));
 });
+
+
+test('3D renderer visibility follows the actual intersection after tab changes', () => {
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  for (const marker of [
+    'const visibleRef = useRef(false);',
+    'visibleRef.current = entry.isIntersecting;',
+    'controller.setVisible(entry.isIntersecting && !document.hidden);',
+    'controller.setVisible(!document.hidden && visibleRef.current);',
+    'id="wd-experience-stage"',
+    'aria-controls="wd-experience-stage"',
+    'data-mode={viewMode}'
+  ]) assert.ok(experience.includes(marker), marker);
+});
+
+test('3D HUD differentiates loading, active and blocked states', () => {
+  const styles = read('src/features/experience3d/experience3d.css');
+  for (const marker of [
+    '.wd-experience-toolbar[data-status="loading"] .wd-experience-toolbar-copy::before',
+    '.wd-experience-toolbar[data-status="active"] .wd-experience-toolbar-copy::before',
+    '.wd-experience-toolbar[data-mode="blocked"] .wd-experience-toolbar-copy::before'
+  ]) assert.ok(styles.includes(marker), marker);
+});
