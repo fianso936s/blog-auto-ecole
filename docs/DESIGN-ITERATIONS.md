@@ -170,3 +170,10 @@ Branch: `design/experience-polish-pass-22`, continuing cumulatively from pass 26
 
 ### Next priority
 Inspect the exact candidate visually when browser access becomes available. Otherwise continue with measurable decision-flow, keyboard, responsive or performance defects rather than adding decorative layers.
+
+
+### Pass 27 correction after remote build
+- The first pass-27 SHA `f972e464c75ad4dd2161f55357826aa97e69df5c` failed the existing Vercel gate.
+- Re-reading the versioned quality suite found the regression immediately: the established 3D contract already asserts the accessible phrase “Les trois étapes du parcours”, while the first pass renamed that label to “Navigation dans les étapes du parcours”.
+- Restored the established accessible label and aligned the new pass-27 guard with it. The rail remains a real three-link navigation; no interaction or visual improvement was removed and no test was disabled.
+- The correction SHA must pass the same remote build gate before this pass is considered ready to publish.

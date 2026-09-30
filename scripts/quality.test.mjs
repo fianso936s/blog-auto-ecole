@@ -363,7 +363,7 @@ test('Mobile journey rail replaces duplicate proof labels with navigable step ta
     'to="/#experience"',
     'to="/#organiser"',
     'to="/#avancer"',
-    'Navigation dans les étapes du parcours'
+    'aria-label="Les trois étapes du parcours"'
   ]) assert.ok(experience.includes(marker), marker);
   for (const marker of [
     '.wd-experience-proofline {\n    display: none;',
