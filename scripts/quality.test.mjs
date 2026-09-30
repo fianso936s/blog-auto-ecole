@@ -248,6 +248,30 @@ test('3D contracts and deterministic story reference stay versioned with the sit
 });
 
 
+test('Mobile ribbon keeps the automotive visual and progression rail', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const styles = read('src/features/experience3d/experience3d.css');
+  for (const marker of [
+    'import ExperiencePoster from "../features/experience3d/ExperiencePoster";',
+    'wd-experience-mobile-poster',
+    '<ExperiencePoster variant="mobile" />',
+    'wd-experience-mobile-rail',
+    'Les trois étapes du parcours',
+    '<strong>Comprendre</strong>',
+    '<strong>Organiser</strong>',
+    '<strong>Avancer</strong>'
+  ]) assert.ok(landing.includes(marker), marker);
+  for (const marker of [
+    'display: grid;',
+    'width: min(100%, 560px);',
+    'aspect-ratio: 4 / 5;',
+    'object-fit: contain;',
+    'grid-template-columns: repeat(3, minmax(0, 1fr));'
+  ]) assert.ok(styles.includes(marker), marker);
+  assert.ok(!styles.includes('aspect-ratio: 5 / 4;'));
+});
+
+
 test('3D visual controls stay reversible and poster labelling stays singular', () => {
   const experience = read('src/features/experience3d/Experience3D.tsx');
   const poster = read('src/features/experience3d/ExperiencePoster.tsx');

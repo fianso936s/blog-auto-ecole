@@ -398,14 +398,78 @@
   }
 
   .wd-experience-mobile-poster {
-    display: block;
-    margin-block: 4px 22px;
+    display: grid;
+    gap: 12px;
+    width: min(100%, 560px);
+    margin: 4px auto 22px;
+  }
+
+  .wd-experience-poster--mobile {
+    overflow: hidden;
+    border-radius: 18px;
+    background: #092435;
+    box-shadow: 0 18px 42px rgb(9 36 53 / .12);
   }
 
   .wd-experience-poster--mobile .wd-experience-poster-art {
-    aspect-ratio: 5 / 4;
-    object-fit: cover;
-    border-radius: 16px;
+    aspect-ratio: 4 / 5;
+    object-fit: contain;
+    border-radius: 18px;
+    box-shadow: none;
+  }
+
+  .wd-experience-poster--mobile figcaption {
+    top: 12px;
+    left: 12px;
+    max-width: calc(100% - 24px);
+  }
+
+  .wd-experience-mobile-rail {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 1px solid var(--wd-border);
+    border-radius: 14px;
+    background: var(--wd-surface);
+    list-style: none;
+  }
+
+  .wd-experience-mobile-rail li {
+    position: relative;
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+    padding: 13px 14px 14px;
+  }
+
+  .wd-experience-mobile-rail li + li {
+    border-left: 1px solid var(--wd-border);
+  }
+
+  .wd-experience-mobile-rail li::before {
+    content: "";
+    width: 18px;
+    height: 2px;
+    margin-bottom: 3px;
+    background: var(--wd-sand);
+  }
+
+  .wd-experience-mobile-rail span {
+    color: var(--wd-accent-text);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .12em;
+  }
+
+  .wd-experience-mobile-rail strong {
+    min-width: 0;
+    color: var(--wd-ink);
+    font-size: 11px;
+    font-weight: 760;
+    line-height: 1.25;
+    letter-spacing: -.01em;
   }
 
   .wd-experience-panel--lead {

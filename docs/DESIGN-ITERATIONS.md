@@ -59,3 +59,25 @@ Branch: `design/experience-polish-pass-22`. The branch continues the merged 3D d
 
 ### Next priority
 Inspect the exact built candidate on desktop/mobile when browser access is available, then tune ribbon camera framing and visual density from observed rendering rather than changing direction.
+
+
+## 2026-09-30 — Mobile automotive continuity pass 23
+
+Branch: `design/experience-polish-pass-22`, continuing cumulatively from `27714d73de0a8255483a303c2d50121e66a85bda`.
+
+### Observed defect
+Source inspection showed that the desktop visual is hidden below 1024 px while the existing `.wd-experience-mobile-poster` styles had no corresponding element in the landing markup. The result was a mobile-first section with no automotive visual at all. The mobile poster CSS also forced a 5:4 landscape box onto artwork authored with a 4:5 mobile viewBox.
+
+### Implemented
+- Added the existing WEBEDRIVE automotive poster to the mobile/tablet story without loading WebGL.
+- Added a compact three-step progression rail — Comprendre, Organiser, Avancer — directly under the artwork to connect the visual with the surrounding narrative.
+- Restored the authored 4:5 poster ratio, capped the mobile visual width at 560 px, and added a restrained framed treatment using the current WEBEDRIVE palette.
+- Preserved all prices, offer selectors, budget logic, routes, blog, reduced-motion and Save-Data behavior.
+
+### Checks prepared before commit
+- Re-read the exact branch head and source blobs before writing; no concurrent branch revision was overwritten.
+- Added source-level regression guards for the mobile poster, 4:5 ratio and three-step rail.
+- Public/live rendering remains unavailable to the current readers, so no desktop/mobile screenshot is claimed. The exact branch SHA must pass the existing Vercel build pipeline after the commit.
+
+### Next priority
+Inspect the exact built candidate on real desktop/mobile rendering when available, then tune spacing or camera density only from observed evidence rather than changing direction.
