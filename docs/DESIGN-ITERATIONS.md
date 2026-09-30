@@ -263,3 +263,14 @@ Branch: `design/selection-hierarchy-pass-29`.
 
 ### Next priority
 Continue with measurable mobile hierarchy, keyboard and decision-flow defects; add the pass-32 source guard when the write path permits it.
+
+
+## 2026-09-30 — Interactive budget comparison pass 33
+
+Branch: `design/selection-hierarchy-pass-29`.
+
+- Budget summary totals are now direct Classique/Accélérée controls with pressed state, keyboard focus and computed accessible labels.
+- Functional commit: `281dbb083fadfd2575c305c34af2eaa814f65132`; styling commit: `261641285fb5c59d1a2c4503e9d09b3b50fd57b4`.
+- Prices, extras arithmetic, routes, blog, 3D and infrastructure are unchanged.
+- No browser screenshot or local npm build is claimed for this pass.
+- Next: validate the exact remote head through the existing build status, then continue with observed mobile and keyboard defects.
