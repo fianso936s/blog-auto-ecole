@@ -236,3 +236,10 @@ Branch: `design/selection-hierarchy-pass-29`, continuing cumulatively from pass 
 
 ### Next priority
 Inspect the real desktop/mobile summary interaction when exact-candidate rendering becomes available. Otherwise continue with measurable decision-flow, keyboard and responsive defects rather than decorative churn.
+
+
+### Pass 30 correction after remote build
+- The first pass-30 SHA `b5b544da28992d5bf6abb50362a0a2e51a688f3b` failed the existing Vercel build gate.
+- Source-level review isolated the regression to a contract-string mismatch in the compact mobile CSS: the new implementation grouped `.wd-selection-picked>span` with `.wd-selection-action`, while the established quality suite intentionally guards the historical selector as an exact marker.
+- Restored the guarded selector verbatim and kept the new decorative action label hidden with its own adjacent rule. No interaction, accessibility or visual behavior was removed, and no test was disabled.
+- This correction keeps the direct summary plan switching introduced in pass 30 unchanged.

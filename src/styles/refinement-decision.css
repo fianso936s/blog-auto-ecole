@@ -475,7 +475,7 @@
     font-size:7px;
     letter-spacing:.04em;
   }
-  .wd-selection-picked>span,
+  .wd-selection-picked>span{display:none}
   .wd-selection-action{display:none}
   .wd-site .wd-selection-band strong{
     font-size:clamp(14px,4.5vw,17px);
