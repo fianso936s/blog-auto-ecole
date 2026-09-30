@@ -113,7 +113,12 @@ export default function WebedriveLanding() {
         <div className="wd-offer-controls"><fieldset className="wd-volume"><legend>Votre volume de conduite</legend><div className="wd-switch">{([13, 20] as const).map(value => <label key={value}><input type="radio" name="formation-hours" checked={hours === value} onChange={() => setHours(value)} />{value} heures</label>)}</div></fieldset><p>Deux formules.<br /><strong>Tout est posé, avant de commencer.</strong></p></div>
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{hours} heures : classique {price.classic} euros, accélérée {price.accelerated} euros.</p>
         <div className="wd-selection-band" aria-label="Résumé de la sélection">
-          <span className="wd-selection-volume"><small>Volume choisi</small><strong>{hours} h</strong></span>
+          <div className="wd-selection-volume">
+            <small>Volume choisi</small>
+            <div className="wd-selection-hours" role="group" aria-label="Volume de conduite">
+              {([13, 20] as const).map(value => <button key={value} type="button" aria-pressed={hours === value} onClick={() => setHours(value)} aria-label={`${value} heures de conduite`}>{value} h</button>)}
+            </div>
+          </div>
           <button type="button" className="wd-selection-plan" data-selected={plan === "classic" ? "true" : "false"} aria-pressed={plan === "classic"} onClick={() => setPlan("classic")} aria-label={`Formule classique, ${price.classic.toLocaleString("fr-FR")} euros`}>
             <small><span>Classique</span>{plan === "classic" ? <span className="wd-selection-picked" aria-hidden="true"><Check size={11} aria-hidden="true" /><span>Choisie</span></span> : <span className="wd-selection-action" aria-hidden="true">Choisir</span>}</small>
             <strong>{price.classic.toLocaleString("fr-FR")} €</strong>
