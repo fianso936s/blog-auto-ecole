@@ -727,3 +727,24 @@
   .wd-site { --wd-header-height: 64px; }
   .wd-site .site-header-inner { height: 64px; }
 }
+
+
+/* Responsive HUD: keep controls outside the artwork on touch layouts. */
+@media (max-width: 1023px) {
+  .wd-experience-toolbar {
+    position: relative;
+    inset: auto;
+    padding: 10px 12px;
+  }
+  .wd-experience-toggle { min-height: 44px; }
+}
+
+@media (max-width: 420px) {
+  .wd-experience-toolbar {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .wd-experience-controls { width: 100%; }
+  .wd-experience-toggle { width: 100%; }
+}
