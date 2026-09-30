@@ -149,3 +149,24 @@ When the exact candidate can be rendered, inspect the resulting keyboard arrival
 - Source re-read found a stale quality assertion that still required the pre-refactor string `cleanupScene(); setStatus("poster")`. The interaction itself had intentionally moved to synchronized `setViewStatus` plus retry reset, so the guard—not the behavior—was outdated.
 - Updated that guard to assert the new reversible opt-out path (`cleanupScene(); setRetryUsed(false); setViewStatus("poster")`) without removing or weakening the test suite.
 - No production merge or infrastructure change is part of this correction; the exact correction SHA must pass the remote build before being treated as ready.
+
+
+## 2026-09-30 — Mobile journey navigation pass 27
+
+Branch: `design/experience-polish-pass-22`, continuing cumulatively from pass 26.
+
+### Implemented
+- Removed a real mobile duplication: the lead-panel proofline and the post-visual journey rail both repeated “Comprendre / Organiser / Avancer”. The proofline now remains a desktop cue while the mobile rail is the single compact progression control.
+- Turned that mobile rail into actual internal navigation. Each step now moves to the corresponding visible story stage instead of acting as decorative text.
+- Added stable `#organiser` and `#avancer` targets with header-aware scroll margins; the existing route-focus logic can place keyboard focus on the destination heading.
+- Added explicit focus treatment, full-cell tap targets and reduced-motion-safe rail micro-interactions while preserving the existing WEBEDRIVE palette and 3D fallback behavior.
+- No prices, offers, simulator rules, blog routes, authentication, data layer, dependencies or infrastructure changed.
+
+### Checks actually performed
+- Re-read `main`, the exact cumulative branch head, recent PRs, the design journal, landing source, 3D component and responsive stylesheet before writing.
+- Verified the branch was still exactly at `92cff2f977f8f98416d05130702592ac15aa4942` immediately before creating this commit, so no concurrent branch work was overwritten.
+- Added source-level regression coverage for the new targets, mobile-only de-duplication, internal navigation, focus treatment and reduced-motion behavior.
+- Public/browser rendering is still unavailable through the current readers, so no desktop/mobile screenshot or pixel-perfect claim is made. The exact resulting SHA must be judged by the existing remote build status plus the source checks above.
+
+### Next priority
+Inspect the exact candidate visually when browser access becomes available. Otherwise continue with measurable decision-flow, keyboard, responsive or performance defects rather than adding decorative layers.

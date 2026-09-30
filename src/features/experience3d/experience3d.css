@@ -522,6 +522,7 @@
   min-width: 0;
 }
 
+.wd-experience-journey-nav,
 .wd-experience-journey-rail {
   display: none;
 }
@@ -679,6 +680,12 @@
     display: grid;
     gap: 10px;
   }
+  .wd-experience-proofline {
+    display: none;
+  }
+  .wd-experience-journey-nav {
+    display: block;
+  }
   .wd-experience-journey-rail {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -692,19 +699,36 @@
   }
   .wd-experience-journey-rail li {
     min-width: 0;
-    display: grid;
-    gap: 4px;
-    padding: 12px 13px 13px;
   }
   .wd-experience-journey-rail li + li {
     border-left: 1px solid var(--wd-border);
   }
-  .wd-experience-journey-rail li::before {
+  .wd-experience-journey-rail a {
+    position: relative;
+    display: grid;
+    min-height: 62px;
+    align-content: center;
+    gap: 5px;
+    padding: 11px 13px 12px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .wd-experience-journey-rail a::before {
     content: "";
     width: 18px;
     height: 2px;
-    margin-bottom: 2px;
+    margin-bottom: 1px;
     background: var(--wd-sand);
+    transition: width 160ms var(--wd-ease), background 160ms var(--wd-ease);
+  }
+  .wd-experience-journey-rail a:hover::before {
+    width: 30px;
+    background: var(--wd-field);
+  }
+  .wd-experience-journey-rail a:focus-visible {
+    z-index: 1;
+    outline: 2px solid var(--wd-field);
+    outline-offset: -3px;
   }
   .wd-experience-journey-rail span {
     color: var(--wd-accent-text);
@@ -719,6 +743,10 @@
     font-weight: 760;
     line-height: 1.25;
     letter-spacing: -.01em;
+  }
+  #organiser,
+  #avancer {
+    scroll-margin-top: calc(var(--wd-header-height) + 18px);
   }
   .wd-experience-panel--compact { order: 3; }
   .wd-experience-mobile-poster { display: none; }
@@ -752,4 +780,18 @@
   }
   .wd-experience-controls { width: 100%; }
   .wd-experience-toggle { width: 100%; }
+}
+
+
+/* Pass 27 — mobile journey rail replaces duplicate step labels with useful navigation. */
+@media (hover: none) {
+  .wd-experience-journey-rail a:hover::before {
+    width: 18px;
+    background: var(--wd-sand);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wd-experience-journey-rail a::before {
+    transition: none !important;
+  }
 }

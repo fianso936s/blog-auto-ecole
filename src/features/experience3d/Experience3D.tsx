@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import ExperiencePoster from "./ExperiencePoster";
 import { createScene } from "./runtime/createScene";
 import { chooseExperienceQuality, saveDataEnabled, webgl2Available } from "./runtime/quality";
@@ -210,10 +211,12 @@ export default function Experience3D() {
         {status === "active" && <button type="button" className="wd-experience-toggle" aria-controls="wd-experience-stage" onClick={() => { cleanupScene(); setRetryUsed(false); setViewStatus("poster"); }}>Désactiver l’animation</button>}
       </div>
     </div>
-    <ol className="wd-experience-journey-rail" aria-label="Les trois étapes du parcours">
-      <li><span>01</span><strong>Comprendre</strong></li>
-      <li><span>02</span><strong>Organiser</strong></li>
-      <li><span>03</span><strong>Avancer</strong></li>
-    </ol>
+    <nav className="wd-experience-journey-nav" aria-label="Navigation dans les étapes du parcours">
+      <ol className="wd-experience-journey-rail">
+        <li><Link to="/#experience" aria-label="Aller à l’étape Comprendre"><span>01</span><strong>Comprendre</strong></Link></li>
+        <li><Link to="/#organiser" aria-label="Aller à l’étape Organiser"><span>02</span><strong>Organiser</strong></Link></li>
+        <li><Link to="/#avancer" aria-label="Aller à l’étape Avancer"><span>03</span><strong>Avancer</strong></Link></li>
+      </ol>
+    </nav>
   </div>;
 }

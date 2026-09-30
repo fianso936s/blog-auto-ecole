@@ -348,3 +348,28 @@ test('3D startup rejects stale launches and live blocked-motion changes', () => 
     'setRetryUsed(false);'
   ]) assert.ok(source.includes(marker), marker);
 });
+
+
+test('Mobile journey rail replaces duplicate proof labels with navigable step targets', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  const styles = read('src/features/experience3d/experience3d.css');
+  for (const marker of [
+    'id="organiser"',
+    'id="avancer"'
+  ]) assert.ok(landing.includes(marker), marker);
+  for (const marker of [
+    'wd-experience-journey-nav',
+    'to="/#experience"',
+    'to="/#organiser"',
+    'to="/#avancer"',
+    'Navigation dans les étapes du parcours'
+  ]) assert.ok(experience.includes(marker), marker);
+  for (const marker of [
+    '.wd-experience-proofline {\n    display: none;',
+    '.wd-experience-journey-nav {\n    display: block;',
+    '.wd-experience-journey-rail a:focus-visible',
+    '#organiser,\n  #avancer {',
+    'transition: none !important;'
+  ]) assert.ok(styles.includes(marker), marker);
+});

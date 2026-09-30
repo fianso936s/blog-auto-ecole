@@ -86,13 +86,13 @@ export default function WebedriveLanding() {
               </div>
             </article>
 
-            <article className="wd-experience-panel wd-experience-panel--compact" aria-labelledby="organiser-title">
+            <article id="organiser" className="wd-experience-panel wd-experience-panel--compact" aria-labelledby="organiser-title">
               <span className="wd-experience-index">02 — Organiser</span>
               <h2 id="organiser-title">Un planning qui s’organise avec vous.</h2>
               <p>Un rythme de formation adapté aux disponibilités communes, avec des créneaux validés avant engagement.</p>
             </article>
 
-            <article className="wd-experience-panel wd-experience-panel--compact" aria-labelledby="avancer-title">
+            <article id="avancer" className="wd-experience-panel wd-experience-panel--compact" aria-labelledby="avancer-title">
               <span className="wd-experience-index">03 — Avancer</span>
               <h2 id="avancer-title">Des acquis. Un prochain objectif.</h2>
               <p>Des bilans pour comprendre votre progression et préparer la suite de votre formation.</p>
