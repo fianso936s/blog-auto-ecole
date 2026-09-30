@@ -32,7 +32,6 @@ export default function Experience3D() {
   const controllerRef = useRef<SceneController | null>(null);
   const triggerRef = useRef<{ kill: () => void } | null>(null);
   const [status, setStatus] = useState<Status>("poster");
-  const [disabled, setDisabled] = useState(false);
   const [retryUsed, setRetryUsed] = useState(false);
   const [reduced, setReduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [saveData, setSaveData] = useState(() => saveDataEnabled());
@@ -64,16 +63,16 @@ export default function Experience3D() {
   }, []);
 
   useEffect(() => {
-    if (reduced || saveData || disabled) {
+    if (reduced || saveData) {
       cleanupScene();
       setStatus("poster");
     }
-  }, [reduced, saveData, disabled]);
+  }, [reduced, saveData]);
 
   useEffect(() => () => cleanupScene(), []);
 
   const start = async () => {
-    if (status === "loading" || reduced || saveData || disabled || !mountRef.current) return;
+    if (status === "loading" || reduced || saveData || !mountRef.current) return;
     if (!webgl2Available()) {
       setStatus("error");
       return;
@@ -84,7 +83,7 @@ export default function Experience3D() {
         loadRuntimeModules(),
         new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("3D runtime timeout")), 8000)),
       ]);
-      if (!mountRef.current || reduced || saveData || disabled) return;
+      if (!mountRef.current || reduced || saveData) return;
       cleanupScene();
       const quality = chooseExperienceQuality();
       const controller = createScene(runtime.THREE, mountRef.current, quality);
@@ -142,19 +141,19 @@ export default function Experience3D() {
   };
 
   useEffect(() => {
-    if (mobile || reduced || saveData || disabled) return;
+    if (mobile || reduced || saveData) return;
     return scheduleAfterLoad(() => { void start(); });
-  }, [mobile, reduced, saveData, disabled]);
+  }, [mobile, reduced, saveData]);
 
   const animationBlocked = reduced || saveData;
   const label = reduced ? "Animation désactivée selon vos préférences de mouvement." : saveData ? "Animation désactivée pour économiser les données." : null;
 
-  return <div className="wd-experience-stage" data-status={status}>
+  return <div className="wd-experience-stage" data-status={status} aria-busy={status === "loading"}>
     <ExperiencePoster variant={mobile ? "mobile" : "desktop"} />
     <div ref={mountRef} className="wd-experience-webgl" aria-hidden="true" />
     <div className="wd-experience-controls">
       {label && <span className="wd-experience-disabled-note">{label}</span>}
-      {!animationBlocked && status !== "active" && !disabled && <button
+      {!animationBlocked && status !== "active" && <button
         type="button"
         className="wd-experience-toggle"
         onClick={() => {
@@ -165,7 +164,7 @@ export default function Experience3D() {
       >
         {status === "loading" ? "Chargement de la 3D…" : status === "error" ? (retryUsed ? "Animation indisponible" : "Réessayer la 3D") : "Explorer en 3D"}
       </button>}
-      {status === "active" && <button type="button" className="wd-experience-toggle" onClick={() => setDisabled(true)}>Désactiver l’animation</button>}
+      {status === "active" && <button type="button" className="wd-experience-toggle" onClick={() => { cleanupScene(); setStatus("poster"); }}>Désactiver l’animation</button>}
     </div>
   </div>;
 }

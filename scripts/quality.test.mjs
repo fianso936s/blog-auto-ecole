@@ -247,3 +247,17 @@ test('3D contracts and deterministic story reference stay versioned with the sit
   assert.equal(scene.anchors.length, 5);
 });
 
+
+test('3D visual controls stay reversible and poster labelling stays singular', () => {
+  const experience = read('src/features/experience3d/Experience3D.tsx');
+  const poster = read('src/features/experience3d/ExperiencePoster.tsx');
+  const styles = read('src/features/experience3d/experience3d.css');
+  assert.ok(experience.includes('aria-busy={status === "loading"}'));
+  assert.ok(experience.includes('cleanupScene(); setStatus("poster")'));
+  assert.ok(!experience.includes('const [disabled, setDisabled]'));
+  assert.ok(poster.includes('aria-hidden="true"'));
+  assert.ok(!poster.includes('role="img"'));
+  assert.ok(styles.includes('.wd-experience-webgl {'));
+  assert.ok(styles.includes('inset: 0;'));
+  assert.ok(styles.includes('background: rgb(9 36 53 / .74)'));
+});

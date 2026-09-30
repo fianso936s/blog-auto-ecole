@@ -158,6 +158,7 @@
 }
 
 .wd-experience-poster {
+  position: relative;
   width: 100%;
   margin: 0;
 }
@@ -171,10 +172,23 @@
 }
 
 .wd-experience-poster figcaption {
-  margin-top: 12px;
-  color: var(--wd-muted);
-  font-size: 11px;
-  line-height: 1.5;
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 4;
+  max-width: calc(100% - 28px);
+  margin: 0;
+  padding: 7px 10px;
+  border: 1px solid rgb(246 243 237 / .22);
+  border-radius: 999px;
+  background: rgb(9 36 53 / .74);
+  color: #F6F3ED;
+  font-size: 10px;
+  font-weight: 650;
+  line-height: 1.35;
+  letter-spacing: .01em;
+  pointer-events: none;
+  backdrop-filter: blur(10px);
 }
 
 .wd-experience-poster--desktop .wd-experience-poster-art {
@@ -503,12 +517,12 @@
 }
 .wd-experience-stage > .wd-experience-poster {
   position: relative;
-  z-index: 1;
+  z-index: 3;
   transition: opacity 240ms var(--wd-ease);
 }
 .wd-experience-webgl {
   position: absolute;
-  inset: 0 0 31px;
+  inset: 0;
   z-index: 2;
   overflow: hidden;
   border-radius: 20px;
@@ -525,7 +539,7 @@
   position: absolute;
   z-index: 4;
   right: 14px;
-  bottom: 44px;
+  bottom: 14px;
   display: flex;
   max-width: calc(100% - 28px);
   align-items: center;
@@ -559,8 +573,9 @@
 }
 
 @media (max-width: 1023px) {
-  .wd-experience-webgl { inset: 0 0 31px; border-radius: 16px; }
-  .wd-experience-controls { bottom: 42px; }
+  .wd-experience-webgl { inset: 0; border-radius: 16px; }
+  .wd-experience-controls { right: 10px; bottom: 10px; }
+  .wd-experience-poster figcaption { top: 10px; left: 10px; max-width: calc(100% - 20px); }
   .wd-experience-stage > .wd-experience-poster .wd-experience-poster-art { aspect-ratio: 5 / 4; object-fit: cover; }
 }
 

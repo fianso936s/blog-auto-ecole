@@ -42,3 +42,20 @@ Base: main at 4ee95a69c286ba24553f1122cdb2cd657853577d. Candidate: ed81cfd433def
 
 ### Next priority
 After production promotion is confirmed, inspect the real production rendering on desktop/mobile when project access becomes available. Only then tune spacing or visual motion from observed evidence; keep prices in src/lib/offers.ts and the existing site/project structure unchanged.
+
+## 2026-09-30 — Experience polish pass 22
+
+Branch: `design/experience-polish-pass-22`. The branch continues the merged 3D direction; production `main@3fb6c5f84f7ba9544cc522e2a07d66b82adf0e32` differs from its previous head only by a redeploy-only commit, so this candidate is based on the same source tree and keeps that history as its parent.
+
+### Implemented
+- Made the 3D opt-out reversible: disabling the live scene returns to the poster and the same explicit “Explorer en 3D” action can start it again.
+- Added `aria-busy` while the runtime loads and removed the duplicate SVG image label so the visible figure caption remains the single textual description.
+- Converted the poster caption into a compact in-card badge and let the WebGL layer occupy the full artwork surface, removing the hard-coded 31 px caption gap that crowded narrow screens.
+- Preserved poster-first fallback, reduced-motion / Save-Data behavior, mobile explicit activation, offers, prices, simulator, routes and blog.
+
+### Checks prepared in this pass
+- Added source-level regression guards in `scripts/quality.test.mjs` for reversible controls, singular poster labelling and the full-bleed visual contract.
+- Public rendering could not be fetched from the available Vercel/web readers, so no live screenshot is claimed. Validation must rely on the exact branch commit checks plus targeted local syntax/source checks where available.
+
+### Next priority
+Inspect the exact built candidate on desktop/mobile when browser access is available, then tune ribbon camera framing and visual density from observed rendering rather than changing direction.

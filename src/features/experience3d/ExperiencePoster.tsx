@@ -5,8 +5,7 @@ function PosterArtwork({ variant }: { variant: PosterVariant }) {
   return <svg
     className="wd-experience-poster-art"
     viewBox={mobile ? "0 0 640 800" : "0 0 900 760"}
-    role="img"
-    aria-label="Illustration d’une compacte bleu profond sur un ruban de route"
+    aria-hidden="true"
     focusable="false"
   >
     <defs>
