@@ -81,3 +81,23 @@ The first pass-23 candidate (`7c9f8421d417ac300482860726301bb2df56f766`) failed 
 
 ### Next priority
 Once the corrected candidate is green, inspect its real desktop/mobile rendering when browser access is available and tune spacing or 3D camera density only from observed evidence.
+
+
+## 2026-09-30 — Interactive HUD polish pass 24
+
+Branch: `design/experience-polish-pass-22`, continuing cumulatively from pass 23.
+
+### Implemented
+- Reworked the 3D control treatment into a full-width automotive HUD instead of a floating button: the visual now exposes a concise “Vue du parcours” state and keeps the action grouped with that state.
+- Added live state copy for poster, loading, active 3D, error fallback, reduced-motion and Save-Data modes without changing the underlying progressive-enhancement rules.
+- On touch layouts, the HUD now leaves the artwork flow and sits below the stage, preventing the 3D control from covering the car/road composition; at 420 px and below the action expands to the available width.
+- Kept the existing three-step mobile rail, one canonical poster/3D surface, reversible opt-out, prices, offers, budget simulator, blog and routes unchanged.
+
+### Checks actually performed
+- Re-read `main`, the cumulative branch head, recent PRs, the project journal, the exact 3D component and its responsive stylesheet before writing.
+- Added source-level regression coverage in `scripts/quality.test.mjs` for the HUD markers, live status text and small-screen full-width action.
+- Attempted a local clone/build environment from GitHub, but the runtime could not resolve `github.com`; therefore no local `npm test`, TypeScript build or browser screenshot is claimed for this pass.
+- The exact final branch SHA must be validated through the existing Vercel commit status before treating this candidate as ready to publish.
+
+### Next priority
+Once the exact pass-24 SHA is green, inspect the real candidate in a browser-capable environment and tune only observed spacing/camera density issues rather than changing the established direction.
