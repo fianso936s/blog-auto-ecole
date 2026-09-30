@@ -233,7 +233,7 @@ test('Ribbon experience uses one accessible poster fallback and a deferred 3D ru
   const landing = read('src/pages/WebedriveLanding.tsx');
   const experience = read('src/features/experience3d/Experience3D.tsx');
   const scene = read('src/features/experience3d/runtime/createScene.ts');
-  for (const marker of ['id="experience"', 'Experience3D', 'Un planning qui s’organise avec vous.', 'Des acquis. Un prochain objectif.']) assert.ok(landing.includes(marker), marker);
+  for (const marker of ['id="experience"', 'ExperiencePoster', 'Un planning qui s’organise avec vous.', 'Des acquis. Un prochain objectif.']) assert.ok(landing.includes(marker), marker);
   for (const marker of ['prefers-reduced-motion', 'saveData', 'webgl2Available', 'Explorer en 3D', 'Désactiver l’animation', 'IntersectionObserver', 'webglcontextlost']) assert.ok(experience.includes(marker), marker);
   for (const marker of ['CatmullRomCurve3', 'CarRoot', 'RoadSurface', 'Wheel_FL', 'ACESFilmicToneMapping', 'setAnimationLoop']) assert.ok(scene.includes(marker), marker);
 });
