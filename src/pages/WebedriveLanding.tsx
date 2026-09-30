@@ -114,14 +114,14 @@ export default function WebedriveLanding() {
         <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">{hours} heures : classique {price.classic} euros, accélérée {price.accelerated} euros.</p>
         <div className="wd-selection-band" aria-label="Résumé de la sélection">
           <span className="wd-selection-volume"><small>Volume choisi</small><strong>{hours} h</strong></span>
-          <span className="wd-selection-plan" data-selected={plan === "classic" ? "true" : "false"}>
-            <small>Classique {plan === "classic" && <span className="wd-selection-picked" aria-label="Choisie"><Check size={11} aria-hidden="true" /><span>Choisie</span></span>}</small>
+          <button type="button" className="wd-selection-plan" data-selected={plan === "classic" ? "true" : "false"} aria-pressed={plan === "classic"} onClick={() => setPlan("classic")} aria-label={`Formule classique, ${price.classic.toLocaleString("fr-FR")} euros`}>
+            <small><span>Classique</span>{plan === "classic" ? <span className="wd-selection-picked" aria-hidden="true"><Check size={11} aria-hidden="true" /><span>Choisie</span></span> : <span className="wd-selection-action" aria-hidden="true">Choisir</span>}</small>
             <strong>{price.classic.toLocaleString("fr-FR")} €</strong>
-          </span>
-          <span className="wd-selection-plan" data-selected={plan === "accelerated" ? "true" : "false"}>
-            <small>Accélérée {plan === "accelerated" && <span className="wd-selection-picked" aria-label="Choisie"><Check size={11} aria-hidden="true" /><span>Choisie</span></span>}</small>
+          </button>
+          <button type="button" className="wd-selection-plan" data-selected={plan === "accelerated" ? "true" : "false"} aria-pressed={plan === "accelerated"} onClick={() => setPlan("accelerated")} aria-label={`Formule accélérée, ${price.accelerated.toLocaleString("fr-FR")} euros`}>
+            <small><span>Accélérée</span>{plan === "accelerated" ? <span className="wd-selection-picked" aria-hidden="true"><Check size={11} aria-hidden="true" /><span>Choisie</span></span> : <span className="wd-selection-action" aria-hidden="true">Choisir</span>}</small>
             <strong>{price.accelerated.toLocaleString("fr-FR")} €</strong>
-          </span>
+          </button>
           <Link to="/#budget" aria-label={`Ajuster l’estimation ${selectedPlanLabel.toLowerCase()} de ${selectedTotal.toLocaleString("fr-FR")} euros`}>Ajuster mon choix <ArrowRight size={17} aria-hidden="true" /></Link>
         </div>
         <div className="wd-comparison-intro">

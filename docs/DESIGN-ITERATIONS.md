@@ -214,3 +214,25 @@ Branch: `design/selection-hierarchy-pass-29`.
 - Source-level regression guards were added for state-driven card emphasis and reduced motion.
 - Browser rendering and local npm build were not available in this runtime.
 - Next: inspect desktop/mobile selected-card balance when exact-candidate rendering is available.
+
+
+## 2026-09-30 — Direct plan switching pass 30
+
+Branch: `design/selection-hierarchy-pass-29`, continuing cumulatively from pass 29.
+
+### Implemented
+- Turned the Classique/Accélérée cells in the decision summary into real plan controls instead of passive price labels.
+- Users can now change the selected rhythm directly from the summary band without being forced to jump to the budget simulator first.
+- Added `aria-pressed` state and explicit accessible names to both plan controls, while preserving the existing selected-price cue and all approved pricing logic.
+- Added a restrained hover/focus treatment and maintained 64–66 px touch targets through the narrow breakpoints; the compact mobile layout hides only the decorative “Choisir” cue, not the control itself.
+- Prices, 13 h / 20 h switching, simulator arithmetic, offer content, blog routes and 3D behavior remain unchanged.
+
+### Checks actually performed
+- Re-read current `main`, the exact cumulative branch head, recent PR state, project journal and the decision-flow source/styles before editing.
+- Confirmed the branch head was still `f5dfefc1eaaf4363f815dd3e7feea8d3eec740b7` immediately before creating this commit.
+- Confirmed the previous exact candidate SHA was green on the existing Vercel status before starting this pass.
+- Added source-level regression coverage for direct plan switching, pressed-state semantics, focus treatment and mobile compaction.
+- No browser screenshot or local npm build is claimed in this runtime; the exact resulting SHA must be checked through the existing remote build status.
+
+### Next priority
+Inspect the real desktop/mobile summary interaction when exact-candidate rendering becomes available. Otherwise continue with measurable decision-flow, keyboard and responsive defects rather than decorative churn.

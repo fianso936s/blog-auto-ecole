@@ -417,3 +417,24 @@ test('Offer comparison gives visual priority to the actual selected rhythm', () 
     '.wd-site .wd-card::before{transition:none!important}'
   ]) assert.ok(styles.includes(marker), marker);
 });
+
+
+test('Decision summary switches plan directly without forcing a budget jump', () => {
+  const landing = read('src/pages/WebedriveLanding.tsx');
+  const styles = read('src/styles/refinement-decision.css');
+  for (const marker of [
+    'aria-pressed={plan === "classic"}',
+    'aria-pressed={plan === "accelerated"}',
+    'onClick={() => setPlan("classic")}',
+    'onClick={() => setPlan("accelerated")}',
+    'className="wd-selection-action"',
+    'Formule classique,',
+    'Formule accélérée,'
+  ]) assert.ok(landing.includes(marker), marker);
+  for (const marker of [
+    '.wd-site .wd-selection-plan:focus-visible{',
+    '.wd-site .wd-selection-plan[data-selected="false"]:hover',
+    'min-height:66px;',
+    '.wd-selection-action{display:none}'
+  ]) assert.ok(styles.includes(marker), marker);
+});
