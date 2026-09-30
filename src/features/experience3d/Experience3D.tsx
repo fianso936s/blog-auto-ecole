@@ -147,11 +147,28 @@ export default function Experience3D() {
 
   const animationBlocked = reduced || saveData;
   const label = reduced ? "Animation désactivée selon vos préférences de mouvement." : saveData ? "Animation désactivée pour économiser les données." : null;
+  const viewState = reduced
+    ? "Vue fixe · mouvement réduit"
+    : saveData
+      ? "Vue fixe · économie de données"
+      : status === "active"
+        ? "3D interactive activée"
+        : status === "loading"
+          ? "Chargement de la vue 3D"
+          : status === "error"
+            ? "Vue fixe disponible"
+            : "Aperçu illustré";
 
   return <div className="wd-experience-shell">
     <div className="wd-experience-stage" data-status={status} aria-busy={status === "loading"}>
       <ExperiencePoster variant={mobile ? "mobile" : "desktop"} />
       <div ref={mountRef} className="wd-experience-webgl" aria-hidden="true" />
+    </div>
+    <div className="wd-experience-toolbar" data-status={status}>
+      <div className="wd-experience-toolbar-copy">
+        <span>Vue du parcours</span>
+        <strong aria-live="polite">{viewState}</strong>
+      </div>
       <div className="wd-experience-controls">
         {label && <span className="wd-experience-disabled-note">{label}</span>}
         {!animationBlocked && status !== "active" && <button
