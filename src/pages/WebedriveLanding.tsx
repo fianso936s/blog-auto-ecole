@@ -8,7 +8,6 @@ import RouteEffects from "../components/RouteEffects";
 import ExperiencePoster from "../features/experience3d/ExperiencePoster";
 import { PRICES, INCLUDED, EXTRA_HOUR_PRICE, CODE_EXAM_PRICE } from "../lib/offers";
 import "../styles/refinement-decision.css";
-import "../features/experience3d/experience3d.css";
 
 type Plan = "classic" | "accelerated";
 
