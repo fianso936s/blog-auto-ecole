@@ -44,6 +44,7 @@ button:not(:disabled), summary { cursor: pointer; }
 :where(p,li) { overflow-wrap: break-word; }
 :where(button,input,select,textarea) { min-height: 48px; }
 [tabindex="-1"]:focus { outline: none; }
+[data-route-focus-target="true"]:focus-visible { outline: 3px solid var(--wd-accent-text); outline-offset: 7px; border-radius: 4px; }
 .dark .bg-primary { background-color: var(--wd-blue); color: #F6F3ED; }
 .dark .bg-secondary { background-color: var(--wd-blue); }
 .site-shell { min-height: 100vh; background: var(--wd-bg); color: var(--wd-ink); }

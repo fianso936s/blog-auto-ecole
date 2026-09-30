@@ -16,9 +16,19 @@ export default function RouteEffects() {
         target = document.querySelector<HTMLElement>("#site-content");
       }
       if (!target) return;
-      target.setAttribute("tabindex", "-1");
-      target.focus({ preventScroll: true });
-      if (location.hash) target.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+      const scrollTarget = target.classList.contains("wd-anchor-alias")
+        ? target.closest<HTMLElement>("section") ?? target
+        : target;
+      const focusTarget = target.id === "site-content"
+        ? target
+        : scrollTarget.matches("section")
+          ? scrollTarget.querySelector<HTMLElement>("h1, h2, h3") ?? scrollTarget
+          : target;
+      document.querySelector<HTMLElement>('[data-route-focus-target="true"]')?.removeAttribute("data-route-focus-target");
+      focusTarget.setAttribute("tabindex", "-1");
+      if (focusTarget.id !== "site-content") focusTarget.setAttribute("data-route-focus-target", "true");
+      focusTarget.focus({ preventScroll: true });
+      if (location.hash) scrollTarget.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
     });
     return () => cancelAnimationFrame(frame);
   }, [location.key, location.hash, navigation]);

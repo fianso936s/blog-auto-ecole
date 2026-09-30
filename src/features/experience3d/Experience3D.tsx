@@ -32,13 +32,22 @@ export default function Experience3D() {
   const controllerRef = useRef<SceneController | null>(null);
   const triggerRef = useRef<{ kill: () => void } | null>(null);
   const visibleRef = useRef(false);
+  const statusRef = useRef<Status>("poster");
+  const launchRef = useRef(0);
   const [status, setStatus] = useState<Status>("poster");
   const [retryUsed, setRetryUsed] = useState(false);
   const [reduced, setReduced] = useState(() => window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   const [saveData, setSaveData] = useState(() => saveDataEnabled());
   const [mobile, setMobile] = useState(() => window.matchMedia("(max-width: 1023px)").matches);
 
-  const cleanupScene = () => {
+  const setViewStatus = (next: Status) => {
+    statusRef.current = next;
+    setStatus(next);
+  };
+  const blockedNow = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches || saveDataEnabled();
+
+  const cleanupScene = (invalidatePending = true) => {
+    if (invalidatePending) launchRef.current += 1;
     visibleRef.current = false;
     triggerRef.current?.kill();
     triggerRef.current = null;
@@ -67,26 +76,34 @@ export default function Experience3D() {
   useEffect(() => {
     if (reduced || saveData) {
       cleanupScene();
-      setStatus("poster");
+      setRetryUsed(false);
+      setViewStatus("poster");
     }
   }, [reduced, saveData]);
 
   useEffect(() => () => cleanupScene(), []);
 
   const start = async () => {
-    if (status === "loading" || reduced || saveData || !mountRef.current) return;
+    if (statusRef.current === "loading" || statusRef.current === "active" || reduced || saveData || blockedNow() || !mountRef.current) return;
     if (!webgl2Available()) {
-      setStatus("error");
+      setViewStatus("error");
       return;
     }
-    setStatus("loading");
+    const launchId = ++launchRef.current;
+    setViewStatus("loading");
     try {
       const runtime = await Promise.race([
         loadRuntimeModules(),
         new Promise<never>((_, reject) => window.setTimeout(() => reject(new Error("3D runtime timeout")), 8000)),
       ]);
-      if (!mountRef.current || reduced || saveData) return;
-      cleanupScene();
+      if (!mountRef.current || launchId !== launchRef.current || blockedNow()) {
+        if (launchId === launchRef.current && blockedNow()) {
+          setRetryUsed(false);
+          setViewStatus("poster");
+        }
+        return;
+      }
+      cleanupScene(false);
       const quality = chooseExperienceQuality();
       const controller = createScene(runtime.THREE, mountRef.current, quality);
       controllerRef.current = controller;
@@ -122,7 +139,7 @@ export default function Experience3D() {
         observer.disconnect();
         resize.disconnect();
         cleanupScene();
-        setStatus("error");
+        setViewStatus("error");
       };
       canvas?.addEventListener("webglcontextlost", onContextLost, { once: true });
 
@@ -137,11 +154,12 @@ export default function Experience3D() {
         originalDispose();
       };
 
-      setStatus("active");
+      setRetryUsed(false);
+      setViewStatus("active");
       runtime.ScrollTrigger.refresh();
     } catch {
       cleanupScene();
-      setStatus("error");
+      setViewStatus("error");
     }
   };
 
@@ -189,7 +207,7 @@ export default function Experience3D() {
         >
           {status === "loading" ? "Chargement de la 3D…" : status === "error" ? (retryUsed ? "Animation indisponible" : "Réessayer la 3D") : "Explorer en 3D"}
         </button>}
-        {status === "active" && <button type="button" className="wd-experience-toggle" aria-controls="wd-experience-stage" onClick={() => { cleanupScene(); setStatus("poster"); }}>Désactiver l’animation</button>}
+        {status === "active" && <button type="button" className="wd-experience-toggle" aria-controls="wd-experience-stage" onClick={() => { cleanupScene(); setRetryUsed(false); setViewStatus("poster"); }}>Désactiver l’animation</button>}
       </div>
     </div>
     <ol className="wd-experience-journey-rail" aria-label="Les trois étapes du parcours">

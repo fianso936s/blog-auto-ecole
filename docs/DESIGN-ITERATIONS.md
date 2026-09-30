@@ -120,3 +120,25 @@ Branch: `design/experience-polish-pass-22`, continuing cumulatively from pass 24
 
 ### Next priority
 When an exact candidate can be rendered in a browser-capable environment, inspect desktop and mobile composition before any further visual spacing changes. Otherwise continue with measurable interaction, accessibility and performance defects rather than decorative churn.
+
+
+## 2026-09-30 — Interaction reliability & route-focus pass 26
+
+Branch: `design/experience-polish-pass-22`, continuing cumulatively from pass 25.
+
+### Implemented
+- Fixed hash-navigation focus so hidden compatibility anchors such as `#formules` are no longer focused directly. The router now scrolls the visible section and places programmatic focus on its first meaningful heading, while the skip-link continues to target `#site-content`.
+- Added a restrained WEBEDRIVE focus ring for route-focused headings when keyboard focus is visibly requested.
+- Hardened 3D startup against stale desktop auto-start callbacks and duplicate launches by synchronizing status through a ref and a launch generation token.
+- Re-checks reduced-motion / Save-Data at the moment the async runtime resolves, so enabling either preference during loading cannot mount the animated scene afterward.
+- A successful 3D launch resets the one-retry state, so a later independent context loss can expose a fresh retry instead of inheriting an old failure.
+- Prices, offers, simulator rules, routes, blog content, mobile menu and infrastructure remain unchanged.
+
+### Checks actually performed
+- Re-read the exact remote branch head and current blobs immediately before preparing the commit; the branch was still based on `07f657f89f3834d3f2659aba44a86a9abfb26e53`.
+- Added source-level regression guards for hidden-anchor resolution, route focus styling, launch generation, synchronized status, live preference blocking and retry reset.
+- Public production rendering remained inaccessible to the available web reader, and the connected Vercel reader denied this project scope; no live screenshot or pixel-perfect browser validation is claimed.
+- The exact resulting SHA must pass the existing remote Vercel/build status before this pass is described as ready to publish.
+
+### Next priority
+When the exact candidate can be rendered, inspect the resulting keyboard arrival cue and 3D loading/disable transitions on desktop and mobile. Otherwise continue with observed interaction/accessibility defects rather than decorative churn.

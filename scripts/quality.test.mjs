@@ -319,3 +319,32 @@ test('3D HUD differentiates loading, active and blocked states', () => {
     '.wd-experience-toolbar[data-mode="blocked"] .wd-experience-toolbar-copy::before'
   ]) assert.ok(styles.includes(marker), marker);
 });
+
+
+test('Hash navigation focuses visible section content instead of hidden aliases', () => {
+  const source = read('src/components/RouteEffects.tsx');
+  const styles = read('src/styles/brand.css');
+  for (const marker of [
+    'target.classList.contains("wd-anchor-alias")',
+    'target.closest<HTMLElement>("section")',
+    'scrollTarget.querySelector<HTMLElement>("h1, h2, h3")',
+    'data-route-focus-target',
+    'focusTarget.focus({ preventScroll: true })',
+    'scrollTarget.scrollIntoView'
+  ]) assert.ok(source.includes(marker), marker);
+  assert.ok(styles.includes('[data-route-focus-target="true"]:focus-visible'));
+});
+
+test('3D startup rejects stale launches and live blocked-motion changes', () => {
+  const source = read('src/features/experience3d/Experience3D.tsx');
+  for (const marker of [
+    'const statusRef = useRef<Status>("poster");',
+    'const launchRef = useRef(0);',
+    'statusRef.current === "active"',
+    'const launchId = ++launchRef.current;',
+    'launchId !== launchRef.current',
+    'cleanupScene(false);',
+    'blockedNow()',
+    'setRetryUsed(false);'
+  ]) assert.ok(source.includes(marker), marker);
+});
