@@ -66,7 +66,7 @@ export function Replay({
   const [submitting, setSubmitting] = useState(false),
     [photoIndex, setPhotoIndex] = useState(-1);
   const [fullscreen, setFullscreen] = useState(true),
-    [threeD, setThreeD] = useState(false);
+    [threeD, setThreeD] = useState(true);
   const seen = useRef(new Set<string>()),
     attemptId = useRef(Crypto.randomUUID()),
     target = useRef(0),
@@ -76,7 +76,7 @@ export function Replay({
   );
   const reducedMotion = useReducedMotion();
   const fix = route.fixes[index];
-  const [pov,setPov]=useState(false),[recenterKey,setRecenterKey]=useState(0);
+  const [pov,setPov]=useState(true),[recenterKey,setRecenterKey]=useState(0);
   const bearing=useMemo(()=>pov?replayBearing(route.fixes,index):null,[pov,route.fixes,index]);
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state) => {
@@ -246,6 +246,7 @@ export function Replay({
             onPoint={(point) => inspect(point as Point)}
             focus={fix}
             course={bearing}
+            navigationMode={pov && threeD}
             recenterKey={recenterKey}
             styleUrl={app.config?.mapStyleUrl}
             follow
