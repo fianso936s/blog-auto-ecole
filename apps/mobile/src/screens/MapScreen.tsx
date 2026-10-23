@@ -2,6 +2,7 @@ import * as Location from "expo-location";
 import { syncAll } from "../services/sync";
 import {
   directoryCenters,
+  pickableCenters,
   NO_CENTER,
   normalizeSearch,
 } from "../services/route-directory";
@@ -66,9 +67,7 @@ export function MapScreen() {
   useEffect(()=>{if(!gpsFollow||app.active)return;let alive=true,subscription:Location.LocationSubscription|undefined;void Location.watchPositionAsync({accuracy:Location.Accuracy.BestForNavigation,distanceInterval:3,timeInterval:2000},p=>{if(p.coords.accuracy!==null&&p.coords.accuracy>100)return;setLocation({latitude:p.coords.latitude,longitude:p.coords.longitude,accuracy:p.coords.accuracy,timestamp:p.timestamp});}).then(s=>{if(alive)subscription=s;else s.remove();}).catch(()=>{setGpsFollow(false);app.setMessage("Autorisez la localisation pour le suivi automatique.");});return()=>{alive=false;subscription?.remove();};},[gpsFollow,!!app.active]);
   const centers = useMemo(
     () =>
-      directoryCenters([...app.routes, ...app.locals]).filter(
-        (c) => c !== NO_CENTER,
-      ),
+      pickableCenters([...app.routes, ...app.locals]),
     [app.routes, app.locals],
   );
   const [examCenter, setExamCenter] = useState("");

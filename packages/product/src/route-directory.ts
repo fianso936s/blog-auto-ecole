@@ -43,3 +43,11 @@ export function matchesRoute(
     )
   );
 }
+/** Exam centres always offered when classifying a route, even before any route uses them. */
+export const EXAM_CENTERS = ["Gennevilliers", "Nanterre"] as const;
+/** Centres to pick from: the known exam centres plus any centre already typed on a route. */
+export function pickableCenters(routes: Pick<RouteSummary, "examCenter">[]) {
+  return directoryCenters([...EXAM_CENTERS.map((examCenter) => ({ examCenter })), ...routes]).filter(
+    (c) => c !== NO_CENTER,
+  );
+}

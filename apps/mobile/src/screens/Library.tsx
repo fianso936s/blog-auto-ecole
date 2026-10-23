@@ -37,6 +37,7 @@ import { request } from "../services/auth";
 import { syncAll } from "../services/sync";
 import {
   directoryCenters,
+  pickableCenters,
   NO_CENTER,
   normalizeSearch,
   matchesRoute,
@@ -873,14 +874,13 @@ export function Library({ onMap }: { onMap: () => void }) {
               placeholder="Ex. Nanterre ou Gennevilliers"
               maxLength={100}
             />
-            {centers.some((c) => c !== NO_CENTER) && (
+            {true && (
               <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{ gap: 8 }}
               >
-                {centers
-                  .filter((c) => c !== NO_CENTER)
+                {pickableCenters(allRoutes)
                   .map((c) => (
                     <Chip
                       key={c}

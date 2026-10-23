@@ -40,6 +40,8 @@ import {
   normalizeSearch,
   matchesRoute,
   directoryCenters,
+  pickableCenters,
+  NO_CENTER,
 } from "./shared/route-directory";
 import "./style.css";
 import { api } from "./shared/api";
@@ -1715,7 +1717,7 @@ function MapPage() {
                   onChange={(e) => setCenter(e.target.value)}
                 >
                   <option>Tous les centres</option>
-                  {directoryCenters(routes).map((c) => (
+                  {[...pickableCenters(routes), ...(directoryCenters(routes).includes(NO_CENTER) ? [NO_CENTER] : [])].map((c) => (
                     <option key={c}>{c}</option>
                   ))}
                 </select>
@@ -2367,12 +2369,15 @@ function RouteEditor({
           />
         </Field>
         <Field label="Centre d’examen">
-          <input
-            maxLength={100}
-            placeholder="Ex. : Gennevilliers"
+          <select
             value={r.examCenter || ""}
             onChange={(e) => setR({ ...r, examCenter: e.target.value })}
-          />
+          >
+            <option value="">À classer</option>
+            {[...new Set([...pickableCenters([]), ...(r.examCenter ? [r.examCenter] : [])])].map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
         </Field>
         <Field label="Description">
           <textarea
