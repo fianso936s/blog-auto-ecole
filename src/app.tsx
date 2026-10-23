@@ -10,7 +10,7 @@ import { createRoot } from "react-dom/client";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Room, RoomEvent, Track } from "livekit-client";
-import { courses, courseSources, type Course } from "./shared/courses";
+import { courses, courseSources } from "./shared/courses";
 import {
   categories,
   difficulties,
@@ -379,7 +379,7 @@ function App() {
         <div className="loading">
           <img
             className="brand-logo"
-            src="/assets/le-repere-logo.jpeg"
+            src="/assets/le-repere-logo.svg"
             alt="Le Repère Auto-école"
             width="1774"
             height="887"
@@ -394,7 +394,7 @@ function App() {
             <a className="brand" href="/" aria-label="Accueil Le Repère Permis">
               <img
                 className="brand-logo"
-                src="/assets/le-repere-logo.jpeg"
+                src="/assets/le-repere-logo.svg"
                 alt="Le Repère Auto-école"
                 width="1774"
                 height="887"
@@ -513,7 +513,7 @@ function Welcome({
         <a className="brand" href="/">
           <img
             className="brand-logo"
-            src="/assets/le-repere-logo.jpeg"
+            src="/assets/le-repere-logo.svg"
             alt="Le Repère Auto-école"
             width="1774"
             height="887"
@@ -793,272 +793,118 @@ function Auth({
 }
 type Reading = Record<string, { read?: boolean; review?: boolean }>;
 function Pedagogy() {
-  const { profile, notify } = useApp(),
-    key = `repere.reading.web.${profile?.id || "guest"}`;
-  const [search, setSearch] = useState(""),
-    [group, setGroup] = useState("Tous"),
-    [reading, setReading] = useState<Reading>(() => {
-      try {
-        return JSON.parse(localStorage.getItem(key) || "{}");
-      } catch {
-        return {};
-      }
-    }),
-    [selected, setSelected] = useState<Course | null>(null);
+  const { profile, notify } = useApp();
+  const key = `repere.reading.web.${profile?.id || "guest"}`;
+  const [selectedId, setSelectedId] = useState(courses[0].id);
+  const [reading, setReading] = useState<Reading>({});
+  const [onlyReview, setOnlyReview] = useState(false);
   useEffect(() => {
-    try {
-      setReading(JSON.parse(localStorage.getItem(key) || "{}"));
-    } catch {
-      setReading({});
-    }
+    try { setReading(JSON.parse(localStorage.getItem(key) || "{}")); }
+    catch { setReading({}); }
   }, [key]);
-  function update(id: string, patch: AnyData) {
+  function update(id: string, patch: { read?: boolean; review?: boolean }) {
     const value = { ...reading, [id]: { ...reading[id], ...patch } };
     try {
       localStorage.setItem(key, JSON.stringify(value));
       setReading(value);
-    } catch {
-      notify("Le navigateur ne peut pas enregistrer votre progression.");
-    }
+    } catch { notify("Le navigateur ne peut pas enregistrer votre progression."); }
   }
-  const count = courses.filter((c) => reading[c.id]?.read).length,
-    next = courses.find((c) => !reading[c.id]?.read) || courses[0];
-  const visible = courses.filter(
-    (c) =>
-      (group === "Tous" ||
-        (group === "review" ? reading[c.id]?.review : c.group === group)) &&
-      normalizeSearch(`${c.title} ${c.tags.join(" ")} ${c.code}`).includes(
-        normalizeSearch(search),
-      ),
-  );
+  const count = courses.filter((c) => reading[c.id]?.read).length;
+  const reviewCount = courses.filter((c) => reading[c.id]?.review).length;
+  const visible = onlyReview ? courses.filter((c) => reading[c.id]?.review) : courses;
+  const selected = visible.find((c) => c.id === selectedId) || visible[0] || courses[0];
+  const groups = [
+    ["C1", "C1 · Maîtriser le véhicule"],
+    ["C2", "C2 · Circuler avec les autres"],
+    ["Manœuvres", "Manœuvres"],
+    ["Sécurité", "Sécurité et examen"],
+  ];
+  const position = courses.findIndex((c) => c.id === selected.id);
+  function choose(id: string) { setSelectedId(id); }
   return (
-    <div className="page">
-      <header className="page-heading">
-        <div>
-          <span className="eyebrow">COMPRENDRE AVANT DE PRENDRE LA ROUTE</span>
-          <h1>
-            Fiches pédagogiques<span className="title-dot">.</span>
-          </h1>
-          <p>Les bons réflexes, une étape à la fois.</p>
-        </div>
-        <span className="header-icon">
-          <Icon name="book" size={27} />
-        </span>
+    <div className="page pedagogy-page">
+      <header className="pedagogy-heading">
+        <span className="eyebrow">APPRENDRE AVEC LE REPÈRE</span>
+        <h1>Fiches pédagogiques</h1>
+        <p>Un objectif. Des étapes claires. À ton rythme.</p>
       </header>
-      <section className="learning-hero">
-        <div>
-          <Badge color="paper">VOTRE PROGRESSION</Badge>
-          <h2>
-            {count === courses.length
-              ? "Chaque repère compte."
-              : "Un peu plus à l’aise,\nà chaque leçon."}
-          </h2>
-          <p>
-            {count} fiche{count > 1 ? "s" : ""} lue{count > 1 ? "s" : ""} sur{" "}
-            {courses.length} · À votre rythme
-          </p>
-          <Button onClick={() => setSelected(next)} icon="arrow">
-            {count ? "Continuer ma lecture" : "Commencer à apprendre"}
-          </Button>
+      <section className="lesson-picker" aria-label="Choix de la fiche">
+        <div className="lesson-picker-top">
+          <label htmlFor="lesson-select">Choisis ton objectif</label>
+          <span>{count} / {courses.length} fiches lues</span>
         </div>
-        <div
-          className="progress-ring"
-          style={
-            {
-              "--progress": `${(count / courses.length) * 100}%`,
-            } as React.CSSProperties
-          }
-        >
-          <span>
-            <strong>{count.toString().padStart(2, "0")}</strong>
-            <small>sur {courses.length} fiches</small>
-          </span>
-        </div>
-        <span className="hero-number">01 / APPRENDRE</span>
+        <select id="lesson-select" value={visible.length ? selected.id : ""}
+          onChange={(e) => choose(e.target.value)}>
+          <option value="" disabled>{visible.length ? "Choisir une fiche…" : "Aucune fiche à revoir"}</option>
+          {groups.map(([value, label]) => (
+            <optgroup key={value} label={label}>
+              {visible.filter((c) => c.group === value).map((c) => (
+                <option key={c.id} value={c.id}>{c.code} · {c.title}{reading[c.id]?.read ? " · Lu" : ""}</option>
+              ))}
+            </optgroup>
+          ))}
+        </select>
+        <label className="review-filter">
+          <input type="checkbox" checked={onlyReview} onChange={(e) => {
+            setOnlyReview(e.target.checked);
+            if (e.target.checked) {
+              const first = courses.find((c) => reading[c.id]?.review);
+              if (first && !reading[selectedId]?.review) choose(first.id);
+            }
+          }} />
+          Seulement mes fiches à revoir <span>({reviewCount})</span>
+        </label>
       </section>
-      <div className="section-heading">
-        <div>
-          <h2>Votre boîte à repères</h2>
-          <p>
-            {courses.length} cours ·{" "}
-            {courses.reduce((n, c) => n + c.steps.length, 0)} étapes expliquées
-          </p>
-        </div>
-        <div className="search">
-          <Icon name="search" size={18} />
-          <input
-            aria-label="Rechercher une fiche"
-            placeholder="Rechercher une fiche…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-      </div>
-      <div className="filters">
-        {[
-          ["Tous", "Tout"],
-          ["C1", "C1 · Maîtrise"],
-          ["C2", "C2 · Circulation"],
-          ["Manœuvres", "Manœuvres"],
-          ["Sécurité", "Sécurité"],
-          ["review", "À revoir"],
-        ].map(([v, l]) => (
-          <button
-            key={v}
-            className={`chip ${tone(l)} ${group === v ? "selected" : ""}`}
-            onClick={() => setGroup(v)}
-            aria-pressed={group === v}
-          >
-            {l}
-            {v === "review" && (
-              <span>
-                {Object.values(reading).filter((x) => x.review).length}
-              </span>
-            )}
-          </button>
-        ))}
-      </div>
-      <div className="course-grid">
-        {visible.map((c) => (
-          <button
-            className="course-card"
-            key={c.id}
-            onClick={() => setSelected(c)}
-          >
-            <div className="spread">
-              <span className={`course-symbol ${tone(c.group)}`}>
-                <Icon
-                  name={
-                    c.group === "Sécurité"
-                      ? "shield"
-                      : c.group === "Manœuvres"
-                        ? "map"
-                        : "book"
-                  }
-                  size={22}
-                />
-              </span>
-              <span className="course-code">{c.code}</span>
-            </div>
-            <Badge color={tone(c.group)}>
-              {c.group === "C1"
-                ? "C1 · Maîtrise"
-                : c.group === "C2"
-                  ? "C2 · Circulation"
-                  : c.group}
-            </Badge>
-            <h3>{c.title}</h3>
-            <p>{c.objective}</p>
-            <div className="course-foot">
-              <span>
-                <Icon name="clock" size={14} />
-                {c.minutes} min · {c.steps.length} étapes
-              </span>
-              {reading[c.id]?.review ? (
-                <Badge color="red">À revoir</Badge>
-              ) : reading[c.id]?.read ? (
-                <Badge color="green">
-                  Lu <Icon name="check" size={12} />
-                </Badge>
-              ) : (
-                <Icon name="arrow" size={18} />
-              )}
-            </div>
-          </button>
-        ))}
-      </div>
-      {!visible.length && (
-        <Empty title="Aucune fiche pour cette recherche" icon="search">
-          Essayez un autre mot ou un autre filtre.
-        </Empty>
-      )}
-      <footer className="page-footer">
-        <span>
-          Une fiche lue ne valide pas une compétence. Votre enseignant reste
-          votre guide.
-        </span>
-        <a href="/support" target="_blank" rel="noreferrer">
-          Besoin d’aide ?
+      {!visible.length ? <Empty title="Aucune fiche à revoir" icon="book">Décoche le filtre pour retrouver tous les objectifs.</Empty> : <article className="lesson-reader" key={selected.id} aria-labelledby="lesson-title">
+        <header className="lesson-reader-heading">
+          <div className="lesson-meta"><span>FICHE {selected.code}</span><span>{selected.minutes} min de lecture</span></div>
+          <h2 id="lesson-title">{selected.title}</h2>
+          <p>{selected.intro}</p>
+        </header>
+        <div className="lesson-objective"><span>Ton objectif</span><p>{selected.objective}</p></div>
+        <ol className="lesson-instructions">
+          {selected.steps.map((s, i) => (
+            <li key={s.title}>
+              <span className="instruction-number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
+              <div><h3>{s.title}</h3><p>{s.explanation}</p>
+                <p className="instruction-why"><strong>Pourquoi ?</strong> {s.why}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <section className="lesson-example"><h3>En situation</h3><p>{selected.example}</p></section>
+        <details className="lesson-details lesson-caution">
+          <summary>Les erreurs à éviter</summary>
+          <ul>{selected.traps.map((t) => <li key={t}>{t}</li>)}</ul>
+          <p>{selected.safety}</p>
+        </details>
+        <section className="lesson-takeaway"><span>Le repère à garder</span><p>{selected.takeaway}</p></section>
+        <a className="lesson-video" href={selected.video.url} target="_blank" rel="noreferrer">
+          <span className="lesson-video-icon"><Icon name="play" size={18} /></span>
+          <span><strong>Voir la vidéo complémentaire</strong><small>{selected.video.title} · {selected.video.channel}</small></span>
+          <Icon name="arrow" size={17} />
         </a>
-      </footer>
-      {selected && (
-        <Modal title={selected.title} wide onClose={() => setSelected(null)}>
-          <article className="lesson">
-            <div className="row">
-              <Badge>{selected.group}</Badge>
-              <span className="muted">
-                {selected.minutes} min · Fiche {selected.code}
-              </span>
-            </div>
-            <p className="lesson-intro">{selected.intro}</p>
-            <div className="callout blue">
-              <strong>L’objectif de votre leçon</strong>
-              <p>{selected.objective}</p>
-            </div>
-            {selected.steps.map((s, i) => (
-              <section className="lesson-step" key={s.title}>
-                <span className="step-number">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <div>
-                  <h3>{s.title}</h3>
-                  <p>{s.explanation}</p>
-                  <p className="why">
-                    <strong>Pourquoi ? </strong>
-                    {s.why}
-                  </p>
-                </div>
-              </section>
-            ))}
-            <div className="callout green">
-              <strong>En situation</strong>
-              <p>{selected.example}</p>
-            </div>
-            <div className="callout red">
-              <strong>Les pièges à éviter</strong>
-              <ul>
-                {selected.traps.map((t) => (
-                  <li key={t}>{t}</li>
-                ))}
-              </ul>
-              <p>{selected.safety}</p>
-            </div>
-            <h3>Le repère à garder</h3>
-            <p>{selected.takeaway}</p>
-            <div className="row wrap">
-              <Button
-                icon="check"
-                onClick={() =>
-                  update(selected.id, { read: !reading[selected.id]?.read })
-                }
-              >
-                {reading[selected.id]?.read
-                  ? "Marquer comme non lu"
-                  : "J’ai lu cette fiche"}
-              </Button>
-              <Button
-                secondary
-                onClick={() =>
-                  update(selected.id, { review: !reading[selected.id]?.review })
-                }
-              >
-                {reading[selected.id]?.review
-                  ? "Retirer de « À revoir »"
-                  : "À revoir"}
-              </Button>
-            </div>
-            <p className="caption">
-              Progression de lecture conservée dans ce navigateur, par compte.
-              Source : {selected.sourcePages}
-            </p>
-            <p className="caption">
-              {typeof courseSources === "string"
-                ? courseSources
-                : "Supports pédagogiques REMC de votre auto-école."}
-            </p>
-          </article>
-        </Modal>
-      )}
+        <details className="lesson-details lesson-references">
+          <summary>Références et conseils de lecture</summary>
+          <p>La démonstration complète la fiche. Adapte les repères à ta voiture avec ton enseignant ; les commandes et la boîte de vitesses peuvent différer.</p>
+          <ul>{selected.references.map((id) => <li key={id}><a href={courseSources[id].url} target="_blank" rel="noreferrer">{courseSources[id].label} ↗</a></li>)}</ul>
+        </details>
+        <div className="lesson-reading-actions">
+          <Button icon="check" onClick={() => update(selected.id, { read: !reading[selected.id]?.read })}>
+            {reading[selected.id]?.read ? "Fiche lue · Annuler" : "J’ai lu cette fiche"}
+          </Button>
+          <button className={`lesson-review-button ${reading[selected.id]?.review ? "active" : ""}`}
+            aria-pressed={!!reading[selected.id]?.review}
+            onClick={() => update(selected.id, { review: !reading[selected.id]?.review })}>
+            {reading[selected.id]?.review ? "À revoir · Retirer" : "Garder pour réviser"}
+          </button>
+        </div>
+        <nav className="lesson-pagination" aria-label="Navigation entre les fiches">
+          <button disabled={position === 0} onClick={() => { setOnlyReview(false); choose(courses[position - 1].id); document.getElementById("lesson-select")?.focus(); }}>← Fiche précédente</button>
+          <button disabled={position === courses.length - 1} onClick={() => { setOnlyReview(false); choose(courses[position + 1].id); document.getElementById("lesson-select")?.focus(); }}>Fiche suivante →</button>
+        </nav>
+      </article>}
+      <footer className="pedagogy-footer">Ta lecture est enregistrée dans ce navigateur. La maîtrise se travaille en voiture avec ton enseignant.</footer>
     </div>
   );
 }

@@ -51,12 +51,12 @@ test("Vercel adapter preserves origin protection for JSON writes", async () => {
   );
   assert.equal(r.status, 403);
 });
-test("the production build contains exactly the supplied JPEG logo bytes", async () => {
-  const supplied = await readFile("src/assets/le-repere-logo.jpeg");
-  const published = await readFile("public/assets/le-repere-logo.jpeg");
+test("the production build serves the transparent vector logo", async () => {
+  const supplied = await readFile("src/assets/le-repere-logo.svg");
+  const published = await readFile("public/assets/le-repere-logo.svg");
   assert.deepEqual(published, supplied);
   const js = await readFile("public/assets/app.js", "utf8");
-  assert.ok(js.includes("/assets/le-repere-logo.jpeg"));
+  assert.ok(js.includes("/assets/le-repere-logo.svg"));
 });
 test("deployment config routes private APIs to a Node function and keeps security headers", async () => {
   const config = JSON.parse(await readFile("vercel.json", "utf8"));

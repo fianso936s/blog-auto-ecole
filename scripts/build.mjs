@@ -15,16 +15,15 @@ const js = app.outputFiles.find((f) => f.path.endsWith(".js")).text;
 const css = app.outputFiles.find((f) => f.path.endsWith(".css")).text;
 const html = await readFile("src/index.html", "utf8");
 const vercelTarget = process.argv.includes("--vercel");
-const logo = await readFile("src/assets/le-repere-logo.jpeg");
-const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1774 1774"><rect width="1774" height="1774" rx="230" fill="#FBF6F0"/><image x="0" y="443" width="1774" height="887" href="data:image/jpeg;base64,${logo.toString("base64")}"/></svg>`;
+const logo = await readFile("src/assets/le-repere-logo.svg", "utf8");
+const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1431 1431"><image x="0" y="444" width="1431" height="543" href="data:image/svg+xml;base64,${Buffer.from(logo).toString("base64")}"/></svg>`;
 const assets = {
   "/index.html": { body: html, type: "text/html; charset=utf-8" },
   "/assets/app.js": { body: js, type: "text/javascript; charset=utf-8" },
   "/assets/app.css": { body: css, type: "text/css; charset=utf-8" },
-  "/assets/le-repere-logo.jpeg": {
-    body: logo.toString("base64"),
-    encoding: "base64",
-    type: "image/jpeg",
+  "/assets/le-repere-logo.svg": {
+    body: logo,
+    type: "image/svg+xml",
   },
   "/icon.svg": { body: icon, type: "image/svg+xml" },
   "/manifest.webmanifest": {
