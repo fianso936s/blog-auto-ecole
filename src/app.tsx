@@ -992,17 +992,17 @@ function MapCanvas({
   }, []);
   useEffect(() => {
     if (!ready || !mapRef.current) return;
-    if(!previewMode)mapRef.current.easeTo({ pitch: navigationMode ? 65 : pitch, duration: 600 });
+    if(!previewMode)mapRef.current.easeTo({ pitch: navigationMode ? (pitch ? 75 : 0) : pitch, duration: 600 });
   }, [pitch, ready, navigationMode, previewMode]);
   useEffect(()=>{
     if(!ready||(!recording.length&&!location))return;
-    const follow=()=>{if(previewMode)return;const f=recording.at(-1)||location;if(!f||Date.now()<resumeAt.current)return;const prev=recording.at(-2);if(navigationMode&&prev&&(f.lat!==prev.lat||f.lng!==prev.lng)){const rad=Math.PI/180;lastBearing.current=Math.atan2(Math.sin((f.lng-prev.lng)*rad)*Math.cos(f.lat*rad),Math.cos(prev.lat*rad)*Math.sin(f.lat*rad)-Math.sin(prev.lat*rad)*Math.cos(f.lat*rad)*Math.cos((f.lng-prev.lng)*rad))/rad;}mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:navigationMode?17.5:Math.max(16,mapRef.current!.getZoom()),pitch:navigationMode?65:pitch,bearing:navigationMode?lastBearing.current:mapRef.current!.getBearing(),duration:650,essential:true});};
+    const follow=()=>{if(previewMode)return;const f=recording.at(-1)||location;if(!f||Date.now()<resumeAt.current)return;const prev=recording.at(-2);if(navigationMode&&prev&&(f.lat!==prev.lat||f.lng!==prev.lng)){const rad=Math.PI/180;lastBearing.current=Math.atan2(Math.sin((f.lng-prev.lng)*rad)*Math.cos(f.lat*rad),Math.cos(prev.lat*rad)*Math.sin(f.lat*rad)-Math.sin(prev.lat*rad)*Math.cos(f.lat*rad)*Math.cos((f.lng-prev.lng)*rad))/rad;}mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:navigationMode?17.5:Math.max(16,mapRef.current!.getZoom()),pitch:navigationMode?(pitch?75:0):pitch,bearing:navigationMode?lastBearing.current:mapRef.current!.getBearing(),duration:650,essential:true});};
     follow();const timer=setInterval(follow,1000);return()=>clearInterval(timer);
   },[ready,recording,location,navigationMode,previewMode,pitch]);
   useEffect(() => {
     if(!ready||!previewMode||recording.length<2)return;
     handle.current.focus(recording);
-    mapRef.current?.easeTo({pitch:0,bearing:0,duration:700});
+    mapRef.current?.easeTo({pitch:pitch?70:0,bearing:0,duration:700});
   },[ready,previewMode]);
   useEffect(() => {
     if (!ready) return;
@@ -1095,7 +1095,7 @@ function MapPage() {
     [directory, setDirectory] = useState(!writer),
     [loading, setLoading] = useState(true),
     [loadError, setLoadError] = useState(""),
-    [pitch, setPitch] = useState(0),
+    [pitch, setPitch] = useState(70),
     [mapPos, setMapPos] = useState({ lat: 48.9148, lng: 2.2851 }),
     [category, setCategory] = useState("Toutes"),
     [index, setIndex] = useState(0),
@@ -1405,7 +1405,7 @@ function MapPage() {
           <button className="map-tool" onClick={refresh} disabled={loading} aria-label="Synchroniser les parcours et repères" title="Synchroniser"><Icon name="refresh" /></button>
           <button
             className="map-tool"
-            onClick={() => setPitch((p) => (p ? 0 : 55))}
+            onClick={() => setPitch((p) => (p ? 0 : 70))}
             aria-pressed={!!pitch}
           >
             {pitch ? "2D" : "3D"}
