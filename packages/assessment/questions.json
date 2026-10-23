@@ -1,0 +1,553 @@
+[
+  {
+    "id": "c1-verifications",
+    "questions": [
+      {
+        "id": "c1-verifications-1",
+        "question": "Tu dois utiliser le désembuage. Quand repères-tu sa commande ?",
+        "options": [
+          "À l’arrêt, avant d’en avoir besoin.",
+          "En la cherchant longuement tout en roulant.",
+          "Uniquement quand le pare-brise est entièrement opaque."
+        ],
+        "answer": 0,
+        "explanation": "Connaître les commandes à l’arrêt permet de rester disponible pour observer en circulation."
+      },
+      {
+        "id": "c1-verifications-2",
+        "question": "Un témoin inhabituel s’allume. Que fais-tu ?",
+        "options": [
+          "Je me fie uniquement à sa couleur sans regarder le symbole.",
+          "Je l’ignore si la voiture avance encore.",
+          "J’identifie le symbole et sa signification dans le manuel, et j’adapte mon action."
+        ],
+        "answer": 2,
+        "explanation": "La couleur attire l’attention ; le symbole et la situation indiquent l’action adaptée."
+      }
+    ],
+    "revision": "f5d81250962bed84",
+    "contentHash": "8bf69636c13154c9f8f4113e49bc56036493a8b056f839da413c6b881a732c96"
+  },
+  {
+    "id": "c1-installation",
+    "questions": [
+      {
+        "id": "c1-installation-1",
+        "question": "Dans quel ordre prépares-tu ton installation ?",
+        "options": [
+          "Je règle les rétroviseurs en me penchant avant de régler le siège.",
+          "Je démarre puis je termine les réglages dans la circulation.",
+          "Je règle ma position de conduite, puis les rétroviseurs depuis cette position."
+        ],
+        "answer": 2,
+        "explanation": "Les rétroviseurs se règlent depuis la position réellement utilisée pour conduire."
+      },
+      {
+        "id": "c1-installation-2",
+        "question": "Avant d’ouvrir ta portière, que vérifies-tu ?",
+        "options": [
+          "Rien si le véhicule est à l’arrêt.",
+          "L’arrière et le côté, notamment l’arrivée d’un vélo.",
+          "Seulement l’absence de voiture devant moi."
+        ],
+        "answer": 1,
+        "explanation": "Un usager peut arriver sur le côté même lorsque ton véhicule est arrêté."
+      }
+    ],
+    "revision": "7df4522113215da4",
+    "contentHash": "31847e7212a17fb72cbff32262e02de4e8d9c8c8454e8bc9c0b39d1372808f99"
+  },
+  {
+    "id": "c1-volant",
+    "questions": [
+      {
+        "id": "c1-volant-1",
+        "question": "Quel repère de départ des mains utilise cette fiche du Repère ?",
+        "options": [
+          "Une main posée en permanence sur la cuisse.",
+          "10 h 10, avec les bras légèrement fléchis.",
+          "Les deux mains en haut et les bras tendus."
+        ],
+        "answer": 1,
+        "explanation": "Dans cette fiche, 10 h 10 est un repère pédagogique de départ à adapter avec ton enseignant."
+      },
+      {
+        "id": "c1-volant-2",
+        "question": "À la sortie du tournant, comment redresses-tu ?",
+        "options": [
+          "Je regarde la sortie et j’accompagne le retour en gardant le contact avec le volant.",
+          "Je lâche complètement le volant.",
+          "J’accélère uniquement pour faire revenir le volant."
+        ],
+        "answer": 0,
+        "explanation": "Le retour reste contrôlé : tu arrêtes la rotation quand la voiture s’aligne."
+      }
+    ],
+    "revision": "39a9d81fddb8bdd5",
+    "contentHash": "b55a0aa05ae6bb09f0d87806eb578f9afbd4058792d23425688534bc29462b84"
+  },
+  {
+    "id": "c1-pedales",
+    "questions": [
+      {
+        "id": "c1-pedales-1",
+        "question": "Comment prépares-tu un ralentissement ?",
+        "options": [
+          "J’anticipe et je contrôle derrière avant de freiner selon la situation.",
+          "J’attends le dernier moment puis je freine brutalement.",
+          "Je regarde seulement le compteur."
+        ],
+        "answer": 0,
+        "explanation": "L’anticipation et le contrôle de l’arrière permettent un ralentissement compréhensible pour les autres."
+      },
+      {
+        "id": "c1-pedales-2",
+        "question": "Pour rendre la fin d’arrêt plus douce, que fais-tu ?",
+        "options": [
+          "J’augmente brusquement la pression juste avant l’immobilisation.",
+          "Je relâche le frein longtemps avant le point d’arrêt prévu.",
+          "J’allège progressivement la pression en fin d’arrêt."
+        ],
+        "answer": 2,
+        "explanation": "Le freinage dégressif consiste notamment à alléger en fin d’arrêt, en conservant la maîtrise de l’immobilisation."
+      }
+    ],
+    "revision": "e51ed28f93329985",
+    "contentHash": "a5da0d0ee7049e51eab4f5e2b3c732521ae5f8ddd18b3f7f2bd7e8eb192f0d33"
+  },
+  {
+    "id": "c1-trajectoire",
+    "questions": [
+      {
+        "id": "c1-trajectoire-1",
+        "question": "Comment abordes-tu une courbe ?",
+        "options": [
+          "Je fixe le capot et j’attends d’être dans la courbe pour réagir.",
+          "Je coupe la voie opposée pour raccourcir la courbe.",
+          "Je prépare l’allure avant la courbe et je regarde la trajectoire à suivre."
+        ],
+        "answer": 2,
+        "explanation": "Le regard et l’allure se préparent en amont pour conserver une trajectoire régulière."
+      },
+      {
+        "id": "c1-trajectoire-2",
+        "question": "Un obstacle réduit l’espace utilisable. Quelle réaction convient ?",
+        "options": [
+          "Je regarde uniquement l’obstacle jusqu’à l’avoir dépassé.",
+          "J’adapte mon allure et mes marges, en tenant compte des autres usagers.",
+          "Je garde systématiquement la même vitesse."
+        ],
+        "answer": 1,
+        "explanation": "Tu lis l’espace disponible et tu adaptes ta conduite au lieu de te laisser attirer par l’obstacle."
+      }
+    ],
+    "revision": "379990833e7def3b",
+    "contentHash": "3e3426f43ad7ad95283e39b2415869888853a24fb067cb1014cfaf2095221b1e"
+  },
+  {
+    "id": "c1-controles",
+    "questions": [
+      {
+        "id": "c1-controles-1",
+        "question": "Avant de changer de voie, quelle démarche appliques-tu ?",
+        "options": [
+          "Je regarde uniquement devant moi.",
+          "Je contrôle, j’annonce, puis je vérifie à nouveau si la situation a changé.",
+          "Je mets le clignotant et je change immédiatement de voie."
+        ],
+        "answer": 1,
+        "explanation": "Le clignotant informe les autres ; il ne remplace pas les contrôles et ne donne pas la priorité."
+      },
+      {
+        "id": "c1-controles-2",
+        "question": "Après un premier contrôle, un usager peut-il encore arriver ?",
+        "options": [
+          "Oui : je recontrôle si le délai ou l’évolution de la situation le nécessite.",
+          "Non : le premier contrôle reste valable sans limite.",
+          "Non, si mon clignotant est allumé."
+        ],
+        "answer": 0,
+        "explanation": "L’environnement évolue : une information trop ancienne peut ne plus décrire la situation au moment d’agir."
+      }
+    ],
+    "revision": "3f59c35ab3619614",
+    "contentHash": "c422fb80b8e4bd47a52b1e1bb2314a2d779c3111893aafdfa275d895b6d3cc8d"
+  },
+  {
+    "id": "c2-pad",
+    "questions": [
+      {
+        "id": "c2-pad-1",
+        "question": "Dans cette fiche, que signifie PAD ?",
+        "options": [
+          "Perception, Analyse, Décision.",
+          "Priorité, Accélération, Direction.",
+          "Pause, Arrêt, Départ."
+        ],
+        "answer": 0,
+        "explanation": "Tu relèves les indices, tu envisages leur évolution et tu choisis une action adaptée."
+      },
+      {
+        "id": "c2-pad-2",
+        "question": "Une intersection est masquée par des véhicules. Quand prépares-tu ta décision ?",
+        "options": [
+          "Seulement lorsqu’un véhicule est déjà devant mon capot.",
+          "Après avoir franchi l’intersection.",
+          "Avant d’arriver dessus, en anticipant ce qui peut apparaître."
+        ],
+        "answer": 2,
+        "explanation": "Anticiper une évolution plausible laisse le temps de ralentir, observer et céder si nécessaire."
+      }
+    ],
+    "revision": "db8956dbf218723c",
+    "contentHash": "6a55ca7b95870141f1a4ebfc876e4ee82ada10497ed3d578137ea1b11f5850b8"
+  },
+  {
+    "id": "c2-placement",
+    "questions": [
+      {
+        "id": "c2-placement-1",
+        "question": "Tu réalises trop tard que tu es dans la mauvaise voie. Que fais-tu ?",
+        "options": [
+          "Je coupe les voies pour récupérer ma sortie.",
+          "Je m’arrête brusquement dans ma voie sans raison de sécurité.",
+          "Je conserve une trajectoire sûre et j’accepte une autre direction si nécessaire."
+        ],
+        "answer": 2,
+        "explanation": "Une erreur d’itinéraire ne justifie pas un changement dangereux."
+      },
+      {
+        "id": "c2-placement-2",
+        "question": "Quelles informations guident ton choix de voie ?",
+        "options": [
+          "Toujours le bord du trottoir, même s’il y a une voie réservée.",
+          "La signalisation, les flèches et les voies autorisées pour ma direction.",
+          "Seulement la voiture qui me précède."
+        ],
+        "answer": 1,
+        "explanation": "Tu prépares ta voie cible avec la signalisation et l’aménagement réellement présents."
+      }
+    ],
+    "revision": "145b24c2c41ba0c1",
+    "contentHash": "28b4a1214190f80711579a0ca23f59733f8cb1fa7fd82348fafcaab564878913"
+  },
+  {
+    "id": "c2-allure",
+    "questions": [
+      {
+        "id": "c2-allure-1",
+        "question": "La vitesse maximale autorisée est-elle toujours une allure adaptée ?",
+        "options": [
+          "Oui, si la route est droite.",
+          "Non : visibilité, adhérence et présence d’usagers peuvent imposer de ralentir.",
+          "Oui : je dois toujours rouler exactement à la limite."
+        ],
+        "answer": 1,
+        "explanation": "La limite n’est pas un objectif obligatoire ; l’allure doit permettre d’observer et de réagir."
+      },
+      {
+        "id": "c2-allure-2",
+        "question": "Une zone est masquée. Quand ralentis-tu ?",
+        "options": [
+          "Avant la zone, pour pouvoir répondre à ce qui peut apparaître.",
+          "Seulement après avoir découvert le danger.",
+          "Jamais si je suis prioritaire."
+        ],
+        "answer": 0,
+        "explanation": "Ralentir assez tôt préserve ta capacité à voir, décider et agir."
+      }
+    ],
+    "revision": "5fbffe17a064042a",
+    "contentHash": "74b613981a4cafa48bb07f01e5bbb8e8c6922e6ee8ed1565a0d63ca80571bd8d"
+  },
+  {
+    "id": "c2-tourner",
+    "questions": [
+      {
+        "id": "c2-tourner-1",
+        "question": "Tu tournes à gauche alors qu’un véhicule arrive en face. Que prépares-tu ?",
+        "options": [
+          "Je vérifie les priorités et je cède si son passage est prioritaire.",
+          "Je passe forcément avant lui parce que mon clignotant est allumé.",
+          "Je tourne sans contrôler la voie d’arrivée."
+        ],
+        "answer": 0,
+        "explanation": "Le clignotant ne donne pas priorité ; le tournant se prépare avec les autres usagers."
+      },
+      {
+        "id": "c2-tourner-2",
+        "question": "Avant de tourner à droite, que repères-tu ?",
+        "options": [
+          "Seulement l’angle du trottoir.",
+          "Uniquement le volant de la voiture devant moi.",
+          "La voie d’arrivée autorisée et les usagers à protéger, notamment piétons et cyclistes."
+        ],
+        "answer": 2,
+        "explanation": "L’objectif est de rejoindre la bonne voie sans couper la trajectoire d’un usager prioritaire."
+      }
+    ],
+    "revision": "88afa6613f17a45f",
+    "contentHash": "0f4f680213077cfaf34b87e291d1a2c7c08656c18e5a3453a7ae0d5a6539b187"
+  },
+  {
+    "id": "c2-priorite",
+    "questions": [
+      {
+        "id": "c2-priorite-1",
+        "question": "Une ouverture apparaît à droite. Que recherches-tu ?",
+        "options": [
+          "Une obligation de m’arrêter dans tous les cas.",
+          "La certitude que toute ouverture me donne la priorité.",
+          "Les indices et la signalisation pour identifier le régime de priorité."
+        ],
+        "answer": 2,
+        "explanation": "Une ouverture doit être détectée puis analysée : rue, sortie privée et signalisation ne se traitent pas automatiquement de la même façon."
+      },
+      {
+        "id": "c2-priorite-2",
+        "question": "La visibilité est faible sur une priorité à droite. Quelle allure choisis-tu ?",
+        "options": [
+          "Une accélération pour franchir avant l’arrivée éventuelle d’un véhicule.",
+          "Une allure qui me permet d’observer et de céder si nécessaire.",
+          "La même allure parce que personne n’est encore visible."
+        ],
+        "answer": 1,
+        "explanation": "Tu dois conserver le temps et la distance nécessaires pour appliquer la règle de priorité."
+      }
+    ],
+    "revision": "792fdeb7f7eabbc0",
+    "contentHash": "d3900543eba55ed617e61fa9e6353049a3cb6360967a1b6d9f359959f3e99f23"
+  },
+  {
+    "id": "c2-pietons",
+    "questions": [
+      {
+        "id": "c2-pietons-1",
+        "question": "Un piéton manifeste clairement son intention de traverser régulièrement. Que fais-tu ?",
+        "options": [
+          "Je klaxonne pour qu’il renonce.",
+          "J’anticipe et je lui cède le passage, au besoin en m’arrêtant.",
+          "J’attends qu’il soit devant mon capot pour ralentir."
+        ],
+        "answer": 1,
+        "explanation": "La prise d’information porte aussi sur les abords et l’intention de traverser."
+      },
+      {
+        "id": "c2-pietons-2",
+        "question": "Avant de repartir après avoir laissé passer un piéton, que fais-tu ?",
+        "options": [
+          "Je contrôle à nouveau l’ensemble de la situation.",
+          "Je repars dès que le premier piéton a dépassé mon capot.",
+          "Je regarde uniquement mon compteur."
+        ],
+        "answer": 0,
+        "explanation": "Un autre usager peut être masqué ou s’engager pendant ton arrêt."
+      }
+    ],
+    "revision": "bcb32579befe51ee",
+    "contentHash": "d93ccf78995c1a861855ce9eca1ae5a14ff0a6404164f2f4ba25ae82700ea5e3"
+  },
+  {
+    "id": "c2-giratoire",
+    "questions": [
+      {
+        "id": "c2-giratoire-1",
+        "question": "Comment détermines-tu la priorité à l’entrée d’un carrefour circulaire ?",
+        "options": [
+          "Je lis la signalisation présente au lieu de me fier uniquement à sa forme.",
+          "Tous les carrefours circulaires ont forcément la même priorité.",
+          "Le clignotant de mon véhicule décide de ma priorité."
+        ],
+        "answer": 0,
+        "explanation": "Cette fiche distingue la forme de l’aménagement du régime de priorité réellement signalé."
+      },
+      {
+        "id": "c2-giratoire-2",
+        "question": "Tu ne peux pas rejoindre sûrement la voie de sortie. Que fais-tu ?",
+        "options": [
+          "Je coupe immédiatement les voies.",
+          "Je m’arrête au milieu du carrefour pour attendre.",
+          "Je renonce à cette sortie et je poursuis sans couper la route aux autres."
+        ],
+        "answer": 2,
+        "explanation": "Une direction manquée est préférable à une sortie forcée et dangereuse."
+      }
+    ],
+    "revision": "f5cc442f272e45e8",
+    "contentHash": "4072d4aa015a2e0aa8c07f7106bccf93f8ca20cbf77773f2de981afc18dbb294"
+  },
+  {
+    "id": "manoeuvre-arriere",
+    "questions": [
+      {
+        "id": "manoeuvre-arriere-1",
+        "question": "Comment gardes-tu la maîtrise d’une marche arrière en ligne droite ?",
+        "options": [
+          "Je corrige fortement et rapidement dès le moindre écart.",
+          "Je regarde uniquement un rétroviseur sans autre contrôle.",
+          "Je recule très lentement, j’observe largement et je fais de petites corrections."
+        ],
+        "answer": 2,
+        "explanation": "La faible vitesse et les petites corrections laissent le temps de contrôler les écarts et les usagers."
+      },
+      {
+        "id": "manoeuvre-arriere-2",
+        "question": "Une personne entre dans ta zone de manœuvre. Que fais-tu ?",
+        "options": [
+          "Je lui fais signe de se dépêcher en continuant.",
+          "Je m’arrête et je réévalue la situation.",
+          "Je continue parce que ma manœuvre a déjà commencé."
+        ],
+        "answer": 1,
+        "explanation": "La surveillance reste prioritaire sur la réussite de la trajectoire."
+      }
+    ],
+    "revision": "1df0e0430ab8c7d0",
+    "contentHash": "5a562a93211d4b288711121d0eb10bac5c2acbee4f6af457a4ea03700225f2e9"
+  },
+  {
+    "id": "manoeuvre-demitour",
+    "questions": [
+      {
+        "id": "manoeuvre-demitour-1",
+        "question": "Avant de passer de la marche arrière à la marche avant, que fais-tu ?",
+        "options": [
+          "Je regarde seulement ma place de départ.",
+          "Je m’arrête et je renouvelle mes observations.",
+          "Je change de sens sans nouvel arrêt ni contrôle."
+        ],
+        "answer": 1,
+        "explanation": "Chaque nouveau mouvement peut exposer une autre zone autour du véhicule."
+      },
+      {
+        "id": "manoeuvre-demitour-2",
+        "question": "Ton demi-tour devient incertain à cause des autres usagers. Que fais-tu ?",
+        "options": [
+          "Je m’arrête pour réévaluer la manœuvre.",
+          "Je termine rapidement, même si je gêne.",
+          "Je suppose que tous les autres vont s’arrêter."
+        ],
+        "answer": 0,
+        "explanation": "Une manœuvre ne doit pas être imposée aux autres usagers."
+      }
+    ],
+    "revision": "80835ae402c1ec2b",
+    "contentHash": "6e3e443e7a03575f69031f6f88aac83fb83a78b75ac24a1ef6d2a8657c97e84f"
+  },
+  {
+    "id": "manoeuvre-creneau",
+    "questions": [
+      {
+        "id": "manoeuvre-creneau-1",
+        "question": "À quoi servent les repères utilisés pour le créneau ?",
+        "options": [
+          "À guider la position, tout en continuant à surveiller les autres.",
+          "À remplacer les contrôles autour du véhicule.",
+          "À garantir un résultat identique sur toutes les voitures."
+        ],
+        "answer": 0,
+        "explanation": "Les repères s’adaptent au véhicule et à la place ; les observations restent permanentes."
+      },
+      {
+        "id": "manoeuvre-creneau-2",
+        "question": "Le repère de braquage ne fonctionne pas comme prévu. Que fais-tu ?",
+        "options": [
+          "Je poursuis sans observer pour suivre le repère à tout prix.",
+          "J’accélère pour terminer plus vite.",
+          "Je m’arrête si nécessaire et je corrige selon la position réelle de la voiture."
+        ],
+        "answer": 2,
+        "explanation": "La situation réelle et la sécurité passent avant un repère appris par cœur."
+      }
+    ],
+    "revision": "18d212dee5ef6e8e",
+    "contentHash": "d14d84189d231e4a00b22fee7fd9b92cab07d7756c6d6dea26006506bb6bac6c"
+  },
+  {
+    "id": "securite-rapide",
+    "questions": [
+      {
+        "id": "securite-rapide-1",
+        "question": "Sur la voie d’insertion, comment prépares-tu l’entrée ?",
+        "options": [
+          "J’attends le bout de la voie pour regarder derrière.",
+          "Je m’insère sans contrôle parce que ma voie va finir.",
+          "J’observe tôt l’espace disponible et j’adapte mon allure avant de rejoindre la voie."
+        ],
+        "answer": 2,
+        "explanation": "L’observation précoce et l’allure adaptée préparent un espace d’insertion sans forcer le passage."
+      },
+      {
+        "id": "securite-rapide-2",
+        "question": "Ton clignotant est allumé. Peux-tu imposer ton insertion ?",
+        "options": [
+          "Oui, si j’arrive assez vite.",
+          "Non : je recontrôle et je respecte les priorités.",
+          "Oui : les véhicules sur la voie doivent automatiquement me laisser passer."
+        ],
+        "answer": 1,
+        "explanation": "Annoncer une intention ne donne pas la priorité."
+      }
+    ],
+    "revision": "49813957c519f1ad",
+    "contentHash": "90c3c9edcc222f156cbf0eab2021b9318e0f2aca1fa2ecf752aeedd9cd9ed602"
+  },
+  {
+    "id": "securite-distances",
+    "questions": [
+      {
+        "id": "securite-distances-1",
+        "question": "Quel repère minimal de distance devant utilise la fiche ?",
+        "options": [
+          "Seulement le temps nécessaire pour lire la plaque devant.",
+          "Au moins deux secondes, davantage si les conditions le nécessitent.",
+          "Une distance fixe d’un mètre à toute vitesse."
+        ],
+        "answer": 1,
+        "explanation": "Le repère temporel s’adapte à la vitesse ; la marge doit augmenter si la situation l’exige."
+      },
+      {
+        "id": "securite-distances-2",
+        "question": "Une marge latérale devient trop faible. Que fais-tu ?",
+        "options": [
+          "J’adapte mon allure et j’attends si le passage n’est pas sûr.",
+          "Je garde la même vitesse pour réduire le temps de passage.",
+          "Je me fie uniquement au véhicule qui m’a précédé."
+        ],
+        "answer": 0,
+        "explanation": "La marge latérale doit protéger les usagers ; si l’espace manque, tu adaptes ou tu attends."
+      }
+    ],
+    "revision": "26696bd4673d48fa",
+    "contentHash": "fbab2d36fb41467cf79e1e39ccfc42b57bc7934f3fa70240327ffe25f3d13edb"
+  },
+  {
+    "id": "securite-examen",
+    "questions": [
+      {
+        "id": "securite-examen-1",
+        "question": "Après une erreur pendant l’examen, quelle conduite adoptes-tu ?",
+        "options": [
+          "Je reprends une conduite sûre et je reste disponible pour la suite.",
+          "Je considère que tout est perdu et je cesse de contrôler.",
+          "Je cherche à compenser en accélérant."
+        ],
+        "answer": 0,
+        "explanation": "Continuer à observer et conduire en sécurité reste prioritaire ; une erreur ne se compense pas par une prise de risque."
+      },
+      {
+        "id": "securite-examen-2",
+        "question": "Quel objectif guide ta préparation à l’examen ?",
+        "options": [
+          "Une conduite qui évite toute hésitation, même en prenant un risque.",
+          "La mémorisation d’un itinéraire garanti.",
+          "Une conduite autonome, réglementaire et protectrice."
+        ],
+        "answer": 2,
+        "explanation": "Les parcours sont des supports d’entraînement ; la sécurité et l’autonomie restent les objectifs."
+      }
+    ],
+    "revision": "1b47a4896e3dfcc6",
+    "contentHash": "8e7938f7634c6dbcc000751c4eafc8895c62f224ab9989c0ea6c697cb7e92877"
+  }
+]

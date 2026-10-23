@@ -1,0 +1,20 @@
+/* Generated from packages/product/product.json. */
+:root {
+  --ink: #292427;
+  --muted: #726568;
+  --wine: #672C3B;
+  --cream: #F5F0E8;
+  --paper: #FFFCF7;
+  --line: #E7DEDA;
+  --green: #3F7663;
+  --red: #B42332;
+  --red-soft: #FDECEF;
+  --blue: #255EA5;
+  --blue-soft: #EAF1FB;
+  --amber: #85510D;
+  --amber-soft: #FFF2DA;
+  --purple: #69469A;
+  --purple-soft: #F1EBFA;
+  --green-soft: #E6F2EC;
+  --soft: #EFE5E3;
+}

@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-23T11:56:11.591Z",
+  "scope": "esbuild bundled API and browser entry module graphs",
+  "graphs": {
+    "api": {
+      "modules": 285,
+      "flaggedModules": []
+    },
+    "auth": {
+      "modules": 256,
+      "flaggedModules": []
+    },
+    "reset": {
+      "modules": 256,
+      "flaggedModules": []
+    },
+    "street": {
+      "modules": 140,
+      "flaggedModules": []
+    }
+  }
+}

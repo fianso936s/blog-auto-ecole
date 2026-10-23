@@ -1,5 +1,5 @@
 {
-  "name": "le-repere-permis-web",
+  "name": "le-repere-permis",
   "private": true,
   "type": "module",
   "scripts": {
@@ -7,7 +7,21 @@
     "build:vercel": "node scripts/build.mjs --vercel",
     "dev": "node scripts/dev.mjs",
     "validate": "node scripts/validate-artifact.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "test": "node --test tests/*.test.mjs",
+    "mobile": "npm run start -w @repere/mobile",
+    "typecheck:web": "tsc --noEmit",
+    "typecheck:ios": "tsc --noEmit -p apps/mobile",
+    "typecheck:api": "tsc --noEmit -p apps/api",
+    "build:api": "node scripts/build-api.mjs",
+    "build:ios": "npm run export:ios -w @repere/mobile",
+    "test:api": "node --import tsx --test tests/backend/courses.test.ts tests/backend/video-sharing.test.ts tests/backend/http-hardening.test.ts tests/backend/commercial-security.test.ts tests/backend/street-replay.test.ts tests/backend/streetview-renderer.test.ts tests/backend/teaching.test.ts",
+    "ios:testflight": "cd apps/mobile && npx eas-cli build --platform ios --profile production --auto-submit",
+    "product:generate": "node scripts/generate-product.mjs",
+    "product:check": "node scripts/check-uniformity.mjs",
+    "typecheck": "npm run typecheck:web && npm run typecheck:ios && npm run typecheck:api",
+    "verify:uniformity": "npm run product:check && npm run typecheck && npm test && npm run test:api",
+    "release:preflight": "node scripts/webrtc-preflight.mjs && bash scripts/meta-native-preflight.sh",
+    "release:prepare": "node scripts/prepare-release.mjs"
   },
   "engines": {
     "node": "22.x"
@@ -25,6 +39,26 @@
     "@types/react-dom": "^19.0.0",
     "esbuild": "^0.25.12",
     "jsdom": "^26.1.0",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "@electric-sql/pglite": "^0.5.11",
+    "@neon/config": "^1.9.2",
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.15.0",
+    "prettier": "^3.9.10",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "tsx": "^4.21.0"
+  },
+  "version": "1.7.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "overrides": {
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "@livekit/react-native": "3.1.0",
+    "@livekit/react-native-webrtc": "150.1.0"
   }
 }

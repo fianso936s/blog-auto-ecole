@@ -1,3 +1,7 @@
+import {MetaConnection} from "./MetaConnection";
+import {StudentDashboard,TeacherSchedule} from "./Teaching";
+import {usePublishedCourses} from "../packages/product/src/content";
+import product from "../packages/product/product.json";
 import { VideoPlayer } from "./VideoPlayer";
 import { useContentSync } from "./shared/content-sync";
 import React, {
@@ -379,12 +383,9 @@ function App() {
             </a>
             <span className="nav-label">VOTRE COMPAGNON DE ROUTE</span>
             <nav aria-label="Navigation principale">
-              {[
-                ["pedagogy", "book", "Fiches pédagogiques"],
-                ["map", "map", "Carte et parcours"],
-                ["videos", "video", "Vidéos"],
-                ["account", "user", "Mon espace"],
-              ].map(([id, icon, label]) => (
+              {product.navigation.map(({id,label}) => {
+                const icon = ({pedagogy:"book",map:"map",videos:"video",account:"user"} as Record<string,string>)[id];
+                return (
                 <button
                   key={id}
                   className={`nav-item ${tab === id ? "active" : ""}`}
@@ -400,7 +401,7 @@ function App() {
                   <span>{label}</span>
                   {tab === id && <i />}
                 </button>
-              ))}
+              );})}
             </nav>
             <div className="sidebar-bottom">
               <span className="quiet-note">
@@ -770,6 +771,7 @@ function Auth({
 }
 function Pedagogy() {
   const { profile, login } = useApp();
+  usePublishedCourses(api,!!profile);
   const {reading,quizzes,plan,busy,error,refresh,update}=useCourseProgress(profile);
   const [selectedId, setSelectedId] = useState(courses[0].id);
   const [onlyReview, setOnlyReview] = useState(false);
@@ -2521,6 +2523,7 @@ async function localClip(owner: string, id: string) {
   return videoStore("readonly", (s) => s.get(`${owner}:${id}`));
 }
 function Videos() {
+  const [livePublisher,setLivePublisher]=useState(false);
   const { profile, notify } = useApp(),
     writer = profile?.role !== "student",
     [videos, setVideos] = useState<Video[]>([]),
@@ -2743,6 +2746,7 @@ function Videos() {
           </div>
         </section>
       )}
+      {writer&&<MetaConnection/>}
       <div className="section-heading">
         <div>
           <h2>Votre vidéothèque</h2>
@@ -2769,7 +2773,7 @@ function Videos() {
             <button
               className="video-cover"
               aria-label={`Lire ${v.title}`}
-              onClick={() => (v.live_status === "live" ? setLive(v) : play(v))}
+              onClick={() => {setLivePublisher(false);v.live_status === "live" ? setLive(v) : void play(v);}}
             >
               <span className="video-play">
                 <Icon name="play" size={26} />
@@ -2900,6 +2904,7 @@ function Videos() {
           onClose={() => setNewLive(false)}
           onStart={(v) => {
             setNewLive(false);
+            setLivePublisher(true);
             setLive(v);
             void refresh();
           }}
@@ -2907,6 +2912,7 @@ function Videos() {
       )}
       {live && (
         <LivePlayer
+          publish={livePublisher}
           video={live}
           onClose={() => {
             setLive(null);
@@ -3177,7 +3183,7 @@ function NewLive({
     </Modal>
   );
 }
-function LivePlayer({ video, onClose }: { video: Video; onClose: () => void }) {
+function LivePlayer({ video, onClose, publish=false }: { video: Video; onClose: () => void; publish?:boolean }) {
   const { notify } = useApp(),
     root = useRef<HTMLDivElement>(null),
     room = useRef<Room | null>(null),
@@ -3209,7 +3215,7 @@ function LivePlayer({ video, onClose }: { video: Video; onClose: () => void }) {
     });
     void (async () => {
       try {
-        const t = await api(`/v1/videos/${video.id}/webrtc/join`, "POST", {});
+        const t = await api(`/v1/videos/${video.id}/webrtc/join`, "POST", {mode:publish?"publish":"watch"});
         publisher.current = t.publisher;
         if (disposed) return;
         await r.connect(t.url, t.token);
@@ -3363,6 +3369,7 @@ function Account() {
     [invite, setInvite] = useState(""),
     [code, setCode] = useState(""),
     [inspect, setInspect] = useState<any>(null);
+  const [teachingView,setTeachingView]=useState("profile");
   const refreshing = useRef(false);
   async function refresh() {
     if (refreshing.current) return;
@@ -3397,6 +3404,7 @@ function Account() {
       setBusy(false);
     }
   }
+  if(profile!.role!=="student"&&teachingView!=="profile")return <div className="page"><header className="page-heading"><div><span className="eyebrow">ESPACE ENSEIGNANT</span><h1>{teachingView==="students"?"Mes élèves":"Mon planning"}</h1></div></header><nav className="course-tabs" aria-label="Espace enseignant"><button onClick={()=>setTeachingView("profile")}>Mon espace</button><button aria-pressed={teachingView==="students"} onClick={()=>setTeachingView("students")}>Statistiques élèves</button><button aria-pressed={teachingView==="schedule"} onClick={()=>setTeachingView("schedule")}>Planning</button></nav>{teachingView==="students"?<StudentDashboard/>:<TeacherSchedule userId={profile!.id}/>}</div>;
   return (
     <div className="page">
       <header className="page-heading">
@@ -3411,6 +3419,7 @@ function Account() {
           <Icon name="user" size={27} />
         </span>
       </header>
+      {profile!.role!=="student"&&<nav className="course-tabs" aria-label="Administration et enseignement"><button onClick={()=>setTeachingView("students")}>Statistiques par élève</button><button onClick={()=>setTeachingView("schedule")}>Planning enseignant</button></nav>}
       <div className="account-grid">
         <section className="panel">
           <div className="row">

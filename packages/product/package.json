@@ -1,0 +1,16 @@
+{
+  "name": "@repere/product",
+  "version": "1.7.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./courses": "./src/courses.ts",
+    "./contracts": "./src/contracts.ts",
+    "./hooks": "./src/hooks.ts",
+    "./product.json": "./product.json"
+  },
+  "peerDependencies": {
+    "react": "19.3.0"
+  }
+}

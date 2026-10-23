@@ -1,0 +1,962 @@
+export type LessonStep = { title: string; explanation: string; why: string };
+export type Course = {
+  id: string; code: string; group: "C1" | "C2" | "Manœuvres" | "Sécurité";
+  title: string; minutes: number; intro: string; objective: string;
+  steps: LessonStep[]; example: string; traps: string[]; safety: string;
+  takeaway: string; tags: string[]; sourcePages: string;
+  video: { title: string; channel: string; url: string };
+  videoNote?: string;
+  references: string[];
+};
+export const courses: Course[] = [
+  {
+    "id": "c1-verifications",
+    "code": "1.1",
+    "group": "C1",
+    "title": "Connaître ta voiture et ses commandes",
+    "minutes": 5,
+    "intro": "Avant de partir, prends le temps de connaître ta voiture. Tu dois savoir trouver une commande, expliquer son rôle et repérer une anomalie.",
+    "objective": "Trouver les commandes utiles et comprendre ce que tu vérifies, sur le véhicule de ta leçon.",
+    "steps": [
+      {
+        "title": "Retrouve les commandes essentielles",
+        "explanation": "À l’arrêt, montre les clignotants, les feux, les essuie-glaces, le lave-glace, le désembuage et les feux de détresse. Actionne la commande demandée, puis vérifie son effet. Répète sur la voiture utilisée en leçon.",
+        "why": "Connaître les commandes évite de chercher longuement dans l’habitacle en roulant."
+      },
+      {
+        "title": "Vérifie l’état et comprends les alertes",
+        "explanation": "Fais le tour du véhicule : état apparent des pneus, feux et vitres, absence d’obstacle. À bord, repère les témoins. Une alerte inhabituelle demande d’identifier sa signification dans le manuel ; un témoin rouge peut aussi signaler une ceinture détachée ou un frein de stationnement serré.",
+        "why": "La couleur attire l’attention, mais c’est le symbole et la situation qui indiquent l’action à effectuer."
+      },
+      {
+        "title": "Prépare la vérification et son explication",
+        "explanation": "Entraîne-toi à montrer, vérifier et expliquer. Pour les pneus, par exemple : distingue leur état apparent de leur pression, à contrôler avec un appareil selon les préconisations du constructeur. Révise aussi les questions de sécurité routière et de premiers secours.",
+        "why": "Le but est de comprendre le contrôle, pas de mémoriser uniquement l’emplacement d’un bouton."
+      }
+    ],
+    "example": "Il pleut et le pare-brise s’embue : tu identifies le manque de visibilité, puis tu choisis essuie-glaces et désembuage avant de repartir.",
+    "traps": [
+      "Apprendre uniquement la position des boutons d’une autre voiture.",
+      "Poursuivre malgré une alerte dont tu ne comprends pas le sens."
+    ],
+    "safety": "Fais les vérifications à l’arrêt, dans les conditions du constructeur. N’ouvre jamais un circuit de refroidissement chaud et ne touche pas aux câbles haute tension d’une voiture électrique.",
+    "takeaway": "Je sais ce que je vérifie, pourquoi je le vérifie et quelle commande utiliser.",
+    "tags": [
+      "Commandes",
+      "Observation"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 1.",
+    "video": {
+      "title": "Vérifications et sécurité routière · Peugeot 208",
+      "channel": "Lolo le mono",
+      "url": "https://www.youtube.com/watch?v=MUr9IyKHQwE"
+    },
+    "videoNote": "Vidéo de 2021 sur une Peugeot 208 thermique : les contrôles moteur diffèrent sur une électrique. La vignette d’assurance montrée n’est plus exigée pour les véhicules immatriculés depuis avril 2024 ; l’assurance reste obligatoire.",
+    "references": [
+      "ecf", "assurance"
+    ]
+  },
+  {
+    "id": "c1-installation",
+    "code": "1.2",
+    "group": "C1",
+    "title": "T’installer avant de démarrer",
+    "minutes": 5,
+    "intro": "Installe-toi toujours avant de régler tes rétroviseurs. Tu dois atteindre les commandes facilement, voir correctement et garder ton corps soutenu.",
+    "objective": "Régler ton poste de conduite dans un ordre cohérent et vérifier que tu peux partir.",
+    "steps": [
+      {
+        "title": "Règle le siège et l’appui-tête",
+        "explanation": "Règle la distance aux pédales : sur boîte manuelle, embrayage enfoncé à fond, la jambe reste légèrement fléchie. Sur automatique, vérifie l’accès complet au frein avec l’enseignant. Ajuste la hauteur, le dossier et l’appui-tête : son sommet se situe au niveau du haut de ta tête, aussi près que possible de l’arrière du crâne. Vérifie le verrouillage du siège.",
+        "why": "Une position stable permet de freiner à fond sans tendre la jambe ni déplacer le bassin."
+      },
+      {
+        "title": "Règle le volant, puis les rétroviseurs",
+        "explanation": "Garde les épaules au dossier et les bras légèrement fléchis au volant. Préserve la vue sur les instruments. Depuis cette position, règle le rétroviseur intérieur sur la lunette arrière, puis les extérieurs pour voir les côtés et l’arrière. Attache la ceinture, sans torsion, sur l’épaule et le bassin ; vérifie aussi les passagers.",
+        "why": "Les rétroviseurs se règlent depuis la position que tu garderas en conduisant. Ils ne suppriment pas les angles morts."
+      },
+      {
+        "title": "Prépare la visibilité et le départ",
+        "explanation": "Lis les informations du tableau de bord. Observe la météo et ce qui t’entoure. Si besoin, règle ventilation, éclairage et essuie-glaces avant de partir. Pour sortir, vérifie aussi le côté de la portière, notamment l’arrivée d’un vélo.",
+        "why": "Préparer la voiture à l’arrêt te laisse disponible pour observer les autres au démarrage."
+      }
+    ],
+    "example": "Si tu dois te pencher pour atteindre le frein, tu n’es pas prêt à partir. Corrige ton installation, même si tu as l’impression de perdre trente secondes.",
+    "traps": [
+      "Régler les rétroviseurs en étant penché.",
+      "Mettre la ceinture sous le bras.",
+      "Ouvrir la portière sans vérifier l’arrière et le côté."
+    ],
+    "safety": "Les réglages importants se font à l’arrêt. Une position apprise doit être adaptée à ta morphologie.",
+    "takeaway": "Je règle ma position, mes rétroviseurs et ma ceinture avant de préparer le départ.",
+    "tags": [
+      "Installation",
+      "Observation"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 1.",
+    "video": {
+      "title": "Bien s’installer au poste de conduite",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=-HAGPb4vF9U"
+    },
+    "references": [
+      "ecf"
+    ]
+  },
+  {
+    "id": "c1-volant",
+    "code": "1.3",
+    "group": "C1",
+    "title": "Tenir le volant à 10 h 10 et guider la voiture",
+    "minutes": 7,
+    "intro": "Dans nos fiches, le repère de départ est 10 h 10 : main gauche vers 10 heures, main droite vers 2 heures. Le regard prépare la direction ; les mains dosent le mouvement.",
+    "objective": "Tourner et redresser progressivement en gardant une trajectoire régulière.",
+    "steps": [
+      {
+        "title": "Place tes mains à 10 h 10",
+        "explanation": "Pose les deux mains à 10 h 10, sans crisper les doigts, avec les bras légèrement fléchis. Regarde la voie que tu veux suivre. Alterne le regard loin et de brefs contrôles de tes marges ; ne fixe ni le capot ni tes mains.",
+        "why": "Une prise stable et un regard mobile rendent les corrections plus précises."
+      },
+      {
+        "title": "Adapte la rotation au tournant",
+        "explanation": "Ralentis avant de tourner. Dans une courbe légère, garde ta prise et tourne peu. Pour un virage plus marqué, utilise le tirer-glisser travaillé en leçon : la main du côté du virage monte puis tire, l’autre accompagne. Pour un tournant serré à faible allure, relaie les mains selon la technique enseignée.",
+        "why": "Le mouvement doit permettre de tourner suffisamment sans bloquer les bras ni multiplier les petites reprises inefficaces."
+      },
+      {
+        "title": "Accompagne le redressement",
+        "explanation": "Regarde la sortie et accompagne le retour du volant à mesure que la voiture s’aligne. Garde les mains en contact pour arrêter la rotation au bon moment. Reprends l’accélération seulement si la trajectoire, la visibilité et les usagers le permettent.",
+        "why": "On ne lâche pas complètement le volant et on n’accélère pas simplement pour le faire revenir."
+      }
+    ],
+    "example": "Dans un tournant à droite, ta cible est la voie autorisée. S’il y a une voie de bus au bord, tu ne prends pas automatiquement le trottoir comme repère de placement.",
+    "traps": [
+      "Fixer le capot ou le trottoir.",
+      "Commencer à tourner avant d’avoir adapté l’allure.",
+      "Laisser le volant revenir sans contrôle des mains."
+    ],
+    "safety": "La position 10 h 10 est notre repère pédagogique, à adapter aux indications du constructeur et à ta morphologie. Ne passe pas les mains à l’intérieur du volant et garde sa rotation sous contrôle.",
+    "takeaway": "Je regarde ma voie, je tourne progressivement, j’accompagne le retour.",
+    "tags": [
+      "Volant",
+      "Placement"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 1-2 ; fiche avec éliminatoires, p. 1.",
+    "video": {
+      "title": "Tenir et tourner le volant",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=FVCPAJGtcfk"
+    },
+    "references": [
+      "ecf"
+    ]
+  },
+  {
+    "id": "c1-pedales",
+    "code": "1.5",
+    "group": "C1",
+    "title": "Doser l’accélérateur et le frein",
+    "minutes": 6,
+    "intro": "Choisis d’abord l’allure nécessaire, puis dose les pédales pour l’obtenir. En conduite habituelle, le pied droit commande l’accélérateur et le frein ; sur boîte manuelle, le pied gauche commande l’embrayage.",
+    "objective": "Accélérer sans à-coup et t’arrêter à un endroit choisi avec un freinage progressif.",
+    "steps": [
+      {
+        "title": "Prépare ton ralentissement",
+        "explanation": "Observe loin et vérifie derrière toi avant un ralentissement prévisible, sans retarder un freinage urgent. Relâche l’accélérateur assez tôt. Sur une électrique, apprends avec l’enseignant l’effet de la récupération d’énergie et des modes du véhicule.",
+        "why": "Plus tu anticipes, moins tu as besoin d’une action brutale au dernier moment."
+      },
+      {
+        "title": "Freine avec une pression adaptée",
+        "explanation": "Retire le pied droit de l’accélérateur et place-le sur le frein. Applique la pression nécessaire à la distance disponible, puis ajuste-la. Sur boîte manuelle, débraye à l’approche de l’arrêt pour ne pas caler, selon les consignes de ton enseignant. Sur automatique, le pied gauche reste au repos.",
+        "why": "Un arrêt maîtrisé demande de doser le frein et, en boîte manuelle, de coordonner l’embrayage."
+      },
+      {
+        "title": "Allège en fin d’arrêt",
+        "explanation": "À mesure que la vitesse baisse, relâche progressivement une partie de la pression pour éviter l’à-coup final, puis maintiens la voiture immobilisée. Regarde ton point d’arrêt et ce qui se passe autour ; ne fixe pas tes pieds.",
+        "why": "C’est le principe du freinage dégressif pour un arrêt confortable, sans jamais sacrifier la distance nécessaire."
+      }
+    ],
+    "example": "Tu vises une ligne d’arrêt. Tu ralentis tôt, tu ajustes la pression, puis tu allèges en arrivant. Tu t’immobilises avant la ligne sans dépasser pour « rattraper » un arrêt mal préparé.",
+    "traps": [
+      "Freiner très tard puis relâcher trop tôt.",
+      "Continuer à accélérer vers un point où il faudra s’arrêter.",
+      "Croire que la récupération électrique remplace toujours le frein."
+    ],
+    "safety": "En urgence, freine immédiatement avec la force nécessaire. Ne retarde pas le freinage pour regarder le rétroviseur. Les exercices de freinage se font avec ton enseignant, dans un lieu adapté.",
+    "takeaway": "J’anticipe, je dose, j’allège en fin d’arrêt.",
+    "tags": [
+      "Vitesse",
+      "Commandes"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 2 ; fiche avec éliminatoires, p. 1.",
+    "video": {
+      "title": "Le freinage",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=Ut-RCqOUwsU"
+    },
+    "references": [
+      "allure"
+    ]
+  },
+  {
+    "id": "c1-trajectoire",
+    "code": "1.7",
+    "group": "C1",
+    "title": "Garder ta voie et préparer les courbes",
+    "minutes": 6,
+    "intro": "Ta place de conducteur est à gauche, mais tu dois placer toute la voiture dans la voie. Cherche une trajectoire régulière et une marge avec chaque côté.",
+    "objective": "Maintenir les marges latérales et aborder une courbe avec une allure adaptée.",
+    "steps": [
+      {
+        "title": "Repère l’espace utilisable",
+        "explanation": "Identifie ta voie et ses limites, puis porte ton regard loin dans cet espace. Garde la voiture dans sa voie, avec des marges adaptées aux véhicules stationnés et au trafic en face. Les repères du capot ou des rétroviseurs sont à calibrer avec ton enseignant, sur ta voiture.",
+        "why": "Un repère dépend du véhicule et de ton installation : il ne remplace pas la lecture de la route."
+      },
+      {
+        "title": "Prépare l’allure avant la courbe",
+        "explanation": "Observe la visibilité, la largeur et l’état de la chaussée. Ralentis avant la courbe si nécessaire. Garde ton pied disponible pour le frein quand la situation peut l’exiger, sans rester inutilement en freinage permanent.",
+        "why": "La vitesse d’entrée doit laisser une marge pour tenir ta voie et réagir à ce que tu ne voyais pas encore."
+      },
+      {
+        "title": "Accompagne la courbe et adapte-toi",
+        "explanation": "Regarde la sortie visible de la courbe et garde des actions souples. Si l’allure reste excessive, réduis-la de façon adaptée. Sur une chaussée sans ligne, reconstitue ton espace de circulation et conserve des marges avec les véhicules croisés.",
+        "why": "Il n’y a pas de vitesse unique pour toutes les courbes : la visibilité et les autres usagers changent la décision."
+      }
+    ],
+    "example": "Dans une rue sans marquage, tu partages mentalement la largeur disponible tout en tenant compte du stationnement. Si deux voitures ne passent pas avec une marge suffisante, tu ralentis et organises le croisement.",
+    "traps": [
+      "Fixer un bord pendant plusieurs secondes.",
+      "Accélérer alors que la visibilité se referme.",
+      "Confondre chaussée assez large et passage forcément possible."
+    ],
+    "safety": "Ne coupe pas une courbe vers la voie opposée. Si la visibilité se réduit, ralentis assez pour pouvoir t’arrêter face à un obstacle prévisible.",
+    "takeaway": "Je vise loin, je prépare mon allure et je protège mes marges.",
+    "tags": [
+      "Placement",
+      "Vitesse"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 2-3.",
+    "video": {
+      "title": "L’importance du regard",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=YSHlrFaHSKk"
+    },
+    "references": [
+      "placement",
+      "allure"
+    ]
+  },
+  {
+    "id": "c1-controles",
+    "code": "1.8",
+    "group": "C1",
+    "title": "Contrôler autour de toi et avertir",
+    "minutes": 7,
+    "intro": "Avant de te déplacer, cherche qui pourrait se trouver dans ta trajectoire. Puis annonce ton intention. Le clignotant informe les autres, mais ne te donne pas la priorité.",
+    "objective": "Choisir des contrôles utiles avant de te déplacer et entretenir une vision de l’arrière.",
+    "steps": [
+      {
+        "title": "Observe avant de changer de trajectoire",
+        "explanation": "Regarde devant, dans le rétroviseur intérieur, puis dans l’extérieur du côté concerné. Avant le déplacement, vérifie l’angle mort par un bref regard direct. Cherche notamment les vélos et les deux-roues. Maintiens ton allure et ta trajectoire pendant ces regards.",
+        "why": "Les rétroviseurs ne couvrent pas tout l’espace latéral."
+      },
+      {
+        "title": "Annonce assez tôt, puis recontrôle",
+        "explanation": "Mets le clignotant avant de te déplacer, avec assez d’anticipation pour être compris et sans tromper sur une intersection précédente. Si tu as attendu après tes contrôles, vérifie de nouveau avant de t’engager.",
+        "why": "Une information juste il y a deux secondes peut déjà avoir changé."
+      },
+      {
+        "title": "Garde une vision régulière de l’arrière",
+        "explanation": "Jette de brefs regards dans les rétroviseurs pendant la conduite et avant un ralentissement prévisible. Adapte leur fréquence à la situation : circulation dense, usager qui te suit de près ou préparation d’un déplacement. Reviens rapidement regarder devant.",
+        "why": "Observer régulièrement aide à anticiper ; compter des secondes ne doit pas détourner ton attention."
+      }
+    ],
+    "example": "Tu veux dépasser une voiture arrêtée. Tu observes la voie en face et l’arrière, tu annonces ton déport, tu vérifies l’espace latéral puis tu passes uniquement si tu peux le faire sans imposer un freinage dangereux.",
+    "traps": [
+      "Mettre le clignotant et partir immédiatement.",
+      "Tourner longtemps la tête et perdre la trajectoire.",
+      "Faire mécaniquement les mêmes contrôles avant toute petite correction du volant."
+    ],
+    "safety": "Pour contrôler l’angle mort, fais un regard bref du côté concerné, puis reviens devant. Ne tourne pas tout le buste et ne laisse pas la voiture dévier.",
+    "takeaway": "Je contrôle, j’annonce, je vérifie encore si la situation a changé.",
+    "tags": [
+      "Observation",
+      "Priorité"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 3 ; fiche avec éliminatoires, p. 2.",
+    "video": {
+      "title": "Regarder autour de soi et avertir",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=GDLeiFaBG0Q"
+    },
+    "references": [
+      "placement"
+    ]
+  },
+  {
+    "id": "c2-pad",
+    "code": "2.1",
+    "group": "C2",
+    "title": "Voir, comprendre, décider : le PAD",
+    "minutes": 6,
+    "intro": "Pour prendre une bonne décision, utilise trois étapes : perception, analyse, décision. Dis-toi ce que tu vois, ce que cela peut provoquer et ce que tu vas faire.",
+    "objective": "Transformer les indices de la route en décisions prises assez tôt.",
+    "steps": [
+      {
+        "title": "Perception : relève les indices",
+        "explanation": "Cherche loin les panneaux, marquages, feux et intersections. Observe aussi les indices informels : une portière qui peut s’ouvrir, un ballon, un piéton tourné vers la chaussée. Un regard loin prépare l’action ; un regard plus proche la confirme.",
+        "why": "Le danger n’arrive pas uniquement par la signalisation officielle."
+      },
+      {
+        "title": "Analyse : imagine ce qui peut évoluer",
+        "explanation": "Demande-toi quel usager pourrait apparaître, quelle priorité s’applique et si ta visibilité suffit. Reconnaître le dos d’un stop ou d’un cédez-le-passage peut t’aider, mais ne crée pas à lui seul une priorité certaine.",
+        "why": "Tu fais la différence entre une hypothèse utile et une information confirmée."
+      },
+      {
+        "title": "Décision : agis avant la difficulté",
+        "explanation": "Choisis ce que tu changes : allure, placement ou distance. Par exemple : « La camionnette masque le passage piéton ; quelqu’un peut apparaître ; je ralentis et je prépare l’arrêt. » Vérifie ensuite si la situation évolue et ajuste ta décision.",
+        "why": "Une analyse utile se traduit par une action concrète, assez tôt pour rester maître du véhicule."
+      }
+    ],
+    "example": "Une camionnette masque le passage piéton. Tu n’attends pas de voir une personne pour ralentir : le masque de visibilité est déjà une information utile.",
+    "traps": [
+      "Nommer les panneaux sans modifier ta conduite.",
+      "Fixer un danger et ne plus voir le reste.",
+      "Prendre une supposition pour une certitude."
+    ],
+    "safety": "Si une zone est masquée, garde une marge pour l’imprévu. L’absence d’usager visible ne signifie pas que le passage est libre.",
+    "takeaway": "Je perçois, j’analyse, puis je décide avant d’être dessus.",
+    "tags": [
+      "Observation",
+      "Vigilance"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 3-4.",
+    "video": {
+      "title": "Détecter et identifier les intersections",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=UD700_uJUsI"
+    },
+    "references": [
+      "intersections"
+    ]
+  },
+  {
+    "id": "c2-placement",
+    "code": "2.2",
+    "group": "C2",
+    "title": "Choisir la bonne voie sans te précipiter",
+    "minutes": 6,
+    "intro": "Repère ta direction assez tôt, puis choisis une voie autorisée. Si tu n’as plus le temps de te replacer en sécurité, suis ta voie et adapte l’itinéraire.",
+    "objective": "Lire les voies assez tôt et préparer ton placement avec des contrôles.",
+    "steps": [
+      {
+        "title": "Lis les panneaux et les flèches",
+        "explanation": "Cherche les directions, les flèches au sol et les voies réservées. En marche normale, garde la droite ; les indications de direction et l’organisation du carrefour peuvent demander un autre placement. Prépare-le dès que la signalisation et la circulation le permettent.",
+        "why": "Choisir tôt laisse du temps pour observer et rejoindre la voie sans forcer."
+      },
+      {
+        "title": "Prépare ton changement de voie",
+        "explanation": "Contrôle, annonce et vérifie l’angle mort concerné. Adapte ton allure pour rejoindre un espace sans obliger un autre à freiner ou à s’écarter brutalement. Une voie de stockage te permet de préparer un changement de direction.",
+        "why": "Le bon placement se construit en amont, sans manœuvre d’urgence au dernier moment."
+      },
+      {
+        "title": "Accepte une autre direction si nécessaire",
+        "explanation": "Si tu découvres trop tard que ta voie ne permet pas le trajet demandé, continue dans une direction autorisée. Explique calmement que tu n’as pas pu te replacer en sécurité.",
+        "why": "Une erreur d’itinéraire ne justifie pas une infraction ni une mise en danger."
+      }
+    ],
+    "example": "Tu es sur une voie qui impose de tourner à droite alors qu’on t’a demandé tout droit. Tu tournes à droite en sécurité, puis tu reconstruis l’itinéraire.",
+    "traps": [
+      "Couper une ligne pour sauver la direction demandée.",
+      "Croire que le clignotant impose aux autres de laisser passer.",
+      "Rouler durablement à gauche sans raison sur une route à plusieurs voies."
+    ],
+    "safety": "Respecte les lignes et les voies réservées. Une erreur de direction se corrige plus loin, jamais par un déplacement brusque.",
+    "takeaway": "Je lis, je choisis tôt, je me replace si c’est sûr.",
+    "tags": [
+      "Placement",
+      "Observation"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 4 ; fiche avec éliminatoires, p. 3.",
+    "video": {
+      "title": "Contrôles et clignotants en circulation",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=7y8Gx9O3yUk"
+    },
+    "references": [
+      "placement"
+    ]
+  },
+  {
+    "id": "c2-allure",
+    "code": "2.3",
+    "group": "C2",
+    "title": "Adapter ton allure, au-delà du compteur",
+    "minutes": 6,
+    "intro": "La limitation donne une vitesse maximale. La bonne allure dépend aussi de ce que tu vois, de l’adhérence et des personnes autour de toi.",
+    "objective": "Relier ta vitesse à la visibilité, à l’adhérence et aux usagers.",
+    "steps": [
+      {
+        "title": "Distingue limite et allure adaptée",
+        "explanation": "La vitesse maximale autorisée est un plafond. Ton allure réelle peut devoir être bien plus basse près d’un passage piéton masqué, d’une intersection ou sur une chaussée glissante. Lis les changements de limitation.",
+        "why": "Respecter le compteur ne suffit pas si tu n’as pas la distance pour réagir."
+      },
+      {
+        "title": "Ralentis avant la zone masquée",
+        "explanation": "Relâche l’accélérateur et freine assez tôt pour pouvoir t’arrêter si un danger apparaît. Cherche de nouvelles informations à mesure que la vue se dégage. Si tu n’as pas assez de visibilité pour passer en sécurité, ralentis davantage ou arrête-toi.",
+        "why": "Tu dois pouvoir agir dans l’espace que tu vois, sans compter sur l’absence de danger derrière un obstacle."
+      },
+      {
+        "title": "Reprends une allure cohérente quand c’est dégagé",
+        "explanation": "Quand le risque est passé et que les conditions le permettent, reprends progressivement une allure compatible avec la circulation. Évite la lenteur sans raison, tout en gardant la priorité à la sécurité.",
+        "why": "La fluidité fait partie de la conduite : rester très lent sans motif peut surprendre ou gêner."
+      }
+    ],
+    "example": "Une priorité à droite est masquée. Tu ralentis pour voir. Une fois l’intersection franchie sans danger, tu reprends ton allure au lieu de conserver un freinage qui n’a plus de raison.",
+    "traps": [
+      "Se fixer une vitesse identique pour toutes les intersections.",
+      "Freiner quand on est déjà dans la difficulté.",
+      "Accélérer pour faire plaisir à celui qui colle derrière."
+    ],
+    "safety": "Respecte les limitations qui s’appliquent à toi et réduis encore l’allure quand la situation le demande. Ne choisis pas une vitesse fixe pour tous les virages ou toutes les intersections.",
+    "takeaway": "Ma vitesse doit me laisser le temps de voir, décider et agir.",
+    "tags": [
+      "Vitesse",
+      "Vigilance"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 5.",
+    "video": {
+      "title": "Adapter son freinage",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=Ut-RCqOUwsU"
+    },
+    "references": [
+      "allure"
+    ]
+  },
+  {
+    "id": "c2-tourner",
+    "code": "2.4a",
+    "group": "C2",
+    "title": "Tourner à droite ou à gauche",
+    "minutes": 7,
+    "intro": "Prépare ton virage dans cet ordre : observation, indication de direction, placement et allure. Avant de tourner, confirme la voie d’arrivée et les priorités.",
+    "objective": "Préparer le changement de direction sans couper les trajectoires ni manquer un usager.",
+    "steps": [
+      {
+        "title": "Lis l’intersection en avance",
+        "explanation": "Repère feux, passages piétons, marquages et panneaux dès qu’ils deviennent visibles. Cherche les usagers concernés, notamment les vélos qui peuvent circuler près de toi. Les éléments se lisent selon leur disponibilité, sans attendre un ordre mécanique rigide.",
+        "why": "Le PAD te permet de comprendre le carrefour avant de commencer ton geste."
+      },
+      {
+        "title": "Prépare la voie d’arrivée",
+        "explanation": "Contrôle, mets le clignotant et place-toi selon la signalisation. À droite, vérifie le rétroviseur droit et l’angle mort avant de couper une trajectoire cyclable. À gauche, repère la partie droite de la chaussée d’arrivée. Ralentis avant la rotation et regarde la voie à rejoindre.",
+        "why": "Tu prépares une trajectoire autorisée sans serrer un vélo ni entrer à contresens."
+      },
+      {
+        "title": "Cède, puis tourne progressivement",
+        "explanation": "Pour tourner à gauche, cède notamment aux véhicules venant en face et aux cycles sur les pistes que tu traverses, sauf organisation différente par la signalisation. Pour les deux directions, cherche les piétons et les cyclistes concernés. Tourne seulement quand tu peux passer sans leur couper la route.",
+        "why": "Changer de direction crée des conflits de trajectoires, même lorsque ton feu est vert."
+      }
+    ],
+    "example": "Tu tournes à gauche et un véhicule arrive en face. Tu attends dans une position sûre sans le forcer à freiner, puis tu tournes quand l’espace et les autres priorités le permettent.",
+    "traps": [
+      "Tourner en fixant seulement le bord du trottoir.",
+      "Prendre la voie à contresens dans la rue d’arrivée.",
+      "Oublier les usagers venant en face."
+    ],
+    "safety": "À gauche, garde les roues droites pendant l’attente lorsque tu es encore aligné dans ta voie. Ne coupe pas le virage et ne t’engage pas si la sortie du carrefour est encombrée.",
+    "takeaway": "Je prépare l’allure, la voie cible et les priorités avant le volant.",
+    "tags": [
+      "Intersection",
+      "Placement"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 5.",
+    "video": {
+      "title": "Volant et trajectoire dans les tournants",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=FVCPAJGtcfk"
+    },
+    "references": [
+      "intersections"
+    ]
+  },
+  {
+    "id": "c2-priorite",
+    "code": "2.4b",
+    "group": "C2",
+    "title": "Détecter une priorité à droite",
+    "minutes": 7,
+    "intro": "Cherche d’abord la rue, puis la règle de priorité. Adapte ensuite ton allure pour laisser passer l’usager prioritaire sans le surprendre.",
+    "objective": "Détecter, identifier et franchir une intersection sans hésitation injustifiée.",
+    "steps": [
+      {
+        "title": "Détecte l’ouverture",
+        "explanation": "Cherche une rupture du trottoir, un espace entre bâtiments, une interruption du stationnement ou une signalisation annonçant une intersection. Tous les accès ne sont pas des rues : une sortie privée ou de parking peut avoir un autre régime.",
+        "why": "Tu gagnes du temps pour comprendre ce qui se cache derrière l’ouverture."
+      },
+      {
+        "title": "Identifie le régime de priorité",
+        "explanation": "Lis les feux, panneaux et marquages qui organisent le carrefour. En l’absence de règle particulière, cède aux véhicules venant de droite. Une sortie de propriété, de parking ou un accès traversant un trottoir doit céder aux usagers de la route : ne la confonds pas avec une rue ordinaire.",
+        "why": "La priorité dépend du régime du carrefour, pas de la largeur ou de l’apparence principale d’une rue."
+      },
+      {
+        "title": "Franchis avec une allure qui permet de céder",
+        "explanation": "Cherche assez de profondeur dans la rue pour évaluer les véhicules et leur vitesse. Cède si nécessaire. Si la visibilité ne suffit pas, ralentis davantage, voire arrête-toi. Si elle est bonne et que personne ne nécessite de céder, poursuis sans arrêt automatique.",
+        "why": "La décision dépend de la visibilité et des conflits possibles, pas d’un nombre fixe de voitures ou de mètres."
+      }
+    ],
+    "example": "Tu vois la rue tardivement derrière un utilitaire. Tu ralentis pour obtenir l’information avant de couper la trajectoire de l’usager prioritaire.",
+    "traps": [
+      "Chercher seulement une voiture et oublier la règle.",
+      "Passer parce que personne n’a encore klaxonné.",
+      "S’arrêter systématiquement même quand toute la situation est clairement dégagée."
+    ],
+    "safety": "Au stop, immobilise complètement le véhicule à la limite prescrite. Si la visibilité manque ensuite, avance prudemment pour observer, sans couper la trajectoire des autres.",
+    "takeaway": "Je détecte la rue, j’identifie la règle, je prends la décision adaptée.",
+    "tags": [
+      "Priorité",
+      "Vigilance"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 6 ; fiche avec éliminatoires, p. 3-4.",
+    "video": {
+      "title": "Franchir les intersections suivant la priorité",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=6Pk8isyNc08"
+    },
+    "references": [
+      "intersections"
+    ]
+  },
+  {
+    "id": "c2-pietons",
+    "code": "2.4c",
+    "group": "C2",
+    "title": "Anticiper les piétons et leurs intentions",
+    "minutes": 6,
+    "intro": "Observe les deux côtés du passage piéton avant d’y arriver. Une intention claire de traverser suffit : tu n’attends pas qu’une personne soit devant le capot pour céder.",
+    "objective": "Protéger les piétons et décider avant la zone de conflit.",
+    "steps": [
+      {
+        "title": "Cherche le passage et ses abords",
+        "explanation": "Regarde les deux côtés, les masques de visibilité et les personnes susceptibles de traverser. Observe les feux qui organisent le passage quand ils sont présents. Anticipe un enfant, une personne âgée ou quelqu’un qui regarde la chaussée.",
+        "why": "La vulnérabilité et l’intention d’une personne sont des informations aussi importantes que le marquage."
+      },
+      {
+        "title": "Applique la priorité avec prudence",
+        "explanation": "Cède le passage, au besoin en t’arrêtant, au piéton qui s’engage régulièrement ou manifeste clairement son intention de le faire. Tiens compte des feux et du contexte. Le rouge piéton interdit la traversée au piéton, mais ne t’autorise jamais à provoquer un danger.",
+        "why": "Tu dois toujours prévenir une collision, même si l’autre usager commet une erreur."
+      },
+      {
+        "title": "Rends ton arrêt clair et repars après contrôle",
+        "explanation": "Ralentis tôt et arrête-toi avant le passage ou la ligne d’arrêt prévue, sans le bloquer. Vérifie que personne n’arrive de l’autre côté ou derrière le premier piéton. Ne fais pas signe de traverser à quelqu’un si tu ne maîtrises pas les dangers des autres voies. Repars quand ta trajectoire est dégagée.",
+        "why": "Ton arrêt protège ta voie ; tu ne peux pas garantir que les autres conducteurs ont vu le piéton."
+      }
+    ],
+    "example": "Un piéton commence à traverser malgré son signal rouge. Tu ne cherches pas à le « dissuader » avec la voiture : tu ralentis ou t’arrêtes pour éviter le danger.",
+    "traps": [
+      "Croire que le feu vert donne le droit de continuer quoi qu’il arrive.",
+      "Attendre le dernier moment pour regarder les trottoirs.",
+      "Inviter une personne à traverser sans vision sur les autres voies."
+    ],
+    "safety": "Si un piéton traverse de façon imprévue ou malgré un signal rouge, protège-le : ralentis ou arrête-toi. Sa faute éventuelle ne permet jamais de le mettre en danger.",
+    "takeaway": "J’anticipe l’intention et je protège la personne.",
+    "tags": [
+      "Priorité",
+      "Vigilance"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 6, reformulée pour la sécurité ; Code de la route R415-11.",
+    "video": {
+      "title": "Anticiper la priorité des piétons",
+      "channel": "Move Drive Vidéo Permis",
+      "url": "https://www.youtube.com/watch?v=j77m7mv-0vA"
+    },
+    "references": [
+      "pietons"
+    ]
+  },
+  {
+    "id": "c2-giratoire",
+    "code": "2.5",
+    "group": "C2",
+    "title": "Comprendre et franchir un giratoire",
+    "minutes": 8,
+    "intro": "Sur un carrefour à sens giratoire, les usagers déjà sur l’anneau sont prioritaires. Repère la signalisation et prépare ta direction avant l’entrée.",
+    "objective": "Entrer, circuler et sortir sans couper les voies.",
+    "steps": [
+      {
+        "title": "Ralentis et observe avant l’entrée",
+        "explanation": "Identifie le carrefour et ses indications. Dans un giratoire, cède le passage aux usagers qui circulent sur l’anneau ; entre seulement si tu ne les gênes pas. Cherche aussi les piétons et cyclistes. Un carrefour circulaire à priorité à droite peut avoir un régime différent : sa forme seule ne suffit pas à le classer.",
+        "why": "La règle du giratoire ne se déduit pas seulement de la présence visible d’un panneau cédez-le-passage."
+      },
+      {
+        "title": "Choisis ton placement",
+        "explanation": "Utilise la signalisation. À défaut d’indication particulière, rester à droite est une référence simple ; pour une sortie située à gauche par rapport à ton entrée, tu peux te placer à gauche dans un giratoire à plusieurs voies si les conditions le permettent. Ce n’est pas une obligation automatique.",
+        "why": "La voie intérieure peut faciliter le trajet, mais impose ensuite de préparer un retour à droite en sécurité."
+      },
+      {
+        "title": "Prépare ta sortie et tes contrôles",
+        "explanation": "Pour la première sortie, indique la droite avant d’entrer. Pour une sortie plus loin, mets le clignotant droit après la sortie précédente. Si tu dois revenir de la voie intérieure, anticipe : contrôle à droite et dans l’angle mort, annonce et cède à la voie extérieure avant de la rejoindre.",
+        "why": "La sortie et le changement de voie se préparent séparément : signaler ne suffit pas pour se rabattre."
+      },
+      {
+        "title": "Renonce à sortir si l’espace manque",
+        "explanation": "Ne coupe pas deux voies d’un seul coup. Si tu ne peux pas rejoindre la sortie sans risque, continue dans une direction autorisée et adapte ton itinéraire. Ne t’arrête pas sans raison sur l’anneau, mais arrête-toi si un danger ou la circulation l’exige.",
+        "why": "Rater une sortie est préférable à imposer une collision ou une manœuvre d’urgence."
+      }
+    ],
+    "example": "Tu es sur la voie intérieure et une voiture reste à ta droite au niveau de la sortie. Tu ne la coupes pas : tu poursuis et tu prépares une solution sûre.",
+    "traps": [
+      "Assimiler tout carrefour rond à une priorité à gauche.",
+      "Sortir directement de la voie intérieure.",
+      "Se rabattre parce que le clignotant est déjà allumé."
+    ],
+    "safety": "Le clignotant ne donne aucune priorité pour changer de voie. Sur l’anneau, cède aux usagers de la voie que tu veux rejoindre et protège les piétons à la sortie.",
+    "takeaway": "Je lis la priorité, je prépare ma voie, je sors depuis une position sûre.",
+    "tags": [
+      "Giratoire",
+      "Priorité",
+      "Placement"
+    ],
+    "sourcePages": "Fiche C1-C2, p. 6 ; fiche avec éliminatoires, p. 4.",
+    "video": {
+      "title": "Franchir les carrefours à sens giratoire",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=Hz3_yAjv3eI"
+    },
+    "references": [
+      "giratoire",
+      "placement"
+    ]
+  },
+  {
+    "id": "manoeuvre-arriere",
+    "code": "M1",
+    "group": "Manœuvres",
+    "title": "Reculer droit, avec de petites corrections",
+    "minutes": 6,
+    "intro": "Pour reculer droit, roule très lentement et regarde surtout dans le sens du déplacement. De petites corrections suffisent ; si tu n’es plus sûr de l’espace, arrête-toi.",
+    "objective": "Reculer lentement en observant directement et en corrigeant progressivement.",
+    "steps": [
+      {
+        "title": "Prépare la zone",
+        "explanation": "Choisis un emplacement autorisé et suffisamment dégagé. Annonce la manœuvre de façon adaptée, observe autour de toi et vérifie l’espace derrière la voiture. N’engage pas la marche arrière avant de savoir où tu vas.",
+        "why": "Reculer ne te donne pas la priorité sur ceux qui circulent."
+      },
+      {
+        "title": "Regarde derrière et recule très lentement",
+        "explanation": "Observe directement vers l’arrière, puis complète par de brefs regards dans les rétroviseurs et autour de la voiture. Recule à une allure permettant de t’arrêter immédiatement. Surveille aussi l’avant, qui se déporte lorsque tu braques.",
+        "why": "Il faut surveiller tout le volume balayé par la voiture, pas seulement l’image de la caméra."
+      },
+      {
+        "title": "Fais une petite correction puis redresse",
+        "explanation": "Choisis une référence stable derrière toi. Si tu dois déplacer l’arrière vers la droite, tourne légèrement à droite ; pour le déplacer à gauche, tourne légèrement à gauche. Observe le résultat puis redresse dès que l’alignement revient. Si tu perds le repère, arrête-toi et reprends l’observation.",
+        "why": "Un grand braquage provoque un écart important et oblige à corriger en sens inverse."
+      }
+    ],
+    "example": "Un cycliste approche pendant que tu recules. Tu immobilises le véhicule et tu le laisses passer, puis tu refais tes observations avant de continuer.",
+    "traps": [
+      "Regarder uniquement la caméra.",
+      "Corriger de plus en plus fort.",
+      "Reprendre après une pause sans refaire les contrôles."
+    ],
+    "safety": "Passe la marche arrière véhicule immobilisé. Les rétroviseurs, la caméra et les capteurs complètent la vision directe ; aucun ne garantit à lui seul que la zone est libre.",
+    "takeaway": "J’observe largement, je recule lentement, je corrige peu.",
+    "tags": [
+      "Manœuvre",
+      "Observation"
+    ],
+    "sourcePages": "Fiche avec éliminatoires, p. 5.",
+    "video": {
+      "title": "La marche arrière",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=-Q5djHHmDu8"
+    },
+    "references": [
+      "formation"
+    ]
+  },
+  {
+    "id": "manoeuvre-demitour",
+    "code": "M2",
+    "group": "Manœuvres",
+    "title": "Faire demi-tour sans imposer ton mouvement",
+    "minutes": 5,
+    "intro": "Le demi-tour se prépare dans un lieu autorisé et suffisamment visible. À chaque nouveau mouvement, arrête la voiture puis renouvelle tes contrôles.",
+    "objective": "Choisir un lieu adapté et enchaîner les mouvements à faible allure.",
+    "steps": [
+      {
+        "title": "Vérifie que le lieu le permet",
+        "explanation": "Lis les interdictions, le marquage et les contraintes de visibilité. Choisis une zone où la voiture pourra se déplacer sans monter sur le trottoir ni gêner dangereusement la circulation.",
+        "why": "Un espace physiquement disponible n’est pas forcément un lieu autorisé ou sûr."
+      },
+      {
+        "title": "Arrête-toi entre les changements de sens",
+        "explanation": "Observe devant, derrière et sur les côtés. Annonce ton intention, puis avance très lentement en braquant. Arrête-toi avec une marge avant le bord. Refais tous les contrôles avant de sélectionner la marche arrière et de reculer. Répète si nécessaire, sans monter sur le trottoir.",
+        "why": "Chaque changement de sens expose une nouvelle partie de la voiture et demande une observation à jour."
+      },
+      {
+        "title": "Arrête-toi dès que la situation devient incertaine",
+        "explanation": "Si quelqu’un arrive dans la zone de manœuvre, immobilise le véhicule et laisse l’espace nécessaire. Pour repartir dans ton nouveau sens, vérifie l’arrière, les côtés et l’avant avant de t’insérer.",
+        "why": "La réussite se mesure à la sécurité de l’ensemble, pas au nombre minimal de mouvements."
+      }
+    ],
+    "example": "Tu as besoin d’un mouvement supplémentaire. Tu le fais avec des contrôles, plutôt que d’accélérer ou de monter sur le trottoir pour finir en une seule fois.",
+    "traps": [
+      "Se focaliser sur le volant.",
+      "Utiliser le clignotant comme une priorité.",
+      "Continuer parce que la manœuvre est presque terminée."
+    ],
+    "safety": "Ne fais jamais demi-tour sur autoroute, sur une chaussée à sens unique ou en franchissant une interdiction. Si le lieu ne convient pas, cherche un itinéraire permettant de changer de direction en sécurité.",
+    "takeaway": "Un nouveau mouvement demande une nouvelle observation.",
+    "tags": [
+      "Manœuvre",
+      "Priorité"
+    ],
+    "sourcePages": "Fiche avec éliminatoires, p. 5.",
+    "video": {
+      "title": "Le demi-tour",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=wdm5li_nslg"
+    },
+    "references": [
+      "formation"
+    ]
+  },
+  {
+    "id": "manoeuvre-creneau",
+    "code": "M3",
+    "group": "Manœuvres",
+    "title": "Réussir un créneau en restant disponible",
+    "minutes": 7,
+    "intro": "Un créneau se fait lentement, avec des arrêts si nécessaire. Apprends les repères sur ta voiture, puis utilise-les sans cesser de surveiller les autres usagers.",
+    "objective": "Combiner repères, observation et maîtrise de l’allure.",
+    "steps": [
+      {
+        "title": "Choisis la place et prépare ta position",
+        "explanation": "Vérifie les règles de stationnement, la taille disponible, les accès et les marges avec les véhicules. Annonce ton intention, observe l’arrière et positionne la voiture avec les repères adaptés au modèle utilisé.",
+        "why": "Une place trop petite ou interdite ne devient pas un bon choix parce que le repère fonctionne."
+      },
+      {
+        "title": "Recule, braque, puis contre-braque",
+        "explanation": "Pour un créneau à droite, commence à reculer depuis la position préparée avec l’enseignant. Braque à droite pour faire entrer l’arrière dans la place, puis contre-braque à gauche pour rapprocher l’avant. Le moment de chaque action dépend du véhicule, de la place et des repères travaillés. Surveille l’avant qui se déporte.",
+        "why": "Le sens des actions se comprend ; leur déclenchement ne se copie pas à partir d’un repère universel de vidéo."
+      },
+      {
+        "title": "Contrôle et corrige",
+        "explanation": "Si un usager arrive dans la zone de conflit, arrête-toi. Vérifie les espaces avec le trottoir et les voitures, puis corrige en prenant le temps nécessaire. Termine dans une position autorisée et stable.",
+        "why": "Une correction calme est une compétence ; continuer sans marge pour éviter de recommencer crée le risque."
+      }
+    ],
+    "example": "Tu vois que l’arrière approche trop du trottoir. Tu t’arrêtes, tu observes et tu ajustes. Tu ne montes pas dessus pour conserver le rythme de ta manœuvre.",
+    "traps": [
+      "Ne regarder que le rétroviseur du côté du trottoir.",
+      "Faire confiance à un repère appris sur une autre voiture.",
+      "Continuer à bouger pendant le passage d’un usager dans la zone de conflit."
+    ],
+    "safety": "Interromps la manœuvre si quelqu’un entre dans la zone de conflit. À la fin, immobilise et sécurise la voiture selon sa transmission avant de relâcher le frein.",
+    "takeaway": "Mes repères placent la voiture ; mes contrôles protègent les autres.",
+    "tags": [
+      "Manœuvre",
+      "Placement"
+    ],
+    "sourcePages": "Fiche avec éliminatoires, p. 5.",
+    "video": {
+      "title": "Réussir un créneau",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=MBdvCrDWudQ"
+    },
+    "references": [
+      "formation"
+    ]
+  },
+  {
+    "id": "securite-rapide",
+    "code": "S1",
+    "group": "Sécurité",
+    "title": "T’insérer sur une voie rapide",
+    "minutes": 6,
+    "intro": "Observe la circulation dès qu’elle devient visible. Cherche un espace, adapte ton allure à cet espace et prépare tes contrôles avant la fin de la voie d’insertion.",
+    "objective": "Associer vitesse adaptée, contrôles et décision d’insertion.",
+    "steps": [
+      {
+        "title": "Observe tôt la voie à rejoindre",
+        "explanation": "Cherche le trafic, les distances, la longueur de la voie et les limitations. Repère une possibilité d’insertion avant d’arriver au bout. Contrôle plusieurs fois si nécessaire, par regards brefs.",
+        "why": "L’espace disponible et la vitesse des autres évoluent pendant ton accélération."
+      },
+      {
+        "title": "Adapte ta vitesse à l’espace choisi",
+        "explanation": "Quand la bretelle et la visibilité le permettent, accélère pour réduire l’écart avec les véhicules de la voie à rejoindre. Observe leur évolution par de brefs regards. Si un véhicule te rattrape rapidement, ne cherche pas à lui passer devant à tout prix : ajuste ton allure pour choisir un autre espace.",
+        "why": "C’est la vitesse relative et la place disponible qui permettent de décider, pas la seule position d’une voiture dans le rétroviseur."
+      },
+      {
+        "title": "Annonce, recontrôle et rejoins la voie",
+        "explanation": "Annonce l’insertion assez tôt. Contrôle l’intérieur, l’extérieur et, juste avant le déplacement, l’angle mort du côté concerné. Cède aux véhicules déjà sur la voie. Insère-toi progressivement seulement si l’espace est suffisant, puis coupe le clignotant et garde une distance adaptée.",
+        "why": "L’espace doit être encore libre au moment où tu te déplaces, même si tes premiers contrôles étaient favorables."
+      }
+    ],
+    "example": "Une voiture est à ton niveau. Tu ne tournes pas pour l’obliger à se décaler : tu ajustes ton allure et recherches un autre espace.",
+    "traps": [
+      "Regarder trop longtemps derrière et oublier l’avant.",
+      "Arriver à la fin de la voie sans avoir choisi de solution.",
+      "Accélérer au-delà de la limitation pour attraper un espace."
+    ],
+    "safety": "Il n’existe pas de vitesse d’insertion ni de rapport de boîte valable partout. Les chiffres d’une vidéo illustrent un cas : respecte les limites et adapte-toi au trafic. Si l’insertion reste impossible, prépare l’arrêt avant la fin de la voie sans forcer le passage.",
+    "takeaway": "Je repère l’espace, j’adapte mon allure, je contrôle et je m’insère sans forcer.",
+    "tags": [
+      "Vitesse",
+      "Observation"
+    ],
+    "sourcePages": "Fiche avec éliminatoires, p. 5 ; explication pédagogique complémentaire.",
+    "video": {
+      "title": "L’insertion sur autoroute",
+      "channel": "Delphine Ciotat Conduite",
+      "url": "https://www.youtube.com/watch?v=zKTfDOB-Soc"
+    },
+    "videoNote": "Les vitesses et rapports montrés sont des exemples. Adapte-toi au trafic et aux limitations ; garde une distance suffisante avant de t’insérer.",
+    "references": [
+      "distance",
+      "allure"
+    ]
+  },
+  {
+    "id": "securite-distances",
+    "code": "S2",
+    "group": "Sécurité",
+    "title": "Garder une marge autour de la voiture",
+    "minutes": 6,
+    "intro": "Garde de l’espace pour réagir devant toi et pour protéger les usagers sur les côtés. Une marge suffisante évite de dépendre du freinage ou de l’écart des autres.",
+    "objective": "Distinguer la distance avant, la marge latérale et les espaces de manœuvre.",
+    "steps": [
+      {
+        "title": "Vérifie au moins deux secondes devant toi",
+        "explanation": "En circulation, y compris en ville, garde au minimum la distance parcourue en deux secondes avec le véhicule qui précède. Quand il passe un repère fixe, compte deux secondes avant de passer au même endroit. Si tu arrives trop tôt, augmente l’écart progressivement. Laisse davantage de temps si les conditions se dégradent.",
+        "why": "Deux secondes sont un minimum, pas une garantie de pouvoir éviter tout accident ni une distance d’arrêt fixe."
+      },
+      {
+        "title": "Préserve l’espace latéral",
+        "explanation": "Pour dépasser un cycliste, laisse au moins 1 mètre en agglomération et 1,50 mètre hors agglomération. Ces minima concernent aussi les usagers visés par l’article R414-4, dont les piétons et les deux-roues. Garde une marge adaptée près des voitures stationnées et des portières. Si tu ne peux pas passer en sécurité, attends.",
+        "why": "Une rue étroite ne justifie pas de frôler un usager. Les minima de dépassement ne sont pas une distance universelle à tous les obstacles."
+      },
+      {
+        "title": "Protège aussi l’espace pendant les manœuvres",
+        "explanation": "À faible allure, surveille les angles et les mouvements de l’avant comme de l’arrière. Laisse une marge suffisante avec les obstacles et interromps ton déplacement quand tu ne sais plus ce qui reste.",
+        "why": "Une faible vitesse réduit les conséquences mais ne supprime pas le risque de heurter ou de coincer quelqu’un."
+      }
+    ],
+    "example": "Tu veux dépasser un vélo, mais une voiture arrive en face et la rue est étroite. Tu restes derrière à une distance adaptée jusqu’à disposer de l’espace nécessaire.",
+    "traps": [
+      "Appliquer « un mètre partout » sans comprendre la situation.",
+      "Coller devant pour empêcher quelqu’un de s’insérer.",
+      "Réduire les marges parce que le trajet est connu."
+    ],
+    "safety": "Augmente les distances dès que les conditions se dégradent. Les marges d’apprentissage choisies avec ton enseignant peuvent être plus grandes que les minima réglementaires.",
+    "takeaway": "Au moins deux secondes devant, davantage si nécessaire ; sur les côtés, une marge adaptée et les minima de dépassement.",
+    "tags": [
+      "Vigilance",
+      "Placement"
+    ],
+    "sourcePages": "Fiche avec éliminatoires, p. 5-6, corrigée ; Code de la route R412-12 et R414-4.",
+    "video": {
+      "title": "Distance de sécurité",
+      "channel": "AUTO ECOLE ELMIR",
+      "url": "https://www.youtube.com/watch?v=BATznhDc_cU"
+    },
+    "references": [
+      "distance",
+      "depassement"
+    ]
+  },
+  {
+    "id": "securite-examen",
+    "code": "S3",
+    "group": "Sécurité",
+    "title": "Comprendre ce qui devient éliminatoire",
+    "minutes": 6,
+    "intro": "Le jour de l’examen, vise une conduite sûre et autonome. Une imperfection corrigée ne se confond pas avec une infraction éliminatoire ou une mise en danger.",
+    "objective": "Identifier les risques graves sans confondre chaque imperfection avec un échec automatique.",
+    "steps": [
+      {
+        "title": "Comprends le critère de danger",
+        "explanation": "Une action ou une absence d’action est éliminatoire lorsqu’elle met les usagers ou le véhicule dans une situation où la sécurité dépend essentiellement de la réaction des autres. Cette erreur peut être retenue même sans intervention de l’expert.",
+        "why": "Le risque créé compte davantage qu’une liste de gestes présentés sans contexte."
+      },
+      {
+        "title": "Repère les infractions prévues par le texte",
+        "explanation": "L’article 27 cite aussi des infractions éliminatoires : circulation à gauche sur une chaussée à double sens, franchissement d’une ligne continue, circulation sur la bande d’arrêt d’urgence ou une voie réservée, non-respect d’un signal imposant l’arrêt et circulation en sens interdit. Applique les règles et leurs exceptions légales, pas une simplification tirée d’une vidéo.",
+        "why": "L’absence de véhicule visible ne rend pas une infraction acceptable."
+      },
+      {
+        "title": "Après une erreur, reprends une conduite sûre",
+        "explanation": "Ne tente pas de réparer une mauvaise direction par une manœuvre dangereuse. Respire, reviens à l’observation et applique la règle suivante. Si tu ne peux pas passer, tu attends ; si tu peux reprendre une allure adaptée, tu le fais.",
+        "why": "Se précipiter pour compenser peut transformer une petite difficulté en véritable danger."
+      }
+    ],
+    "example": "Tu rates une sortie mais continues dans ta voie autorisée. C’est plus sûr que couper le giratoire pour rejoindre la sortie à tout prix.",
+    "traps": [
+      "Croire que l’examinateur doit intervenir pour qu’une erreur soit éliminatoire.",
+      "S’arrêter à chaque doute même sans chercher à comprendre.",
+      "Continuer malgré un danger parce que l’on pense avoir déjà échoué."
+    ],
+    "safety": "Le résultat dépend de l’évaluation de l’expert selon les textes applicables. Une liste ou une vidéo ne peut pas prédire le résultat de ton examen.",
+    "takeaway": "Mon objectif reste une conduite autonome, réglementaire et protectrice.",
+    "tags": [
+      "Vigilance",
+      "Examen"
+    ],
+    "sourcePages": "Fiche avec éliminatoires, p. 1-6, nuancée ; arrêté du 19 février 2010, article 27.",
+    "video": {
+      "title": "Les erreurs éliminatoires",
+      "channel": "Nassim Permis",
+      "url": "https://www.youtube.com/watch?v=seZXK5v_JNg"
+    },
+    "references": [
+      "examen"
+    ]
+  }
+];
+export const courseSources: Record<string, { label: string; url: string }> = {
+  "assurance": {
+    "label": "Service Public · Preuve d’assurance et suppression de la vignette",
+    "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F1362"
+  },
+  "ecf": {
+    "label": "ECF · Installation au poste de conduite",
+    "url": "https://www.ecf.asso.fr/conseils/comment-bien-sinstaller-au-poste-de-conduite"
+  },
+  "formation": {
+    "label": "Ciotat Conduite · Démonstrations pédagogiques",
+    "url": "https://automotoecole.com/apprentissage-theorique-de-la-conduite-boite-manuelle/"
+  },
+  "placement": {
+    "label": "Code de la route · Placement, article R412-9",
+    "url": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000050965688"
+  },
+  "allure": {
+    "label": "Code de la route · Maîtrise de la vitesse, R413-17",
+    "url": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000047794480"
+  },
+  "intersections": {
+    "label": "Code de la route · Intersections et priorités",
+    "url": "https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006074228/LEGISCTA000006159602/"
+  },
+  "pietons": {
+    "label": "Code de la route · Priorité des piétons, R415-11",
+    "url": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000037411323"
+  },
+  "giratoire": {
+    "label": "Code de la route · Giratoires, R415-10",
+    "url": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006842250"
+  },
+  "distance": {
+    "label": "Code de la route · Distance de sécurité, R412-12",
+    "url": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000051682619"
+  },
+  "depassement": {
+    "label": "Code de la route · Dépassement, R414-4",
+    "url": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006842216"
+  },
+  "examen": {
+    "label": "Arrêté du 19 février 2010 · Erreurs éliminatoires, article 27",
+    "url": "https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000024518860"
+  }
+};

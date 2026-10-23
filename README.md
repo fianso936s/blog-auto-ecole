@@ -1,3 +1,18 @@
+# Le Repère Permis — web, iOS et API
+
+Ce dépôt est la source commune de l’application iOS native et du site déjà relié à Vercel. Version produit : `packages/product/product.json`.
+
+- Site : `src/` ; app iOS et modules Meta : `apps/mobile/` ; API : `apps/api/`.
+- Règles partagées : `packages/core/` ; cours, quiz, suivi, navigation et design : `packages/product/`.
+- Lecteur vidéo commun : `packages/ui-web/` ; correction des quiz côté serveur : `packages/assessment/`.
+- Installation : `npm ci --ignore-scripts`.
+- Après une modification : `npm run product:generate`, puis `npm run verify:uniformity`.
+- Export iOS : `npm run build:ios` ; compilation/signature Apple : EAS ou Codemagic avec les accès du propriétaire.
+
+Voir [le fonctionnement de l’uniformisation](docs/UNIFORMISATION.md) et les règles de maintenance dans [AGENTS.md](AGENTS.md).
+
+---
+
 # Le Repère Permis — version web
 
 Réplique web de l’application iOS Le Repère Permis 1.6.0, utilisant son API, ses comptes, ses modèles et ses fiches pédagogiques.

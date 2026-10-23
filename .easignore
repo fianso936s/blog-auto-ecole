@@ -1,0 +1,19 @@
+node_modules/
+**/node_modules/
+.git/
+.env
+.env.*
+!.env.example
+.expo/
+**/.expo/
+dist/
+**/dist-ios/
+**/Pods/
+**/build/
+*.log
+*.ipa
+*.p12
+*.p8
+*.mobileprovision
+credentials.json
+# Keep apps/mobile/ios: the Meta SwiftPM integration is maintained natively.

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "version": "1.7.0",
+  "name": "Le Repère Permis",
+  "apiOrigin": "https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech",
+  "webOrigin": "https://blog-auto-ecole.vercel.app",
+  "colors": {
+    "ink": "#292427",
+    "muted": "#726568",
+    "wine": "#672C3B",
+    "cream": "#F5F0E8",
+    "paper": "#FFFCF7",
+    "line": "#E7DEDA",
+    "green": "#3F7663",
+    "red": "#B42332",
+    "redSoft": "#FDECEF",
+    "blue": "#255EA5",
+    "blueSoft": "#EAF1FB",
+    "amber": "#85510D",
+    "amberSoft": "#FFF2DA",
+    "purple": "#69469A",
+    "purpleSoft": "#F1EBFA",
+    "greenSoft": "#E6F2EC",
+    "soft": "#EFE5E3"
+  },
+  "touchTarget": 48,
+  "navigation": [
+    {
+      "id": "pedagogy",
+      "label": "Fiches pédagogiques",
+      "short": "Fiches"
+    },
+    {
+      "id": "map",
+      "label": "Carte et parcours",
+      "short": "Carte"
+    },
+    {
+      "id": "videos",
+      "label": "Vidéos",
+      "short": "Vidéos"
+    },
+    {
+      "id": "account",
+      "label": "Mon espace",
+      "short": "Mon espace"
+    }
+  ],
+  "sync": {
+    "fallbackMs": 10000,
+    "nativePollMs": 5000
+  },
+  "video": {
+    "maxStudents": 10,
+    "skipSeconds": 10
+  }
+}

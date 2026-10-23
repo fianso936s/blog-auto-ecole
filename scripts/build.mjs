@@ -1,6 +1,7 @@
 import { build } from "esbuild";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 const app = await build({
+  metafile: true,
   entryPoints: ["src/app.tsx"],
   bundle: true,
   write: false,
@@ -11,13 +12,16 @@ const app = await build({
   jsx: "automatic",
   define: { "process.env.NODE_ENV": '"production"' },
 });
+if(Object.keys(app.metafile.inputs).some(p=>/packages\/assessment|apps\/api\/src\/(?:course-catalog|product-content)/.test(p))) throw new Error("Les corrections serveur ne doivent pas être embarquées dans le client.");
 const js = app.outputFiles.find((f) => f.path.endsWith(".js")).text;
 const css = app.outputFiles.find((f) => f.path.endsWith(".css")).text;
 const html = await readFile("src/index.html", "utf8");
 const vercelTarget = process.argv.includes("--vercel");
 const logo = await readFile("src/assets/le-repere-logo.svg", "utf8");
 const icon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1431 1431"><image x="0" y="444" width="1431" height="543" href="data:image/svg+xml;base64,${Buffer.from(logo).toString("base64")}"/></svg>`;
+const release=JSON.parse(await readFile("packages/product/generated/release.json","utf8"));
 const assets = {
+  "/product-version.json": {body:JSON.stringify(release),type:"application/json"},
   "/index.html": { body: html, type: "text/html; charset=utf-8" },
   "/assets/app.js": { body: js, type: "text/javascript; charset=utf-8" },
   "/assets/app.css": { body: css, type: "text/css; charset=utf-8" },

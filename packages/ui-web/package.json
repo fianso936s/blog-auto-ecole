@@ -1,0 +1,1 @@
+{"name":"@repere/ui-web","version":"1.7.0","private":true,"type":"module","exports":{"./video":"./src/VideoPlayer.tsx"},"peerDependencies":{"react":"19.3.0","react-dom":"19.3.0"}}

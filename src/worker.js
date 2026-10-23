@@ -1,6 +1,6 @@
 // Same production backend as the iPhone app. No infrastructure secrets are embedded.
-export const API =
-  "https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech";
+import product from "../packages/product/product.json" with { type: "json" };
+export const API = product.apiOrigin;
 const cookieName = "repere_web_session";
 const providerCookiePrefix = "repere_identity_";
 const authPaths = new Set([

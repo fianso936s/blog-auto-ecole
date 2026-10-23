@@ -1,0 +1,36 @@
+name: Web et iOS — même produit
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: uniformity-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  product:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run verify:uniformity
+      - run: npm run build:vercel
+      - run: npm run build:api
+      - run: npm run build:ios
+        env:
+          CI: '1'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: repere-${{ github.sha }}
+          path: |
+            packages/product/generated/release.json
+            apps/mobile/dist-ios
+            dist/api/index.mjs
+          if-no-files-found: error

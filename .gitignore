@@ -7,3 +7,15 @@ node_modules/
 *.log
 .vercel/
 public/
+
+.expo/
+**/dist-ios/
+*.ipa
+*.p12
+*.p8
+*.mobileprovision
+credentials.json
+*.tsbuildinfo
+**/Pods/
+**/build/
+*.xcuserstate

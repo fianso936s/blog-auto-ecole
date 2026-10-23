@@ -1,0 +1,69 @@
+{
+  "cli": {
+    "version": ">=25.2.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "base": {
+      "ios": {
+        "scheme": "LeReperePermis"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech"
+      }
+    },
+    "development": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
+      }
+    },
+    "simulator": {
+      "extends": "base",
+      "developmentClient": true,
+      "distribution": "internal",
+      "ios": {
+        "simulator": true
+      }
+    },
+    "preview": {
+      "extends": "base",
+      "distribution": "internal",
+      "ios": {
+        "simulator": false
+      }
+    },
+    "production": {
+      "extends": "base",
+      "autoIncrement": true,
+      "distribution": "store",
+      "ios": {
+        "image": "latest"
+      }
+    },
+    "screenshots": {
+      "extends": "base",
+      "distribution": "internal",
+      "ios": {
+        "simulator": true,
+        "image": "latest"
+      },
+      "buildArtifactPaths": [
+        "store-captures/**"
+      ]
+    }
+  },
+  "submit": {
+    "production": {
+      "ios": {
+        "ascAppId": "6824949641",
+        "appleId": "soufiane936s@hotmail.fr",
+        "appleTeamId": "LK3VLK532C",
+        "language": "fr-FR",
+        "sku": "repere-spot-ios"
+      }
+    }
+  }
+}

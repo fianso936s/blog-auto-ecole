@@ -2,57 +2,15 @@ import React, {useCallback,useEffect,useRef,useState} from "react";
 import {api} from "./shared/api";
 import {courses,type Course} from "./shared/courses";
 import type {Profile} from "./shared/core";
-export type Reading=Record<string,{read?:boolean;review?:boolean}>;
-type QuizStat={courseId:string;bestScore:number;total:number;attempts:number};
-type Plan={courseId:string;active:boolean;level:string;note:string};
-type Learning={reading:({courseId:string;read:boolean;review:boolean})[];quizzes:QuizStat[];plan:Plan[]};
-
-export function useCourseProgress(profile:Profile|null) {
- const key=`repere.reading.web.${profile?.id||"guest"}`;
- const [reading,setReading]=useState<Reading>({}),[quizzes,setQuizzes]=useState<QuizStat[]>([]),[plan,setPlan]=useState<Plan[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState("");
- const generation=useRef(0);
- const refresh=useCallback(async()=>{
-  const current=++generation.current;setError("");
-  let local:Reading={};try{local=JSON.parse(localStorage.getItem(key)||"{}");}catch{}
-  if(!profile){setReading(local);setQuizzes([]);setPlan([]);return;}
-  try {
-   let data=await api<Learning>("/v1/courses/me");
-   // Import older browser-only marks only when the server has no entry for that lesson.
-   const existing=new Set(data.reading.map(r=>r.courseId));
-   const missing=courses.filter(c=>!existing.has(c.id)&&(local[c.id]?.read||local[c.id]?.review));
-   if(missing.length){
-    for(const c of missing){if(current!==generation.current)return;await api(`/v1/courses/${c.id}/progress`,"PUT",{read:!!local[c.id].read,review:!!local[c.id].review});}
-    if(current!==generation.current)return;
-    data=await api<Learning>("/v1/courses/me");
-   }
-   if(current!==generation.current)return;
-   const value=Object.fromEntries(data.reading.map(({courseId,read,review})=>[courseId,{read,review}]));
-   setReading(value);setQuizzes(data.quizzes);setPlan(data.plan);
-   try{localStorage.setItem(key,JSON.stringify(value));}catch{}
-  }catch(e){if(current===generation.current){setError((e as Error).message);setReading(local);}}
- },[profile?.id,key]);
- useEffect(()=>{
-  setReading({});setQuizzes([]);setPlan([]);void refresh();
-  const resume=()=>{if(document.visibilityState==="visible")void refresh();};
-  window.addEventListener("online",resume);document.addEventListener("visibilitychange",resume);
-  return()=>{generation.current++;window.removeEventListener("online",resume);document.removeEventListener("visibilitychange",resume);};
- },[refresh]);
- async function update(id:string,patch:{read?:boolean;review?:boolean}) {
-  if(busy)return;const current=generation.current;setBusy(true);setError("");
-  try {
-   if(profile)await api(`/v1/courses/${id}/progress`,"PUT",patch);
-   if(current!==generation.current)return;
-   const value={...reading,[id]:{...reading[id],...patch}};
-   setReading(value);try{localStorage.setItem(key,JSON.stringify(value));}catch{}
-  }catch(e){setError((e as Error).message);}finally{setBusy(false);}
- }
- return {reading,quizzes,plan,busy,error,refresh,update};
-}
+import {productClient,webReadingStorage} from "./shared/product-client";
+import {useProductLearning,useProductQuiz} from "../packages/product/src/hooks";
+import {studyProgress,type Reading,type QuizStat,type Plan} from "../packages/product/src/contracts";
+export type {Reading} from "../packages/product/src/contracts";
+export function useCourseProgress(profile:Profile|null) {return useProductLearning(profile?.id||null,productClient,webReadingStorage);}
 
 export function StudyOverview({reading,quizzes,plan,choose}: {reading:Reading;quizzes:QuizStat[];plan:Plan[];choose:(id:string)=>void}) {
- const assigned=plan.filter(p=>p.active),path=assigned.length?courses.filter(c=>assigned.some(p=>p.courseId===c.id)):courses;
- const read=path.filter(c=>reading[c.id]?.read).length,passed=path.filter(c=>quizzes.some(q=>q.courseId===c.id&&q.bestScore===q.total)).length;
- const percent=Math.round((read+passed)/(path.length*2)*100);
+ const {path:ids,read,passed,percent}=studyProgress(courses.map(c=>c.id),reading,quizzes,plan);
+ const assigned=plan.filter(p=>p.active),path=courses.filter(c=>ids.includes(c.id));
  return <section className="study-overview" aria-label="Mon parcours pédagogique">
   <div className="spread"><strong>Mon parcours pédagogique</strong><span>{percent} %</span></div>
   <progress value={read+passed} max={path.length*2} aria-label="Avancement théorique" />
@@ -64,17 +22,14 @@ export function StudyOverview({reading,quizzes,plan,choose}: {reading:Reading;qu
  </section>;
 }
 
-type Quiz={revision:string;questions:{id:string;question:string;options:string[]}[]};
 export function LessonQuiz({course,profile,onChanged,onLogin}:{course:Course;profile:Profile|null;onChanged:()=>void;onLogin:()=>void}) {
- const [quiz,setQuiz]=useState<Quiz|null>(null),[answers,setAnswers]=useState<Record<string,number>>({}),[result,setResult]=useState<any>(null),[error,setError]=useState(""),[busy,setBusy]=useState(false);
- const attempt=useRef("");
- async function start(){setBusy(true);setError("");try{const q=await api<Quiz>(`/v1/courses/${course.id}/quiz`);attempt.current=crypto.randomUUID();setQuiz(q);setAnswers({});setResult(null);}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
- async function submit(e:React.FormEvent){e.preventDefault();if(!quiz||busy||result||quiz.questions.some(q=>answers[q.id]===undefined))return;setBusy(true);setError("");try{setResult(await api(`/v1/courses/${course.id}/quiz`,"POST",{revision:quiz.revision,attemptId:attempt.current,answers}));onChanged();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}
+ const {quiz,answers,result,error,busy,start,submit:send,choose}=useProductQuiz(course.id,productClient,()=>crypto.randomUUID(),onChanged);
+ const submit=(e:React.FormEvent)=>{e.preventDefault();void send();};
  return <section className="lesson-quiz" aria-label="Quiz de compréhension">
   <h3>As-tu compris cette fiche ?</h3><p>Deux questions sur « {course.title} », avec une explication après tes réponses.</p>
   {error&&<p className="error" role="alert">{error}</p>}
   {!profile?<button className="btn secondary" onClick={onLogin}>Me connecter pour faire le quiz</button>:!quiz?<button className="btn" disabled={busy} onClick={start}>{busy?"Chargement…":"Faire le quiz"}</button>:<form onSubmit={submit}>
-   {quiz.questions.map((q,index)=>{const correction=result?.corrections.find((c:any)=>c.id===q.id);return <fieldset key={q.id} disabled={busy||!!result}><legend>{index+1}. {q.question}</legend>{q.options.map((option,i)=><label className="quiz-choice" key={i}><input type="radio" name={`${course.id}-${q.id}`} checked={answers[q.id]===i} onChange={()=>setAnswers(a=>({...a,[q.id]:i}))}/><span>{option}</span></label>)}{correction&&<div className={correction.correct?"quiz-correction correct":"quiz-correction"}><strong>{correction.correct?"Bonne réponse":"À reprendre"}</strong><p>{correction.explanation}</p><p>Réponse attendue : {q.options[correction.answer]}</p></div>}</fieldset>;})}
+   {quiz.questions.map((q,index)=>{const correction=result?.corrections.find((c:any)=>c.id===q.id);return <fieldset key={q.id} disabled={busy||!!result}><legend>{index+1}. {q.question}</legend>{q.options.map((option,i)=><label className="quiz-choice" key={i}><input type="radio" name={`${course.id}-${q.id}`} checked={answers[q.id]===i} onChange={()=>choose(q.id,i)}/><span>{option}</span></label>)}{correction&&<div className={correction.correct?"quiz-correction correct":"quiz-correction"}><strong>{correction.correct?"Bonne réponse":"À reprendre"}</strong><p>{correction.explanation}</p><p>Réponse attendue : {q.options[correction.answer]}</p></div>}</fieldset>;})}
    {result?<div className="quiz-result" role="status"><strong>{result.score} / {result.total} · {result.passed?"Quiz réussi":"Relis la fiche puis réessaie"}</strong><p>Ton résultat est enregistré dans ton espace et visible par ton enseignant.</p><button className="btn secondary" type="button" onClick={start} disabled={busy}>Recommencer</button></div>:<div className="quiz-actions"><p className="quiz-answer-count" aria-live="polite">{quiz.questions.filter(q=>answers[q.id]!==undefined).length} / {quiz.questions.length} réponses sélectionnées</p><button className="btn" type="submit" disabled={busy||quiz.questions.some(q=>answers[q.id]===undefined)}>{busy?"Enregistrement…":"Vérifier mes réponses"}</button></div>}
   </form>}
  </section>;

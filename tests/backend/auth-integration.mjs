@@ -1,0 +1,13 @@
+// Managed credentials are real; e-mail delivery itself requires a human OTP check.
+import {readFile,writeFile} from 'node:fs/promises';import {createHash,randomBytes} from 'node:crypto';import assert from 'node:assert/strict';
+const config=JSON.parse(await readFile('.test-runtime.json','utf8'));const fixture=JSON.parse(await readFile('.auth-test-runtime.json','utf8'));
+const verifier=randomBytes(32).toString('base64url'),challenge=createHash('sha256').update(verifier).digest('base64url');let checks=0;
+function check(a,b,label){assert.deepEqual(a,b,label);checks++;console.log('PASS '+label);}
+async function call(path,body,token){const r=await fetch(config.baseUrl+path,{method:body===undefined?'GET':'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:'Bearer '+token}:{})},body:body===undefined?undefined:JSON.stringify(body),signal:AbortSignal.timeout(45000)});return {status:r.status,body:await r.json()};}
+const start=await call('/v1/auth/start',{challenge});check(start.status,200,'Native PKCE authentication starts');
+const authorize=await call('/v1/auth/authorize',{request:start.body.request},fixture.token);if(authorize.status!==200)console.log(authorize.body);check(authorize.status,200,'Real Neon JWT signature and verified directory identity accepted');const callback=new URL(authorize.body.redirect);check(callback.protocol,'reperespot:','Callback targets native application');
+const code=callback.searchParams.get('code');const wrong=await call('/v1/auth/exchange',{code,verifier:randomBytes(32).toString('base64url')});check(wrong.status,401,'Intercepted code alone cannot create a native session');
+const exchange=await call('/v1/auth/exchange',{code,verifier});check(exchange.status,200,'PKCE verifier exchanges one-time code');check(exchange.body.profile.email,fixture.email,'Identity comes from managed directory');check(exchange.body.profile.role,'student','New user receives student role');
+const replay=await call('/v1/auth/exchange',{code,verifier});check(replay.status,401,'Authorization code cannot be reused');const me=await call('/v1/me',undefined,exchange.body.token);check(me.body.email,fixture.email,'Native session restores authenticated profile');
+check((await call('/v1/logout',{},exchange.body.token)).status,200,'Native logout revokes issued session');check((await call('/v1/me',undefined,exchange.body.token)).status,401,'Revoked native token rejected');
+await writeFile('docs/auth-integration-result.json',JSON.stringify({date:new Date().toISOString(),checks,passed:true,emailDeliveryTested:false},null,2));console.log(`Auth integration passed: ${checks} checks.`);

@@ -1,0 +1,96 @@
+# Personal Free account: macOS M2, manual runs only. Do not enable paid billing.
+workflows:
+  ios-check:
+    name: Le Repere Permis - validation native sans signature
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    environment:
+      node: 24
+      xcode: latest
+      cocoapods: default
+      vars:
+        EXPO_PUBLIC_API_URL: https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech
+    scripts:
+      - name: Dependencies and checks
+        script: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run release:preflight
+      - name: CocoaPods and Meta SwiftPM
+        script: |
+          set -euo pipefail
+          cd apps/mobile/ios
+          pod install
+      - name: Compile the actual iPhone target without signing
+        script: |
+          set -euo pipefail
+          xcodebuild -workspace apps/mobile/ios/LeReperePermis.xcworkspace \
+            -scheme LeReperePermis -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath /tmp/repere-derived CODE_SIGNING_ALLOWED=NO build
+    artifacts:
+      - /tmp/repere-derived/Logs/Build/*.xcactivitylog
+
+  ios-testflight:
+    name: Le Repere Permis - IPA et envoi Apple
+    instance_type: mac_mini_m2
+    max_build_duration: 60
+    integrations:
+      app_store_connect: Le Repere Permis
+    environment:
+      node: 24
+      xcode: latest
+      cocoapods: default
+      groups:
+        - repere_ios_release
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: fr.lerepere.spot
+      vars:
+        EXPO_PUBLIC_API_URL: https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech
+    scripts:
+      - name: Validate release inputs before consuming build time
+        script: |
+          set -euo pipefail
+          python3 scripts/codemagic-release-inputs.py
+      - name: Dependencies and checks
+        script: |
+          set -euo pipefail
+          npm ci --no-audit --no-fund
+          npm run typecheck
+          npm test
+          npm run release:preflight
+      - name: CocoaPods and native Meta settings
+        script: |
+          set -euo pipefail
+          cd apps/mobile/ios
+          pod install
+          agvtool new-version -all "$REPERE_BUILD_NUMBER"
+      - name: Use existing signing identities
+        script: xcode-project use-profiles
+      - name: Export signed iPhone app
+        script: |
+          set -euo pipefail
+          xcode-project build-ipa --workspace apps/mobile/ios/LeReperePermis.xcworkspace \
+            --scheme LeReperePermis
+      - name: Verify Meta, frameworks and signed capabilities
+        script: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import glob, subprocess
+          files = glob.glob('build/ios/ipa/*.ipa')
+          if len(files) != 1:
+              raise SystemExit('Expected exactly one signed IPA')
+          subprocess.run(['python3', 'scripts/verify-ios-ipa.py', files[0]], check=True)
+          PY
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+    publishing:
+      app_store_connect:
+        auth: integration
+        # Upload only. Apple processing and the internal tester group are checked afterward.
+        submit_to_testflight: false
+        submit_to_app_store: false

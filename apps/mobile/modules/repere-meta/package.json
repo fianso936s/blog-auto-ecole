@@ -1,0 +1,11 @@
+{
+  "name": "repere-meta",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pont natif officiel Meta DAT pour Le Repère Permis",
+  "expo": {
+    "platforms": [
+      "ios"
+    ]
+  }
+}
