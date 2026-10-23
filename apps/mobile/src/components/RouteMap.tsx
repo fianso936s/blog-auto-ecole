@@ -50,6 +50,8 @@ export function RouteMap({
   initialThreeD = false,
   threeD: controlledThreeD,
   show3DToggle = false,
+  navigationMode = false,
+  previewMode = false,
 }: {
   fixes?: Fix[];
   routeKey?: string;
@@ -74,6 +76,8 @@ export function RouteMap({
   initialThreeD?: boolean;
   threeD?: boolean;
   show3DToggle?: boolean;
+  navigationMode?: boolean;
+  previewMode?: boolean;
 }) {
   const reducedMotion = useReducedMotion();
   const camera = useRef<CameraRef>(null),
@@ -112,6 +116,8 @@ export function RouteMap({
   function pauseFollow(){following.current=false;if(resumeTimer.current)clearTimeout(resumeTimer.current);if(follow)resumeTimer.current=setTimeout(()=>{following.current=true;setFollowTick(n=>n+1);},MAP_RECENTER_DELAY);}
   useEffect(()=>()=>{if(resumeTimer.current)clearTimeout(resumeTimer.current);},[]);
   const lastPitch = useRef<boolean | null>(null);
+  const previousPreview=useRef(false);
+  const lastBearing=useRef(0);
   useEffect(() => {
     following.current = follow;
     if(resumeTimer.current)clearTimeout(resumeTimer.current);
@@ -128,17 +134,31 @@ export function RouteMap({
   useEffect(() => {
     if (!mapReady) return;
     const pitchChanged = lastPitch.current !== threeD;
-    const pitch = threeD ? 55 : 0;
+    const pitch = navigationMode ? 65 : threeD ? 55 : 0;
+    const last = fixes.at(-1), before = fixes.at(-2);
+    const computedBearing = last && before && (last.lat !== before.lat || last.lng !== before.lng)
+      ? Math.atan2(Math.sin((last.lng-before.lng)*Math.PI/180)*Math.cos(last.lat*Math.PI/180),
+        Math.cos(before.lat*Math.PI/180)*Math.sin(last.lat*Math.PI/180)-Math.sin(before.lat*Math.PI/180)*Math.cos(last.lat*Math.PI/180)*Math.cos((last.lng-before.lng)*Math.PI/180))*180/Math.PI
+      : lastBearing.current;
+    if(Number.isFinite(computedBearing))lastBearing.current=computedBearing;
+    if(previewMode && fixes.length>1){
+      if(!previousPreview.current || lastId.current!==signature){
+        camera.current?.fitBounds(routeBounds(fixes)!,{padding:viewportPadding,pitch:0,bearing:0,duration:reducedMotion?0:750});
+        lastId.current=signature;
+      }
+      previousPreview.current=true;lastPitch.current=false;return;
+    }
+    previousPreview.current=false;
     const point =
       focus ||
       (position ? { lat: position.latitude, lng: position.longitude } : null);
     if (point && following.current)
       camera.current?.easeTo({
         center: [point.lng, point.lat],
-        zoom: course != null ? 17 : 16,
-        bearing: course ?? 0,
+        zoom: navigationMode ? 17.5 : course != null ? 17 : 16,
+        bearing: navigationMode ? (course ?? lastBearing.current) : course ?? 0,
         pitch,
-        duration: reducedMotion ? 0 : 250,
+        duration: reducedMotion ? 0 : navigationMode ? 650 : 250,
       });
     else if (fixes.length && lastId.current !== signature) {
       camera.current?.fitBounds(routeBounds(fixes)!, {
@@ -165,6 +185,8 @@ export function RouteMap({
     course,
     recenterKey,
     followTick,
+    navigationMode,
+    previewMode,
   ]);
   return (
     <View style={{ flex: 1, overflow: "hidden" }}>
