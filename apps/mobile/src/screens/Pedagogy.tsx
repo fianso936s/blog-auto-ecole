@@ -12,7 +12,7 @@ import {
 import { useReducedMotion } from "react-native-reanimated";
 import { useApp } from "../state";
 import { colors, fonts, tones, styles as s, type Tone } from "../theme";
-import { Button, Chip, Empty, Field, Icon, IconButton } from "../components/UI";
+import { Button, Chip, Dropdown, Empty, Field, Icon, IconButton } from "../components/UI";
 import { ModalFrame } from "../components/ModalFrame";
 import { courses, courseSources, type Course } from "../pedagogy/courses";
 import {useProductLearning} from "../../../../packages/product/src/hooks";
@@ -176,21 +176,12 @@ export function Pedagogy() {
           autoCorrect={false}
           returnKeyType="search"
         />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 8 }}
-        >
-          {groups.map((g) => (
-            <Chip
-              key={g.id}
-              label={g.label}
-              tone={g.tone}
-              active={filter === g.id}
-              onPress={() => setFilter(g.id)}
-            />
-          ))}
-        </ScrollView></>}
+        <Dropdown
+          label="Catégorie"
+          value={filter}
+          options={groups}
+          onChange={setFilter}
+        /></>}
         <View style={s.between}>
           <Text style={s.heading}>
             {filter === "review"

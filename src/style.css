@@ -4293,3 +4293,33 @@ input[type="radio"] {
     font-size: 11px;
   }
 }
+/* Map: actions sit lower; the map runs under the floating tab bar; credit folded into (i). */
+.map-bottom {
+  bottom: 14px;
+}
+.maplibregl-ctrl-attrib.maplibregl-compact {
+  background: rgba(255, 253, 250, 0.7);
+  min-height: 24px;
+  min-width: 24px;
+  margin: 0 0 6px !important;
+}
+.maplibregl-ctrl-attrib.maplibregl-compact .maplibregl-ctrl-attrib-inner {
+  display: none;
+}
+.maplibregl-ctrl-attrib.maplibregl-compact:focus-within .maplibregl-ctrl-attrib-inner {
+  display: block;
+}
+@media (max-width: 760px) {
+  .map-main {
+    padding-bottom: 0;
+  }
+  .map-bottom {
+    bottom: calc(var(--tabbar) + 2px);
+  }
+  .maplibregl-ctrl-bottom-right {
+    bottom: calc(var(--tabbar) + 2px);
+  }
+  .student-map-filter {
+    top: calc(72px + env(safe-area-inset-top, 0px));
+  }
+}

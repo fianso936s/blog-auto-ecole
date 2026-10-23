@@ -937,6 +937,8 @@ function MapCanvas({
         attributionControl: { compact: true },
       });
       mapRef.current = map;
+      // Keep the required map credit, folded into its small (i) button.
+      map.on("load", () => root.current?.querySelector(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show"));
       const stopObserving = observeMapSize(root.current!, map);
       handle.current = {
         map,
@@ -1429,24 +1431,7 @@ function MapPage() {
           </button>
         </div>
       </div>
-      {!writer ? <label className="student-map-filter">Repères<select aria-label="Filtrer les repères" value={category} onChange={e=>setCategory(e.target.value)}><option value="Toutes">Tous les repères</option>{categories.map(c=><option key={c} value={c}>{c}</option>)}</select></label> :       <div className="map-filters filters">
-        <button
-          className={`chip ${category === "Toutes" ? "selected" : ""}`}
-          onClick={() => setCategory("Toutes")}
-        >
-          Tous les repères
-        </button>
-        {categories.map((c) => (
-          <button
-            key={c}
-            className={`chip ${tone(c)} ${category === c ? "selected" : ""}`}
-            onClick={() => setCategory(c)}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-      }
+      <label className="student-map-filter">Repères<select aria-label="Filtrer les repères" value={category} onChange={e=>setCategory(e.target.value)}><option value="Toutes">Tous les repères</option>{categories.map(c=><option key={c} value={c}>{c}</option>)}</select></label>
       {(loadError || loading) && (
         <div className="map-status">
           {loading ? (

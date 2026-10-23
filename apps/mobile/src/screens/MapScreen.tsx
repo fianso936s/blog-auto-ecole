@@ -24,6 +24,7 @@ import { RouteMap } from "../components/RouteMap";
 import {
   Button,
   Chip,
+  Dropdown,
   Empty,
   Icon,
   IconButton,
@@ -304,7 +305,7 @@ export function MapScreen() {
         pointerEvents="box-none"
         style={{
           position: "absolute",
-          bottom: 14,
+          bottom: 6,
           left: 14,
           right: 14,
           gap: 10,
@@ -495,20 +496,12 @@ export function MapScreen() {
               autoCorrect={false}
               returnKeyType="search"
             />
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ gap: 8 }}
-            >
-              {["Tous", ...categories].map((value) => (
-                <Chip
-                  key={value}
-                  label={value}
-                  active={category === value}
-                  onPress={() => setCategory(value)}
-                />
-              ))}
-            </ScrollView>
+            <Dropdown
+              label="Repères"
+              value={category}
+              options={["Tous", ...categories].map((c) => ({ id: c, label: c === "Tous" ? "Tous les repères" : c }))}
+              onChange={setCategory}
+            />
             <Text style={s.muted}>
               {visiblePoints.length} repère
               {visiblePoints.length === 1 ? "" : "s"} disponible

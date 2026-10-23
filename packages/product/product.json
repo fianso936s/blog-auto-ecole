@@ -28,14 +28,14 @@
   "touchTarget": 48,
   "navigation": [
     {
-      "id": "pedagogy",
-      "label": "Fiches pédagogiques",
-      "short": "Fiches"
-    },
-    {
       "id": "map",
       "label": "Carte et parcours",
       "short": "Carte"
+    },
+    {
+      "id": "pedagogy",
+      "label": "Fiches pédagogiques",
+      "short": "Fiches"
     },
     {
       "id": "videos",

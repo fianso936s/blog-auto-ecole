@@ -275,3 +275,55 @@ export function Empty({
     </View>
   );
 }
+/** A compact dropdown: one row shows the current choice, the list opens beneath it. */
+export function Dropdown<T extends string>({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: T;
+  options: readonly { id: T; label: string }[];
+  onChange: (id: T) => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const current = options.find((o) => o.id === value)?.label ?? value;
+  return (
+    <View style={{ gap: 8 }}>
+      <Text style={s.label}>{label}</Text>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${label} : ${current}`}
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen(!open)}
+        style={({ pressed }) => [
+          s.field,
+          { flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: open ? colors.wine : colors.line, transform: [{ scale: pressed ? 0.99 : 1 }] },
+        ]}
+      >
+        <Text style={{ fontFamily: fonts.bodySemi, fontSize: 16, color: colors.ink, flex: 1 }} numberOfLines={1}>{current}</Text>
+        <Icon name={open ? "chevron-up" : "chevron-down"} size={18} />
+      </Pressable>
+      {open && (
+        <View style={[s.card, { padding: 6, gap: 2 }]}>
+          {options.map((o) => {
+            const active = o.id === value;
+            return (
+              <Pressable
+                key={o.id}
+                accessibilityRole="button"
+                accessibilityState={{ selected: active }}
+                onPress={() => { void Haptics.selectionAsync(); onChange(o.id); setOpen(false); }}
+                style={({ pressed }) => ({ minHeight: 46, paddingHorizontal: 12, borderRadius: radius.sm, flexDirection: "row", alignItems: "center", justifyContent: "space-between", backgroundColor: active ? colors.soft : pressed ? colors.cream : "transparent" })}
+              >
+                <Text style={{ fontFamily: active ? fonts.bodyBold : fonts.body, fontSize: 15, color: active ? colors.wine : colors.ink }}>{o.label}</Text>
+                {active && <Icon name="checkmark" size={18} />}
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
+    </View>
+  );
+}
