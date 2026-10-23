@@ -2094,7 +2094,9 @@ function SpotEditor({
   const [s, setS] = useState(initial),
     [busy, setBusy] = useState(false),
     [error, setError] = useState(""),
-    [quiz, setQuiz] = useState(!!s.quiz);
+    [quiz, setQuiz] = useState(!!s.quiz),
+    [street, setStreet] = useState(false);
+  const { notify } = useContext(Context);
   const patch = (p: Partial<MapSpot>) => setS((v) => ({ ...v, ...p }));
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -2114,6 +2116,7 @@ function SpotEditor({
       wide
       onClose={onClose}
     >
+      {street && <ReplayPlayer target={{ lat: s.lat, lng: s.lng, name: s.name || "Nouveau repère" }} initialMode="street" MapView={MapCanvas} notify={notify} onClose={() => setStreet(false)} />}
       <form className="stack spot-editor-form" onSubmit={submit}>
         <Field label="Nom du repère">
           <input
@@ -2157,6 +2160,9 @@ function SpotEditor({
             />
           </Field>
         </div>
+        <button type="button" className="btn secondary" onClick={() => setStreet(true)}>
+          Voir cet endroit dans Street View
+        </button>
         <Field label="Explication pédagogique">
           <textarea
             maxLength={3000}
