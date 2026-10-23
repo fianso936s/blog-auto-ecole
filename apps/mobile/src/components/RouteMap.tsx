@@ -134,7 +134,7 @@ export function RouteMap({
   useEffect(() => {
     if (!mapReady) return;
     const pitchChanged = lastPitch.current !== threeD;
-    const pitch = navigationMode ? 65 : threeD ? 55 : 0;
+    const pitch = navigationMode ? (threeD ? 75 : 0) : threeD ? 70 : 0;
     const last = fixes.at(-1), before = fixes.at(-2);
     const computedBearing = last && before && (last.lat !== before.lat || last.lng !== before.lng)
       ? Math.atan2(Math.sin((last.lng-before.lng)*Math.PI/180)*Math.cos(last.lat*Math.PI/180),
@@ -143,7 +143,7 @@ export function RouteMap({
     if(Number.isFinite(computedBearing))lastBearing.current=computedBearing;
     if(previewMode && fixes.length>1){
       if(!previousPreview.current || lastId.current!==signature){
-        camera.current?.fitBounds(routeBounds(fixes)!,{padding:viewportPadding,pitch:0,bearing:0,duration:reducedMotion?0:750});
+        camera.current?.fitBounds(routeBounds(fixes)!,{padding:viewportPadding,pitch:threeD?70:0,bearing:0,duration:reducedMotion?0:750});
         lastId.current=signature;
       }
       previousPreview.current=true;lastPitch.current=false;return;
@@ -223,7 +223,7 @@ export function RouteMap({
           initialViewState={{
             center: [2.288, 48.909],
             zoom: initialThreeD ? 16 : 13,
-            pitch: initialThreeD ? 55 : 0,
+            pitch: initialThreeD ? 70 : 0,
           }}
         />
         {shape.geometry.coordinates.length > 0 && (
