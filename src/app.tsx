@@ -996,7 +996,7 @@ function MapCanvas({
   }, [pitch, ready, navigationMode, previewMode]);
   useEffect(()=>{
     if(!ready||(!recording.length&&!location))return;
-    const follow=()=>{if(previewMode)return;const f=recording.at(-1)||location;if(!f||Date.now()<resumeAt.current)return;const prev=recording.at(-2);if(navigationMode&&prev&&(f.lat!==prev.lat||f.lng!==prev.lng)){const rad=Math.PI/180;lastBearing.current=Math.atan2(Math.sin((f.lng-prev.lng)*rad)*Math.cos(f.lat*rad),Math.cos(prev.lat*rad)*Math.sin(f.lat*rad)-Math.sin(prev.lat*rad)*Math.cos(f.lat*rad)*Math.cos((f.lng-prev.lng)*rad))/rad;}mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:navigationMode?18:Math.max(16,mapRef.current!.getZoom()),pitch:navigationMode?(pitch?80:0):pitch,bearing:navigationMode?lastBearing.current:mapRef.current!.getBearing(),duration:800,essential:true});};
+    const follow=()=>{if(previewMode)return;const f=recording.at(-1)||location;if(!f||Date.now()<resumeAt.current)return;const prev=recording.at(-2);if(navigationMode&&prev&&(f.lat!==prev.lat||f.lng!==prev.lng)){const rad=Math.PI/180;lastBearing.current=Math.atan2(Math.sin((f.lng-prev.lng)*rad)*Math.cos(f.lat*rad),Math.cos(prev.lat*rad)*Math.sin(f.lat*rad)-Math.sin(prev.lat*rad)*Math.cos(f.lat*rad)*Math.cos((f.lng-prev.lng)*rad))/rad;}mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:navigationMode?18:Math.max(16,mapRef.current!.getZoom()),pitch:navigationMode?(pitch?80:0):pitch,bearing:navigationMode?lastBearing.current:(typeof mapRef.current?.getBearing === "function" ? mapRef.current.getBearing() : 0),duration:800,essential:true});};
     follow();const timer=setInterval(follow,1000);return()=>clearInterval(timer);
   },[ready,recording,location,navigationMode,previewMode,pitch]);
   useEffect(() => {
