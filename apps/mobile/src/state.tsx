@@ -71,7 +71,7 @@ type AppContext = {
 };
 const Context = createContext<AppContext | null>(null);
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [mapThreeD, setMapThreeD] = useState(false);
+  const [mapThreeD, setMapThreeD] = useState(true);
   const [profile, setProfile] = useState<Profile | null>(null),
     [loading, setLoading] = useState(true),
     [authBusy, setAuthBusy] = useState(false),
