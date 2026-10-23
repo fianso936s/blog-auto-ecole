@@ -387,7 +387,7 @@ function App() {
             </a>
             <span className="nav-label">VOTRE COMPAGNON DE ROUTE</span>
             <nav aria-label="Navigation principale">
-              {product.navigation.map(({id,label}) => {
+              {product.navigation.map(({id,label,short}) => {
                 const icon = ({pedagogy:"book",map:"map",videos:"video",account:"user"} as Record<string,string>)[id];
                 return (
                 <button
@@ -402,7 +402,7 @@ function App() {
                   }}
                 >
                   <Icon name={icon} />
-                  <span>{label}</span>
+                  <span className="nav-text" data-short={short}>{label}</span>
                   {!home && tab === id && <i />}
                 </button>
               );})}

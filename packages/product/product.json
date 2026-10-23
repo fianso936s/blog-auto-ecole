@@ -5,12 +5,12 @@
   "apiOrigin": "https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech",
   "webOrigin": "https://blog-auto-ecole.vercel.app",
   "colors": {
-    "ink": "#292427",
-    "muted": "#726568",
-    "wine": "#672C3B",
-    "cream": "#F5F0E8",
-    "paper": "#FFFCF7",
-    "line": "#E7DEDA",
+    "ink": "#1C1719",
+    "muted": "#6B5F62",
+    "wine": "#6A2236",
+    "cream": "#F6F2EC",
+    "paper": "#FFFDFA",
+    "line": "#E8E0DA",
     "green": "#3F7663",
     "red": "#B42332",
     "redSoft": "#FDECEF",
@@ -21,7 +21,9 @@
     "purple": "#69469A",
     "purpleSoft": "#F1EBFA",
     "greenSoft": "#E6F2EC",
-    "soft": "#EFE5E3"
+    "soft": "#F2E6E7",
+    "night": "#3B1220",
+    "blush": "#F2D8C4"
   },
   "touchTarget": 48,
   "navigation": [
