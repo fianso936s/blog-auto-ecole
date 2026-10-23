@@ -91,7 +91,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
   close.current = onClose; progress.current = onProgress; note.current = notify;
   const [index, setIndex] = useState(Math.min(Math.max(0, initialIndex), (route?.fixes.length || 1)-1)),
     [playing, setPlaying] = useState(autoplay), [mode, setMode] = useState<Mode>(initialMode),
-    [pitch, setPitch] = useState(75), [streetState, setStreetState] = useState("loading"),
+    [pitch, setPitch] = useState(80), [overview,setOverview] = useState(false), [zoom,setZoom] = useState(19), [streetState, setStreetState] = useState("loading"),
     [mapReady, setMapReady] = useState(false), [streetOpened, setStreetOpened] = useState(initialMode === "street");
   const onMapReady = useCallback(() => setMapReady(true), []);
   currentIndex.current = index;
@@ -134,16 +134,17 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     if (mode === "street" && streetState === "error") setPlaying(false);
   }, [mode,streetState]);
   useEffect(() => {
-    if (!route || mode !== "map" || !mapReady) return;
+    if (!route || mode !== "map" || !mapReady || overview) return;
     const anchor = replayAnchor(route.fixes,index);
-    if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom:17,pitch: pitch ? 75 : 0,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
-  }, [index,mode,pitch,mapReady]);
+    if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom,pitch: pitch ? 80 : 0,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
+  }, [index,mode,pitch,mapReady,overview,zoom]);
+  useEffect(()=>{if(!route||!mapReady||mode!=="map"||!overview)return;map.current.focus(route.fixes);map.current.map?.easeTo({pitch:0,bearing:0,duration:650});},[overview,mapReady,mode,route?.id]);
   function seek(value: number) {setPlaying(false);currentIndex.current=value;setIndex(value);}
   function restart() {
     seek(0);
     if (route && mapReady && mode === "map") {
       const anchor = replayAnchor(route.fixes,0);
-      if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom:17,pitch,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
+      if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom,pitch: pitch ? 80 : 0,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
     }
     void save();
   }
@@ -158,15 +159,21 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     </header>
     <div className="player-stage">
       {mode === "map" && route ? <>
-        <MapView spots={noRecording} route={route} recording={noRecording} index={index} pitch={pitch} navigationMode={!!pitch} handle={map} onReady={onMapReady} onPosition={()=>{}} onSpot={(p:Point)=>{setPlaying(false);onPoint?.(p);}} />
-        <button className="player-dimension" onClick={()=>setPitch(p=>p?0:75)}>{pitch?"2D":"3D"}</button>
+        <MapView spots={noRecording} route={route} recording={noRecording} index={index} pitch={overview?0:pitch} navigationMode={!overview && !!pitch} previewMode={overview} handle={map} onReady={onMapReady} onPosition={()=>{}} onSpot={(p:Point)=>{setPlaying(false);onPoint?.(p);}} />
+        <div className="player-dimension" role="group" aria-label="Vue du parcours" style={{display:"flex",gap:6,alignItems:"center"}}>
+          <button aria-pressed={!overview&&!!pitch} onClick={()=>{setOverview(false);setPitch(80);}}>3D</button>
+          <button aria-pressed={!overview&&!pitch} onClick={()=>{setOverview(false);setPitch(0);}}>2D</button>
+          <button aria-pressed={overview} onClick={()=>{setOverview(true);setPlaying(false);}}>Aperçu</button>
+          <button aria-label="Zoom arrière" onClick={()=>setZoom(z=>Math.max(12,z-1))}>−</button>
+          <button aria-label="Zoom avant" onClick={()=>setZoom(z=>Math.min(22,z+1))}>+</button>
+        </div>
       </> : null}
       {streetOpened && <div className="player-street-layer" aria-hidden={mode !== "street"} data-active={mode === "street"} inert={mode !== "street"}><StreetPane request={request} onState={setStreetState} active={mode === "street"} /></div>}
       {mode === "map" && !mapReady && <div className="player-loading" role="status">Préparation de la carte…</div>}
       {activePoint && <button className="player-point" onClick={()=>{setPlaying(false);onPoint?.(activePoint);}}><span>{activePoint.category}</span><strong>{activePoint.name}</strong><span>Lire le repère →</span></button>}
     </div>
     {route && <footer className="player-controls">
-      <button className="player-play" aria-label={playing?"Mettre en pause":"Lire le parcours"} onClick={()=>{if(index>=route.fixes.length-1) seek(0);setPlaying(p=>!p);}}>{playing?"Ⅱ":"▶"}</button>
+      <button className="player-play" aria-label={playing?"Mettre en pause":"Lire le parcours"} onClick={()=>{if(overview){setOverview(false);setPitch(80);}if(index>=route.fixes.length-1) seek(0);setPlaying(p=>!p);}}>{playing?"Ⅱ":"▶"}</button>
       <div className="player-timeline"><label htmlFor="player-position">{mode==="street" && streetState==="loading" ? "Chargement de la vue…" : playing ? "Lecture du parcours" : "Parcours en pause"}<span>{Math.round(index/Math.max(1,route.fixes.length-1)*100)} %</span></label>
         <input id="player-position" aria-label="Position dans le parcours" type="range" min={0} max={route.fixes.length-1} value={index} onChange={e=>seek(Number(e.target.value))} onPointerUp={()=>void save()} onKeyUp={()=>void save()} />
       </div>
