@@ -2535,3 +2535,7 @@ textarea {
   .video-seek-actions .btn:first-child { grid-column: 1 / -1; }
   .video-seek-actions .btn { padding: 10px; font-size: 14px; min-width: 0; }
 }
+
+@media (max-width: 620px) {
+  .recorded-video .video-player { min-height: 0; max-height: 45dvh; }
+}
