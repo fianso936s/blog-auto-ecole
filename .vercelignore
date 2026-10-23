@@ -1,0 +1,10 @@
+.git
+.openai
+.vercel
+node_modules
+dist
+public
+site.tar.gz
+tests
+.env*
+IMPLEMENTATION.md

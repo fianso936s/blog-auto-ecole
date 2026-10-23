@@ -1,7 +1,9 @@
-node_modules
-dist
+dist/
+site.tar.gz
+node_modules/
 .env
-.env.local
-.vercel
-scripts/
-n8n-workflow-auto-article.json
+.env.*
+!.env.example
+*.log
+.vercel/
+public/

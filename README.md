@@ -1,26 +1,11 @@
-# WEBEDRIVE
+# Le Repère Permis — version web
 
-Site WEBEDRIVE + blog existant, dans le même dépôt et projet Vercel.
+Réplique web de l’application iOS Le Repère Permis 1.6.0, utilisant son API, ses comptes, ses modèles et ses fiches pédagogiques.
 
-## Développement
+Voir [IMPLEMENTATION.md](./IMPLEMENTATION.md) pour les fonctionnalités, la sécurité, les différences imposées par le navigateur et la validation.
 
-```sh
-npm ci
-npm run dev
-npm test
-npm run build
-npm run preview
-```
+Installation : `npm ci`. Compilation : `npm run build`. Vérification : `npx tsc --noEmit && npm test && npm run validate`.
 
-Le build exécute les tests source/métier avant TypeScript et Vite. `public/version.json` est généré avec le SHA de publication fourni par l’environnement, sans secret. Les dépendances et le lockfile existants sont préservés pour l’unification ; voir `docs/WORKFLOWS.md` pour la migration de frameworks.
+L’artefact autonome est créé dans `dist/server/index.js`. Modifier les sources dans `src/`, jamais le fichier généré.
 
-## Organisation
-- `/` : landing WEBEDRIVE.
-- `/blog` : journal conservé, `/blog/articles`, `/blog/articles/:slug`, `/blog/quiz`.
-- `/login`, `/inscription`, `/eleve`, `/admin` : parcours existants conservés.
-- `src/styles/brand.css` : tokens communs et composants.
-- `src/components/Header.tsx`, `Footer.tsx`, `BrandMark.tsx` : mêmes composants publics.
-- `docs/CONTINUITY.md` : cible canonique et règles de reprise.
-- `docs/AUDIT.md` : constats, corrections, couverture et limites.
-
-Ne jamais committer secrets, données clients ou fichiers de police. Les tests réseau doivent utiliser des mocks ou un environnement de test, jamais envoyer un email ou créer un utilisateur de production. Ne pas supprimer le blog ni les branches d’archive.
+Déploiement Vercel : `npm run build:vercel` produit les fichiers statiques dans `public/`. `api/site.js` réutilise le serveur et les sessions sécurisées sur Node.js 22, avec les règles de routage de `vercel.json`. Le logo fourni est conservé sans modification dans `src/assets/le-repere-logo.jpeg`.

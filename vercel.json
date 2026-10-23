@@ -1,13 +1,55 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "headers": [
-    { "source": "/sw.js", "headers": [{ "key": "Cache-Control", "value": "no-store" }] },
-    { "source": "/version.json", "headers": [{ "key": "Cache-Control", "value": "no-store" }] }
-  ],
+  "framework": null,
+  "buildCommand": "npm run build:vercel",
+  "installCommand": "npm ci",
+  "outputDirectory": "public",
+  "regions": ["fra1"],
+  "functions": { "api/site.js": { "maxDuration": 60 } },
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/v1/:path*",
+      "destination": "/api/site?__repere_path=/v1/:path*"
+    },
+    {
+      "source": "/session/:path*",
+      "destination": "/api/site?__repere_path=/session/:path*"
+    },
+    {
+      "source": "/api/auth/:path*",
+      "destination": "/api/site?__repere_path=/api/auth/:path*"
+    },
+    { "source": "/privacy", "destination": "/api/site?__repere_path=/privacy" },
+    { "source": "/terms", "destination": "/api/site?__repere_path=/terms" },
+    { "source": "/support", "destination": "/api/site?__repere_path=/support" },
+    {
+      "source": "/reset-password",
+      "destination": "/api/site?__repere_path=/reset-password"
+    },
+    {
+      "source": "/assets/reset.js",
+      "destination": "/api/site?__repere_path=/assets/reset.js"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "geolocation=(self), camera=(self), microphone=(self)"
+        },
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; media-src 'self' blob: https:; frame-src https://www.google.com https://maps.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+        }
+      ]
+    }
   ]
 }
