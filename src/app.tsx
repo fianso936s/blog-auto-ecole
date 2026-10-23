@@ -1,3 +1,4 @@
+import { useContentSync } from "./shared/content-sync";
 import React, {
   useState,
   useEffect,
@@ -1096,7 +1097,7 @@ function MapPage() {
   const refreshing = useRef(false);
   const refresh = useCallback(async () => {
     if (refreshing.current) return;
-    refreshing.current = true; setLoading(true); setLoadError("");
+    refreshing.current = true; setLoadError("");
     try {
       const [s, r] = await Promise.allSettled([
         api<{ spots: MapSpot[] }>("/v1/spots?summary=1"),
@@ -1107,6 +1108,13 @@ function MapPage() {
       setLoadError([s, r].filter(x=>x.status === "rejected").map(x=>(x as PromiseRejectedResult).reason.message).join(" "));
     } finally { refreshing.current=false; setLoading(false); }
   }, []);
+  useContentSync(async()=>{
+    await refresh();
+    if (route) {
+      try { const current=await api(`/v1/routes/${route.id}`); setRoute(current.route || current); }
+      catch(e) { if ((e as any).status===404 || (e as any).status===403) {setRoute(null);setPlayer(null);notify("L’accès à ce parcours a été retiré.");} }
+    }
+  });
   useEffect(() => {
     void refresh();
     const resume = () => { if (document.visibilityState === "visible") void refresh(); };
@@ -1497,6 +1505,10 @@ function MapPage() {
                       try {await saveRoute({...route,status:"published",points:route.points.map(p=>({...p,shareWithStudents:true}))});notify("Parcours publié : les élèves peuvent le sélectionner.");}
                       catch(error){notify((error as Error).message);}
                     }}>Publier pour les élèves</button>}
+                    {route.status === "published" && <button className="text-btn" onClick={async()=>{
+                      try {await api(`/v1/routes/${route.id}/assignments`,"PUT",{students:[]});await saveRoute({...route,status:"private",points:route.points.map(p=>({...p,shareWithStudents:false}))});notify("Parcours passé en privé : accès élèves retiré.");}
+                      catch(error){notify((error as Error).message);}
+                    }}>Passer en privé</button>}
                     <button className="text-btn" onClick={() => setRouteEditor(route)}>Modifier le parcours</button>
                     <button
                       className="text-btn"
@@ -2378,7 +2390,8 @@ function Assignments({
   const { notify } = useApp(),
     [students, setStudents] = useState<any[]>([]),
     [selected, setSelected] = useState<string[]>([]),
-    [published, setPublished] = useState(true),
+    [published, setPublished] = useState(false),
+    [audience,setAudience] = useState<"private"|"all"|"selected">("private"),
     [busy, setBusy] = useState(true),
     [error, setError] = useState("");
   const path =
@@ -2390,6 +2403,8 @@ function Assignments({
       .then(([s, g]) => {
         setStudents(s.students);
         setSelected(g.students);
+        setPublished(!!g.published);
+        setAudience(g.published ? (g.students.length===s.students.length && s.students.length ? "all" : "selected") : "private");
       })
       .catch((e) => setError(e.message))
       .finally(() => setBusy(false));
@@ -2402,8 +2417,15 @@ function Assignments({
       onClose={onClose}
     >
       <div className="stack">
-        <p className="muted">Choisissez les élèves autorisés.</p>
-        {students.map((s) => (
+        {kind === "video" ? <>
+          <Field label="Qui peut voir cette vidéo ?"><select value={audience} disabled={busy} onChange={e=>{const a=e.target.value as typeof audience;setAudience(a);setPublished(a!=="private");}}>
+            <option value="private">Privé · moi uniquement</option>
+            <option value="all">Tous mes élèves actuels</option>
+            <option value="selected">Élèves sélectionnés</option>
+          </select></Field>
+          <p className="caption">La publication donne accès aux élèves connectés. Vous pouvez retirer cet accès à tout moment.</p>
+        </> : <p className="muted">Choisissez les élèves autorisés.</p>}
+        {(kind === "route" || audience === "selected") && students.map((s) => (
           <label className="checkline" key={s.id}>
             <input
               type="checkbox"
@@ -2427,24 +2449,14 @@ function Assignments({
             Créez une invitation depuis Mon espace.
           </Empty>
         )}
-        {kind === "video" && (
-          <label className="checkline">
-            <input
-              type="checkbox"
-              checked={published}
-              onChange={(e) => setPublished(e.target.checked)}
-            />
-            Rendre disponible aux élèves sélectionnés
-          </label>
-        )}
         {error && <p className="error">{error}</p>}
         <Button
-          disabled={busy || !!error}
+          disabled={busy || !!error || (kind === "video" && audience === "selected" && !selected.length)}
           onClick={async () => {
             setBusy(true);
             try {
               await api(path, "PUT", {
-                students: selected,
+                students: kind === "video" && audience === "all" ? students.map(s=>s.id) : selected,
                 ...(kind === "video" ? { published } : {}),
               });
               notify("Accès enregistrés.");
@@ -2520,6 +2532,7 @@ function Videos() {
     [newLive, setNewLive] = useState(false),
     [sharing, setSharing] = useState<string | null>(null),
     [player, setPlayer] = useState<{
+      id: string;
       url: string;
       title: string;
       local?: boolean;
@@ -2527,20 +2540,34 @@ function Videos() {
     [progress, setProgress] = useState<Record<string, number>>({}),
     [config, setConfig] = useState<any>(null),
     [report, setReport] = useState<string | null>(null);
+  const refreshingVideos=useRef(false), activePlayback=useRef(player), activeLive=useRef(live);
+  activePlayback.current=player;activeLive.current=live;
   const refresh = useCallback(async () => {
+    if(refreshingVideos.current)return;
+    refreshingVideos.current=true;
     setError("");
     try {
       const [v, c] = await Promise.allSettled([api("/v1/videos"), api("/v1/videos/config")]);
-      if (v.status === "fulfilled") setVideos(v.value.videos);
+      if (v.status === "fulfilled") {
+        const available:Video[]=v.value.videos;
+        setVideos(available);
+        if(activePlayback.current && !available.some(v=>v.id===activePlayback.current?.id)) {
+          if(activePlayback.current.local)URL.revokeObjectURL(activePlayback.current.url);
+          setPlayer(null);notify("L’accès à cette vidéo a été retiré.");
+        }
+        if(activeLive.current && !available.some(v=>v.id===activeLive.current?.id))setLive(null);
+      }
       if (c.status === "fulfilled") setConfig(c.value);
       const errors=[v,c].filter(x=>x.status === "rejected");
       if (errors.length) setError(errors.map(x=>(x as PromiseRejectedResult).reason.message).join(" "));
     } catch (e) {
       setError((e as Error).message);
     } finally {
+      refreshingVideos.current=false;
       setLoading(false);
     }
   }, []);
+  useContentSync(refresh);
   useEffect(() => {
     void refresh();
     const resume = () => {if (document.visibilityState === "visible") void refresh();};
@@ -2566,11 +2593,10 @@ function Videos() {
           name: file.name,
         }),
       );
-      notify(
-        "Vidéo importée dans ce navigateur. Vous pouvez maintenant la partager dans le cloud.",
-      );
       setCapture(false);
       await refresh();
+      if(config?.uploadEnabled) await upload({...created,title:title||file.name} as Video);
+      else notify("Vidéo conservée dans ce navigateur. Le stockage distant n’est pas encore disponible.");
     } catch (e) {
       notify((e as Error).message);
     } finally {
@@ -2582,6 +2608,7 @@ function Videos() {
       const local = await localClip(profile!.id, v.id);
       if (local) {
         setPlayer({
+          id: v.id,
           url: URL.createObjectURL(local.blob),
           title: v.title,
           local: true,
@@ -2589,7 +2616,7 @@ function Videos() {
         return;
       }
       const p = await api(`/v1/videos/${v.id}/playback`);
-      setPlayer({ url: p.url, title: v.title });
+      setPlayer({ id:v.id, url: p.url, title: v.title });
     } catch (e) {
       notify((e as Error).message);
     }
@@ -2650,8 +2677,9 @@ function Videos() {
         x.send(local.blob);
       });
       await api(`/v1/videos/${v.id}/complete`, "POST", {});
-      notify("Vidéo sauvegardée dans le cloud privé.");
+      notify("Vidéo envoyée. Choisissez maintenant qui peut la voir.");
       await refresh();
+      setSharing(v.id);
     } catch (e) {
       notify((e as Error).message);
     } finally {
@@ -2719,7 +2747,7 @@ function Videos() {
         <div>
           <h2>Votre vidéothèque</h2>
           <p>
-            {videos.length} vidéo{videos.length > 1 ? "s" : ""} · Accès privé
+            {videos.length} vidéo{videos.length > 1 ? "s" : ""} · Mise à jour automatique
           </p>
         </div>
         <button
@@ -2773,7 +2801,7 @@ function Videos() {
                 <Badge
                   color={v.visibility === "students" ? "green" : "neutral"}
                 >
-                  {v.visibility === "students" ? "Élèves autorisés" : "Privée"}
+                  {v.visibility === "students" ? "Visible par les élèves autorisés" : "Privée"}
                 </Badge>
               </div>
               {v.author_id === profile?.id && (
@@ -2794,11 +2822,15 @@ function Videos() {
                       className="text-btn"
                       onClick={() => setSharing(v.id)}
                     >
-                      Gérer les accès
+                      {v.visibility === "students" ? "Modifier la visibilité" : "Publier pour les élèves"}
                     </button>
                   )}
                 </div>
               )}
+              {v.author_id === profile?.id && v.visibility === "students" && v.live_status !== "live" && <button className="text-btn" onClick={async()=>{
+                try { const grants=await api(`/v1/videos/${v.id}/grants`);await api(`/v1/videos/${v.id}/grants`,"PUT",{students:grants.students,published:false});await refresh();notify("Vidéo passée en privé."); }
+                catch(e){notify((e as Error).message);}
+              }}>Passer en privé</button>}
               {v.author_id === profile?.id && v.live_status !== "live" && (
                 <DeleteAction
                   label="Supprimer cette vidéo"
@@ -2877,7 +2909,7 @@ function Videos() {
         <Assignments
           kind="video"
           id={sharing}
-          onClose={() => setSharing(null)}
+          onClose={() => {setSharing(null);void refresh();}}
         />
       )}{" "}
       {newLive && (
@@ -3123,6 +3155,7 @@ function NewLive({
           Jusqu’à 10 élèves liés à votre compte. Seuls les élèves sélectionnés
           pourront rejoindre le direct.
         </p>
+        {students.length>0 && <button type="button" className="text-btn" onClick={()=>setSelected(students.slice(0,10).map(s=>s.id))}>Sélectionner les {Math.min(10,students.length)} élèves</button>}
         {students.map((s) => (
           <label className="checkline" key={s.id}>
             <input
@@ -3177,10 +3210,14 @@ function LivePlayer({ video, onClose }: { video: Video; onClose: () => void }) {
       const el = track.attach();
       el.autoplay = true;
       el.playsInline = true;
+      if (publisher.current || track.kind === Track.Kind.Video) el.muted = true;
       if (track.kind === Track.Kind.Video) el.className = "video-player";
       root.current?.appendChild(el);
     };
     r.on(RoomEvent.TrackSubscribed, attach);
+    r.on(RoomEvent.AudioPlaybackStatusChanged,()=>{if(!r.canPlaybackAudio)setStatus("Direct connecté · touchez Activer le son");});
+    r.on(RoomEvent.Reconnecting,()=>setStatus("Reconnexion au direct…"));
+    r.on(RoomEvent.Reconnected,()=>setStatus("Direct connecté"));
     r.on(RoomEvent.TrackUnsubscribed, (track) =>
       track.detach().forEach((e) => e.remove()),
     );
@@ -3198,6 +3235,15 @@ function LivePlayer({ video, onClose }: { video: Video; onClose: () => void }) {
           return;
         }
         if (t.publisher) {
+          await api(`/v1/videos/${video.id}/webrtc/heartbeat`, "POST", {});
+        }
+        let failures=0;
+        timer=setInterval(()=>{
+          void (t.publisher ? api(`/v1/videos/${video.id}/webrtc/heartbeat`,"POST",{}) : api(`/v1/videos/${video.id}/webrtc/status`))
+            .then(s=>{failures=0;if(!t.publisher&&!s.active){void r.disconnect();setStatus("Le direct est terminé.");}})
+            .catch(e=>{failures++;if([401,403,404,409].includes(e.status)||failures>=3){void r.disconnect();setStatus("Accès au direct terminé.");}else setStatus("Connexion instable · nouvelle tentative…");});
+        },t.publisher?10000:5000);
+        if (t.publisher) {
           await r.localParticipant.setCameraEnabled(true, {
             facingMode: "environment",
           });
@@ -3209,27 +3255,8 @@ function LivePlayer({ video, onClose }: { video: Video; onClose: () => void }) {
         setStatus(
           t.publisher ? "Vous êtes en direct" : "Direct privé · Connecté",
         );
-        timer = setInterval(
-          () => {
-            void (
-              publisher.current
-                ? api(`/v1/videos/${video.id}/webrtc/heartbeat`, "POST", {})
-                : api(`/v1/videos/${video.id}/webrtc/status`)
-            )
-              .then((s) => {
-                if (!publisher.current && !s.active) {
-                  r.disconnect();
-                  setStatus("Le direct est terminé.");
-                }
-              })
-              .catch(() => {
-                r.disconnect();
-                setStatus("Accès au direct terminé.");
-              });
-          },
-          publisher.current ? 10000 : 5000,
-        );
       } catch (e) {
+        clearInterval(timer);
         setError((e as Error).message);
         if (publisher.current)
           void api(`/v1/videos/${video.id}/webrtc/stop`, "POST", {}).catch(

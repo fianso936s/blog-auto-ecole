@@ -71,3 +71,14 @@ Validation : 23 tests web passent (dont création réelle du formulaire, choix e
 
 ## Retour au départ
 Bouton explicite dans le lecteur carte/Street View : pause, premier point, recentrage et sauvegarde de la position zéro. Le panorama intégré reste monté. Les vidéos enregistrées ont aussi un bouton Retour au début. Sur mobile, les actions passent sur une ligne dédiée. Test de régression : retour Street View à zéro, conservation iframe, sauvegarde zéro et carte au départ.
+
+## Vidéos, visibilité et direct — 23 octobre 2026
+- Import MP4/MOV : copie locale conservée, envoi privé automatique si stockage disponible, puis choix Privé / Tous mes élèves actuels / Élèves sélectionnés. Aucun contenu n’est publié automatiquement.
+- Publication/retrait des vidéos et parcours accessibles directement. Le lecteur élève se ferme si le catalogue ne l’autorise plus. Les liens vidéo déjà signés peuvent rester valables jusqu’à leur expiration (5 minutes).
+- Notifications PostgreSQL après validation des écritures, diffusées par SSE authentifié ; reprise à la reconnexion et secours 10 secondes. Rafraîchissement des catalogues et du parcours ouvert, sans rechargement manuel.
+- Stockage Neon privé activé, signature S3 compatible, CORS limité au domaine de production. Envoi, HEAD, lecture avec CORS et suppression d’un objet technique vérifiés. Fichiers historiques uniquement présents sur un iPhone à téléverser depuis cet appareil.
+- Correction droits administrateur : même périmètre d’élèves que son annuaire. Enseignant limité aux élèves liés, élève limité à une autorisation explicite. Test API avec administrateur/enseignant/élèves, JWT diffuseur vs spectateur et révocation SFU.
+- Direct web : aperçu local muet, vidéo mobile inline, commande son, état reconnexion, heartbeat lancé avant la caméra, tolérance de deux erreurs réseau transitoires.
+- Vérifications : TypeScript web/API, 25 tests web et 23 tests API ciblés ; trois suites statiques vidéo/direct. Aucun test de caméra/réseau avec deux vrais appareils ou session élève réelle.
+
+- Contrôle production /health : stockage vidéo actif et service LiveKit configuré/joignable. Test navigateur automatisé du formulaire réel : publication à tous les élèves actuels, badge actualisé, puis retrait privé.
