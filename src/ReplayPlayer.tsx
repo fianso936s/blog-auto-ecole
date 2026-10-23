@@ -91,7 +91,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
   close.current = onClose; progress.current = onProgress; note.current = notify;
   const [index, setIndex] = useState(Math.min(Math.max(0, initialIndex), (route?.fixes.length || 1)-1)),
     [playing, setPlaying] = useState(autoplay), [mode, setMode] = useState<Mode>(initialMode),
-    [pitch, setPitch] = useState(0), [streetState, setStreetState] = useState("loading"),
+    [pitch, setPitch] = useState(75), [streetState, setStreetState] = useState("loading"),
     [mapReady, setMapReady] = useState(false), [streetOpened, setStreetOpened] = useState(initialMode === "street");
   const onMapReady = useCallback(() => setMapReady(true), []);
   currentIndex.current = index;
@@ -136,7 +136,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
   useEffect(() => {
     if (!route || mode !== "map" || !mapReady) return;
     const anchor = replayAnchor(route.fixes,index);
-    if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom:17,pitch,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
+    if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom:17,pitch: pitch ? 75 : 0,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
   }, [index,mode,pitch,mapReady]);
   function seek(value: number) {setPlaying(false);currentIndex.current=value;setIndex(value);}
   function restart() {
@@ -158,8 +158,8 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     </header>
     <div className="player-stage">
       {mode === "map" && route ? <>
-        <MapView spots={noRecording} route={route} recording={noRecording} index={index} pitch={pitch} handle={map} onReady={onMapReady} onPosition={()=>{}} onSpot={(p:Point)=>{setPlaying(false);onPoint?.(p);}} />
-        <button className="player-dimension" onClick={()=>setPitch(p=>p?0:55)}>{pitch?"2D":"3D"}</button>
+        <MapView spots={noRecording} route={route} recording={noRecording} index={index} pitch={pitch} navigationMode={!!pitch} handle={map} onReady={onMapReady} onPosition={()=>{}} onSpot={(p:Point)=>{setPlaying(false);onPoint?.(p);}} />
+        <button className="player-dimension" onClick={()=>setPitch(p=>p?0:75)}>{pitch?"2D":"3D"}</button>
       </> : null}
       {streetOpened && <div className="player-street-layer" aria-hidden={mode !== "street"} data-active={mode === "street"} inert={mode !== "street"}><StreetPane request={request} onState={setStreetState} active={mode === "street"} /></div>}
       {mode === "map" && !mapReady && <div className="player-loading" role="status">Préparation de la carte…</div>}
