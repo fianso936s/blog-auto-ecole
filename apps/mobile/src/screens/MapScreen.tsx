@@ -61,6 +61,7 @@ export function MapScreen() {
   const setThreeD = app.setMapThreeD;
   const [routesOpen, setRoutesOpen] = useState(app.profile?.role === "student");
   const [gpsFollow,setGpsFollow]=useState(false);
+  const [cameraMode,setCameraMode]=useState<"pov"|"preview">("preview");
   useEffect(()=>{if(!gpsFollow||app.active)return;let alive=true,subscription:Location.LocationSubscription|undefined;void Location.watchPositionAsync({accuracy:Location.Accuracy.BestForNavigation,distanceInterval:3,timeInterval:2000},p=>{if(p.coords.accuracy!==null&&p.coords.accuracy>100)return;setLocation({latitude:p.coords.latitude,longitude:p.coords.longitude,accuracy:p.coords.accuracy,timestamp:p.timestamp});}).then(s=>{if(alive)subscription=s;else s.remove();}).catch(()=>{setGpsFollow(false);app.setMessage("Autorisez la localisation pour le suivi automatique.");});return()=>{alive=false;subscription?.remove();};},[gpsFollow,!!app.active]);
   const centers = useMemo(
     () =>
@@ -118,6 +119,7 @@ export function MapScreen() {
     setStarting(true);
     app.select(null);
     try {
+      setCameraMode("pov");
       await startRecording(app.profile.id);
       await app.reloadLocal();
     } catch (e) {
@@ -211,7 +213,9 @@ export function MapScreen() {
           onLongPress={teacher ? addPoint : undefined}
           viewportPadding={{ top: 220, bottom: 210, left: 35, right: 35 }}
           onPoint={openPoint}
-          follow={!!active || (gpsFollow && !!location && locatedRoute === app.selected)}
+          follow={!!active && cameraMode==="pov" || (gpsFollow && !!location && locatedRoute === app.selected)}
+          navigationMode={!!active && cameraMode==="pov"}
+          previewMode={!!active && cameraMode==="preview"}
           recenterKey={followKey}
         />
       </View>
@@ -362,6 +366,10 @@ export function MapScreen() {
                 {formatDistance(active?.distance || 0)} ·{" "}
                 {active?.points.length || 0} repères
               </Text>
+              <View style={s.row}>
+                <View style={{flex:1}}><Button compact secondary={cameraMode!=="pov"} label="Vue GPS" icon="navigate" onPress={()=>{setCameraMode("pov");setFollowKey(n=>n+1);}} /></View>
+                <View style={{flex:1}}><Button compact secondary={cameraMode!=="preview"} label="Aperçu complet" icon="map-outline" onPress={()=>setCameraMode("preview")} /></View>
+              </View>
               <View style={s.row}>
                 <View style={{ flex: 1 }}>
                   <Button
