@@ -17,3 +17,4 @@ dist/
 *.mobileprovision
 credentials.json
 # Keep apps/mobile/ios: the Meta SwiftPM integration is maintained natively.
+.claude/
