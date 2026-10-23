@@ -5,6 +5,7 @@ export type Course = {
   steps: LessonStep[]; example: string; traps: string[]; safety: string;
   takeaway: string; tags: string[]; sourcePages: string;
   video: { title: string; channel: string; url: string };
+  videoNote?: string;
   references: string[];
 };
 export const courses: Course[] = [
@@ -50,8 +51,9 @@ export const courses: Course[] = [
       "channel": "Lolo le mono",
       "url": "https://www.youtube.com/watch?v=MUr9IyKHQwE"
     },
+    "videoNote": "Vidéo de 2021 sur une Peugeot 208 thermique : les contrôles moteur diffèrent sur une électrique. La vignette d’assurance montrée n’est plus exigée pour les véhicules immatriculés depuis avril 2024 ; l’assurance reste obligatoire.",
     "references": [
-      "ecf"
+      "ecf", "assurance"
     ]
   },
   {
@@ -810,6 +812,7 @@ export const courses: Course[] = [
       "channel": "Delphine Ciotat Conduite",
       "url": "https://www.youtube.com/watch?v=zKTfDOB-Soc"
     },
+    "videoNote": "Les vitesses et rapports montrés sont des exemples. Adapte-toi au trafic et aux limitations ; garde une distance suffisante avant de t’insérer.",
     "references": [
       "distance",
       "allure"
@@ -912,6 +915,10 @@ export const courses: Course[] = [
   }
 ];
 export const courseSources: Record<string, { label: string; url: string }> = {
+  "assurance": {
+    "label": "Service Public · Preuve d’assurance et suppression de la vignette",
+    "url": "https://www.service-public.gouv.fr/particuliers/vosdroits/F1362"
+  },
   "ecf": {
     "label": "ECF · Installation au poste de conduite",
     "url": "https://www.ecf.asso.fr/conseils/comment-bien-sinstaller-au-poste-de-conduite"

@@ -884,6 +884,7 @@ function Pedagogy() {
           <span><strong>Voir la vidéo complémentaire</strong><small>{selected.video.title} · {selected.video.channel}</small></span>
           <Icon name="arrow" size={17} />
         </a>
+        {selected.videoNote && <p className="lesson-video-note">{selected.videoNote}</p>}
         <details className="lesson-details lesson-references">
           <summary>Références et conseils de lecture</summary>
           <p>La démonstration complète la fiche. Adapte les repères à ta voiture avec ton enseignant ; les commandes et la boîte de vitesses peuvent différer.</p>
