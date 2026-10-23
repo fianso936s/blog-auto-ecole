@@ -138,7 +138,15 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     const anchor = replayAnchor(route.fixes,index);
     if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom:17,pitch,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
   }, [index,mode,pitch,mapReady]);
-  function seek(value: number) {setPlaying(false);setIndex(value);}
+  function seek(value: number) {setPlaying(false);currentIndex.current=value;setIndex(value);}
+  function restart() {
+    seek(0);
+    if (route && mapReady && mode === "map") {
+      const anchor = replayAnchor(route.fixes,0);
+      if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom:17,pitch,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
+    }
+    void save();
+  }
   return <dialog ref={dialog} className="route-player" aria-label={route ? `Lecture du parcours ${route.name}` : "Street View du repère"} onCancel={e=>{e.preventDefault();close.current();}}>
     <header className="player-header">
       <button className="player-back" onClick={onClose}>← Retour</button>
@@ -162,7 +170,8 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
       <div className="player-timeline"><label htmlFor="player-position">{mode==="street" && streetState==="loading" ? "Chargement de la vue…" : playing ? "Lecture du parcours" : "Parcours en pause"}<span>{Math.round(index/Math.max(1,route.fixes.length-1)*100)} %</span></label>
         <input id="player-position" aria-label="Position dans le parcours" type="range" min={0} max={route.fixes.length-1} value={index} onChange={e=>seek(Number(e.target.value))} onPointerUp={()=>void save()} onKeyUp={()=>void save()} />
       </div>
-      <button className="player-next" disabled={!route.points.some(p=>p.fixIndex>index)} onClick={()=>{const next=route.points.filter(p=>p.fixIndex>index).sort((a,b)=>a.fixIndex-b.fixIndex)[0];if(next)seek(next.fixIndex);}}>Repère suivant</button>
+      <div className="player-actions"><button className="player-restart" onClick={restart}>Retour au départ</button>
+      <button className="player-next" disabled={!route.points.some(p=>p.fixIndex>index)} onClick={()=>{const next=route.points.filter(p=>p.fixIndex>index).sort((a,b)=>a.fixIndex-b.fixIndex)[0];if(next)seek(next.fixIndex);}}>Repère suivant</button></div>
     </footer>}
   </dialog>;
 }

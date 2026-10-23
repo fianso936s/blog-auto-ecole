@@ -6,7 +6,7 @@ Le proxy web transmet la session applicative au même serveur et conserve les r�
 La base existante est `repere_spot` dans le projet Neon `wild-smoke-57329375`, branche `br-fragrant-lake-b9utxdv6`.
 Aucune base supplémentaire, migration de données ou publication de contenu privé effectuée.
 
-## Constat en lecture seule
+## Constat initial en lecture seule (avant la publication demandée)
 
 - 5 parcours serveur ; aucun n’est publié. Les élèves doivent être destinataires d’une attribution, ou les parcours doivent être publiés par leur auteur/admin.
 - 19 repères actifs ; leurs photos représentent environ 2,10 Mo de JSON. L’iPhone demande `summary=1`, alors que le site rechargeait toutes les photos à chaque actualisation.
@@ -64,3 +64,10 @@ Migration additive `015-course-progress.sql` testée sur la branche `br-falling-
 L’ajout de repères se fait maintenant en choisissant un emplacement sur la carte après le bouton Ajouter, avec une option Utiliser le centre et une annulation. Le parcours courant est conservé pour rattacher le repère. Une erreur de rattachement ne masque plus la réussite de sa création dans le catalogue. Le formulaire de position s’adapte sur deux colonnes à petite largeur ; les nouvelles commandes et réponses aux quiz sont dimensionnées pour le tactile.
 
 Validation : 23 tests web passent (dont création réelle du formulaire, choix exact de coordonnées, rafraîchissement serveur, quiz et reprise réseau, chargement de la progression d’un autre profil), TypeScript web/API, 22 tests API et sécurité incluant une base Postgres embarquée exécutant les vraies requêtes du suivi. Les vérifications de mise en page sur un iPhone physique et la vérification avec la session réelle de l’utilisateur restent à effectuer. L’application iOS native bénéficie du même backend, mais cette livraison d’interface concerne le site web ; elle ne constitue pas une nouvelle version App Store.
+
+## Publication des parcours pour les élèves
+
+À la demande explicite de l’utilisateur, les cinq parcours existants de Nanterre/Gennevilliers ont été publiés. Les versions ont été incrémentées pour empêcher une ancienne copie de les remettre silencieusement en privé ; les repères de ces parcours ont été partagés, sans restaurer les éléments archivés ou masqués par modération. Contrôle en lecture seule : chacun des sept comptes élèves actuels dispose de cinq parcours visibles selon les filtres de modération/blocage du serveur. Il ne s’agit pas d’un essai dans la session réelle d’un élève. Un bouton direct « Publier pour les élèves » est proposé sur les prochains parcours privés et un badge explicite indique leur publication.
+
+## Retour au départ
+Bouton explicite dans le lecteur carte/Street View : pause, premier point, recentrage et sauvegarde de la position zéro. Le panorama intégré reste monté. Les vidéos enregistrées ont aussi un bouton Retour au début. Sur mobile, les actions passent sur une ligne dédiée. Test de régression : retour Street View à zéro, conservation iframe, sauvegarde zéro et carte au départ.

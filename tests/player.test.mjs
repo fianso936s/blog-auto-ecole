@@ -63,6 +63,13 @@ test("fullscreen replay keeps controls outside the map, embeds trusted Street Vi
     assert.equal(document.querySelector("iframe"),frame);
     assert.equal(messages.at(-1).data.index,1);
     assert.equal(messages.at(-1).data.paths,undefined);
+    await click(button("Retour au départ"));
+    assert.equal(document.querySelector("iframe"),frame,"reset must retain the Street View renderer");
+    assert.equal(messages.at(-1).data.index,0,"Street View returns to the first fix");
+    assert.equal(document.querySelector(".player-play").getAttribute("aria-label"),"Lire le parcours");
+    assert.ok(saves.some(s=>s.body.fixIndex===0),"reset persists the starting position");
+    await click(button("Carte"));
+    assert.equal(document.querySelector('[data-testid="map"]').dataset.index,"0");
     await click(button("← Retour"));
     assert.ok(closed);
     await act(()=>root.unmount());

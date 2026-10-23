@@ -1424,6 +1424,7 @@ function MapPage() {
             <div className="spread">
               <div>
                 <Badge>{route.examCenter || "À classer"}</Badge>
+                {route.status === "published" && <Badge color="green">Visible par les élèves</Badge>}
                 <h3>{route.name}</h3>
               </div>
               <button
@@ -1492,12 +1493,11 @@ function MapPage() {
                 (profile?.role === "admin" ||
                   route.authorId === profile?.id) && (
                   <>
-                    <button
-                      className="text-btn"
-                      onClick={() => setRouteEditor(route)}
-                    >
-                      Modifier / Publier
-                    </button>
+                    {route.status !== "published" && <button className="text-btn" onClick={async()=>{
+                      try {await saveRoute({...route,status:"published",points:route.points.map(p=>({...p,shareWithStudents:true}))});notify("Parcours publié : les élèves peuvent le sélectionner.");}
+                      catch(error){notify((error as Error).message);}
+                    }}>Publier pour les élèves</button>}
+                    <button className="text-btn" onClick={() => setRouteEditor(route)}>Modifier le parcours</button>
                     <button
                       className="text-btn"
                       onClick={() => setAssign(route.id)}
@@ -2508,6 +2508,7 @@ async function localClip(owner: string, id: string) {
   return videoStore("readonly", (s) => s.get(`${owner}:${id}`));
 }
 function Videos() {
+  const playback = useRef<HTMLVideoElement>(null);
   const { profile, notify } = useApp(),
     writer = profile?.role !== "student",
     [videos, setVideos] = useState<Video[]>([]),
@@ -2853,6 +2854,7 @@ function Videos() {
           }}
         >
           <video
+            ref={playback}
             className="video-player"
             src={player.url}
             controls
@@ -2865,6 +2867,10 @@ function Videos() {
             }
             controlsList="nodownload"
           />
+          <button className="btn secondary video-restart" onClick={() => {
+            const video = playback.current;
+            if (video) { video.pause(); video.currentTime = 0; }
+          }}>Retour au début</button>
         </Modal>
       )}
       {sharing && (
