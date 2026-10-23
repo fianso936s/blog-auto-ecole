@@ -1,3 +1,4 @@
+import {useActivePolling,networkPolicy} from "./network";
 import {monday,schoolTime,addDays,type TeacherSlot} from "./teaching";
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {courses} from './courses';
@@ -46,7 +47,9 @@ export function useStudentDashboard(client:ProductClient){
  const generation=useRef(0);
  const refresh=useCallback(async()=>{try{const result=await client.students();setStudents(result.students);setSelected(id=>result.students.some(s=>s.id===id)?id:result.students[0]?.id||'');}catch(e){setError((e as Error).message);}},[client]);
  useEffect(()=>{void refresh();},[refresh]);
- useEffect(()=>{let alive=true;const current=++generation.current;setDetail(null);const load=async()=>{if(!selected)return;try{const result=await client.student(selected);if(alive&&current===generation.current){setDetail(result);setError('');}}catch(e){if(alive)setError((e as Error).message);}};void load();const timer=setInterval(()=>void load(),10000);return()=>{alive=false;clearInterval(timer);};},[selected,client]);
+ const loadDetail=useCallback(async()=>{if(!selected)return;const current=++generation.current;try{const result=await client.student(selected);if(current===generation.current){setDetail(result);setError('');}}catch(e){if(current===generation.current)setError((e as Error).message);}},[selected,client]);
+ useEffect(()=>{setDetail(null);void loadDetail();return()=>{generation.current++;};},[loadDetail]);
+ useActivePolling(loadDetail,networkPolicy.statisticsMs);
  return {students,selected,setSelected,detail,error,refresh};
 }
 export function useTeacherSchedule(client:ProductClient,userId:string){
@@ -54,7 +57,8 @@ export function useTeacherSchedule(client:ProductClient,userId:string){
  const scope=useRef(''),working=useRef(false);scope.current=teacherId+week;
  useEffect(()=>{let alive=true;void client.teachers().then(r=>{if(alive){setTeachers(r.teachers);if(!r.teachers.some(t=>t.id===userId))setTeacherId(r.teachers[0]?.id||userId);}}).catch(e=>{if(alive)setError(e.message);});return()=>{alive=false;};},[client,userId]);
  const refresh=useCallback(async()=>{const key=teacherId+week;try{const result=await client.slots(teacherId,schoolTime(week,0),schoolTime(addDays(week,7),0));if(scope.current===key)setSlots(result.slots);}catch(e){if(scope.current===key)setError((e as Error).message);}finally{if(scope.current===key)setLoading(false);}},[client,teacherId,week]);
- useEffect(()=>{setSlots([]);setLoading(true);setError('');void refresh();const timer=setInterval(()=>void refresh(),10000);return()=>clearInterval(timer);},[refresh]);
+ useEffect(()=>{setSlots([]);setLoading(true);setError('');void refresh();},[refresh]);
+ useActivePolling(refresh,networkPolicy.scheduleMs);
  async function toggle(slot:{start:string;end:string}){
   if(working.current||loading)return;working.current=true;setBusy(slot.start);setError('');const key=scope.current,previous=slots.find(s=>s.start===slot.start),open=!previous?.open;
   setSlots(values=>[...values.filter(s=>s.start!==slot.start),{id:previous?.id||slot.start,teacherId,start:slot.start,end:slot.end,open,version:previous?.version||0}]);

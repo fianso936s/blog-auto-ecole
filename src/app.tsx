@@ -1138,10 +1138,6 @@ function MapPage() {
   });
   useEffect(() => {
     void refresh();
-    const resume = () => { if (document.visibilityState === "visible") void refresh(); };
-    const timer = setInterval(resume, 45000);
-    window.addEventListener("online", resume);
-    document.addEventListener("visibilitychange", resume);
     try {
       const saved = JSON.parse(
         localStorage.getItem(`repere.gps.${profile!.id}`) || "null",
@@ -1152,7 +1148,6 @@ function MapPage() {
       }
     } catch {}
     return () => {
-      clearInterval(timer);
       if (watch.current !== undefined)
         navigator.geolocation.clearWatch(watch.current);
       void wake.current?.release();
@@ -2593,10 +2588,7 @@ function Videos() {
   useContentSync(refresh);
   useEffect(() => {
     void refresh();
-    const resume = () => {if (document.visibilityState === "visible") void refresh();};
-    const t = setInterval(resume, 15000);
-    window.addEventListener("online",resume); document.addEventListener("visibilitychange",resume);
-    return () => {clearInterval(t);window.removeEventListener("online",resume);document.removeEventListener("visibilitychange",resume);};
+
   }, []);
   async function attach(file: File, title?: string) {
     setImporting(true);

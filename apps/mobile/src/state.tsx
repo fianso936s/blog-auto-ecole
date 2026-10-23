@@ -164,7 +164,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const result = await syncAll(p.id);
       if (result.errors.length) setMessage(result.errors[0]!);
       else if (result.saved) setMessage("Vos modifications sont sauvegardées.");
-      await refresh();
+      if (result.saved || result.errors.length) await refresh();
       await reloadLocal();
     } catch {
       setOnline(false);
@@ -265,17 +265,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!profile) return;
     const timer = setInterval(() => void reloadLocal(), 1500);
-    const syncTimer = setInterval(() => void sync(), 30000);
-    let catalogBusy = false;
+    const syncTimer = setInterval(() => {if(AppState.currentState === "active")void sync();}, 30000);
+    let catalogBusy = false,catalogFailures=0,nextCatalogAt=0;
     const catalogTimer = setInterval(async () => {
       const p = profileRef.current;
-      if (!p || catalogBusy || AppState.currentState !== "active") return;
+      if (!p || catalogBusy || AppState.currentState !== "active" || Date.now()<nextCatalogAt) return;
       catalogBusy = true;
       const ticket = ++catalogTicket.current;
       try {
-        const remote = await request<Catalog>("/v1/spots?summary=1");
-        await applyCatalog(p, remote, ticket);
+        const [remote,routeList]=await Promise.all([request<Catalog>("/v1/spots?summary=1"),request<{routes:RouteSummary[]}>("/v1/routes")]);
+        if(profileRef.current?.id===p.id && ticket===catalogTicket.current)setRoutes(routeList.routes);
+        await applyCatalog(p, remote, ticket);catalogFailures=0;nextCatalogAt=0;
       } catch {
+        catalogFailures=Math.min(catalogFailures+1,4);nextCatalogAt=Date.now()+Math.min(60000,5000*2**catalogFailures);
         /* Retain the current catalog while offline. */
       } finally {
         catalogBusy = false;

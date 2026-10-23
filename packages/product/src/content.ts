@@ -1,3 +1,4 @@
+import {networkPolicy,isProductActive,useActivePolling} from "./network";
 import {useEffect,useSyncExternalStore} from 'react';
 import {courses,type Course} from './courses';
 import type {Transport} from './contracts';
@@ -12,8 +13,16 @@ export function applyPublishedContent(value:any){
  for(const c of value.courses){if(!c||typeof c.id!=='string'||ids.has(c.id)||!['C1','C2','Manœuvres','Sécurité'].includes(c.group)||!['code','title','intro','objective','example','safety','takeaway','sourcePages'].every(k=>typeof c[k]==='string')||!Number.isFinite(c.minutes)||!Array.isArray(c.steps)||!c.steps.every((s:any)=>s&&['title','explanation','why'].every(k=>typeof s[k]==='string'))||!strings(c.tags)||!strings(c.traps)||!strings(c.references)||!c.video||typeof c.video.title!=='string'||typeof c.video.channel!=='string'||!/^https:\/\//.test(c.video.url)||c.questions||c.answers)throw Error('Fiche pédagogique invalide.');ids.add(c.id);}
  courses.splice(0,courses.length,...value.courses as Course[]);revision=value.release.revision;version++;listeners.forEach(fn=>fn());return true;
 }
+const checks=new WeakMap<Transport,Promise<void>>();
+export function refreshPublishedCourses(send:Transport):Promise<void>{
+ const pending=checks.get(send);if(pending)return pending;
+ const work=(async()=>{const release=await send('/v1/product');if(release.revision===revision)return;const data=await send('/v1/product/content');applyPublishedContent(data);})();
+ checks.set(send,work);void work.finally(()=>{if(checks.get(send)===work)checks.delete(send);}).catch(()=>{});return work;
+}
 export function usePublishedCourses(send:Transport,enabled:boolean){
  useSyncExternalStore(subscribe,()=>version,()=>0);
- useEffect(()=>{if(!enabled)return;let alive=true,busy=false;const refresh=async()=>{if(busy)return;busy=true;try{const data=await send('/v1/product/content');if(alive)applyPublishedContent(data);}catch{/* Keep the bundled, reviewed course content while offline. */}finally{busy=false;}};void refresh();const timer=setInterval(()=>void refresh(),30000);return()=>{alive=false;clearInterval(timer);};},[send,enabled]);
+ const refresh=async()=>{if(enabled&&isProductActive())await refreshPublishedCourses(send);};
+ useEffect(()=>{void refresh().catch(()=>{});},[send,enabled]);
+ useActivePolling(refresh,networkPolicy.contentCheckMs);
  return courses;
 }

@@ -98,8 +98,9 @@ export function Videos() {
   // Poll only lightweight metadata; never poll/download video bytes from Neon.
   useEffect(() => {
     if (!app.profile) return;
-    let mounted = true;
+    let mounted = true,busy=false;
     const timer = setInterval(() => {
+      if(busy||AppState.currentState!=="active")return;busy=true;
       void fetchVideos()
         .then(({ videos }) => {
           if (!mounted) return;
@@ -108,7 +109,7 @@ export function Videos() {
             previous ? videos.find((v) => v.id === previous.id) || null : null,
           );
         })
-        .catch(() => {});
+        .catch(() => {}).finally(()=>{busy=false;});
     }, 5000);
     return () => {
       mounted = false;

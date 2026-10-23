@@ -36,7 +36,7 @@ export function spotView(s: any, p: Profile, summary = false) {
     status: s.status,
     shareWithStudents: s.share_with_students,
     photos: summary ? [] : s.photos || [],
-    photoCount: (s.photos || []).length,
+    photoCount: s.photo_count ?? (s.photos || []).length,
     quiz: publicQuiz(s.quiz, reveal),
     quizVersion: s.quiz_version,
     ...(reveal && s.source_route_id
@@ -218,8 +218,10 @@ export async function recordSharedRouteAttempt(
 export function installLearning(app: Hono<Env>) {
   app.get("/v1/spots", async (c) => {
     const p = c.get("profile");
+    const summary=c.req.query("summary")==="1";
+    const columns=summary?"s.id,s.author_id,s.name,s.category,s.lat,s.lng,s.note,s.status,s.share_with_students,s.quiz,s.quiz_version,s.source_route_id,jsonb_array_length(s.photos) AS photo_count":"s.*";
     const { rows } = await pool.query(
-      `SELECT s.* FROM map_spots s WHERE ${visibleContent('s','spot')} AND s.archived_at IS NULL AND (s.author_id=$1 OR s.status='published' OR $2='admin' OR (s.share_with_students AND EXISTS(SELECT 1 FROM teacher_students ts WHERE ts.teacher_id=s.author_id AND ts.student_id=$1))) ORDER BY s.created_at DESC LIMIT 1000`,
+      `SELECT ${columns} FROM map_spots s WHERE ${visibleContent('s','spot')} AND s.archived_at IS NULL AND (s.author_id=$1 OR s.status='published' OR $2='admin' OR (s.share_with_students AND EXISTS(SELECT 1 FROM teacher_students ts WHERE ts.teacher_id=s.author_id AND ts.student_id=$1))) ORDER BY s.created_at DESC LIMIT 1000`,
       [p.id, p.role],
     );
     const archived = await pool.query(

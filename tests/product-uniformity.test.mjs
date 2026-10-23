@@ -25,3 +25,11 @@ test('the iOS embedded player uses the same timeline and protects its HTML sourc
  const dom=new JSDOM(html,{runScripts:"dangerously",pretendToBeVisual:true});await new Promise(r=>setTimeout(r,50));assert.equal(dom.window.document.querySelectorAll('script').length,2,'a URL cannot inject a script');
  assert.ok(dom.window.document.querySelector('input[aria-label="Position dans la vidéo"]'));assert.ok(dom.window.document.body.textContent.includes('Retour au début'));dom.window.close();
 });
+
+test('published courses check a small revision, coalesce concurrent checks and download only changed content',async()=>{
+ const feed=JSON.parse(await readFile('apps/api/src/product-content.json','utf8'));let calls=[];let revision='egress-first';
+ const send=async path=>{calls.push(path);await Promise.resolve();return path==='/v1/product'?{revision}:{...feed,release:{...feed.release,revision}};};
+ await Promise.all([product.refreshPublishedCourses(send),product.refreshPublishedCourses(send)]);assert.deepEqual(calls,['/v1/product','/v1/product/content']);
+ calls=[];await product.refreshPublishedCourses(send);assert.deepEqual(calls,['/v1/product']);
+ revision='egress-second';calls=[];await product.refreshPublishedCourses(send);assert.deepEqual(calls,['/v1/product','/v1/product/content']);
+});

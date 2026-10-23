@@ -15,7 +15,7 @@ export async function productOutputs(){
  if(bank.size!==courses.length||courses.some(c=>!bank.has(c.id)))throw Error('Chaque cours doit avoir ses questions serveur.');
  const catalog=courses.map(course=>{const q=bank.get(course.id);const contentHash=hash(JSON.stringify({course,questions:q.questions}));if(!q.contentHash)throw Error('Initialiser le hash source des questions '+course.id);return {...course,questions:q.questions,revision:contentHash===q.contentHash?q.revision:contentHash.slice(0,16)};});
  const coreFiles=['index','controller','learning','street-replay'];const core=await Promise.all(coreFiles.map(name=>read(`packages/core/src/${name}.ts`)));
- const shared=await Promise.all(["packages/product/src/contracts.ts","packages/product/src/hooks.ts","packages/product/src/content.ts","packages/product/src/teaching.ts","packages/product/src/student-experience.ts","packages/ui-web/src/VideoPlayer.tsx","src/style.css"].map(read));
+ const shared=await Promise.all(["packages/product/src/contracts.ts","packages/product/src/hooks.ts","packages/product/src/content.ts","packages/product/src/teaching.ts","packages/product/src/student-experience.ts","packages/product/src/network.ts","packages/ui-web/src/VideoPlayer.tsx","src/style.css"].map(read));
  const revision=hash(JSON.stringify({product,catalog,core,shared})).slice(0,20);
  const release={version:product.version,revision,apiOrigin:product.apiOrigin,courseCount:courses.length,questionCount:catalog.reduce((n,c)=>n+c.questions.length,0)};
  const tokens='/* Generated from packages/product/product.json. */\n:root {\n'+Object.entries(product.colors).map(([key,value])=>`  --${key.replace(/[A-Z]/g,l=>'-'+l.toLowerCase())}: ${value};`).join('\n')+'\n}\n';

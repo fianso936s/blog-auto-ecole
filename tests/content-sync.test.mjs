@@ -11,14 +11,17 @@ test('server publication events refresh a mounted catalog, coalesce bursts and c
  const {useContentSync}=await import(file.href);const dom=new JSDOM('<div id="root"></div>',{pretendToBeVisual:true});
  const prior={window:globalThis.window,document:globalThis.document,EventSource:globalThis.EventSource};
  Object.assign(globalThis,{window:dom.window,document:dom.window.document,IS_REACT_ACT_ENVIRONMENT:true});
- let source,refreshes=0;
+ let source,refreshes=0,visible=true;Object.defineProperty(document,"visibilityState",{configurable:true,get:()=>visible?"visible":"hidden"});
  globalThis.EventSource=class extends dom.window.EventTarget{constructor(url){super();assert.equal(url,'/v1/content/events');source=this;}close(){this.closed=true;}};
  const root=createRoot(document.getElementById('root'));const Sample=()=>{useContentSync(()=>{refreshes++;});return null;};
  try {await act(()=>root.render(React.createElement(Sample)));
   await act(async()=>{for(let i=0;i<4;i++)source.dispatchEvent(new dom.window.Event('content'));await new Promise(r=>setTimeout(r,160));});
   assert.equal(refreshes,1,'one refresh per publication burst');
   await act(async()=>{window.dispatchEvent(new dom.window.Event('online'));await new Promise(r=>setTimeout(r,160));});assert.equal(refreshes,2);
+  visible=false;await act(()=>document.dispatchEvent(new dom.window.Event("visibilitychange")));assert.equal(source.closed,true,"background tabs close their realtime connection");
+  await act(async()=>{source.dispatchEvent(new dom.window.Event("content"));await new Promise(r=>setTimeout(r,160));});assert.equal(refreshes,2,"background tabs do not load catalogs");
+  const previous=source;visible=true;await act(async()=>{document.dispatchEvent(new dom.window.Event("visibilitychange"));await new Promise(r=>setTimeout(r,160));});assert.notEqual(source,previous);assert.equal(refreshes,3,"returning to the tab reconciles missed changes");
   await act(()=>root.unmount());assert.equal(source.closed,true);
-  source.dispatchEvent(new dom.window.Event('content'));await new Promise(r=>setTimeout(r,160));assert.equal(refreshes,2);
+  source.dispatchEvent(new dom.window.Event('content'));await new Promise(r=>setTimeout(r,160));assert.equal(refreshes,3);
  }finally{Object.assign(globalThis,prior);delete globalThis.IS_REACT_ACT_ENVIRONMENT;dom.window.close();await unlink(file);}
 });
