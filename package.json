@@ -19,7 +19,7 @@
     "product:generate": "node scripts/generate-product.mjs",
     "product:check": "node scripts/check-uniformity.mjs",
     "typecheck": "npm run typecheck:web && npm run typecheck:ios && npm run typecheck:api",
-    "verify:uniformity": "npm run product:check && npm run typecheck && npm test && npm run test:api",
+    "verify:uniformity": "npm run product:check && npm run typecheck && npm run build:vercel && npm test && npm run test:api",
     "release:preflight": "node scripts/webrtc-preflight.mjs && bash scripts/meta-native-preflight.sh",
     "release:prepare": "node scripts/prepare-release.mjs"
   },
