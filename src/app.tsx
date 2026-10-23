@@ -932,6 +932,7 @@ function MapCanvas({
         center: [2.2851, 48.9148],
         zoom: 13,
         pitch,
+        maxPitch: 85,
         attributionControl: { compact: true },
       });
       mapRef.current = map;
