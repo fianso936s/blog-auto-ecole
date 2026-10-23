@@ -22,3 +22,6 @@ for(const workspace of ['apps/mobile','apps/api','packages/core','packages/produ
 console.log('Uniformité validée : cours, quiz, suivi, navigation, lecteur, couleurs et serveur communs.');
 
 for(const file of ['src/Teaching.tsx','apps/mobile/src/components/Teaching.tsx']){const source=await read(file);assert.match(source,/useTeacherSchedule/);assert.match(source,/useStudentDashboard/);assert.match(source,/studentStatistics/);}
+
+for(const file of ["src/StudentHome.tsx","apps/mobile/src/screens/StudentHome.tsx"]){assert.match(await read(file),/useStudentGuide/);assert.match(await read(file),/studentActions/);}
+for(const file of ["src/app.tsx","apps/mobile/src/components/RouteMap.tsx"])assert.match(await read(file),/MAP_RECENTER_DELAY/);

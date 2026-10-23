@@ -13,7 +13,8 @@ test('teacher chooses an exact map position, saves a marker, and sees it after s
  dom.window.HTMLDialogElement.prototype.close=function(){this.open=false;};
  dom.window.matchMedia=()=>({matches:false});
  const React=await import('react');const {act}=React;
- const saved=[];
+ const saved=[];let gps;const priorGeo=navigator.geolocation;
+ Object.defineProperty(navigator,"geolocation",{configurable:true,value:{getCurrentPosition(fn){fn({coords:{latitude:48,longitude:2,accuracy:5}})},watchPosition(fn){gps=fn;return 7;},clearWatch(){gps=null;}}});
  globalThis.fetch=async(path,init)=>{
   if(path==='/v1/me')return Response.json({id:'teacher',name:'Enseignant',email:'teacher@example.invalid',role:'teacher'});
   if(path==='/v1/courses/me')return Response.json({reading:[],quizzes:[],plan:[]});
@@ -28,7 +29,7 @@ test('teacher chooses an exact map position, saves a marker, and sees it after s
    b.onLoad({filter:/src\/app\.tsx$/},async args=>({loader:'tsx',contents:(await readFile(args.path,'utf8')).replace('createRoot(document.getElementById("root")!).render(','(globalThis.__pointRoot = createRoot(document.getElementById("root")!)).render(')}));
    b.onResolve({filter:/^maplibre-gl$/},()=>({path:'map-fixture',namespace:'fixture'}));
    b.onLoad({filter:/.*/,namespace:'fixture'},args=>({loader:'js',contents:args.path==='empty-css'?'':`
-    class MapView {constructor(options){this.container=options.container;this.handlers={};globalThis.__pointMap=this;} on(name,fn){this.handlers[name]=fn;if(name==='load')fn();} addControl(){} addSource(){} addLayer(){} getSource(){return {setData(){}}} isStyleLoaded(){return true} resize(){} easeTo(){} fitBounds(){} getCenter(){return {lat:48,lng:2}} remove(){} }
+    class MapView {constructor(options){this.container=options.container;this.handlers={};globalThis.__pointMap=this;} on(name,fn){this.handlers[name]=fn;if(name==='load')fn();} addControl(){} addSource(){} addLayer(){} getSource(){return {setData(){}}} isStyleLoaded(){return true} resize(){} flyTo(options){this.lastCamera=options;} easeTo(options){this.lastCamera=options;} getZoom(){return 13;} fitBounds(){} getCenter(){return {lat:48,lng:2}} remove(){} }
     class Marker{constructor(options={}){this.element=options.element;}setLngLat(){return this}addTo(map){if(this.element)map.container.append(this.element);return this}remove(){this.element?.remove();}}
     class Bounds{extend(){return this}}
     export default {Map:MapView,Marker,LngLatBounds:Bounds,NavigationControl:class{}};
@@ -39,6 +40,10 @@ test('teacher chooses an exact map position, saves a marker, and sees it after s
  try{
   await act(()=>import(file.href));
   await act(()=>button('Carte et parcours').click());
+  await act(async()=>button('Me localiser et activer le suivi automatique').click());
+  await act(async()=>gps({coords:{latitude:48.1,longitude:2.1,accuracy:5}}));
+  assert.deepEqual(globalThis.__pointMap.lastCamera.center,[2.1,48.1],'GPS changes automatically recenter the camera');
+  await act(async()=>button('Désactiver le suivi automatique').click());assert.equal(gps,null,'turning follow off stops the GPS watcher');
   await act(()=>button('Ajouter un repère').click());
   assert.match(document.querySelector('.map-placement').textContent,/Touchez la carte/);
   await act(()=>globalThis.__pointMap.handlers.click({lngLat:{lat:48.91427,lng:2.28231}}));
@@ -53,6 +58,7 @@ test('teacher chooses an exact map position, saves a marker, and sees it after s
  }finally{
   if(globalThis.__pointRoot)await act(()=>globalThis.__pointRoot.unmount());
   delete globalThis.__pointRoot;delete globalThis.__pointMap;delete globalThis.IS_REACT_ACT_ENVIRONMENT;
+  Object.defineProperty(navigator,"geolocation",{configurable:true,value:priorGeo});
   dom.window.close();Object.assign(globalThis,prior);
   await unlink(file);await unlink(file.pathname.replace(/\.mjs$/,'.css')).catch(()=>{});
  }

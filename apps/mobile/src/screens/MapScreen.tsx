@@ -1,3 +1,4 @@
+import * as Location from "expo-location";
 import { syncAll } from "../services/sync";
 import {
   directoryCenters,
@@ -58,7 +59,9 @@ export function MapScreen() {
   const app = useApp();
   const threeD = app.mapThreeD;
   const setThreeD = app.setMapThreeD;
-  const [routesOpen, setRoutesOpen] = useState(false);
+  const [routesOpen, setRoutesOpen] = useState(app.profile?.role === "student");
+  const [gpsFollow,setGpsFollow]=useState(false);
+  useEffect(()=>{if(!gpsFollow||app.active)return;let alive=true,subscription:Location.LocationSubscription|undefined;void Location.watchPositionAsync({accuracy:Location.Accuracy.BestForNavigation,distanceInterval:3,timeInterval:2000},p=>{if(p.coords.accuracy!==null&&p.coords.accuracy>100)return;setLocation({latitude:p.coords.latitude,longitude:p.coords.longitude,accuracy:p.coords.accuracy,timestamp:p.timestamp});}).then(s=>{if(alive)subscription=s;else s.remove();}).catch(()=>{setGpsFollow(false);app.setMessage("Autorisez la localisation pour le suivi automatique.");});return()=>{alive=false;subscription?.remove();};},[gpsFollow,!!app.active]);
   const centers = useMemo(
     () =>
       directoryCenters([...app.routes, ...app.locals]).filter(
@@ -147,8 +150,10 @@ export function MapScreen() {
     }
   }
   async function locateMe() {
+    if(gpsFollow){setGpsFollow(false);return;}
     try {
       setLocation(await locate());
+      setGpsFollow(true);
       setLocatedRoute(app.selected);
       setFollowKey((n) => n + 1);
     } catch (e) {
@@ -206,7 +211,7 @@ export function MapScreen() {
           onLongPress={teacher ? addPoint : undefined}
           viewportPadding={{ top: 220, bottom: 210, left: 35, right: 35 }}
           onPoint={openPoint}
-          follow={!!active || (!!location && locatedRoute === app.selected)}
+          follow={!!active || (gpsFollow && !!location && locatedRoute === app.selected)}
           recenterKey={followKey}
         />
       </View>
@@ -274,7 +279,7 @@ export function MapScreen() {
           </View>
           <IconButton
             name="locate-outline"
-            label="Me localiser et recentrer la carte"
+            label={gpsFollow?"Désactiver le suivi automatique":"Me localiser et activer le suivi automatique"}
             onPress={() => void locateMe()}
           />
         </View>

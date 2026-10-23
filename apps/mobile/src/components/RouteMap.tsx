@@ -1,3 +1,4 @@
+import {MAP_RECENTER_DELAY} from "../../../../packages/product/src/student-experience";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Text, View, Pressable } from "react-native";
 import {
@@ -84,7 +85,7 @@ export function RouteMap({
   async function pan(dx: number, dy: number) {
     if (!map.current || panning.current) return;
     panning.current = true;
-    following.current = false;
+    pauseFollow();
     try {
       const center = await map.current.getCenter();
       const pixel = await map.current.project(center);
@@ -106,9 +107,14 @@ export function RouteMap({
   const threeD = controlledThreeD ?? localThreeD;
   const following = useRef(follow);
   const lastId = useRef("");
+  const [followTick,setFollowTick]=useState(0);
+  const resumeTimer=useRef<ReturnType<typeof setTimeout>|null>(null);
+  function pauseFollow(){following.current=false;if(resumeTimer.current)clearTimeout(resumeTimer.current);if(follow)resumeTimer.current=setTimeout(()=>{following.current=true;setFollowTick(n=>n+1);},MAP_RECENTER_DELAY);}
+  useEffect(()=>()=>{if(resumeTimer.current)clearTimeout(resumeTimer.current);},[]);
   const lastPitch = useRef<boolean | null>(null);
   useEffect(() => {
     following.current = follow;
+    if(resumeTimer.current)clearTimeout(resumeTimer.current);
   }, [follow, recenterKey]);
   const shape = useMemo(
     () => ({
@@ -158,6 +164,7 @@ export function RouteMap({
     threeD,
     course,
     recenterKey,
+    followTick,
   ]);
   return (
     <View style={{ flex: 1, overflow: "hidden" }}>
@@ -176,7 +183,7 @@ export function RouteMap({
         }}
         onDidFailLoadingMap={() => setError(true)}
         onRegionWillChange={(e) => {
-          if (e.nativeEvent.userInteraction) following.current = false;
+          if (e.nativeEvent.userInteraction) pauseFollow();
         }}
         onLongPress={(e) => {
           longPressAt.current = Date.now();

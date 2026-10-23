@@ -1,3 +1,5 @@
+import {StudentHome} from "./StudentHome";
+import {MAP_RECENTER_DELAY} from "../packages/product/src/student-experience";
 import {MetaConnection} from "./MetaConnection";
 import {StudentDashboard,TeacherSchedule} from "./Teaching";
 import {usePublishedCourses} from "../packages/product/src/content";
@@ -321,6 +323,7 @@ function App() {
   const [profile, setProfile] = useState<Profile | null>(null),
     [loading, setLoading] = useState(true),
     [tab, setTab] = useState("pedagogy"),
+    [home,setHome] = useState(false),
     [guest, setGuest] = useState(false),
     [auth, setAuth] = useState<string | null>(null),
     [message, setMessage] = useState("");
@@ -348,6 +351,7 @@ function App() {
     const t = setTimeout(() => setMessage(""), 7000);
     return () => clearTimeout(t);
   }, [message]);
+  useEffect(()=>{setHome(profile?.role === "student");},[profile?.id]);
   const logout = async () => {
     await api("/session/logout", "POST", {});
     setProfile(null);
@@ -388,18 +392,18 @@ function App() {
                 return (
                 <button
                   key={id}
-                  className={`nav-item ${tab === id ? "active" : ""}`}
+                  className={`nav-item ${!home && tab === id ? "active" : ""}`}
                   onClick={() => {
                     if (guest && id !== "pedagogy") {
                       setAuth("signin");
                       return;
                     }
-                    setTab(id);
+                    setHome(false); setTab(id);
                   }}
                 >
                   <Icon name={icon} />
                   <span>{label}</span>
-                  {tab === id && <i />}
+                  {!home && tab === id && <i />}
                 </button>
               );})}
             </nav>
@@ -431,7 +435,8 @@ function App() {
               </div>
             </div>
           </aside>
-          <main className={tab === "map" ? "main map-main" : "main"}>
+          <main className={!home && tab === "map" ? "main map-main" : "main"}>
+            {profile?.role === "student" && !home && <button className="student-home-return" onClick={()=>setHome(true)}>← Accueil</button>}
             {guest && (
               <div className="guest-banner">
                 Retrouvez vos parcours et votre enseignant dans votre espace.
@@ -440,7 +445,7 @@ function App() {
                 </button>
               </div>
             )}
-            {tab === "pedagogy" ? (
+            {home && profile ? <StudentHome user={profile.id} name={profile.name} go={id=>{setTab(id);setHome(false);}} Dialog={Modal}/> : tab === "pedagogy" ? (
               <Pedagogy />
             ) : tab === "map" ? (
               <MapPage />
@@ -798,7 +803,7 @@ function Pedagogy() {
       {profile && profile.role !== "student" && <nav className="course-tabs" aria-label="Espace pédagogique"><button aria-pressed={view==="lessons"} onClick={()=>setView("lessons")}>Les cours</button><button aria-pressed={view==="students"} onClick={()=>setView("students")}>Suivi des élèves</button></nav>}
       {view === "students" && profile?.role !== "student" ? <TeacherLessons /> : <>
       {error&&<p className="error" role="alert">{error} <button className="text-btn" onClick={refresh}>Réessayer</button></p>}
-      {profile&&<StudyOverview reading={reading} quizzes={quizzes} plan={plan} choose={id=>{setOnlyReview(false);choose(id);}}/>}
+      {profile&&<details className="student-progress-menu"><summary>Mon suivi · {count} fiches lues</summary><StudyOverview reading={reading} quizzes={quizzes} plan={plan} choose={id=>{setOnlyReview(false);choose(id);}}/></details>}
       <section className="lesson-picker" aria-label="Choix de la fiche">
         <div className="lesson-picker-top">
           <label htmlFor="lesson-select">Choisis ton objectif</label>
@@ -894,6 +899,7 @@ function MapCanvas({
   onPosition,
   handle,
   onReady,
+  location,
 }: {
   spots: MapSpot[];
   route: Route | null;
@@ -904,12 +910,14 @@ function MapCanvas({
   onPosition: (p: { lat: number; lng: number }) => void;
   handle: React.MutableRefObject<MapHandle>;
   onReady?: () => void;
+  location?: {lat:number;lng:number}|null;
 }) {
   const root = useRef<HTMLDivElement>(null),
     mapRef = useRef<maplibregl.Map | null>(null),
     [ready, setReady] = useState(false),
     [failed, setFailed] = useState(false),
-    callbacks = useRef({ onSpot, onPosition, onReady });
+    callbacks = useRef({ onSpot, onPosition, onReady }),
+    resumeAt=useRef(0);
   callbacks.current = { onSpot, onPosition, onReady };
   useEffect(() => {
     let map: maplibregl.Map;
@@ -961,6 +969,8 @@ function MapCanvas({
         setReady(true);
         callbacks.current.onReady?.();
       });
+      map.on("dragstart",()=>{resumeAt.current=Date.now()+MAP_RECENTER_DELAY;});
+      map.on("zoomstart",(e)=>{if(e.originalEvent)resumeAt.current=Date.now()+MAP_RECENTER_DELAY;});
       map.on("click", (e) =>
         callbacks.current.onPosition({ lng: e.lngLat.lng, lat: e.lngLat.lat }),
       );
@@ -980,6 +990,11 @@ function MapCanvas({
     if (!ready || !mapRef.current) return;
     mapRef.current.easeTo({ pitch, duration: 500 });
   }, [pitch, ready]);
+  useEffect(()=>{
+    if(!ready||(!recording.length&&!location))return;
+    const follow=()=>{const f=recording.at(-1)||location;if(f&&Date.now()>=resumeAt.current)mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:Math.max(16,mapRef.current.getZoom()),duration:500});};
+    follow();const timer=setInterval(follow,1000);return()=>clearInterval(timer);
+  },[ready,recording,location]);
   useEffect(() => {
     if (!ready) return;
     const m = mapRef.current!;
@@ -1068,7 +1083,7 @@ function MapPage() {
     [editor, setEditor] = useState<MapSpot | null>(null),
     [placing,setPlacing] = useState(false),
     [routeEditor, setRouteEditor] = useState<Route | null>(null),
-    [directory, setDirectory] = useState(false),
+    [directory, setDirectory] = useState(!writer),
     [loading, setLoading] = useState(true),
     [loadError, setLoadError] = useState(""),
     [pitch, setPitch] = useState(0),
@@ -1082,6 +1097,8 @@ function MapPage() {
     [difficulty, setDifficulty] = useState("Tous"),
     [favorites, setFavorites] = useState(false),
     [assign, setAssign] = useState<string | null>(null);
+  const [gpsFollow,setGpsFollow]=useState(false),[gpsPosition,setGpsPosition]=useState<{lat:number;lng:number}|null>(null);
+
   const [rec, setRec] = useState<"idle" | "recording" | "paused">("idle"),
     [fixes, setFixes] = useState<Fix[]>([]),
     [recordPoints, setRecordPoints] = useState<Point[]>([]),
@@ -1095,6 +1112,7 @@ function MapPage() {
     start = useRef(0),
     watch = useRef<number | undefined>(undefined),
     wake = useRef<any>(null);
+  useEffect(()=>{if(!gpsFollow||rec!=="idle"||!navigator.geolocation)return;const id=navigator.geolocation.watchPosition(p=>{if(p.coords.accuracy<=100)setGpsPosition({lat:p.coords.latitude,lng:p.coords.longitude});},()=>{setGpsFollow(false);notify("Le suivi GPS nécessite l’autorisation de localisation.");},{enableHighAccuracy:true,maximumAge:3000,timeout:15000});return()=>navigator.geolocation.clearWatch(id);},[gpsFollow,rec]);
   recRef.current = rec;
   fixRef.current = fixes;
   const refreshing = useRef(false);
@@ -1199,6 +1217,7 @@ function MapPage() {
   async function openRoute(id: string) {
     try {
       const r = await api<Route>(`/v1/routes/${id}`);
+      setGpsFollow(false);setGpsPosition(null);
       setRoute(r);
       setIndex(r.progress || 0);
       setDirectory(false);
@@ -1245,11 +1264,7 @@ function MapPage() {
           fixRef.current = [...list, f.fix];
           setFixes(fixRef.current);
           setMapPos({ lat: p.coords.latitude, lng: p.coords.longitude });
-          if (!list.length)
-            handle.current.map?.flyTo({
-              center: [p.coords.longitude, p.coords.latitude],
-              zoom: 16,
-            });
+
         }
       },
       (e) => {
@@ -1315,6 +1330,7 @@ function MapPage() {
     }
   }
   async function locate() {
+    if(gpsFollow){setGpsFollow(false);setGpsPosition(null);return;}
     if (!navigator.geolocation) {
       notify("Localisation non disponible.");
       return;
@@ -1322,6 +1338,7 @@ function MapPage() {
     navigator.geolocation.getCurrentPosition(
       (p) => {
         setMapPos({ lat: p.coords.latitude, lng: p.coords.longitude });
+        setGpsPosition({lat:p.coords.latitude,lng:p.coords.longitude});setGpsFollow(true);
         handle.current.map?.flyTo({
           center: [p.coords.longitude, p.coords.latitude],
           zoom: 16,
@@ -1364,6 +1381,7 @@ function MapPage() {
         )}
         route={route}
         recording={fixes}
+        location={gpsFollow?gpsPosition:null}
         index={index}
         pitch={pitch}
         onSpot={chooseSpot}
@@ -1387,7 +1405,8 @@ function MapPage() {
           <button
             className="map-tool"
             onClick={locate}
-            aria-label="Me localiser"
+            aria-label={gpsFollow?"Désactiver le suivi automatique":"Me localiser et activer le suivi automatique"}
+            aria-pressed={gpsFollow}
           >
             <Icon name="locate" />
           </button>
@@ -1400,7 +1419,7 @@ function MapPage() {
           </button>
         </div>
       </div>
-      <div className="map-filters filters">
+      {!writer ? <label className="student-map-filter">Repères<select aria-label="Filtrer les repères" value={category} onChange={e=>setCategory(e.target.value)}><option value="Toutes">Tous les repères</option>{categories.map(c=><option key={c} value={c}>{c}</option>)}</select></label> :       <div className="map-filters filters">
         <button
           className={`chip ${category === "Toutes" ? "selected" : ""}`}
           onClick={() => setCategory("Toutes")}
@@ -1417,6 +1436,7 @@ function MapPage() {
           </button>
         ))}
       </div>
+      }
       {(loadError || loading) && (
         <div className="map-status">
           {loading ? (

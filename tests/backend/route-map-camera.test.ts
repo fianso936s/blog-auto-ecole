@@ -20,6 +20,7 @@ function cameraActions(follow: boolean) {
     useEffect: (fn: () => void) => effects.push(fn),
   };
   const mocks: Record<string, unknown> = {
+    "../../../../packages/product/src/student-experience": {MAP_RECENTER_DELAY:8000},
     react: { __esModule: true, default: react, ...react },
     "react-native": {},
     "@maplibre/maplibre-react-native": {},

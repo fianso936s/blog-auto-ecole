@@ -44,6 +44,7 @@ export function Pedagogy() {
   const learning=useProductLearning(userId,productClient,nativeReadingStorage);
   const {reading,loading,busy:saving}=learning;
   const [view,setView]=useState("lessons");
+  const [showProgress,setShowProgress]=useState(false),[showFilters,setShowFilters]=useState(false);
   const [selected, setSelected] = useState<Course | null>(null);
   const reader = useRef<React.ComponentRef<typeof ScrollView>>(null);
   const reduced = useReducedMotion();
@@ -160,7 +161,8 @@ export function Pedagogy() {
             iPhone
           </Text>
         </View>
-        <Field
+        <Button secondary label={showFilters?"Masquer la recherche et les filtres":"Rechercher ou filtrer les fiches"} onPress={()=>setShowFilters(!showFilters)}/>
+        {showFilters&&<><Field
           label="Rechercher une fiche"
           value={search}
           onChangeText={setSearch}
@@ -182,7 +184,7 @@ export function Pedagogy() {
               onPress={() => setFilter(g.id)}
             />
           ))}
-        </ScrollView>
+        </ScrollView></>}
         <View style={s.between}>
           <Text style={s.heading}>
             {filter === "review"
@@ -206,7 +208,7 @@ export function Pedagogy() {
         )}
         {app.profile?.role!=="student"&&<View style={s.row}><Chip label="Les cours" active={view==="lessons"} onPress={()=>setView("lessons")}/><Chip label="Suivi des élèves" active={view==="students"} onPress={()=>setView("students")}/></View>}
         {!!learning.error&&<Text style={s.error} accessibilityRole="alert">{learning.error}</Text>}
-        {view==="students"?<TeacherLessons/>:<StudyOverview reading={reading} quizzes={learning.quizzes} plan={learning.plan} choose={id=>open(courses.find(c=>c.id===id)!)}/>}
+        {view==="students"?<TeacherLessons/>:<View style={{gap:10}}><Button secondary label={`Mon suivi · ${readCount} fiches lues ${showProgress?"−":"+"}`} onPress={()=>setShowProgress(!showProgress)}/>{showProgress&&<StudyOverview reading={reading} quizzes={learning.quizzes} plan={learning.plan} choose={id=>open(courses.find(c=>c.id===id)!)}/>}</View>}
         {view==="lessons"&&visible.map((course) => {
           const palette = tones[groupTone(course.group)];
           return (

@@ -1,3 +1,4 @@
+import {StudentHome} from "./screens/StudentHome";
 import * as Linking from "expo-linking";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
@@ -20,7 +21,9 @@ const tabs = product.navigation.map(t=>({...t,icon:nativeIcons[t.id as keyof typ
 function Shell() {
   const app = useApp();
   const [tab, setTab] = useState<(typeof tabs)[number]["id"]>("pedagogy");
-  useEffect(()=>{const open=(url:string|null)=>{if(url?.startsWith("reperespot://meta-live")){setTab("videos");app.setMessage("Ouvrez la connexion Meta pour lancer le direct depuis vos lunettes.");}};void Linking.getInitialURL().then(open);const sub=Linking.addEventListener("url",event=>open(event.url));return()=>sub.remove();},[]);
+  const [home,setHome]=useState(false);
+  useEffect(()=>{setHome(app.profile?.role === "student");},[app.profile?.id]);
+  useEffect(()=>{const open=(url:string|null)=>{if(url?.startsWith("reperespot://meta-live")){setHome(false);setTab("videos");app.setMessage("Ouvrez la connexion Meta pour lancer le direct depuis vos lunettes.");}};void Linking.getInitialURL().then(open);const sub=Linking.addEventListener("url",event=>open(event.url));return()=>sub.remove();},[]);
   useEffect(() => {
     if (!app.loading) void SplashScreen.hideAsync();
   }, [app.loading]);
@@ -47,7 +50,8 @@ function Shell() {
       ) : (
         <>
           <View style={{ flex: 1 }}>
-            {tab === "pedagogy" ? (
+            {app.profile.role === "student" && !home && <Pressable accessibilityRole="button" onPress={()=>setHome(true)} style={{minHeight:44,paddingHorizontal:20,justifyContent:"center",backgroundColor:colors.paper}}><Text style={{color:colors.wine,fontWeight:"600"}}>← Accueil</Text></Pressable>}
+            {home ? <StudentHome user={app.profile.id} name={app.profile.name} go={id=>{setTab(id);setHome(false);}}/> : tab === "pedagogy" ? (
               <Pedagogy />
             ) : tab === "map" ? (
               <MapScreen />
@@ -96,8 +100,8 @@ function Shell() {
                 key={t.id}
                 accessibilityRole="tab"
                 accessibilityLabel={t.label}
-                accessibilityState={{ selected: tab === t.id }}
-                onPress={() => setTab(t.id)}
+                accessibilityState={{ selected: !home && tab === t.id }}
+                onPress={() => {setHome(false);setTab(t.id);}}
                 style={({ pressed }) => ({
                   flex: 1,
                   minHeight: 58,
@@ -114,13 +118,13 @@ function Shell() {
                     borderRadius: 15,
                     alignItems: "center",
                     justifyContent: "center",
-                    backgroundColor: tab === t.id ? colors.soft : "transparent",
+                    backgroundColor: !home && tab === t.id ? colors.soft : "transparent",
                   }}
                 >
                   <Icon
-                    name={tab === t.id ? t.activeIcon : t.icon}
+                    name={!home && tab === t.id ? t.activeIcon : t.icon}
                     size={21}
-                    color={tab === t.id ? colors.wine : colors.muted}
+                    color={!home && tab === t.id ? colors.wine : colors.muted}
                   />
                   {t.id === "map" && !!app.active && (
                     <View
@@ -140,8 +144,8 @@ function Shell() {
                 <Text
                   style={{
                     fontSize: 11,
-                    fontWeight: tab === t.id ? "700" : "500",
-                    color: tab === t.id ? colors.wine : colors.muted,
+                    fontWeight: !home && tab === t.id ? "700" : "500",
+                    color: !home && tab === t.id ? colors.wine : colors.muted,
                   }}
                 >
                   {t.short}
