@@ -76,7 +76,7 @@ export function Replay({
   );
   const reducedMotion = useReducedMotion();
   const fix = route.fixes[index];
-  const [pov,setPov]=useState(true),[recenterKey,setRecenterKey]=useState(0);
+  const [pov,setPov]=useState(true),[overview,setOverview]=useState(false),[recenterKey,setRecenterKey]=useState(0);
   const bearing=useMemo(()=>pov?replayBearing(route.fixes,index):null,[pov,route.fixes,index]);
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state) => {
@@ -227,7 +227,7 @@ export function Replay({
           mode={threeD ? "3d" : "2d"}
           fullscreen={fullscreen}
           onFullscreen={() => setFullscreen((v) => !v)}
-          onMode={(next) => setThreeD(next === "3d")}
+          onMode={(next) => {setOverview(false);setThreeD(next === "3d");setPov(next === "3d");}}
         >
           <Chip label="Repères" active={pointsOpen} onPress={() => { setPlaying(false); setPointsOpen(true); }} />
           {fullscreen && (
@@ -246,13 +246,15 @@ export function Replay({
             onPoint={(point) => inspect(point as Point)}
             focus={fix}
             course={bearing}
-            navigationMode={pov && threeD}
+            navigationMode={pov && threeD && !overview}
+            previewMode={overview}
             recenterKey={recenterKey}
             styleUrl={app.config?.mapStyleUrl}
             follow
           />
           <View style={{position:"absolute",top:12,left:12,flexDirection:"row",gap:8}}>
-            <Chip label="Vue GPS" active={pov} onPress={()=>{if(!pov)setThreeD(true);setPov(v=>!v);setRecenterKey(k=>k+1);}} />
+            <Chip label="Vue GPS" active={pov&&!overview} onPress={()=>{setOverview(false);setThreeD(true);setPov(true);setRecenterKey(k=>k+1);}} />
+            <Chip label="Aperçu" active={overview} onPress={()=>{setOverview(true);setPlaying(false);}} />
             {pov&&<IconButton name="locate-outline" label="Recentrer la vue GPS" onPress={()=>setRecenterKey(k=>k+1)}/>}
           </View>
         </View>
