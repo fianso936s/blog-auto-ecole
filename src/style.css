@@ -1148,6 +1148,59 @@ textarea {
 .player-street-layer { position: absolute; inset: 0; visibility: hidden; pointer-events: none; }
 .player-street-layer[data-active="true"] { visibility: visible; pointer-events: auto; }
 .player-loading { position: absolute; inset: 0; display: grid; place-items: center; background: #e7e6dc; font-size: 14px; }
+.course-tabs { display: flex; gap: 6px; padding: 4px; border-radius: 14px; background: #eae4df; margin: 20px 0; }
+.course-tabs button { flex: 1; min-height: 44px; border: 0; background: transparent; border-radius: 11px; color: var(--wine); font-weight: 600; cursor: pointer; }
+.course-tabs button[aria-pressed="true"] { background: white; box-shadow: 0 1px 4px #0001; }
+.study-overview { padding: 18px 0; border-bottom: 1px solid var(--line); margin-bottom: 20px; }
+.study-overview p { font-size: 12px; color: var(--muted); margin: 7px 0; }
+.study-overview small { display: block; font-size: 11px; color: var(--muted); line-height: 1.5; margin-top: 10px; }
+.study-overview progress, .study-route progress { width: 100%; height: 8px; accent-color: var(--wine); }
+.study-overview summary, .course-routes summary { cursor: pointer; padding: 12px 0; font-size: 13px; color: var(--wine); font-weight: 600; min-height: 44px; }
+.study-path { display: grid; gap: 6px; }
+.study-path button { text-align: left; border: 1px solid var(--line); border-radius: 10px; padding: 12px; background: transparent; display: grid; gap: 3px; cursor: pointer; min-height: 48px; color: inherit; overflow-wrap: anywhere; }
+.study-path button small { margin: 0; }
+.lesson-quiz { border-top: 1px solid var(--line); margin-top: 28px; padding: 24px 0 8px; }
+.lesson-quiz h3 { font-size: 20px; margin: 0 0 8px; }
+.lesson-quiz > p { font-size: 13px; line-height: 1.6; color: var(--muted); }
+.lesson-quiz fieldset { min-width: 0; border: 0; padding: 14px 0 20px; margin: 0; }
+.lesson-quiz legend { font-size: 15px; font-weight: 650; line-height: 1.5; }
+.quiz-choice { display: flex; align-items: flex-start; gap: 12px; padding: 13px; margin: 7px 0; border: 1px solid var(--line); border-radius: 11px; font-size: 14px; line-height: 1.55; cursor: pointer; }
+.quiz-choice input { flex: 0 0 auto; margin-top: 4px; width: 18px; height: 18px; accent-color: var(--wine); }
+.quiz-choice:has(input:checked) { border-color: var(--wine); background: #672c3b08; }
+.lesson-quiz fieldset:disabled { opacity: 1; }
+.quiz-correction { padding: 14px; border-left: 3px solid #ad3d36; background: #ad3d3609; font-size: 13px; line-height: 1.6; border-radius: 0 10px 10px 0; }
+.quiz-correction.correct { border-color: #41765a; background: #41765a09; }
+.quiz-correction p { margin: 6px 0 0; }
+.quiz-result { display: grid; justify-items: start; gap: 10px; font-size: 14px; line-height: 1.5; }
+.teacher-learning { padding: 8px 0 28px; }
+.teacher-learning h2 { margin: 12px 0; font-size: 22px; }
+.course-field { display: grid; min-width: 0; gap: 8px; font-size: 13px; font-weight: 600; }
+.course-field select, .course-field textarea { width: 100%; min-width: 0; max-width: 100%; box-sizing: border-box; font: inherit; font-weight: 400; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 12px; }
+.course-field select { text-overflow: ellipsis; }
+.course-metrics { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin: 22px 0; }
+.course-metrics span { display: grid; gap: 5px; font-size: 12px; color: var(--muted); }
+.course-metrics strong { font-size: 22px; color: var(--wine); }
+.course-plan-form { display: grid; gap: 18px; padding: 20px 0; border-top: 1px solid var(--line); }
+.course-plan-form p { font-size: 13px; line-height: 1.6; margin: 0; }
+.course-plan-form .btn { justify-self: start; }
+.study-route { display: grid; gap: 8px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+.study-route span, .study-route small { color: var(--muted); }
+.map-bottom[hidden] { display: none; }
+.placing-spot .maplibregl-canvas { cursor: crosshair; }
+.map-placement { position: absolute; z-index: 4; bottom: max(25px,env(safe-area-inset-bottom)); left: 16px; right: 16px; max-width: 470px; margin: auto; background: #fffaf4f5; padding: 16px; border-radius: 16px; box-shadow: 0 6px 30px #0002; display: grid; gap: 12px; }
+.map-placement strong { font-size: 14px; }
+.spot-location-row { display: grid; grid-template-columns: minmax(0,1.3fr) repeat(2,minmax(0,1fr)); gap: 12px; }
+.spot-editor-form input, .spot-editor-form select { min-width: 0; max-width: 100%; }
+@media (max-width: 620px) {
+  .spot-location-row { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .spot-location-row > :first-child { grid-column: 1 / -1; }
+  .course-field select, .course-field textarea, .spot-editor-form input, .spot-editor-form select { font-size: 16px; }
+  .lesson-quiz .btn, .course-plan-form .btn { width: 100%; justify-self: stretch; }
+  .course-tabs { margin-top: 14px; }
+  .quiz-choice { padding: 12px; }
+  .map-placement .row { flex-wrap: wrap; }
+  .map-creation { flex-wrap: wrap; }
+}
 .player-dimension { position: absolute; top: 14px; left: 14px; background: white; color: var(--wine); box-shadow: 0 2px 10px #0002; }
 .player-controls { flex-shrink: 0; display: flex; align-items: center; gap: 18px; padding: 14px 22px max(14px, env(safe-area-inset-bottom)); background: var(--paper); }
 .player-play { background: var(--wine); color: white; width: 52px; height: 52px; font-size: 21px; }

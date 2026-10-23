@@ -36,6 +36,7 @@ import {
 import "./style.css";
 import { api } from "./shared/api";
 import { ReplayPlayer } from "./ReplayPlayer";
+import { useCourseProgress, StudyOverview, LessonQuiz, TeacherLessons } from "./CourseLearning";
 import { observeMapSize } from "./shared/map-size";
 
 type AnyData = Record<string, any>;
@@ -306,6 +307,7 @@ type Ctx = {
   notify: (s: string) => void;
   reload: () => Promise<void>;
   logout: () => Promise<void>;
+  login: () => void;
 };
 const Context = createContext<Ctx>(null!);
 const useApp = () => useContext(Context);
@@ -347,7 +349,7 @@ function App() {
     setGuest(false);
   };
   return (
-    <Context.Provider value={{ profile, notify: setMessage, reload, logout }}>
+    <Context.Provider value={{ profile, notify: setMessage, reload, logout, login:()=>setAuth("signin") }}>
       {loading ? (
         <div className="loading">
           <img
@@ -764,24 +766,12 @@ function Auth({
     </Modal>
   );
 }
-type Reading = Record<string, { read?: boolean; review?: boolean }>;
 function Pedagogy() {
-  const { profile, notify } = useApp();
-  const key = `repere.reading.web.${profile?.id || "guest"}`;
+  const { profile, login } = useApp();
+  const {reading,quizzes,plan,busy,error,refresh,update}=useCourseProgress(profile);
   const [selectedId, setSelectedId] = useState(courses[0].id);
-  const [reading, setReading] = useState<Reading>({});
   const [onlyReview, setOnlyReview] = useState(false);
-  useEffect(() => {
-    try { setReading(JSON.parse(localStorage.getItem(key) || "{}")); }
-    catch { setReading({}); }
-  }, [key]);
-  function update(id: string, patch: { read?: boolean; review?: boolean }) {
-    const value = { ...reading, [id]: { ...reading[id], ...patch } };
-    try {
-      localStorage.setItem(key, JSON.stringify(value));
-      setReading(value);
-    } catch { notify("Le navigateur ne peut pas enregistrer votre progression."); }
-  }
+  const [view,setView]=useState("lessons");
   const count = courses.filter((c) => reading[c.id]?.read).length;
   const reviewCount = courses.filter((c) => reading[c.id]?.review).length;
   const visible = onlyReview ? courses.filter((c) => reading[c.id]?.review) : courses;
@@ -801,6 +791,10 @@ function Pedagogy() {
         <h1>Fiches pédagogiques</h1>
         <p>Un objectif. Des étapes claires. À ton rythme.</p>
       </header>
+      {profile && profile.role !== "student" && <nav className="course-tabs" aria-label="Espace pédagogique"><button aria-pressed={view==="lessons"} onClick={()=>setView("lessons")}>Les cours</button><button aria-pressed={view==="students"} onClick={()=>setView("students")}>Suivi des élèves</button></nav>}
+      {view === "students" && profile?.role !== "student" ? <TeacherLessons /> : <>
+      {error&&<p className="error" role="alert">{error} <button className="text-btn" onClick={refresh}>Réessayer</button></p>}
+      {profile&&<StudyOverview reading={reading} quizzes={quizzes} plan={plan} choose={id=>{setOnlyReview(false);choose(id);}}/>}
       <section className="lesson-picker" aria-label="Choix de la fiche">
         <div className="lesson-picker-top">
           <label htmlFor="lesson-select">Choisis ton objectif</label>
@@ -864,21 +858,23 @@ function Pedagogy() {
           <ul>{selected.references.map((id) => <li key={id}><a href={courseSources[id].url} target="_blank" rel="noreferrer">{courseSources[id].label} ↗</a></li>)}</ul>
         </details>
         <div className="lesson-reading-actions">
-          <Button icon="check" onClick={() => update(selected.id, { read: !reading[selected.id]?.read })}>
+          <Button disabled={busy} icon="check" onClick={() => update(selected.id, { read: !reading[selected.id]?.read })}>
             {reading[selected.id]?.read ? "Fiche lue · Annuler" : "J’ai lu cette fiche"}
           </Button>
-          <button className={`lesson-review-button ${reading[selected.id]?.review ? "active" : ""}`}
+          <button disabled={busy} className={`lesson-review-button ${reading[selected.id]?.review ? "active" : ""}`}
             aria-pressed={!!reading[selected.id]?.review}
             onClick={() => update(selected.id, { review: !reading[selected.id]?.review })}>
             {reading[selected.id]?.review ? "À revoir · Retirer" : "Garder pour réviser"}
           </button>
         </div>
+        <LessonQuiz key={selected.id} course={selected} profile={profile} onChanged={()=>void refresh()} onLogin={login}/>
         <nav className="lesson-pagination" aria-label="Navigation entre les fiches">
           <button disabled={position === 0} onClick={() => { setOnlyReview(false); choose(courses[position - 1].id); document.getElementById("lesson-select")?.focus(); }}>← Fiche précédente</button>
           <button disabled={position === courses.length - 1} onClick={() => { setOnlyReview(false); choose(courses[position + 1].id); document.getElementById("lesson-select")?.focus(); }}>Fiche suivante →</button>
         </nav>
       </article>}
-      <footer className="pedagogy-footer">Ta lecture est enregistrée dans ce navigateur. La maîtrise se travaille en voiture avec ton enseignant.</footer>
+      <footer className="pedagogy-footer">{profile ? (error ? "Le suivi n’est pas encore synchronisé. Réessaie avec une connexion stable." : "Ton suivi est enregistré dans ton espace connecté.") : "En découverte, ta lecture est enregistrée dans ce navigateur."} La maîtrise se travaille en voiture avec ton enseignant.</footer>
+      </>}
     </div>
   );
 }
@@ -1066,6 +1062,7 @@ function MapPage() {
     [route, setRoute] = useState<Route | null>(null),
     [point, setPoint] = useState<any>(null),
     [editor, setEditor] = useState<MapSpot | null>(null),
+    [placing,setPlacing] = useState(false),
     [routeEditor, setRouteEditor] = useState<Route | null>(null),
     [directory, setDirectory] = useState(false),
     [loading, setLoading] = useState(true),
@@ -1349,7 +1346,7 @@ function MapPage() {
     }),
   );
   return (
-    <div className="map-page">
+    <div className={`map-page ${placing ? "placing-spot" : ""}`}>
       {!player && <MapCanvas
         spots={spots.filter(
           (s) => category === "Toutes" || s.category === category,
@@ -1359,7 +1356,7 @@ function MapPage() {
         index={index}
         pitch={pitch}
         onSpot={chooseSpot}
-        onPosition={setMapPos}
+        onPosition={pos=>{setMapPos(pos);if(placing){setEditor(blankSpot(pos));setPlacing(false);}}}
         handle={handle}
       />}
       <div className="map-top">
@@ -1420,7 +1417,8 @@ function MapPage() {
           )}
         </div>
       )}
-      <div className="map-bottom">
+      {placing && <div className="map-placement" role="status"><strong>Touchez la carte à l’endroit du repère</strong><div className="row"><button className="btn secondary" onClick={()=>{const c=handle.current.map?.getCenter();setEditor(blankSpot(c?{lat:c.lat,lng:c.lng}:mapPos));setPlacing(false);}}>Utiliser le centre</button><button className="text-btn" onClick={()=>setPlacing(false)}>Annuler</button></div></div>}
+      <div className="map-bottom" hidden={placing}>
         {route && (
           <div className="replay-panel">
             <div className="spread">
@@ -1607,10 +1605,7 @@ function MapPage() {
             <div className="map-creation">
               <Button
                 icon="plus"
-                onClick={() => {
-                  const c = handle.current.map?.getCenter();
-                  setEditor(blankSpot(c ? { lat: c.lat, lng: c.lng } : mapPos));
-                }}
+                onClick={() => {setPlacing(true);setPlaying(false);}}
               >
                 Ajouter un repère
               </Button>
@@ -1787,15 +1782,14 @@ function MapPage() {
                 route &&
                 (profile!.role === "admin" || route.authorId === profile!.id)
               ) {
-                const updated = await api<Route>(
-                  `/v1/routes/${route.id}`,
-                  "PUT",
-                  {
-                    ...route,
-                    points: [...route.points.filter((x) => x.id !== s.id), p],
-                  },
-                );
-                setRoute(updated);
+                try {
+                  const updated = await api<Route>(`/v1/routes/${route.id}`,"PUT",{...route,points:[...route.points.filter(x=>x.id!==s.id),p]});
+                  setRoute(updated);
+                } catch(error) {
+                  setEditor(null);await refresh();
+                  notify(`Repère créé sur la carte. Son ajout au parcours a échoué : ${(error as Error).message}`);
+                  return;
+                }
               }
             }
             setEditor(null);
@@ -2055,7 +2049,7 @@ function SpotEditor({
       wide
       onClose={onClose}
     >
-      <form className="stack" onSubmit={submit}>
+      <form className="stack spot-editor-form" onSubmit={submit}>
         <Field label="Nom du repère">
           <input
             required
@@ -2064,7 +2058,7 @@ function SpotEditor({
             onChange={(e) => patch({ name: e.target.value })}
           />
         </Field>
-        <div className="row">
+        <div className="spot-location-row">
           <Field label="Catégorie">
             <select
               value={s.category}
