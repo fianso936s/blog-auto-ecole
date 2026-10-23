@@ -134,7 +134,7 @@ export function RouteMap({
   useEffect(() => {
     if (!mapReady) return;
     const pitchChanged = lastPitch.current !== threeD;
-    const pitch = navigationMode ? (threeD ? 75 : 0) : threeD ? 70 : 0;
+    const pitch = navigationMode ? (threeD ? 80 : 0) : threeD ? 70 : 0;
     const last = fixes.at(-1), before = fixes.at(-2);
     const computedBearing = last && before && (last.lat !== before.lat || last.lng !== before.lng)
       ? Math.atan2(Math.sin((last.lng-before.lng)*Math.PI/180)*Math.cos(last.lat*Math.PI/180),
@@ -155,10 +155,10 @@ export function RouteMap({
     if (point && following.current)
       camera.current?.easeTo({
         center: [point.lng, point.lat],
-        zoom: navigationMode ? 17.5 : course != null ? 17 : 16,
+        zoom: navigationMode ? 18 : course != null ? 17 : 16,
         bearing: navigationMode ? (course ?? lastBearing.current) : course ?? 0,
         pitch,
-        duration: reducedMotion ? 0 : navigationMode ? 650 : 250,
+        duration: reducedMotion ? 0 : navigationMode ? 800 : 250,
       });
     else if (fixes.length && lastId.current !== signature) {
       camera.current?.fitBounds(routeBounds(fixes)!, {
