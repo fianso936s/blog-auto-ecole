@@ -1,0 +1,128 @@
+--- a/apps/api/src/index.ts
++++ b/apps/api/src/index.ts
+@@ -28,12 +28,15 @@
+     "*",
+     secureHeaders({
+       referrerPolicy: false,
+-      xFrameOptions: "DENY",
++      xFrameOptions: false,
+       crossOriginEmbedderPolicy: false,
+     }),
+   );
+   app.use("*", async (c, next) => {
+     c.header("Referrer-Policy", c.req.path === "/streetview" ? "strict-origin-when-cross-origin" : "no-referrer");
++    if (c.req.path === "/streetview") {
++      c.header("Content-Security-Policy", "frame-ancestors 'self' https://blog-auto-ecole.vercel.app");
++    } else c.header("X-Frame-Options", "DENY");
+     c.header("Cache-Control", "no-store");
+     c.header("X-Content-Type-Options", "nosniff");
+     if(['/auth','/reset-password','/privacy','/terms','/support','/meta/callback'].includes(c.req.path))
+--- a/apps/api/src/streetview-client.ts
++++ b/apps/api/src/streetview-client.ts
+@@ -11,8 +11,14 @@
+     gm_authFailure: () => void;
+   }
+ }
+-const send = (data: Record<string, unknown>) =>
+-  window.ReactNativeWebView?.postMessage(JSON.stringify(data));
++// Only the published web app can drive this public viewer. No account tokens cross this bridge.
++const webOrigin = "https://blog-auto-ecole.vercel.app";
++const embedded = !window.ReactNativeWebView && !!window.parent && window.parent !== window;
++const send = (data: Record<string, unknown>) => {
++  const message = JSON.stringify(data);
++  if (window.ReactNativeWebView) window.ReactNativeWebView.postMessage(message);
++  else if (embedded) window.parent.postMessage(message, webOrigin);
++};
+ const status = document.getElementById("status")!;
+ const imageDate = document.getElementById("image-date")!;
+ const diagnostic = document.getElementById("diagnostic") as HTMLButtonElement;
+@@ -200,17 +206,15 @@
+   send({ type: "ready" });
+   // A visible browser-only test uses a public Paris location, never an account or stored route.
+   // The mobile player continues to accept only its recorded route messages.
+-  if (!window.ReactNativeWebView) diagnostic.hidden = false;
++  if (!window.ReactNativeWebView && !embedded) diagnostic.hidden = false;
+ };
+ function receive(event: MessageEvent) {
+-  if (
+-    event.origin &&
+-    event.origin !== "null" &&
+-    event.origin !== location.origin
+-  )
+-    return;
++  if (embedded) {
++    if (event.source !== window.parent || event.origin !== webOrigin) return;
++  } else if (event.origin && event.origin !== "null" && event.origin !== location.origin) return;
+   try {
+     const data = JSON.parse(event.data);
++    if (data.type === "connect") { if (ready) send({ type: "ready" }); return; }
+     if (data.type === "fix" && ready)
+       void replay.move({ ...data, pointSnapshot: false } as StreetRequest);
+     if (data.type === "snapshot" && ready)
+--- a/tests/streetview-renderer.test.ts
++++ b/tests/streetview-renderer.test.ts
+@@ -2,7 +2,7 @@
+ import assert from "node:assert/strict";
+ import vm from "node:vm";
+ import { build } from "esbuild";
+-test("Google viewer remains mounted during lookup and repeated pano does not reset its renderer", async () => {
++for (const surface of ["native", "web"]) test(`Google viewer remains mounted and rejects untrusted messages (${surface})`, async () => {
+   const result = await build({
+     entryPoints: ["apps/api/src/streetview-client.ts"],
+     bundle: true,
+@@ -84,10 +84,9 @@
+       });
+     }
+   }
++  const parent = {postMessage: (s: string, origin: string) => { assert.equal(origin, "https://blog-auto-ecole.vercel.app"); sent.push(JSON.parse(s)); }};
+   const window = {
+-    ReactNativeWebView: {
+-      postMessage: (s: string) => sent.push(JSON.parse(s)),
+-    },
++    ...(surface === "native" ? { ReactNativeWebView: {postMessage: (s: string) => sent.push(JSON.parse(s))}} : {parent}),
+     addEventListener: (s: string, f: Function) => {
+       listeners[s] = f;
+     },
+@@ -124,7 +123,8 @@
+   window.initReplay();
+   const move = (requestId: number) =>
+     listeners.message!({
+-      origin: "https://repere.example",
++      origin: surface === "web" ? "https://blog-auto-ecole.vercel.app" : "https://repere.example",
++      source: parent,
+       data: JSON.stringify({
+         type: "fix",
+         lat: 48.9,
+@@ -142,6 +142,12 @@
+         imageDate: "2024-06",
+       },
+     });
++  listeners.message!({ origin: "https://untrusted.example", source: parent, data: JSON.stringify({type:"fix",lat:48.9,lng:2.3,heading:0,index:0}) });
++  assert.equal(radii.length,0,"untrusted origins cannot drive the viewer");
++  if (surface === "web") {
++    listeners.message!({origin:"https://blog-auto-ecole.vercel.app",source:{},data:JSON.stringify({type:"connect"})});
++    assert.equal(sent.length,1,"other windows cannot receive readiness");
++  }
+   move(1);
+   finish();
+   await new Promise((resolve) => setImmediate(resolve));
+@@ -171,7 +177,8 @@
+       },
+     });
+   listeners.message!({
+-    origin: "https://repere.example",
++    origin: surface === "web" ? "https://blog-auto-ecole.vercel.app" : "https://repere.example",
++      source: parent,
+     data: JSON.stringify({
+       type: "snapshot",
+       kind: "point",
+@@ -188,7 +195,8 @@
+   assert.equal(sent.at(-1).type, "panorama");
+   assert.equal(sent.at(-1).distanceMeters, 20);
+   listeners.message!({
+-    origin: "https://repere.example",
++    origin: surface === "web" ? "https://blog-auto-ecole.vercel.app" : "https://repere.example",
++      source: parent,
+     data: JSON.stringify({
+       type: "fix",
+       pointSnapshot: true,

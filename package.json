@@ -9,14 +9,22 @@
     "validate": "node scripts/validate-artifact.mjs",
     "test": "node --test tests/*.test.mjs"
   },
-  "engines": {"node":"22.x"},
+  "engines": {
+    "node": "22.x"
+  },
   "dependencies": {
+    "fast-xml-parser": "^5.3.0",
+    "livekit-client": "2.23.0",
+    "maplibre-gl": "^5.0.0",
     "react": "19.3.0",
     "react-dom": "19.3.0",
-    "maplibre-gl": "^5.0.0",
-    "livekit-client": "2.23.0",
-    "zod": "^4.0.0",
-    "fast-xml-parser": "^5.3.0"
+    "zod": "^4.0.0"
   },
-  "devDependencies": { "esbuild": "^0.25.12", "typescript": "~5.9.3", "@types/react": "~19.3.0", "@types/react-dom": "^19.0.0" }
+  "devDependencies": {
+    "@types/react": "~19.3.0",
+    "@types/react-dom": "^19.0.0",
+    "esbuild": "^0.25.12",
+    "jsdom": "^26.1.0",
+    "typescript": "~5.9.3"
+  }
 }

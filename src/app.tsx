@@ -34,47 +34,13 @@ import {
   directoryCenters,
 } from "./shared/route-directory";
 import "./style.css";
+import { api } from "./shared/api";
+import { ReplayPlayer } from "./ReplayPlayer";
 
 type AnyData = Record<string, any>;
 type Photo = NonNullable<MapSpot["photos"]>[number];
 const importGPX = (xml: string, gen: () => string) => importGpx(xml, gen());
 const exportGPX = exportGpx;
-async function api<T = AnyData>(
-  path: string,
-  method = "GET",
-  body?: unknown,
-): Promise<T> {
-  if (
-    /\/spots\/[^/]+\/quiz$/.test(path) &&
-    body &&
-    typeof body === "object" &&
-    "quizVersion" in body
-  ) {
-    const b = body as AnyData;
-    body = { ...b, version: b.quizVersion };
-  }
-  const r = await fetch(path, {
-    method,
-    credentials: "same-origin",
-    headers: body ? { "Content-Type": "application/json" } : undefined,
-    body: body ? JSON.stringify(body) : undefined,
-    signal: AbortSignal.timeout(45000),
-  });
-  const data = await r
-    .json()
-    .catch(() => ({ error: "Réponse du serveur invalide." }));
-  if (!r.ok)
-    throw Object.assign(
-      new Error(
-        data.error?.message ||
-          data.error ||
-          data.message ||
-          "La demande a échoué.",
-      ),
-      { status: r.status, code: data.code },
-    );
-  return data;
-}
 const icons: Record<string, React.ReactNode> = {
   book: (
     <>
@@ -361,6 +327,12 @@ function App() {
   }, []);
   useEffect(() => {
     void reload();
+    const refresh = () => { if (document.visibilityState === "visible") void reload(); };
+    const expired = () => { setProfile(null); setGuest(false); setAuth("signin"); setMessage("Votre session a expiré. Reconnectez-vous avec votre compte iPhone."); };
+    window.addEventListener("online", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    window.addEventListener("repere:session-expired", expired);
+    return () => { window.removeEventListener("online", refresh); document.removeEventListener("visibilitychange", refresh); window.removeEventListener("repere:session-expired", expired); };
   }, [reload]);
   useEffect(() => {
     if (!message) return;
@@ -1096,6 +1068,7 @@ function MapPage() {
     [category, setCategory] = useState("Toutes"),
     [index, setIndex] = useState(0),
     [playing, setPlaying] = useState(false),
+    [player, setPlayer] = useState<"map" | "street" | null>(null),
     [search, setSearch] = useState(""),
     [center, setCenter] = useState("Tous les centres"),
     [difficulty, setDifficulty] = useState("Tous"),
@@ -1116,27 +1089,26 @@ function MapPage() {
     wake = useRef<any>(null);
   recRef.current = rec;
   fixRef.current = fixes;
+  const refreshing = useRef(false);
   const refresh = useCallback(async () => {
-    setLoading(true);
-    setLoadError("");
+    if (refreshing.current) return;
+    refreshing.current = true; setLoading(true); setLoadError("");
     try {
-      const [s, r] = await Promise.all([
-        api<{ spots: MapSpot[] }>("/v1/spots"),
+      const [s, r] = await Promise.allSettled([
+        api<{ spots: MapSpot[] }>("/v1/spots?summary=1"),
         api<{ routes: RouteSummary[] }>("/v1/routes"),
       ]);
-      setSpots(s.spots);
-      setRoutes(r.routes);
-    } catch (e) {
-      setLoadError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
+      if (s.status === "fulfilled") setSpots(s.value.spots);
+      if (r.status === "fulfilled") setRoutes(r.value.routes);
+      setLoadError([s, r].filter(x=>x.status === "rejected").map(x=>(x as PromiseRejectedResult).reason.message).join(" "));
+    } finally { refreshing.current=false; setLoading(false); }
   }, []);
   useEffect(() => {
     void refresh();
-    const timer = setInterval(() => {
-      if (document.visibilityState === "visible") void refresh();
-    }, 45000);
+    const resume = () => { if (document.visibilityState === "visible") void refresh(); };
+    const timer = setInterval(resume, 45000);
+    window.addEventListener("online", resume);
+    document.addEventListener("visibilitychange", resume);
     try {
       const saved = JSON.parse(
         localStorage.getItem(`repere.gps.${profile!.id}`) || "null",
@@ -1389,6 +1361,7 @@ function MapPage() {
           <h1>Carte et parcours</h1>
         </div>
         <div className="map-actions">
+          <button className="map-tool" onClick={refresh} disabled={loading} aria-label="Synchroniser les parcours et repères" title="Synchroniser"><Icon name="refresh" /></button>
           <button
             className="map-tool"
             onClick={() => setPitch((p) => (p ? 0 : 55))}
@@ -1462,7 +1435,7 @@ function MapPage() {
             <div className="row">
               <button
                 className="icon-btn solid"
-                onClick={() => setPlaying((v) => !v)}
+                onClick={() => {setPlaying(false);setPlayer("map");}}
                 aria-label={playing ? "Mettre en pause" : "Lire le parcours"}
               >
                 <Icon name={playing ? "pause" : "play"} />
@@ -1490,14 +1463,7 @@ function MapPage() {
             <div className="row wrap">
               <button
                 className="text-btn"
-                onClick={() =>
-                  streetView(
-                    route.fixes[index],
-                    route.fixes[index + 1]
-                      ? heading(route.fixes[index], route.fixes[index + 1])
-                      : 0,
-                  )
-                }
+                onClick={() => {setPlaying(false);setPlayer("street");}}
               >
                 Street View <Icon name="arrow" size={15} />
               </button>
@@ -1756,6 +1722,7 @@ function MapPage() {
           </div>
         </Modal>
       )}
+      {player && route && <ReplayPlayer route={route} initialIndex={index} initialMode={player} autoplay={player === "map"} MapView={MapCanvas} notify={notify} onClose={()=>setPlayer(null)} onPoint={chooseSpot} onProgress={setIndex} />}
       {point && (
         <SpotDetails
           point={point}
@@ -1858,13 +1825,6 @@ function MapPage() {
     </div>
   );
 }
-function streetView(p: { lat: number; lng: number }, heading = 0) {
-  window.open(
-    `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${p.lat},${p.lng}&heading=${heading}`,
-    "_blank",
-    "noopener,noreferrer",
-  );
-}
 function SpotDetails({
   point,
   route,
@@ -1886,7 +1846,8 @@ function SpotDetails({
     [result, setResult] = useState<any>(null),
     [busy, setBusy] = useState(false),
     [photo, setPhoto] = useState<string | null>(null),
-    [report, setReport] = useState(false);
+    [report, setReport] = useState(false),
+    [street, setStreet] = useState(false);
   const quiz =
     point.quiz ||
     (point.validated
@@ -1976,7 +1937,7 @@ function SpotDetails({
           </div>
         )}
         <div className="row wrap">
-          <Button secondary icon="eye" onClick={() => streetView(point)}>
+          <Button secondary icon="eye" onClick={() => setStreet(true)}>
             Ouvrir Street View
           </Button>
           {owns && point.authorId && (
@@ -2023,6 +1984,7 @@ function SpotDetails({
           onClose={() => setReport(false)}
         />
       )}
+      {street && <ReplayPlayer target={point} initialMode="street" MapView={MapCanvas} notify={notify} onClose={()=>setStreet(false)} />}
     </Modal>
   );
 }
@@ -2566,12 +2528,11 @@ function Videos() {
   const refresh = useCallback(async () => {
     setError("");
     try {
-      const [v, c] = await Promise.all([
-        api("/v1/videos"),
-        api("/v1/videos/config"),
-      ]);
-      setVideos(v.videos);
-      setConfig(c);
+      const [v, c] = await Promise.allSettled([api("/v1/videos"), api("/v1/videos/config")]);
+      if (v.status === "fulfilled") setVideos(v.value.videos);
+      if (c.status === "fulfilled") setConfig(c.value);
+      const errors=[v,c].filter(x=>x.status === "rejected");
+      if (errors.length) setError(errors.map(x=>(x as PromiseRejectedResult).reason.message).join(" "));
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -2580,10 +2541,10 @@ function Videos() {
   }, []);
   useEffect(() => {
     void refresh();
-    const t = setInterval(() => {
-      if (document.visibilityState === "visible") void refresh();
-    }, 15000);
-    return () => clearInterval(t);
+    const resume = () => {if (document.visibilityState === "visible") void refresh();};
+    const t = setInterval(resume, 15000);
+    window.addEventListener("online",resume); document.addEventListener("visibilitychange",resume);
+    return () => {clearInterval(t);window.removeEventListener("online",resume);document.removeEventListener("visibilitychange",resume);};
   }, []);
   async function attach(file: File, title?: string) {
     setImporting(true);
@@ -3385,36 +3346,28 @@ function Account() {
     [invite, setInvite] = useState(""),
     [code, setCode] = useState(""),
     [inspect, setInspect] = useState<any>(null);
+  const refreshing = useRef(false);
   async function refresh() {
-    setError("");
+    if (refreshing.current) return;
+    refreshing.current=true;setError("");
+    const tasks: [string, string, (value: any) => void][] = [
+      ["Progression", "/v1/progress", value=>setProgress(value.progress)],
+      ["Statistiques", "/v1/learning/stats", setStats],
+      ["Blocages", "/v1/blocked-authors", value=>setBlocked(value.authors)],
+    ];
+    if (profile!.role !== "student") tasks.push(["Comptes", profile!.role === "admin" ? "/v1/users" : "/v1/students", value=>setUsers(value.students)]);
+    if (profile!.role === "admin") tasks.push(["Signalements", "/v1/moderation/reports", value=>setReports(value.reports)]);
     try {
-      const [p, s, b] = await Promise.all([
-        api("/v1/progress"),
-        api("/v1/learning/stats"),
-        api("/v1/blocked-authors"),
-      ]);
-      setProgress(p.progress);
-      setStats(s);
-      setBlocked(b.authors);
-      if (profile!.role !== "student") {
-        const u = await api(
-          profile!.role === "admin" ? "/v1/users" : "/v1/students",
-        );
-        setUsers(u.students);
-      }
-      if (profile!.role === "admin") {
-        const r = await api("/v1/moderation/reports");
-        setReports(r.reports);
-      }
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
+      const results=await Promise.allSettled(tasks.map(async ([,path,apply])=>apply(await api(path))));
+      setError(results.flatMap((r,i)=>r.status === "rejected" ? [`${tasks[i][0]} : ${r.reason.message}`] : []).join(" "));
+    } finally {refreshing.current=false;setLoading(false);}
   }
   useEffect(() => {
     void refresh();
-  }, []);
+    const resume=()=>{if(document.visibilityState === "visible")void refresh();};
+    window.addEventListener("online",resume);document.addEventListener("visibilitychange",resume);
+    return ()=>{window.removeEventListener("online",resume);document.removeEventListener("visibilitychange",resume);};
+  }, [profile!.id,profile!.role]);
   async function run(fn: () => Promise<any>, message?: string) {
     setBusy(true);
     try {

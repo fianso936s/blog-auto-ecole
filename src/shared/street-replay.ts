@@ -1,4 +1,4 @@
-import type { Fix } from './index';
+import type { Fix } from './core';
 
 export type ReplayCoordinate = {lat:number;lng:number};
 export type ReplayAnchor = ReplayCoordinate & {heading:number;corridor:ReplayCoordinate[]};

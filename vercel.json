@@ -4,8 +4,14 @@
   "buildCommand": "npm run build:vercel",
   "installCommand": "npm ci",
   "outputDirectory": "public",
-  "regions": ["fra1"],
-  "functions": { "api/site.js": { "maxDuration": 60 } },
+  "regions": [
+    "fra1"
+  ],
+  "functions": {
+    "api/site.js": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
     {
       "source": "/v1/:path*",
@@ -19,9 +25,18 @@
       "source": "/api/auth/:path*",
       "destination": "/api/site?__repere_path=/api/auth/:path*"
     },
-    { "source": "/privacy", "destination": "/api/site?__repere_path=/privacy" },
-    { "source": "/terms", "destination": "/api/site?__repere_path=/terms" },
-    { "source": "/support", "destination": "/api/site?__repere_path=/support" },
+    {
+      "source": "/privacy",
+      "destination": "/api/site?__repere_path=/privacy"
+    },
+    {
+      "source": "/terms",
+      "destination": "/api/site?__repere_path=/terms"
+    },
+    {
+      "source": "/support",
+      "destination": "/api/site?__repere_path=/support"
+    },
     {
       "source": "/reset-password",
       "destination": "/api/site?__repere_path=/reset-password"
@@ -35,8 +50,14 @@
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options", "value": "DENY" },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
         {
           "key": "Referrer-Policy",
           "value": "strict-origin-when-cross-origin"
@@ -47,7 +68,7 @@
         },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; media-src 'self' blob: https:; frame-src https://www.google.com https://maps.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+          "value": "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https:; connect-src 'self' https: wss:; worker-src 'self' blob:; media-src 'self' blob: https:; frame-src https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech https://www.google.com https://maps.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
         }
       ]
     }

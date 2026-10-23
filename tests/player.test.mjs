@@ -1,0 +1,60 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { build } from "esbuild";
+import { JSDOM } from "jsdom";
+import React, { act } from "react";
+import { createRoot } from "react-dom/client";
+import { unlink } from "node:fs/promises";
+
+test("fullscreen replay keeps controls outside the map, embeds trusted Street View, and saves progress", async () => {
+  const file = new URL("./.player-test-build.mjs", import.meta.url);
+  await build({entryPoints:["src/ReplayPlayer.tsx"],bundle:true,platform:"node",format:"esm",packages:"external",jsx:"automatic",outfile:file.pathname});
+  const {ReplayPlayer, STREET_ORIGIN}=await import(file.href+"?test");
+  const dom = new JSDOM('<div id="root"></div>',{url:"https://blog-auto-ecole.vercel.app"});
+  const prior={window:globalThis.window,document:globalThis.document,fetch:globalThis.fetch};
+  globalThis.window=dom.window;globalThis.document=dom.window.document;globalThis.IS_REACT_ACT_ENVIRONMENT=true;
+  dom.window.HTMLDialogElement.prototype.showModal=function(){this.open=true;};
+  dom.window.matchMedia=()=>({matches:false});
+  const saves=[], messages=[];
+  globalThis.fetch=async(path,init)=>{saves.push({path,body:JSON.parse(init.body)});return Response.json({ok:true});};
+  const route={id:"d38ccfa3-c8a7-4bab-8b9b-e993504d332a",name:"Parcours de test",examCenter:"Test",fixes:[0,1,2].map(i=>({lat:48.8698+i*.00001,lng:2.3076,time:i*1000,segment:0})),points:[],version:1};
+  let closed=false;
+  const MapView=({index,handle})=>{handle.current={map:{easeTo(){}},focus(){}};return React.createElement("div",{"data-testid":"map","data-index":index});};
+  const root=createRoot(document.getElementById("root"));
+  const click=async(el)=>act(()=>el.dispatchEvent(new dom.window.MouseEvent("click",{bubbles:true})));
+  const button=text=>[...document.querySelectorAll("button")].find(b=>b.textContent===text);
+  try {
+    await act(()=>root.render(React.createElement(ReplayPlayer,{route,MapView,autoplay:false,onClose:()=>{closed=true;},notify:message=>assert.fail(message)})));
+    assert.ok(document.querySelector("dialog.route-player[open]"));
+    assert.equal(document.body.style.overflow,"hidden");
+    assert.equal(document.querySelector(".player-stage .player-controls"),null);
+    await click(document.querySelector(".player-play"));
+    await act(()=>new Promise(r=>setTimeout(r,750)));
+    assert.equal(document.querySelector('[data-testid="map"]').dataset.index,"1");
+    await click(button("Street View"));
+    const frame=document.querySelector("iframe");
+    assert.equal(frame.src,STREET_ORIGIN+"/streetview");
+    frame.contentWindow.postMessage=(payload,origin)=>messages.push({data:JSON.parse(payload),origin});
+    const receive=async(origin,data,source=frame.contentWindow)=>act(()=>window.dispatchEvent(new dom.window.MessageEvent("message",{origin,source,data:JSON.stringify(data)})));
+    await receive("https://untrusted.example",{type:"ready"});
+    assert.equal(messages.length,0);
+    await receive(STREET_ORIGIN,{type:"ready"});
+    assert.equal(messages.length,1);
+    assert.equal(messages[0].origin,STREET_ORIGIN);
+    assert.equal(messages[0].data.index,1);
+    assert.equal(messages[0].data.type,"fix");
+    assert.ok(!JSON.stringify(messages).includes(route.name));
+    await receive(STREET_ORIGIN,{type:"unavailable",requestId:messages[0].data.requestId,message:"Pas de vue ici"});
+    assert.match(document.querySelector('.player-notice').textContent,/Pas de vue ici/);
+    await click(button("Carte"));
+    assert.equal(document.querySelector("iframe"),null);
+    assert.equal(document.querySelector('[data-testid="map"]').dataset.index,"1");
+    await click(button("← Retour"));
+    assert.ok(closed);
+    await act(()=>root.unmount());
+    assert.equal(document.body.style.overflow,"");
+    assert.ok(saves.some(s=>s.path===`/v1/routes/${route.id}/progress`&&s.body.fixIndex===1));
+  } finally {
+    dom.window.close();Object.assign(globalThis,prior);delete globalThis.IS_REACT_ACT_ENVIRONMENT;await unlink(file);
+  }
+});
