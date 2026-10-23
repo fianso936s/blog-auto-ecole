@@ -895,6 +895,8 @@ function MapCanvas({
   recording,
   index = 0,
   pitch = 0,
+  navigationMode = false,
+  previewMode = false,
   onSpot,
   onPosition,
   handle,
@@ -906,6 +908,8 @@ function MapCanvas({
   recording: Fix[];
   index?: number;
   pitch?: number;
+  navigationMode?: boolean;
+  previewMode?: boolean;
   onSpot: (p: any) => void;
   onPosition: (p: { lat: number; lng: number }) => void;
   handle: React.MutableRefObject<MapHandle>;
@@ -917,7 +921,7 @@ function MapCanvas({
     [ready, setReady] = useState(false),
     [failed, setFailed] = useState(false),
     callbacks = useRef({ onSpot, onPosition, onReady }),
-    resumeAt=useRef(0);
+    resumeAt=useRef(0), lastBearing=useRef(0);
   callbacks.current = { onSpot, onPosition, onReady };
   useEffect(() => {
     let map: maplibregl.Map;
@@ -988,13 +992,18 @@ function MapCanvas({
   }, []);
   useEffect(() => {
     if (!ready || !mapRef.current) return;
-    mapRef.current.easeTo({ pitch, duration: 500 });
-  }, [pitch, ready]);
+    if(!previewMode)mapRef.current.easeTo({ pitch: navigationMode ? 65 : pitch, duration: 600 });
+  }, [pitch, ready, navigationMode, previewMode]);
   useEffect(()=>{
     if(!ready||(!recording.length&&!location))return;
-    const follow=()=>{const f=recording.at(-1)||location;if(f&&Date.now()>=resumeAt.current)mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:Math.max(16,mapRef.current.getZoom()),duration:500});};
+    const follow=()=>{if(previewMode)return;const f=recording.at(-1)||location;if(!f||Date.now()<resumeAt.current)return;const prev=recording.at(-2);if(navigationMode&&prev&&(f.lat!==prev.lat||f.lng!==prev.lng)){const rad=Math.PI/180;lastBearing.current=Math.atan2(Math.sin((f.lng-prev.lng)*rad)*Math.cos(f.lat*rad),Math.cos(prev.lat*rad)*Math.sin(f.lat*rad)-Math.sin(prev.lat*rad)*Math.cos(f.lat*rad)*Math.cos((f.lng-prev.lng)*rad))/rad;}mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:navigationMode?17.5:Math.max(16,mapRef.current!.getZoom()),pitch:navigationMode?65:pitch,bearing:navigationMode?lastBearing.current:mapRef.current!.getBearing(),duration:650,essential:true});};
     follow();const timer=setInterval(follow,1000);return()=>clearInterval(timer);
-  },[ready,recording,location]);
+  },[ready,recording,location,navigationMode,previewMode,pitch]);
+  useEffect(() => {
+    if(!ready||!previewMode||recording.length<2)return;
+    handle.current.focus(recording);
+    mapRef.current?.easeTo({pitch:0,bearing:0,duration:700});
+  },[ready,previewMode]);
   useEffect(() => {
     if (!ready) return;
     const m = mapRef.current!;
@@ -1097,6 +1106,7 @@ function MapPage() {
     [difficulty, setDifficulty] = useState("Tous"),
     [favorites, setFavorites] = useState(false),
     [assign, setAssign] = useState<string | null>(null);
+  const [cameraMode,setCameraMode]=useState<"pov"|"preview">("preview");
   const [gpsFollow,setGpsFollow]=useState(false),[gpsPosition,setGpsPosition]=useState<{lat:number;lng:number}|null>(null);
 
   const [rec, setRec] = useState<"idle" | "recording" | "paused">("idle"),
@@ -1233,6 +1243,7 @@ function MapPage() {
     segment.current = 0;
     start.current = Date.now();
     setRoute(null);
+    setCameraMode("pov");
     setRec("recording");
     recRef.current = "recording";
     try {
@@ -1379,6 +1390,8 @@ function MapPage() {
         location={gpsFollow?gpsPosition:null}
         index={index}
         pitch={pitch}
+        navigationMode={rec!=="idle"&&cameraMode==="pov"}
+        previewMode={rec!=="idle"&&cameraMode==="preview"}
         onSpot={chooseSpot}
         onPosition={pos=>{setMapPos(pos);if(placing){setEditor(blankSpot(pos));setPlacing(false);}}}
         handle={handle}
@@ -1583,6 +1596,10 @@ function MapPage() {
         )}
         {rec !== "idle" ? (
           <div className="record-panel">
+            <div className="row" role="group" aria-label="Mode d’affichage du trajet">
+              <button type="button" className="map-tool" aria-pressed={cameraMode==="pov"} onClick={()=>setCameraMode("pov")}>Vue GPS</button>
+              <button type="button" className="map-tool" aria-pressed={cameraMode==="preview"} onClick={()=>setCameraMode("preview")}>Aperçu complet</button>
+            </div>
             <div className="spread">
               <div className="row">
                 <span className={rec === "recording" ? "record-dot" : ""} />
