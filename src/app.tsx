@@ -933,6 +933,7 @@ function MapCanvas({
         zoom: 13,
         pitch,
         maxPitch: 85,
+        maxZoom: 22,
         attributionControl: { compact: true },
       });
       mapRef.current = map;
