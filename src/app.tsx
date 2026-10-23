@@ -899,6 +899,7 @@ function MapCanvas({
   previewMode = false,
   onSpot,
   onPosition,
+  onLongPress,
   handle,
   onReady,
   location,
@@ -912,6 +913,7 @@ function MapCanvas({
   previewMode?: boolean;
   onSpot: (p: any) => void;
   onPosition: (p: { lat: number; lng: number }) => void;
+  onLongPress?: (p: { lat: number; lng: number }) => void;
   handle: React.MutableRefObject<MapHandle>;
   onReady?: () => void;
   location?: {lat:number;lng:number}|null;
@@ -920,9 +922,9 @@ function MapCanvas({
     mapRef = useRef<maplibregl.Map | null>(null),
     [ready, setReady] = useState(false),
     [failed, setFailed] = useState(false),
-    callbacks = useRef({ onSpot, onPosition, onReady }),
+    callbacks = useRef({ onSpot, onPosition, onReady, onLongPress }),
     resumeAt=useRef(0), lastBearing=useRef(0);
-  callbacks.current = { onSpot, onPosition, onReady };
+  callbacks.current = { onSpot, onPosition, onReady, onLongPress };
   useEffect(() => {
     let map: maplibregl.Map;
     try {
@@ -979,9 +981,35 @@ function MapCanvas({
       });
       map.on("dragstart",()=>{resumeAt.current=Date.now()+MAP_RECENTER_DELAY;});
       map.on("zoomstart",(e)=>{if(e.originalEvent)resumeAt.current=Date.now()+MAP_RECENTER_DELAY;});
-      map.on("click", (e) =>
-        callbacks.current.onPosition({ lng: e.lngLat.lng, lat: e.lngLat.lat }),
-      );
+      // Long press (touch) or right click places a marker, like the iPhone app.
+      let pressTimer = 0, pressStart: { x: number; y: number } | null = null, pressedAt = 0;
+      const cancelPress = () => { window.clearTimeout(pressTimer); pressStart = null; };
+      const longPress = (lngLat: { lng: number; lat: number }) => {
+        if (!callbacks.current.onLongPress) return;
+        pressedAt = Date.now();
+        callbacks.current.onLongPress({ lng: lngLat.lng, lat: lngLat.lat });
+      };
+      map.on("touchstart", (e) => {
+        cancelPress();
+        if (e.originalEvent.touches.length !== 1) return;
+        pressStart = { x: e.point.x, y: e.point.y };
+        const at = e.lngLat;
+        pressTimer = window.setTimeout(() => longPress(at), 550);
+      });
+      map.on("touchmove", (e) => {
+        if (pressStart && Math.hypot(e.point.x - pressStart.x, e.point.y - pressStart.y) > 10) cancelPress();
+      });
+      map.on("touchend", cancelPress);
+      map.on("touchcancel", cancelPress);
+      map.on("dragstart", cancelPress);
+      map.on("contextmenu", (e) => {
+        e.originalEvent.preventDefault();
+        if (Date.now() - pressedAt > 800) longPress(e.lngLat);
+      });
+      map.on("click", (e) => {
+        if (Date.now() - pressedAt < 800) return;
+        callbacks.current.onPosition({ lng: e.lngLat.lng, lat: e.lngLat.lat });
+      });
       map.on("error", () => {
         if (!map.isStyleLoaded()) setFailed(true);
       });
@@ -1398,6 +1426,7 @@ function MapPage() {
         previewMode={rec!=="idle"&&cameraMode==="preview"}
         onSpot={chooseSpot}
         onPosition={pos=>{setMapPos(pos);if(placing){setEditor(blankSpot(pos));setPlacing(false);}}}
+        onLongPress={writer ? pos=>{setMapPos(pos);setPlacing(false);setEditor(blankSpot(pos));} : undefined}
         handle={handle}
       />}
       <div className="map-top">

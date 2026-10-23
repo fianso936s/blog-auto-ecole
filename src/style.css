@@ -4323,3 +4323,10 @@ input[type="radio"] {
     top: calc(72px + env(safe-area-inset-top, 0px));
   }
 }
+/* Long press on the map must not trigger the iOS text magnifier or callout. */
+.map-canvas,
+.map-canvas canvas {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
