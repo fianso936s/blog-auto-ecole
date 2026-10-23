@@ -43,3 +43,12 @@ Les changements backend sont reproduits dans `backend/streetview-web.patch` et d
 
 La lecture locale des fiches pédagogiques reste propre au navigateur/appareil : l’API actuelle n’expose pas de ressource de synchronisation de ces marqueurs.
 Sources techniques : https://developers.google.com/maps/documentation/javascript/streetview et https://neon.com/docs/compute/functions/deploy.
+
+## Correctif de premier lancement sur Safari
+
+Signalement : capture IMG_7446.png, carte partiellement rendue au premier Play.
+Le dialogue est maintenant ouvert avant l’initialisation de la carte. Un observateur redimensionne le canvas aux dimensions réelles de son conteneur et lors des changements du viewport Safari ; la lecture attend la disponibilité de la carte. La carte de fond est démontée pendant le lecteur pour éviter un deuxième rendu cartographique inutile.
+
+Street View conserve son iframe entre Carte et Street View. Un échange de disponibilité répété et borné récupère un premier message manqué ; les temporisations de démarrage et de position sont distinctes. Le tracé est transmis une seule fois par iframe. Réessayer une position ne recharge pas Google.
+
+21 tests web passent, dont ouverture du dialogue avant la carte, attente de disponibilité avant Play, changement de taille portrait/paysage et viewport, récupération d’un message initial manqué, réutilisation de l’iframe, omission des géométries répétées. TypeScript et compilation de production vérifiés. Le rendu sur un iPhone physique reste à confirmer par l’utilisateur.

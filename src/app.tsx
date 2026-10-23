@@ -36,6 +36,7 @@ import {
 import "./style.css";
 import { api } from "./shared/api";
 import { ReplayPlayer } from "./ReplayPlayer";
+import { observeMapSize } from "./shared/map-size";
 
 type AnyData = Record<string, any>;
 type Photo = NonNullable<MapSpot["photos"]>[number];
@@ -892,6 +893,7 @@ function MapCanvas({
   onSpot,
   onPosition,
   handle,
+  onReady,
 }: {
   spots: MapSpot[];
   route: Route | null;
@@ -901,13 +903,14 @@ function MapCanvas({
   onSpot: (p: any) => void;
   onPosition: (p: { lat: number; lng: number }) => void;
   handle: React.MutableRefObject<MapHandle>;
+  onReady?: () => void;
 }) {
   const root = useRef<HTMLDivElement>(null),
     mapRef = useRef<maplibregl.Map | null>(null),
     [ready, setReady] = useState(false),
     [failed, setFailed] = useState(false),
-    callbacks = useRef({ onSpot, onPosition });
-  callbacks.current = { onSpot, onPosition };
+    callbacks = useRef({ onSpot, onPosition, onReady });
+  callbacks.current = { onSpot, onPosition, onReady };
   useEffect(() => {
     let map: maplibregl.Map;
     try {
@@ -920,6 +923,7 @@ function MapCanvas({
         attributionControl: { compact: true },
       });
       mapRef.current = map;
+      const stopObserving = observeMapSize(root.current!, map);
       handle.current = {
         map,
         focus: (fixes) => {
@@ -953,7 +957,9 @@ function MapCanvas({
           layout: { "line-cap": "round", "line-join": "round" },
           paint: { "line-color": "#672C3B", "line-width": 5 },
         });
+        map.resize();
         setReady(true);
+        callbacks.current.onReady?.();
       });
       map.on("click", (e) =>
         callbacks.current.onPosition({ lng: e.lngLat.lng, lat: e.lngLat.lat }),
@@ -962,6 +968,7 @@ function MapCanvas({
         if (!map.isStyleLoaded()) setFailed(true);
       });
       return () => {
+        stopObserving();
         handle.current.map = null;
         map.remove();
       };
@@ -1343,7 +1350,7 @@ function MapPage() {
   );
   return (
     <div className="map-page">
-      <MapCanvas
+      {!player && <MapCanvas
         spots={spots.filter(
           (s) => category === "Toutes" || s.category === category,
         )}
@@ -1354,7 +1361,7 @@ function MapPage() {
         onSpot={chooseSpot}
         onPosition={setMapPos}
         handle={handle}
-      />
+      />}
       <div className="map-top">
         <div className="map-title">
           <span className="eyebrow">EXPLORER ET COMPRENDRE</span>
