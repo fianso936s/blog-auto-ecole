@@ -704,7 +704,7 @@ export function Library({ onMap }: { onMap: () => void }) {
                             ? colors.amber
                             : r.status === "published"
                               ? colors.green
-                              : "white"
+                              : colors.paper
                         }
                       />
                       <Text
@@ -715,7 +715,7 @@ export function Library({ onMap }: { onMap: () => void }) {
                             ? colors.amber
                             : r.status === "published"
                               ? colors.green
-                              : "white",
+                              : colors.paper,
                         }}
                       >
                         {busyId === r.id || refreshing

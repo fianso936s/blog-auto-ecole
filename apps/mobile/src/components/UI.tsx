@@ -14,7 +14,8 @@ import {
 } from "react-native";
 import Animated, { useReducedMotion } from "react-native-reanimated";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { colors, tones, filterTone, type Tone, styles as s } from "../theme";
+import * as Haptics from "expo-haptics";
+import { colors, fonts, radius, shadow, tones, filterTone, type Tone, styles as s } from "../theme";
 export const Icon = ({
   name,
   size = 20,
@@ -60,43 +61,47 @@ export function Button({
         accessibilityRole="button"
         accessibilityLabel={label}
         accessibilityState={{ disabled: disabled || busy, busy }}
-        onPressIn={() => setPressed(true)}
+        onPressIn={() => { setPressed(true); if (!secondary) void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); }}
         onPressOut={() => setPressed(false)}
         disabled={disabled || busy}
         onPress={onPress}
         style={({ pressed }) => ({
           minHeight: compact ? 44 : 54,
-          paddingHorizontal: compact ? 16 : 20,
+          paddingHorizontal: compact ? 16 : 22,
           paddingVertical: 12,
-          borderRadius: 14,
+          borderRadius: compact ? 12 : 16,
           backgroundColor: secondary
-            ? colors.paper
+            ? "transparent"
             : danger
               ? colors.red
-              : colors.wine,
-          borderWidth: secondary ? 1 : 0,
-          borderColor: colors.line,
-          opacity: disabled || busy ? 0.6 : pressed ? 0.8 : 1,
+              : pressed
+                ? colors.night
+                : colors.wine,
+          borderWidth: secondary ? 1.5 : 0,
+          borderColor: colors.ink,
+          opacity: disabled || busy ? 0.55 : 1,
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
           gap: 8,
+          ...(secondary || danger ? {} : shadow.wine),
         })}
       >
         {busy ? (
-          <ActivityIndicator color={secondary ? colors.wine : "white"} />
+          <ActivityIndicator color={secondary ? colors.ink : colors.paper} />
         ) : icon ? (
           <Icon
             name={icon}
             size={18}
-            color={secondary ? colors.wine : "white"}
+            color={secondary ? colors.ink : colors.paper}
           />
         ) : null}
         <Text
           style={{
-            fontSize: 14,
-            fontWeight: "600",
-            color: secondary ? colors.wine : "white",
+            fontSize: compact ? 14 : 16,
+            fontFamily: fonts.displayBold,
+            letterSpacing: -0.1,
+            color: secondary ? colors.ink : colors.paper,
           }}
         >
           {label}
@@ -124,12 +129,12 @@ export function IconButton({
         width: 44,
         height: 44,
         borderRadius: 22,
-        backgroundColor: colors.paper,
+        backgroundColor: pressed ? colors.soft : colors.paper,
         borderWidth: 1,
         borderColor: colors.line,
         alignItems: "center",
         justifyContent: "center",
-        opacity: pressed ? 0.65 : 1,
+        transform: [{ scale: pressed ? 0.92 : 1 }],
       })}
     >
       <Icon name={name} />
@@ -160,34 +165,39 @@ export function Chip({
           flexDirection: "row",
           alignItems: "center",
           gap: 7,
-          borderColor: active ? palette.ink : palette.soft,
+          borderColor: active ? palette.ink : "transparent",
           backgroundColor: active ? palette.ink : palette.soft,
-          opacity: pressed ? 0.75 : 1,
+          transform: [{ scale: pressed ? 0.96 : 1 }],
         },
       ]}
     >
       <Icon
         name={active ? "checkmark" : "ellipse"}
         size={active ? 14 : 6}
-        color={active ? "white" : palette.ink}
+        color={active ? colors.paper : palette.ink}
       />
-      <Text style={[s.chipText, { color: active ? "white" : palette.ink }]}>
+      <Text style={[s.chipText, { color: active ? colors.paper : palette.ink }]}>
         {label}
       </Text>
     </Pressable>
   );
 }
 export function Field({ label, ...props }: TextInputProps & { label: string }) {
+  const [focused, setFocused] = React.useState(false);
   return (
     <View style={{ gap: 8 }}>
       <Text style={s.label}>{label}</Text>
       <TextInput
         placeholderTextColor={colors.muted}
+        selectionColor={colors.wine}
         style={[
           s.field,
-          props.multiline && { minHeight: 90, textAlignVertical: "top" },
+          focused && { borderColor: colors.wine },
+          props.multiline && { minHeight: 96, textAlignVertical: "top" },
         ]}
         {...props}
+        onFocus={(e) => { setFocused(true); props.onFocus?.(e); }}
+        onBlur={(e) => { setFocused(false); props.onBlur?.(e); }}
       />
     </View>
   );
@@ -219,7 +229,7 @@ export function Sheet({
           <View
             style={[
               s.between,
-              { paddingHorizontal: 22, paddingTop: 15, paddingBottom: 12 },
+              { paddingHorizontal: 20, paddingTop: 18, paddingBottom: 14, borderBottomWidth: 1, borderColor: colors.line },
             ]}
           >
             <Text style={[s.heading, { flex: 1 }]}>{title}</Text>
@@ -246,12 +256,12 @@ export function Empty({
   action?: ReactNode;
 }) {
   return (
-    <View style={[s.card, { paddingVertical: 32, alignItems: "center" }]}>
+    <View style={[s.card, { paddingVertical: 36, alignItems: "center", borderStyle: "dashed", borderWidth: 1.5, shadowOpacity: 0 }]}>
       <View
         style={{
-          width: 58,
-          height: 58,
-          borderRadius: 29,
+          width: 60,
+          height: 60,
+          borderRadius: radius.md,
           backgroundColor: colors.soft,
           alignItems: "center",
           justifyContent: "center",

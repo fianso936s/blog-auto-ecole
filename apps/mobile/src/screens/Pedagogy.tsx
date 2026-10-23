@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useReducedMotion } from "react-native-reanimated";
 import { useApp } from "../state";
-import { colors, tones, styles as s, type Tone } from "../theme";
+import { colors, fonts, tones, styles as s, type Tone } from "../theme";
 import { Button, Chip, Empty, Field, Icon, IconButton } from "../components/UI";
 import { ModalFrame } from "../components/ModalFrame";
 import { courses, courseSources, type Course } from "../pedagogy/courses";
@@ -90,9 +90,10 @@ export function Pedagogy() {
           style={[
             s.card,
             {
-              backgroundColor: colors.wine,
-              borderColor: colors.wine,
-              padding: 22,
+              backgroundColor: colors.night,
+              borderColor: colors.night,
+              borderRadius: 28,
+              padding: 24,
               gap: 14,
             },
           ]}
@@ -100,25 +101,25 @@ export function Pedagogy() {
           <View style={s.between}>
             <Text
               style={{
-                fontSize: 12,
-                fontWeight: "700",
-                color: "#F1D6DD",
-                letterSpacing: 1,
+                fontSize: 11,
+                fontFamily: fonts.bodyBold,
+                color: colors.blush,
+                letterSpacing: 1.6,
               }}
             >
               TA PROCHAINE FICHE
             </Text>
-            <Text style={{ fontSize: 12, color: "#F1D6DD" }}>
+            <Text style={{ fontSize: 13, fontFamily: fonts.body, color: colors.blush }}>
               {nextCourse.minutes} min
             </Text>
           </View>
           <Text
             style={{
-              fontSize: 23,
-              lineHeight: 29,
-              fontWeight: "600",
-              color: "white",
-              letterSpacing: -0.5,
+              fontSize: 25,
+              lineHeight: 30,
+              fontFamily: fonts.display,
+              color: colors.paper,
+              letterSpacing: -0.6,
             }}
           >
             {nextCourse.title}
@@ -128,35 +129,40 @@ export function Pedagogy() {
             accessibilityLabel={`Lire ${nextCourse.title}`}
             onPress={() => open(nextCourse)}
             style={({ pressed }) => ({
-              minHeight: 44,
+              minHeight: 48,
+              alignSelf: "flex-start",
               flexDirection: "row",
               alignItems: "center",
               gap: 9,
-              opacity: pressed ? 0.7 : 1,
+              paddingHorizontal: 18,
+              borderRadius: 14,
+              backgroundColor: colors.paper,
+              transform: [{ scale: pressed ? 0.97 : 1 }],
             })}
           >
-            <Text style={{ color: "white", fontSize: 15, fontWeight: "700" }}>
+            <Text style={{ color: colors.wine, fontSize: 15, fontFamily: fonts.displayBold }}>
               Lire la fiche
             </Text>
-            <Icon name="arrow-forward" size={18} color="white" />
+            <Icon name="arrow-forward" size={18} color={colors.wine} />
           </Pressable>
           <View
             style={{
-              height: 4,
-              borderRadius: 2,
-              backgroundColor: "#8C5263",
+              height: 6,
+              borderRadius: 3,
+              backgroundColor: "rgba(255,255,255,0.14)",
               overflow: "hidden",
             }}
           >
             <View
               style={{
-                height: 4,
+                height: 6,
+                borderRadius: 3,
                 width: `${(100 * readCount) / courses.length}%`,
-                backgroundColor: "#F5E8CE",
+                backgroundColor: colors.blush,
               }}
             />
           </View>
-          <Text style={{ fontSize: 12, color: "#F1D6DD" }}>
+          <Text style={{ fontSize: 13, fontFamily: fonts.body, color: colors.blush }}>
             {readCount} / {courses.length} fiches lues · progression synchronisée sur cet
             iPhone
           </Text>
@@ -369,7 +375,7 @@ export function Pedagogy() {
                       >
                         <Text
                           style={{
-                            color: "white",
+                            color: colors.paper,
                             fontSize: 13,
                             fontWeight: "700",
                           }}

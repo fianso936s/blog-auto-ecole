@@ -222,7 +222,7 @@ export function SpotLesson({ initial }: { initial: MapSpot }) {
                     : checked
                       ? colors.wine
                       : colors.line,
-                  backgroundColor: good ? "#E8F2ED" : colors.paper,
+                  backgroundColor: good ? colors.greenSoft : colors.paper,
                   flexDirection: "row",
                   alignItems: "center",
                   gap: 12,

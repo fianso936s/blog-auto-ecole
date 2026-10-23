@@ -330,7 +330,7 @@ export function MapScreen() {
               padding: 14,
               borderRadius: 22,
               gap: 10,
-              shadowColor: "#20131A",
+              shadowColor: colors.night,
               shadowOffset: { width: 0, height: 3 },
               shadowOpacity: 0.08,
               shadowRadius: 12,

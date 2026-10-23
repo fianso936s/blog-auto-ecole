@@ -415,7 +415,7 @@ export function Replay({
                   padding: 16,
                   borderColor: choice === i ? colors.wine : colors.line,
                   backgroundColor:
-                    result?.answer === i ? "#E7EFE8" : colors.paper,
+                    result?.answer === i ? colors.greenSoft : colors.paper,
                 },
               ]}
             >

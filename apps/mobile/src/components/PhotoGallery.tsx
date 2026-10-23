@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import type { Point } from "@repere/core";
 import { Button } from "./UI";
+import { colors } from "../theme";
 
 export function PhotoGallery({
   photos,
@@ -38,10 +39,10 @@ export function PhotoGallery({
       onRequestClose={onClose}
       presentationStyle="fullScreen"
     >
-      <ModalFrame style={{ backgroundColor: "#111013" }}>
+      <ModalFrame style={{ backgroundColor: colors.ink }}>
         <View style={{ padding: 16, gap: 12 }}>
           <Button label="Fermer la photo" secondary onPress={onClose} />
-          <Text style={{ color: "#FFFFFF", textAlign: "center", fontSize: 15 }}>
+          <Text style={{ color: colors.paper, textAlign: "center", fontSize: 15 }}>
             {index + 1} / {photos.length} · {title}
           </Text>
         </View>
@@ -65,7 +66,7 @@ export function PhotoGallery({
           )}
         </ScrollView>
         <View style={{ padding: 16, gap: 12 }}>
-          <Text style={{ color: "#E7DEDA", textAlign: "center" }}>
+          <Text style={{ color: colors.line, textAlign: "center" }}>
             {photo?.caption ||
               "Pincez avec deux doigts pour examiner les détails."}
           </Text>

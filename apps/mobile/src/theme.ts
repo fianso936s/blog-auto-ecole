@@ -1,31 +1,47 @@
 import { StyleSheet } from "react-native";
 import product from "../../../packages/product/product.json";
 export const colors = product.colors;
+/** Repère v2 — same fonts as the site; system font is the fallback until they load. */
+export const fonts = {
+  body: "DMSans_400Regular",
+  bodyMedium: "DMSans_500Medium",
+  bodySemi: "DMSans_600SemiBold",
+  bodyBold: "DMSans_700Bold",
+  display: "Manrope_800ExtraBold",
+  displayBold: "Manrope_700Bold",
+} as const;
+export const radius = { sm: 12, md: 16, lg: 22, xl: 28, pill: 999 } as const;
+export const shadow = {
+  sm: { shadowColor: "#1C1719", shadowOpacity: 0.05, shadowRadius: 3, shadowOffset: { width: 0, height: 1 } },
+  md: { shadowColor: "#1C1719", shadowOpacity: 0.08, shadowRadius: 14, shadowOffset: { width: 0, height: 6 } },
+  lg: { shadowColor: "#1C1719", shadowOpacity: 0.14, shadowRadius: 28, shadowOffset: { width: 0, height: 12 } },
+  wine: { shadowColor: colors.wine, shadowOpacity: 0.26, shadowRadius: 14, shadowOffset: { width: 0, height: 8 } },
+} as const;
 export const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.cream },
-  content: { padding: 20, paddingBottom: 32, gap: 16 },
+  content: { padding: 20, paddingBottom: 40, gap: 16 },
   eyebrow: {
+    fontFamily: fonts.bodyBold,
     fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 2.5,
+    letterSpacing: 1.8,
     color: colors.wine,
   },
   title: {
-    fontSize: 30,
-    fontWeight: "700",
-    letterSpacing: -1.1,
+    fontFamily: fonts.display,
+    fontSize: 32,
+    letterSpacing: -1.2,
     lineHeight: 36,
     color: colors.ink,
   },
-  subtitle: { fontSize: 15, lineHeight: 23, color: colors.muted },
+  subtitle: { fontFamily: fonts.body, fontSize: 16, lineHeight: 24, color: colors.muted },
   heading: {
+    fontFamily: fonts.display,
     fontSize: 21,
-    fontWeight: "600",
     letterSpacing: -0.5,
     color: colors.ink,
   },
-  body: { fontSize: 15, lineHeight: 22, color: colors.ink },
-  muted: { fontSize: 13, lineHeight: 20, color: colors.muted },
+  body: { fontFamily: fonts.body, fontSize: 16, lineHeight: 24, color: colors.ink },
+  muted: { fontFamily: fonts.body, fontSize: 14, lineHeight: 21, color: colors.muted },
   row: { flexDirection: "row", alignItems: "center", gap: 12 },
   between: {
     flexDirection: "row",
@@ -35,29 +51,31 @@ export const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: colors.paper,
-    borderRadius: 18,
-    padding: 16,
-    borderWidth: 1,
+    borderRadius: radius.lg,
+    padding: 18,
+    borderWidth: StyleSheet.hairlineWidth * 2,
     borderColor: colors.line,
     gap: 12,
+    ...shadow.sm,
   },
-  line: { height: 1, backgroundColor: colors.line },
-  label: { fontSize: 13, color: colors.muted, fontWeight: "500" },
+  line: { height: StyleSheet.hairlineWidth * 2, backgroundColor: colors.line },
+  label: { fontFamily: fonts.bodySemi, fontSize: 14, color: colors.ink },
   field: {
     backgroundColor: colors.paper,
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: colors.line,
-    borderRadius: 15,
+    borderRadius: radius.sm,
     paddingHorizontal: 15,
     paddingVertical: 14,
+    fontFamily: fonts.body,
     fontSize: 16,
     color: colors.ink,
-    minHeight: 50,
+    minHeight: 52,
   },
   chip: {
     borderWidth: 1,
     borderColor: colors.line,
-    borderRadius: 24,
+    borderRadius: radius.pill,
     paddingHorizontal: 15,
     paddingVertical: 10,
     minHeight: 44,
@@ -65,9 +83,9 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.paper,
   },
   chipActive: { backgroundColor: colors.wine, borderColor: colors.wine },
-  chipText: { fontSize: 13, fontWeight: "600", color: colors.wine },
-  error: { color: colors.red, fontSize: 13, lineHeight: 20 },
-  caption: { fontSize: 12, lineHeight: 18, color: colors.muted },
+  chipText: { fontFamily: fonts.bodySemi, fontSize: 14, color: colors.wine },
+  error: { fontFamily: fonts.body, color: colors.red, fontSize: 14, lineHeight: 21 },
+  caption: { fontFamily: fonts.body, fontSize: 13, lineHeight: 19, color: colors.muted },
 });
 
 export type Tone = "neutral" | "red" | "blue" | "green" | "amber" | "purple";

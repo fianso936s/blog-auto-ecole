@@ -14,7 +14,7 @@ function TeacherCamera() {
   const track=tracks.find(t=>isTrackReference(t) && t.participant.identity.startsWith("t-"));
   return <View style={{gap:8}}>
     {track && isTrackReference(track) ? (
-      <VideoTrack trackRef={track} style={{height:230,width:"100%",backgroundColor:"#161214",borderRadius:12}} />
+      <VideoTrack trackRef={track} style={{height:230,width:"100%",backgroundColor:colors.ink,borderRadius:12}} />
     ) : <View style={[s.card,{height:160,alignItems:"center",justifyContent:"center"}]}>
       <ActivityIndicator color={colors.wine}/>
       <Text style={s.caption}>En attente des images de votre enseignant…</Text>

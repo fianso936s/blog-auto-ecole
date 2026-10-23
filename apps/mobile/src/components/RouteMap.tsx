@@ -266,7 +266,7 @@ export function RouteMap({
                 height: 44,
                 borderRadius: 22,
                 backgroundColor: tones[filterTone(p.category)].ink,
-                borderColor: "white",
+                borderColor: colors.paper,
                 borderWidth: 3,
                 justifyContent: "center",
                 alignItems: "center",
@@ -275,7 +275,7 @@ export function RouteMap({
               accessibilityLabel={`${p.category} : ${p.name}`}
               accessibilityRole="button"
             >
-              <Icon name={categoryIcons[p.category]} size={19} color="white" />
+              <Icon name={categoryIcons[p.category]} size={19} color={colors.paper} />
             </View>
           </Marker>
         ))}
@@ -289,7 +289,7 @@ export function RouteMap({
                 height: 22,
                 width: 22,
                 borderRadius: 11,
-                backgroundColor: "#4B7EEB55",
+                backgroundColor: "rgba(37,94,165,0.25)",
                 alignItems: "center",
                 justifyContent: "center",
               }}
@@ -299,9 +299,9 @@ export function RouteMap({
                   height: 12,
                   width: 12,
                   borderRadius: 6,
-                  backgroundColor: "#4778DF",
+                  backgroundColor: colors.blue,
                   borderWidth: 2,
-                  borderColor: "white",
+                  borderColor: colors.paper,
                 }}
               />
             </View>
@@ -316,7 +316,7 @@ export function RouteMap({
                 borderRadius: 10,
                 backgroundColor: colors.green,
                 borderWidth: 3,
-                borderColor: "white",
+                borderColor: colors.paper,
               }}
             />
           </Marker>
