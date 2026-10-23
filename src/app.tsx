@@ -1,3 +1,4 @@
+import { VideoPlayer } from "./VideoPlayer";
 import { useContentSync } from "./shared/content-sync";
 import React, {
   useState,
@@ -2520,7 +2521,6 @@ async function localClip(owner: string, id: string) {
   return videoStore("readonly", (s) => s.get(`${owner}:${id}`));
 }
 function Videos() {
-  const playback = useRef<HTMLVideoElement>(null);
   const { profile, notify } = useApp(),
     writer = profile?.role !== "student",
     [videos, setVideos] = useState<Video[]>([]),
@@ -2885,24 +2885,7 @@ function Videos() {
             setPlayer(null);
           }}
         >
-          <video
-            ref={playback}
-            className="video-player"
-            src={player.url}
-            controls
-            autoPlay
-            playsInline
-            onError={() =>
-              notify(
-                "Ce navigateur ne peut pas lire ce format vidéo. Essayez le MP4 H.264.",
-              )
-            }
-            controlsList="nodownload"
-          />
-          <button className="btn secondary video-restart" onClick={() => {
-            const video = playback.current;
-            if (video) { video.pause(); video.currentTime = 0; }
-          }}>Retour au début</button>
+          <VideoPlayer key={player.url} src={player.url} onError={()=>notify("Ce navigateur ne peut pas lire ce format vidéo. Essayez le MP4 H.264.")}/>
         </Modal>
       )}
       {sharing && (

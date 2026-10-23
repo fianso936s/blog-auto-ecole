@@ -82,3 +82,17 @@ Bouton explicite dans le lecteur carte/Street View : pause, premier point, recen
 - Vérifications : TypeScript web/API, 25 tests web et 23 tests API ciblés ; trois suites statiques vidéo/direct. Aucun test de caméra/réseau avec deux vrais appareils ou session élève réelle.
 
 - Contrôle production /health : stockage vidéo actif et service LiveKit configuré/joignable. Test navigateur automatisé du formulaire réel : publication à tous les élèves actuels, badge actualisé, puis retrait privé.
+
+## Curseur vidéo et quiz mobile — 23 octobre 2026
+
+| Avant | Après | Pourquoi |
+| --- | --- | --- |
+| Curseur dépendant des commandes natives masquées | Barre visible avec position/durée, déplacement dans les deux sens et raccourcis −10/+10 secondes | Navigation tactile et clavier accessible sans interrompre la lecture |
+| Boutons radio ciblés par le style des champs texte | Radios de 20 px dans des lignes tactiles de 52 px, sans padding de champ texte | Évite les réponses décalées et le débordement horizontal |
+| Validation sans indication du nombre de choix | Compteur de réponses, validation après toutes les réponses, boutons pleine largeur sur mobile | Compréhension et usage à une main |
+
+- Composant vidéo limité aux enregistrements : le direct reste sans recherche temporelle.
+- Durée inconnue : recherche désactivée jusqu’aux métadonnées ; bornes début/fin respectées. La recherche conserve la lecture en cours, le retour au début met en pause.
+- Quiz : colonne de texte réductible, retours à la ligne sur questions/réponses/corrections, focus visible et formulaires sans largeur minimale intrinsèque.
+- Tests ciblés réels React/DOM : avance/recul au curseur, raccourcis bornés, pause uniquement au retour au début ; styles calculés du radio avec la feuille CSS complète ; compteur, validation et conservation d’une tentative après erreur réseau.
+- Limite : aucun contrôle tactile sur un iPhone physique dans cette session.

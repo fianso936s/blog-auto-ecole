@@ -4,7 +4,7 @@ import {build} from 'esbuild';
 import {JSDOM} from 'jsdom';
 import React,{act} from 'react';
 import {createRoot} from 'react-dom/client';
-import {unlink} from 'node:fs/promises';
+import {unlink,readFile} from 'node:fs/promises';
 
 test('course quiz keeps its attempt on network failure and displays server corrections',async()=>{
  const file=new URL('./.course-ui-build.mjs',import.meta.url);
@@ -25,7 +25,15 @@ test('course quiz keeps its attempt on network failure and displays server corre
   await act(()=>root.render(React.createElement(LessonQuiz,{course:{id:'c1-controles',title:'Les contrôles'},profile:{id:'s',role:'student'},onChanged:()=>changed++,onLogin:()=>assert.fail('login not needed')})));
   await act(()=>document.querySelector('button').click());
   const radios=[...document.querySelectorAll('input[type="radio"]')];
+  const css=document.createElement('style');css.textContent=await readFile('src/style.css','utf8');document.head.appendChild(css);
+  const radioStyle=window.getComputedStyle(radios[0]);
+  assert.equal(radioStyle.width,'20px','radio must not inherit full-width text field styles');
+  assert.equal(radioStyle.minHeight,'20px');assert.equal(radioStyle.padding,'0px');
+  assert.equal(document.querySelector('button[type="submit"]').disabled,true);
+  assert.match(document.querySelector('.quiz-answer-count').textContent,/0 \/ 2/);
   await act(()=>{radios[0].click();radios[3].click();});
+  assert.equal(document.querySelector('button[type="submit"]').disabled,false);
+  assert.match(document.querySelector('.quiz-answer-count').textContent,/2 \/ 2/);
   await act(()=>document.querySelector('form').dispatchEvent(new dom.window.Event('submit',{bubbles:true,cancelable:true})));
   assert.match(document.querySelector('[role="alert"]').textContent,/Connexion interrompue/);
   assert.equal(document.querySelector('.quiz-result'),null,'failure must not invent a score');
