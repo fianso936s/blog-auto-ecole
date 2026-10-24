@@ -1,6 +1,10 @@
-export type LessonStep = { title: string; explanation: string; why: string };
+import type { LessonFigure } from "./figures";
+import { remcCourses, remcEnrichments } from "./courses-remc";
+export type { LessonFigure } from "./figures";
+export { figureDataUri, figureRatio } from "./figures";
+export type LessonStep = { title: string; explanation: string; why: string; figure?: LessonFigure };
 export type Course = {
-  id: string; code: string; group: "C1" | "C2" | "Manœuvres" | "Sécurité";
+  id: string; code: string; group: "C1" | "C2" | "C3" | "Manœuvres" | "Sécurité";
   title: string; minutes: number; intro: string; objective: string;
   steps: LessonStep[]; example: string; traps: string[]; safety: string;
   takeaway: string; tags: string[]; sourcePages: string;
@@ -8,7 +12,7 @@ export type Course = {
   videoNote?: string;
   references: string[];
 };
-export const courses: Course[] = [
+const baseCourses: Course[] = [
   {
     "id": "c1-verifications",
     "code": "1.1",
@@ -914,6 +918,35 @@ export const courses: Course[] = [
     ]
   }
 ];
+
+/** Ordre d’affichage : chaque nouvelle fiche se place après la fiche qui la précède dans la progression REMC. */
+const insertAfter: Record<string, string> = {
+  "c2-panneaux": "c2-pad", "c2-marquages": "c2-panneaux", "c2-feux-agents": "c2-marquages",
+  "c2-stop-cedez": "c2-pietons", "manoeuvre-bataille": "manoeuvre-creneau",
+};
+function enrich(course: Course): Course {
+  const extra = remcEnrichments[course.id];
+  if (!extra) return course;
+  const steps = course.steps.map((step, i) => (extra.figures?.[i] ? { ...step, figure: extra.figures[i] } : step));
+  for (const { at, step } of extra.extraSteps ?? []) steps.splice(Math.min(at, steps.length), 0, step);
+  return { ...course, steps };
+}
+function arrange(): Course[] {
+  const list = baseCourses.map(enrich);
+  for (const course of remcCourses) {
+    const anchor = insertAfter[course.id];
+    const index = anchor ? list.findIndex((c) => c.id === anchor) : -1;
+    if (index >= 0) list.splice(index + 1, 0, course);
+    else {
+      const lastOfGroup = list.map((c) => c.group).lastIndexOf(course.group);
+      const beforeManoeuvres = list.findIndex((c) => c.group === "Manœuvres");
+      list.splice(lastOfGroup >= 0 ? lastOfGroup + 1 : beforeManoeuvres, 0, course);
+    }
+  }
+  return list;
+}
+export const courses: Course[] = arrange();
+
 export const courseSources: Record<string, { label: string; url: string }> = {
   "assurance": {
     "label": "Service Public · Preuve d’assurance et suppression de la vignette",
@@ -954,6 +987,10 @@ export const courseSources: Record<string, { label: string; url: string }> = {
   "depassement": {
     "label": "Code de la route · Dépassement, R414-4",
     "url": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006842216"
+  },
+  "interfiles": {
+    "label": "L’argus · Circulation inter-files, règles depuis janvier 2025",
+    "url": "https://www.largus.fr/actualite-automobile/circulation-inter-files-nouvelles-regles-depuis-le-11-janvier-2025-que-dit-le-code-de-la-route-30038243.html"
   },
   "examen": {
     "label": "Arrêté du 19 février 2010 · Erreurs éliminatoires, article 27",

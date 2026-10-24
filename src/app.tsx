@@ -19,7 +19,7 @@ import { createRoot } from "react-dom/client";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Room, RoomEvent, Track } from "livekit-client";
-import { courses, courseSources } from "./shared/courses";
+import { courses, courseSources, figureDataUri } from "./shared/courses";
 import {
   categories,
   difficulties,
@@ -805,6 +805,7 @@ function Pedagogy() {
   const groups = [
     ["C1", "C1 · Maîtriser le véhicule"],
     ["C2", "C2 · Circuler avec les autres"],
+    ["C3", "C3 · Circuler dans des conditions difficiles"],
     ["Manœuvres", "Manœuvres"],
     ["Sécurité", "Sécurité et examen"],
   ];
@@ -860,6 +861,7 @@ function Pedagogy() {
             <li key={s.title}>
               <span className="instruction-number" aria-hidden="true">{String(i + 1).padStart(2, "0")}</span>
               <div><h3>{s.title}</h3><p>{s.explanation}</p>
+                {s.figure && <figure className="lesson-figure"><img src={figureDataUri(s.figure.svg)} alt={s.figure.alt} loading="lazy" decoding="async" /><figcaption>{s.figure.caption}</figcaption></figure>}
                 <p className="instruction-why"><strong>Pourquoi ?</strong> {s.why}</p>
               </div>
             </li>

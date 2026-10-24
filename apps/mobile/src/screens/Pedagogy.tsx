@@ -5,6 +5,7 @@ import { useApp } from "../state";
 import { colors, fonts, radius, styles as s } from "../theme";
 import { Button, Disclosure, Dropdown, Empty, Icon, PageHeading, Segmented } from "../components/UI";
 import { courses, courseSources } from "../pedagogy/courses";
+import { LessonFigureView } from "../components/LessonFigure";
 import {useProductLearning} from "../../../../packages/product/src/hooks";
 import {productClient,nativeReadingStorage,productTransport} from "../services/product-client";
 import {LessonQuiz,StudyOverview,TeacherLessons} from "../components/CourseLearning";
@@ -13,6 +14,7 @@ import {LessonQuiz,StudyOverview,TeacherLessons} from "../components/CourseLearn
 const groups = [
   ["C1", "C1 · Maîtriser le véhicule"],
   ["C2", "C2 · Circuler avec les autres"],
+  ["C3", "C3 · Circuler dans des conditions difficiles"],
   ["Manœuvres", "Manœuvres"],
   ["Sécurité", "Sécurité et examen"],
 ] as const;
@@ -134,6 +136,7 @@ export function Pedagogy() {
                   <View style={{ flex: 1, gap: 8 }}>
                     <Text style={[s.heading, { fontSize: 18, lineHeight: 24, marginTop: 4 }]}>{step.title}</Text>
                     <Text selectable style={[s.body, { lineHeight: 25 }]}>{step.explanation}</Text>
+                    {step.figure ? <LessonFigureView figure={step.figure} /> : null}
                     <Text selectable style={[s.muted, { lineHeight: 21 }]}>
                       <Text style={{ fontFamily: fonts.bodySemi, color: colors.ink }}>Pourquoi ? </Text>
                       {step.why}

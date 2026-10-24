@@ -23,7 +23,7 @@ test('course learning persists, grades on the server, isolates learners and rest
  installCourses(app,db as any);
  const call=async(path:string,user='s',method='GET',body?:unknown)=>{const r=await app.request('https://fixture.invalid'+path,{method,headers:{'x-fixture-user':user,'content-type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});return {status:r.status,body:await r.json() as any};};
  try {
-  for(const c of courseCatalog){assert.equal(c.questions.length,2);assert.ok(c.questions.every(q=>q.options[q.answer]&&q.explanation));}
+  for(const c of courseCatalog){assert.ok(c.questions.length>=2);assert.ok(c.questions.every(q=>q.options[q.answer]&&q.explanation));}
   const lesson=courseCatalog[0]!,path='/v1/courses/'+lesson.id;
   assert.equal((await call(path+'/progress','s','PUT',{read:true,review:true})).status,200);
   assert.equal((await call('/v1/courses/me')).body.reading[0].read,true);

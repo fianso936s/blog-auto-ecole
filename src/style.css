@@ -3477,6 +3477,22 @@ input[type="radio"] {
   font-size: 16px;
   line-height: 1.7;
 }
+.lesson-figure {
+  margin: 14px 0 10px;
+}
+.lesson-figure img {
+  display: block;
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  border-radius: 14px;
+}
+.lesson-figure figcaption {
+  margin-top: 6px;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  color: var(--muted, #6b6b6b);
+}
 .lesson-instructions .instruction-why {
   color: var(--muted);
   font-size: 14px;

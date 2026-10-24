@@ -228,8 +228,8 @@
         "explanation": "Tu prépares ta voie cible avec la signalisation et l’aménagement réellement présents."
       }
     ],
-    "revision": "145b24c2c41ba0c1",
-    "contentHash": "28b4a1214190f80711579a0ca23f59733f8cb1fa7fd82348fafcaab564878913"
+    "revision": "fc8b3d97607355e7",
+    "contentHash": "fc8b3d97607355e701fca65a2c1b38e0c8826985d1b88072bb9955ed5cf2f349"
   },
   {
     "id": "c2-allure",
@@ -255,10 +255,21 @@
         ],
         "answer": 0,
         "explanation": "Ralentir assez tôt préserve ta capacité à voir, décider et agir."
+      },
+      {
+        "id": "c2-allure-limites",
+        "question": "Tu es en permis probatoire sur autoroute, par temps sec. Quelle est ta vitesse maximale ?",
+        "options": [
+          "130 km/h.",
+          "110 km/h.",
+          "90 km/h."
+        ],
+        "answer": 1,
+        "explanation": "En permis probatoire, la vitesse maximale est de 110 km/h sur autoroute, 100 km/h sur route à chaussées séparées et 80 km/h sur les autres routes."
       }
     ],
-    "revision": "5fbffe17a064042a",
-    "contentHash": "74b613981a4cafa48bb07f01e5bbb8e8c6922e6ee8ed1565a0d63ca80571bd8d"
+    "revision": "5357189ab4afee81",
+    "contentHash": "5357189ab4afee814c77cdb882ee7df46fbbef34f29d9c2152ae7917a95c017b"
   },
   {
     "id": "c2-tourner",
@@ -286,8 +297,8 @@
         "explanation": "L’objectif est de rejoindre la bonne voie sans couper la trajectoire d’un usager prioritaire."
       }
     ],
-    "revision": "88afa6613f17a45f",
-    "contentHash": "0f4f680213077cfaf34b87e291d1a2c7c08656c18e5a3453a7ae0d5a6539b187"
+    "revision": "38c39b26ca42158f",
+    "contentHash": "38c39b26ca42158ff4c8b2c954ce46bc791c6bf6fdd9d2f058290eb66065cd82"
   },
   {
     "id": "c2-priorite",
@@ -315,8 +326,8 @@
         "explanation": "Tu dois conserver le temps et la distance nécessaires pour appliquer la règle de priorité."
       }
     ],
-    "revision": "792fdeb7f7eabbc0",
-    "contentHash": "d3900543eba55ed617e61fa9e6353049a3cb6360967a1b6d9f359959f3e99f23"
+    "revision": "202fcc60fcbdd6d2",
+    "contentHash": "202fcc60fcbdd6d2539e8ef67467a0b36ca5e35a05c15c403867bd25a306c778"
   },
   {
     "id": "c2-pietons",
@@ -373,8 +384,8 @@
         "explanation": "Une direction manquée est préférable à une sortie forcée et dangereuse."
       }
     ],
-    "revision": "f5cc442f272e45e8",
-    "contentHash": "4072d4aa015a2e0aa8c07f7106bccf93f8ca20cbf77773f2de981afc18dbb294"
+    "revision": "076a2e30dafaeb81",
+    "contentHash": "076a2e30dafaeb81ec8166a4ffa55887399eceaea098e010721ee1d0b077afd2"
   },
   {
     "id": "manoeuvre-arriere",
@@ -460,8 +471,8 @@
         "explanation": "La situation réelle et la sécurité passent avant un repère appris par cœur."
       }
     ],
-    "revision": "18d212dee5ef6e8e",
-    "contentHash": "d14d84189d231e4a00b22fee7fd9b92cab07d7756c6d6dea26006506bb6bac6c"
+    "revision": "c4203dbb492068cf",
+    "contentHash": "c4203dbb492068cf2205c95f2f90c0eaa566b0e487c424df47015e6f38e2adf9"
   },
   {
     "id": "securite-rapide",
@@ -489,8 +500,8 @@
         "explanation": "Annoncer une intention ne donne pas la priorité."
       }
     ],
-    "revision": "49813957c519f1ad",
-    "contentHash": "90c3c9edcc222f156cbf0eab2021b9318e0f2aca1fa2ecf752aeedd9cd9ed602"
+    "revision": "fc95df004749c079",
+    "contentHash": "fc95df004749c079bdcdaf0558af8872e1c1cbbae4b6f6fd85ad376314a4d709"
   },
   {
     "id": "securite-distances",
@@ -518,8 +529,8 @@
         "explanation": "La marge latérale doit protéger les usagers ; si l’espace manque, tu adaptes ou tu attends."
       }
     ],
-    "revision": "26696bd4673d48fa",
-    "contentHash": "fbab2d36fb41467cf79e1e39ccfc42b57bc7934f3fa70240327ffe25f3d13edb"
+    "revision": "fcc8387b2f7f5cad",
+    "contentHash": "fcc8387b2f7f5cad2edb53070d96f9977ea961c8d4fa068fe561c11ad726243b"
   },
   {
     "id": "securite-examen",
@@ -549,5 +560,595 @@
     ],
     "revision": "1b47a4896e3dfcc6",
     "contentHash": "8e7938f7634c6dbcc000751c4eafc8895c62f224ab9989c0ea6c697cb7e92877"
+  },
+  {
+    "id": "c2-panneaux",
+    "questions": [
+      {
+        "id": "c2-panneaux-1",
+        "question": "Un panneau triangulaire à bord rouge annonce un virage, hors agglomération. Où se trouve le virage ?",
+        "options": [
+          "Au niveau du panneau.",
+          "Environ 150 m après le panneau.",
+          "Environ 50 m après le panneau."
+        ],
+        "answer": 1,
+        "explanation": "Hors agglomération, les panneaux de danger sont placés environ 150 m avant le danger ; en agglomération, environ 50 m."
+      },
+      {
+        "id": "c2-panneaux-2",
+        "question": "Tu vois un panneau rond à bord rouge « 30 ». À partir d’où dois-tu rouler à 30 km/h ?",
+        "options": [
+          "Dès le panneau.",
+          "À la prochaine intersection.",
+          "Après 50 m."
+        ],
+        "answer": 0,
+        "explanation": "Les interdictions, dont les limitations de vitesse, s’appliquent dès le panneau."
+      },
+      {
+        "id": "c2-panneaux-3",
+        "question": "Que signifie un rond bleu barré d’une seule bande rouge ?",
+        "options": [
+          "Arrêt et stationnement interdits.",
+          "Stationnement interdit, l’arrêt reste possible.",
+          "Fin de toutes les interdictions."
+        ],
+        "answer": 1,
+        "explanation": "Une barre : stationnement interdit. Une croix : arrêt et stationnement interdits."
+      },
+      {
+        "id": "c2-panneaux-4",
+        "question": "Un panneau est accompagné d’un panonceau « à 200 m ». Que fais-tu ?",
+        "options": [
+          "J’applique la règle dès le panneau.",
+          "J’ignore le panonceau, seul le panneau compte.",
+          "J’anticipe : la règle commence 200 m plus loin."
+        ],
+        "answer": 2,
+        "explanation": "Le panonceau précise ou modifie l’effet du panneau : ici, il décale son point de départ."
+      }
+    ],
+    "revision": "ec66f519346d3d84",
+    "contentHash": "ec66f519346d3d84a24318309e1847f8543d4bda70e17350969ad555dda601a3"
+  },
+  {
+    "id": "c2-marquages",
+    "questions": [
+      {
+        "id": "c2-marquages-1",
+        "question": "Une ligne mixte : la ligne continue est de ton côté. Peux-tu dépasser ?",
+        "options": [
+          "Oui, la discontinue l’autorise.",
+          "Non, c’est la ligne la plus proche de toi qui compte.",
+          "Oui, si le véhicule devant roule lentement."
+        ],
+        "answer": 1,
+        "explanation": "Dans une ligne mixte, seule la ligne la plus proche de ton véhicule s’applique."
+      },
+      {
+        "id": "c2-marquages-2",
+        "question": "Que t’annonce une ligne à traits serrés avec des flèches de rabattement ?",
+        "options": [
+          "L’approche d’une ligne continue : tu ne commences plus de dépassement.",
+          "Une voie réservée aux bus.",
+          "Une zone où le dépassement devient prioritaire."
+        ],
+        "answer": 0,
+        "explanation": "La ligne d’avertissement annonce une ligne continue : on peut seulement terminer un dépassement déjà engagé."
+      },
+      {
+        "id": "c2-marquages-3",
+        "question": "En zone de travaux, des lignes jaunes et des lignes blanches se superposent. Lesquelles suis-tu ?",
+        "options": [
+          "Les blanches, elles sont permanentes.",
+          "Les jaunes, elles priment sur les blanches.",
+          "Celles qui m’arrangent."
+        ],
+        "answer": 1,
+        "explanation": "Le marquage jaune est temporaire et prime sur le marquage blanc habituel."
+      },
+      {
+        "id": "c2-marquages-4",
+        "question": "Peux-tu chevaucher une ligne continue pour dépasser un cycliste ?",
+        "options": [
+          "Jamais.",
+          "Oui, si la visibilité permet de le faire sans danger.",
+          "Seulement en agglomération."
+        ],
+        "answer": 1,
+        "explanation": "Le chevauchement d’une ligne continue est permis pour dépasser un cycliste, un piéton ou un engin lent, quand c’est sans danger."
+      }
+    ],
+    "revision": "5e0cc6ad358e581c",
+    "contentHash": "5e0cc6ad358e581c2348f04852deba9e1ec9879fe76b05d4dc08c485d5fa6fdd"
+  },
+  {
+    "id": "c2-feux-agents",
+    "questions": [
+      {
+        "id": "c2-feux-agents-1",
+        "question": "Un agent te fait signe d’avancer alors que ton feu est rouge. Que fais-tu ?",
+        "options": [
+          "J’attends le vert.",
+          "J’obéis à l’agent, ses indications passent avant le feu.",
+          "Je klaxonne pour lui signaler le feu."
+        ],
+        "answer": 1,
+        "explanation": "L’agent est en haut de la hiérarchie : agent, puis feux, puis panneaux, puis marquages."
+      },
+      {
+        "id": "c2-feux-agents-2",
+        "question": "Le feu passe au jaune fixe alors que tu es encore loin de la ligne. Que fais-tu ?",
+        "options": [
+          "Je m’arrête, c’est possible en sécurité.",
+          "J’accélère pour passer.",
+          "Je passe, le jaune autorise le passage."
+        ],
+        "answer": 0,
+        "explanation": "Le jaune fixe impose l’arrêt, sauf si tu ne peux plus t’arrêter dans de bonnes conditions de sécurité."
+      },
+      {
+        "id": "c2-feux-agents-3",
+        "question": "Un agent lève un bras à la verticale. Qu’est-ce que cela signifie ?",
+        "options": [
+          "Passage pour ceux qui sont face à lui.",
+          "Arrêt pour tous, sauf pour ceux déjà engagés qui dégagent le carrefour.",
+          "Ralentir seulement."
+        ],
+        "answer": 1,
+        "explanation": "Bras levé : arrêt pour tous les usagers, sauf ceux déjà engagés dans l’intersection."
+      },
+      {
+        "id": "c2-feux-agents-4",
+        "question": "Un ballon roule sur la chaussée. Quel type d’indice est-ce ?",
+        "options": [
+          "Un indice formel, il n’a qu’une signification.",
+          "Un indice informel : un enfant peut suivre, je ralentis.",
+          "Un indice sans importance."
+        ],
+        "answer": 1,
+        "explanation": "Un indice informel peut avoir plusieurs significations : on envisage le pire scénario, ici un enfant qui surgit."
+      }
+    ],
+    "revision": "ab4fc2a7f6e62094",
+    "contentHash": "ab4fc2a7f6e62094073b7879b57c3fc658797931c5a90c556fc4666815adbb76"
+  },
+  {
+    "id": "c2-stop-cedez",
+    "questions": [
+      {
+        "id": "c2-stop-cedez-1",
+        "question": "Au STOP, la route paraît vide. Que fais-tu ?",
+        "options": [
+          "Je ralentis fortement sans m’arrêter.",
+          "Je marque un arrêt complet à la ligne, puis j’observe.",
+          "Je passe, personne ne vient."
+        ],
+        "answer": 1,
+        "explanation": "Au STOP, l’arrêt complet est toujours obligatoire. Un arrêt incomplet est éliminatoire à l’examen."
+      },
+      {
+        "id": "c2-stop-cedez-2",
+        "question": "Au cédez-le-passage, la voie est entièrement libre et bien visible. Dois-tu t’arrêter ?",
+        "options": [
+          "Oui, toujours.",
+          "Non, l’arrêt n’est obligatoire que si nécessaire.",
+          "Oui, mais seulement la nuit."
+        ],
+        "answer": 1,
+        "explanation": "Au cédez-le-passage, on cède à droite et à gauche, mais l’arrêt n’est obligatoire que si un usager arrive ou si la visibilité manque."
+      },
+      {
+        "id": "c2-stop-cedez-3",
+        "question": "Que t’indique un losange jaune bordé de blanc ?",
+        "options": [
+          "Une priorité pour la prochaine intersection seulement.",
+          "Tu circules sur une route à caractère prioritaire.",
+          "Une zone de travaux."
+        ],
+        "answer": 1,
+        "explanation": "Le losange jaune indique une route prioritaire, jusqu’au losange barré qui en annonce la fin."
+      },
+      {
+        "id": "c2-stop-cedez-4",
+        "question": "Tu es sur une route prioritaire et une voiture arrive vite d’une rue à droite. Que fais-tu ?",
+        "options": [
+          "Je garde ma vitesse, je suis prioritaire.",
+          "Je klaxonne et j’accélère.",
+          "Je lève le pied et je me prépare à un refus de priorité."
+        ],
+        "answer": 2,
+        "explanation": "Être prioritaire ne dispense pas de prudence : tu dois pouvoir éviter un refus de priorité."
+      }
+    ],
+    "revision": "64414176db852aad",
+    "contentHash": "64414176db852aad6f9008f23e04488083a4b6e4c5bac752297a2ea8dd0dcef6"
+  },
+  {
+    "id": "manoeuvre-bataille",
+    "questions": [
+      {
+        "id": "manoeuvre-bataille-1",
+        "question": "Pendant une manœuvre en bataille, à quelle vitesse dois-tu évoluer ?",
+        "options": [
+          "Au point de patinage, très lentement.",
+          "Assez vite pour ne pas gêner.",
+          "En deuxième vitesse."
+        ],
+        "answer": 0,
+        "explanation": "Au point de patinage, la voiture avance lentement : tu as le temps d’observer et de corriger."
+      },
+      {
+        "id": "manoeuvre-bataille-2",
+        "question": "En bataille arrière, où regardes-tu principalement ?",
+        "options": [
+          "Uniquement la caméra de recul.",
+          "Par la lunette arrière, en vision directe, sans oublier l’avant qui balaye la voie.",
+          "Uniquement le rétroviseur intérieur."
+        ],
+        "answer": 1,
+        "explanation": "La vision directe vers l’arrière reste la référence ; la caméra et les rétroviseurs la complètent."
+      },
+      {
+        "id": "manoeuvre-bataille-3",
+        "question": "Tu es mal placé dans la place. Que fais-tu ?",
+        "options": [
+          "Je force pour entrer.",
+          "Je ressors légèrement et je reprends ma trajectoire.",
+          "Je laisse la voiture de travers."
+        ],
+        "answer": 1,
+        "explanation": "Une correction calme est normale et acceptée ; forcer risque de toucher un véhicule."
+      },
+      {
+        "id": "manoeuvre-bataille-4",
+        "question": "Un piéton passe derrière toi pendant que tu recules. Que fais-tu ?",
+        "options": [
+          "Je continue lentement.",
+          "Je klaxonne.",
+          "Je m’arrête et je le laisse passer, puis je refais mes contrôles."
+        ],
+        "answer": 2,
+        "explanation": "Une manœuvre ne donne aucune priorité : tu t’arrêtes pour tout usager."
+      }
+    ],
+    "revision": "12d8e9578919886f",
+    "contentHash": "12d8e9578919886fbe9b0e82c80383d561a2dd714011bd6519c8e8a31d52e56c"
+  },
+  {
+    "id": "c3-croiser-depasser",
+    "questions": [
+      {
+        "id": "c3-croiser-depasser-1",
+        "question": "Quand peux-tu te rabattre après un dépassement ?",
+        "options": [
+          "Dès que l’avant de ta voiture dépasse l’autre.",
+          "Quand tu vois le véhicule dépassé en entier dans le rétroviseur intérieur.",
+          "Dès que tu as mis le clignotant droit."
+        ],
+        "answer": 1,
+        "explanation": "Te rabattre quand le véhicule est entièrement visible dans le rétroviseur intérieur évite de lui couper la route."
+      },
+      {
+        "id": "c3-croiser-depasser-2",
+        "question": "Un véhicule te dépasse. Quelles sont tes obligations ?",
+        "options": [
+          "Accélérer pour l’aider.",
+          "Ne pas accélérer et serrer à droite si possible.",
+          "Freiner fortement."
+        ],
+        "answer": 1,
+        "explanation": "Celui qui est dépassé doit maintenir son allure et serrer à droite pour faciliter la manœuvre."
+      },
+      {
+        "id": "c3-croiser-depasser-3",
+        "question": "Quelle distance laisses-tu pour dépasser un cycliste hors agglomération ?",
+        "options": [
+          "50 cm.",
+          "1 m.",
+          "1,50 m."
+        ],
+        "answer": 2,
+        "explanation": "Au moins 1 m en agglomération et 1,50 m hors agglomération."
+      },
+      {
+        "id": "c3-croiser-depasser-4",
+        "question": "Dans un passage étroit, le panneau rond montre ta flèche en rouge. Que fais-tu ?",
+        "options": [
+          "Je passe, je suis prioritaire.",
+          "Je cède le passage à la circulation venant d’en face.",
+          "Je klaxonne avant de passer."
+        ],
+        "answer": 1,
+        "explanation": "Sur ce panneau, la flèche rouge correspond au sens qui doit céder : ici, toi."
+      }
+    ],
+    "revision": "4a9c254e94a87170",
+    "contentHash": "4a9c254e94a87170796523601096c64016fa088ac94c1401454a77f02472d4ec"
+  },
+  {
+    "id": "c3-virages",
+    "questions": [
+      {
+        "id": "c3-virages-1",
+        "question": "Où dois-tu ralentir pour un virage ?",
+        "options": [
+          "Dans le virage.",
+          "En ligne droite, avant d’entrer dans le virage.",
+          "À la sortie du virage."
+        ],
+        "answer": 1,
+        "explanation": "On freine en ligne droite ; dans la courbe, on garde une allure constante."
+      },
+      {
+        "id": "c3-virages-2",
+        "question": "Où portes-tu ton regard dans un virage ?",
+        "options": [
+          "Vers la sortie du virage.",
+          "Sur le bord de la route.",
+          "Sur la voiture d’en face."
+        ],
+        "answer": 0,
+        "explanation": "Les mains suivent le regard : regarder la sortie donne la bonne trajectoire."
+      },
+      {
+        "id": "c3-virages-3",
+        "question": "Dans une longue descente, comment ménages-tu les freins ?",
+        "options": [
+          "Je freine en continu.",
+          "Je passe au point mort.",
+          "J’utilise le frein moteur et je freine par petites touches."
+        ],
+        "answer": 2,
+        "explanation": "Le frein moteur, ou la régénération en électrique, évite l’échauffement des freins."
+      },
+      {
+        "id": "c3-virages-4",
+        "question": "Sur une route étroite en pente, le croisement est difficile. Qui s’arrête en principe ?",
+        "options": [
+          "Le véhicule qui monte.",
+          "Le véhicule qui descend.",
+          "Le plus gros véhicule."
+        ],
+        "answer": 1,
+        "explanation": "Le véhicule qui descend s’arrête et recule si nécessaire, sauf signalisation contraire."
+      }
+    ],
+    "revision": "d77d1a2f78af06b0",
+    "contentHash": "d77d1a2f78af06b0f26574065523cb56c557ef45ac08db0913ec23e6bf0f77e0"
+  },
+  {
+    "id": "c3-usagers",
+    "questions": [
+      {
+        "id": "c3-usagers-1",
+        "question": "Avant de tourner à droite en ville, que vérifies-tu en plus ?",
+        "options": [
+          "Rien de plus, le clignotant suffit.",
+          "Le rétroviseur droit et l’angle mort, pour un cycliste ou une trottinette.",
+          "Uniquement le rétroviseur intérieur."
+        ],
+        "answer": 1,
+        "explanation": "Les cyclistes et trottinettes arrivent souvent dans l’angle mort droit."
+      },
+      {
+        "id": "c3-usagers-2",
+        "question": "Un poids lourd tourne dans un giratoire. Où te places-tu ?",
+        "options": [
+          "À côté de lui, dans sa voie.",
+          "Juste derrière son pare-chocs.",
+          "En retrait, là où il peut te voir dans ses rétroviseurs."
+        ],
+        "answer": 2,
+        "explanation": "Un poids lourd prend de la place et voit mal autour de lui : reste visible et en retrait."
+      },
+      {
+        "id": "c3-usagers-3",
+        "question": "Une ambulance du SAMU arrive derrière toi, gyrophare et sirène en marche. Que fais-tu ?",
+        "options": [
+          "Je me range à droite calmement pour faciliter son passage.",
+          "Je freine brutalement.",
+          "Je continue, ce n’est pas un véhicule de police."
+        ],
+        "answer": 0,
+        "explanation": "Le SAMU est prioritaire en intervention : tu dois céder et faciliter son passage, sans manœuvre brusque."
+      },
+      {
+        "id": "c3-usagers-4",
+        "question": "Pourquoi un deux-roues motorisé est-il difficile à évaluer ?",
+        "options": [
+          "Il est toujours lent.",
+          "Il est petit et accélère vite : sa vitesse est difficile à estimer.",
+          "Il roule toujours sur la voie de droite."
+        ],
+        "answer": 1,
+        "explanation": "Sa petite taille et ses accélérations rendent sa distance et sa vitesse difficiles à juger : regarde deux fois."
+      }
+    ],
+    "revision": "6ee6e3da0c9affe3",
+    "contentHash": "6ee6e3da0c9affe3a8f748e6f72a0a591b3d9fbb065cb0d779a008230d01fff0"
+  },
+  {
+    "id": "c3-circulation-dense",
+    "questions": [
+      {
+        "id": "c3-circulation-dense-1",
+        "question": "Dans une file à l’arrêt, quelle distance gardes-tu avec la voiture de devant ?",
+        "options": [
+          "Je la colle pour ne pas laisser de place.",
+          "Je vois ses pneus toucher la route.",
+          "Au moins 20 mètres."
+        ],
+        "answer": 1,
+        "explanation": "Voir les pneus du véhicule de devant te laisse de quoi le contourner ou éviter un choc."
+      },
+      {
+        "id": "c3-circulation-dense-2",
+        "question": "La file s’arrête brusquement sur voie rapide. Comment préviens-tu ceux qui suivent ?",
+        "options": [
+          "Avec le klaxon.",
+          "Avec un appel de phares.",
+          "Avec les feux de détresse, brièvement."
+        ],
+        "answer": 2,
+        "explanation": "Les feux de détresse avertissent les usagers derrière toi d’un ralentissement brutal."
+      },
+      {
+        "id": "c3-circulation-dense-3",
+        "question": "Le carrefour devant toi est encombré, ton feu est vert. Que fais-tu ?",
+        "options": [
+          "Je m’engage, le feu est vert.",
+          "J’attends de pouvoir dégager le carrefour avant de m’engager.",
+          "Je klaxonne."
+        ],
+        "answer": 1,
+        "explanation": "On ne s’engage dans une intersection que si on peut la dégager."
+      }
+    ],
+    "revision": "df431d7be1e779e8",
+    "contentHash": "df431d7be1e779e8e08a747551445cadd4c053c74c603bb2a46b5d6d914eef7c"
+  },
+  {
+    "id": "c3-interfiles",
+    "questions": [
+      {
+        "id": "c3-interfiles-1",
+        "question": "Entre quelles voies une moto peut-elle remonter les files ?",
+        "options": [
+          "Entre n’importe quelles voies.",
+          "Entre les deux voies les plus à gauche.",
+          "Sur la bande d’arrêt d’urgence."
+        ],
+        "answer": 1,
+        "explanation": "La circulation inter-files n’est autorisée qu’entre les deux voies les plus à gauche."
+      },
+      {
+        "id": "c3-interfiles-2",
+        "question": "À quelle vitesse maximale une moto peut-elle circuler entre les files ?",
+        "options": [
+          "30 km/h dans tous les cas.",
+          "50 km/h, et 30 km/h si une file est à l’arrêt.",
+          "Sans limite particulière."
+        ],
+        "answer": 1,
+        "explanation": "50 km/h maximum, ramené à 30 km/h si l’une des files est à l’arrêt."
+      },
+      {
+        "id": "c3-interfiles-3",
+        "question": "Sur quelles routes la circulation inter-files est-elle autorisée ?",
+        "options": [
+          "En ville, partout.",
+          "Sur les routes à double sens.",
+          "Sur les autoroutes et routes à chaussées séparées d’au moins deux voies, limitées à 70 km/h ou plus."
+        ],
+        "answer": 2,
+        "explanation": "Elle est limitée aux routes à chaussées séparées d’au moins deux voies par sens, avec une vitesse maximale autorisée d’au moins 70 km/h."
+      }
+    ],
+    "revision": "98e04507b7ba2cf9",
+    "contentHash": "98e04507b7ba2cf9418ba81da77b385ed51555b3cc1f46bd1d2b0b0806faad65"
+  },
+  {
+    "id": "c3-visibilite",
+    "questions": [
+      {
+        "id": "c3-visibilite-1",
+        "question": "De nuit sur une route non éclairée, une voiture arrive en face. Que fais-tu ?",
+        "options": [
+          "Je garde mes feux de route.",
+          "Je passe en feux de croisement.",
+          "J’éteins mes feux."
+        ],
+        "answer": 1,
+        "explanation": "Les feux de route éblouissent : on passe en croisement dès qu’un usager arrive en face ou qu’on en suit un."
+      },
+      {
+        "id": "c3-visibilite-2",
+        "question": "Quand utilises-tu le feu de brouillard arrière ?",
+        "options": [
+          "Sous la pluie.",
+          "La nuit sur route non éclairée.",
+          "Uniquement par brouillard ou chute de neige."
+        ],
+        "answer": 2,
+        "explanation": "Le feu de brouillard arrière éblouit : il est réservé au brouillard et à la chute de neige."
+      },
+      {
+        "id": "c3-visibilite-3",
+        "question": "La visibilité est inférieure à 50 m. Quelle est la vitesse maximale ?",
+        "options": [
+          "50 km/h sur toutes les routes.",
+          "70 km/h hors agglomération.",
+          "Aucune limite particulière."
+        ],
+        "answer": 0,
+        "explanation": "Quand la visibilité est inférieure à 50 m, la vitesse est limitée à 50 km/h partout."
+      },
+      {
+        "id": "c3-visibilite-4",
+        "question": "La direction devient soudain légère sur route inondée. Que fais-tu ?",
+        "options": [
+          "Je freine fort.",
+          "Je lève le pied, je garde le volant droit et j’attends de retrouver l’adhérence.",
+          "J’accélère pour traverser vite."
+        ],
+        "answer": 1,
+        "explanation": "C’est l’aquaplaning : pas de freinage brutal ni de coup de volant, on lève le pied."
+      }
+    ],
+    "revision": "015286e60a122229",
+    "contentHash": "015286e60a1222292e15a8a94ca5a8c84a313db3e026d283ed3f91e4fa9daf25"
+  },
+  {
+    "id": "c3-ouvrages",
+    "questions": [
+      {
+        "id": "c3-ouvrages-1",
+        "question": "La file avance lentement vers un passage à niveau. Quand t’engages-tu ?",
+        "options": [
+          "Quand la voiture devant moi s’engage.",
+          "Seulement si je suis sûr de pouvoir dégager entièrement la voie ferrée.",
+          "Dès que les barrières sont levées, même si la file est arrêtée de l’autre côté."
+        ],
+        "answer": 1,
+        "explanation": "On ne s’arrête jamais sur une voie ferrée : on s’engage seulement si on peut la dégager."
+      },
+      {
+        "id": "c3-ouvrages-2",
+        "question": "Que fais-tu en entrant dans un tunnel ?",
+        "options": [
+          "J’allume mes feux de croisement.",
+          "Je mets mes feux de détresse.",
+          "Je ralentis fortement à l’entrée."
+        ],
+        "answer": 0,
+        "explanation": "Dans un tunnel, on allume les feux de croisement pour voir et être vu."
+      },
+      {
+        "id": "c3-ouvrages-3",
+        "question": "Dans un tunnel, des balises bleues sont fixées au mur. À quoi servent-elles ?",
+        "options": [
+          "À indiquer les sorties de secours.",
+          "À évaluer ta distance : garde-en au moins deux avec le véhicule devant.",
+          "À signaler une voie réservée."
+        ],
+        "answer": 1,
+        "explanation": "Les balises bleues aident à respecter la distance de sécurité."
+      },
+      {
+        "id": "c3-ouvrages-4",
+        "question": "Un tramway est arrêté et des passagers descendent. Que fais-tu ?",
+        "options": [
+          "Je le dépasse rapidement.",
+          "Je ne le dépasse pas du côté où les passagers descendent.",
+          "Je klaxonne pour prévenir."
+        ],
+        "answer": 1,
+        "explanation": "Des passagers peuvent traverser : on ne dépasse pas un tramway à l’arrêt du côté de la descente."
+      }
+    ],
+    "revision": "e37a821cd48cb6dc",
+    "contentHash": "e37a821cd48cb6dcd3343ae06b1a204771c92e371d898e8f1067fa872d0e7570"
   }
 ]

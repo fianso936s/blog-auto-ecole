@@ -1,10 +1,10 @@
 {
   "release": {
     "version": "1.7.0",
-    "revision": "2f454eb370e3c2871be2",
+    "revision": "70ece573fdb3fd3af9da",
     "apiOrigin": "https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech",
-    "courseCount": 19,
-    "questionCount": 38
+    "courseCount": 31,
+    "questionCount": 85
   },
   "courses": [
     {
@@ -339,6 +339,217 @@
       ]
     },
     {
+      "id": "c2-panneaux",
+      "code": "2.1a",
+      "group": "C2",
+      "title": "Lire un panneau : forme, couleur et moment où il s’applique",
+      "minutes": 8,
+      "intro": "Un panneau se comprend avant même de lire son dessin : sa forme et sa couleur te disent s’il annonce un danger, impose une règle ou t’informe. Ce qui compte ensuite, c’est de savoir à partir d’où il s’applique.",
+      "objective": "Repérer tôt chaque panneau, reconnaître sa famille et adapter ta conduite au bon endroit.",
+      "steps": [
+        {
+          "title": "Les panneaux de danger : triangle rouge, pointe en haut",
+          "explanation": "Ils annoncent un danger à venir : virage, passage piétons, cassis, traversée de tramway, sortie d’école. Ils ne sont pas placés sur le danger mais avant lui : environ 50 m avant en agglomération et 150 m avant hors agglomération. Ce délai est fait pour toi : il te laisse le temps de lever le pied, d’observer et de préparer ta réaction. Un panonceau sous le panneau peut préciser une autre distance, par exemple « 300 m ». Quand tu vois un triangle, pose-toi toujours la même question : qu’est-ce qui peut surgir, et à quelle vitesse dois-je arriver ?",
+          "why": "Le panneau de danger te donne une avance. Si tu la gaspilles, tu découvres le danger au dernier moment.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 432 154' width='432' height='154'><rect x='0.5' y='0.5' width='431' height='153' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><text x='216' y='20' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#6B6B6B' text-anchor='middle'>DANGER · 50 m avant en ville, 150 m hors agglo</text><g transform='translate(60,72)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><path d='M-4,14 L-4,0 Q-4,-8 6,-12' fill='none' stroke='#1E1E1E' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(7,-12) rotate(70) scale(0.7)' d='M0,-9 L8,4 L-8,4 Z' fill='#1E1E1E'/></g><text x='60' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Virage</text><g transform='translate(164,72)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><circle cx='0' cy='-9' r='3.5' fill='#1E1E1E'/><path d='M0,-4 L0,7 M0,7 L-6,16 M0,7 L6,16 M-7,1 L7,1' fill='none' stroke='#1E1E1E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></g><text x='164' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Passage piétons</text><g transform='translate(268,72)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><rect x='-11' y='-8' width='22' height='18' rx='3' fill='#1E1E1E'/><rect x='-7' y='-4' width='14' height='6' fill='#FFFFFF'/><path d='M-6,-14 L6,-14 M0,-14 L0,-8' fill='none' stroke='#1E1E1E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></g><text x='268' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Tramway</text><g transform='translate(372,72)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><path d='M-17,15 L-8,15 Q0,0 8,15 L17,15' fill='none' stroke='#1E1E1E' stroke-width='4'/></g><text x='372' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Cassis</text></svg>",
+            "caption": "Famille danger : on anticipe ce qui arrive.",
+            "alt": "Quatre panneaux triangulaires à bord rouge : virage, passage piétons, tramway, cassis."
+          }
+        },
+        {
+          "title": "Les interdictions : rond à bord rouge, effet immédiat",
+          "explanation": "Sens interdit, limitation de vitesse, interdiction de tourner, de dépasser ou de stationner : un rond bordé de rouge t’interdit quelque chose, et l’interdiction s’applique dès le panneau. Elle dure en principe jusqu’à la prochaine intersection, sauf panonceau ou panneau de fin. Les limitations de vitesse, elles, valent jusqu’au panneau qui les lève ou les modifie. Les ronds bleus barrés de rouge concernent l’arrêt et le stationnement : une barre, stationnement interdit ; une croix, arrêt et stationnement interdits.",
+          "why": "Une interdiction s’applique là où est le panneau : ralentir après le 30, c’est déjà trop tard.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 432 154' width='432' height='154'><rect x='0.5' y='0.5' width='431' height='153' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><text x='216' y='20' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#6B6B6B' text-anchor='middle'>INTERDICTION · effet immédiat</text><g transform='translate(60,72)'><circle r='28' fill='#C8102E'/><rect x='-18' y='-5' width='36' height='10' fill='#FFFFFF'/></g><text x='60' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Sens interdit</text><g transform='translate(164,72)'><circle r='27' fill='#FFFFFF' stroke='#C8102E' stroke-width='6'/><text x='0' y='8' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='22' font-weight='800' fill='#1E1E1E' text-anchor='middle'>30</text></g><text x='164' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>30 km/h max</text><g transform='translate(268,72)'><circle r='27' fill='#FFFFFF' stroke='#C8102E' stroke-width='6'/><path d='M4,14 L4,-2 Q4,-8 -4,-8 L-12,-8' fill='none' stroke='#1E1E1E' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(-13,-8) rotate(-90) scale(0.8)' d='M0,-9 L8,4 L-8,4 Z' fill='#1E1E1E'/><path d='M-17,17 L17,-17' stroke='#C8102E' stroke-width='5'/></g><text x='268' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Tourner à gauche</text><text x='268' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>interdit</text><g transform='translate(372,72)'><circle r='27' fill='#1C4FA0' stroke='#C8102E' stroke-width='6'/><path d='M-17,-17 L17,17' stroke='#C8102E' stroke-width='6'/></g><text x='372' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Stationnement</text><text x='372' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>interdit</text></svg>",
+            "caption": "Famille interdiction : le rond à bord rouge s’applique dès le panneau.",
+            "alt": "Panneaux ronds : sens interdit, 30, interdiction de tourner à gauche, stationnement interdit."
+          }
+        },
+        {
+          "title": "Les obligations : rond bleu, effet immédiat",
+          "explanation": "Un rond bleu t’impose une action : tourner dans une direction, aller tout droit, suivre le sens giratoire, emprunter une piste cyclable s’il s’agit d’un vélo. Comme les interdictions, l’obligation commence au panneau. Quand tu vois une flèche bleue, prépare ton placement tôt, car tu n’auras pas d’autre choix de direction. Un rond bleu barré de rouge annonce la fin de l’obligation.",
+          "why": "Repérer l’obligation tôt évite le changement de voie de dernière seconde.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 432 154' width='432' height='154'><rect x='0.5' y='0.5' width='431' height='153' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><text x='216' y='20' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#6B6B6B' text-anchor='middle'>OBLIGATION · effet immédiat</text><g transform='translate(60,72)'><circle r='28' fill='#1C4FA0'/><path d='M-6,16 L-6,0 Q-6,-8 4,-8 L10,-8' fill='none' stroke='#FFFFFF' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(12,-8) rotate(90) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#FFFFFF'/></g><text x='60' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Tourner à droite</text><g transform='translate(164,72)'><circle r='28' fill='#1C4FA0'/><path d='M0,16 L0,-8' fill='none' stroke='#FFFFFF' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(0,-12) rotate(0) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#FFFFFF'/></g><text x='164' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Tout droit</text><g transform='translate(268,72)'><circle r='28' fill='#1C4FA0'/><circle r='12' fill='none' stroke='#FFFFFF' stroke-width='4'/><path transform='translate(12,0) rotate(180) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#FFFFFF'/><path transform='translate(-6,10) rotate(-60) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#FFFFFF'/><path transform='translate(-6,-10) rotate(60) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#FFFFFF'/></g><text x='268' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Sens giratoire</text><g transform='translate(372,72)'><circle r='28' fill='#1C4FA0'/><circle cx='-9' cy='7' r='7' fill='none' stroke='#FFFFFF' stroke-width='2.5'/><circle cx='9' cy='7' r='7' fill='none' stroke='#FFFFFF' stroke-width='2.5'/><path d='M-9,7 L-2,-6 L6,-6 L9,7 M-2,-6 L0,7' fill='none' stroke='#FFFFFF' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></g><text x='372' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Piste cyclable</text></svg>",
+            "caption": "Famille obligation : un rond bleu t’impose une direction ou un usage.",
+            "alt": "Panneaux ronds bleus : tourner à droite, tout droit, sens giratoire, piste cyclable."
+          }
+        },
+        {
+          "title": "Les indications et les fins : à proximité",
+          "explanation": "Les carrés et rectangles bleus t’informent : impasse, passage piétons, stationnement, tunnel, voie de détresse. Ils sont placés à proximité de ce qu’ils signalent. Les entrées de zone (zone 30, zone de rencontre limitée à 20 km/h avec priorité aux piétons) valent dans toute la zone jusqu’au panneau de sortie. Les panneaux directionnels t’indiquent la route à suivre à la prochaine intersection ; ceux placés dans le carrefour confirment la direction. Enfin, les balises et bornes te repèrent sur route : la balise de musoir, rayée de rouge, signale l’endroit où deux voies se séparent.",
+          "why": "L’information arrive juste avant d’être utile : il faut la chercher activement, pas l’attendre.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 432 154' width='432' height='154'><rect x='0.5' y='0.5' width='431' height='153' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><text x='216' y='20' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#6B6B6B' text-anchor='middle'>INDICATION</text><g transform='translate(60,72)'><rect x='-27' y='-27' width='54' height='54' rx='5' fill='#1C4FA0' stroke='#FFFFFF' stroke-width='2'/><path d='M0,18 L0,-6' fill='none' stroke='#FFFFFF' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/><rect x='-10' y='-14' width='20' height='8' fill='#C8102E'/></g><text x='60' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Impasse</text><g transform='translate(164,72)'><rect x='-27' y='-30' width='54' height='60' rx='5' fill='#FFFFFF' stroke='#1E1E1E' stroke-width='1.5'/><circle cy='-5' r='17' fill='#FFFFFF' stroke='#C8102E' stroke-width='4'/><text x='0' y='1' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='15' font-weight='800' fill='#1E1E1E' text-anchor='middle'>30</text><text x='0' y='25' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='9' font-weight='800' fill='#1E1E1E' text-anchor='middle'>ZONE</text></g><text x='164' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Zone 30</text><g transform='translate(268,72)'><rect x='-27' y='-30' width='54' height='60' rx='5' fill='#FFFFFF' stroke='#1E1E1E' stroke-width='1.5'/><rect x='-22' y='-25' width='44' height='26' rx='3' fill='#1C4FA0'/><circle cx='-10' cy='-17' r='3' fill='#FFFFFF'/><rect x='2' y='-14' width='14' height='8' rx='2' fill='#FFFFFF'/><circle cy='15' r='10' fill='#FFFFFF' stroke='#C8102E' stroke-width='3'/><text x='0' y='19' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='800' fill='#1E1E1E' text-anchor='middle'>20</text></g><text x='268' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Zone de</text><text x='268' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>rencontre (20)</text><g transform='translate(372,72)'><rect x='-24' y='-24' width='48' height='48' rx='4' fill='#FFFFFF' stroke='#1E1E1E' stroke-width='1.5'/><path d='M-16,16 L0,-14 L16,16 M-8,16 L0,0 L8,16' fill='none' stroke='#C8102E' stroke-width='4'/></g><text x='372' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Balise</text><text x='372' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>de musoir</text></svg>",
+            "caption": "Famille indication : elle t’informe sur ce qui se trouve tout près.",
+            "alt": "Panneaux d’indication : impasse, zone 30, zone de rencontre, balise de musoir."
+          }
+        },
+        {
+          "title": "Les panonceaux changent le sens du panneau",
+          "explanation": "Le petit rectangle blanc placé sous un panneau précise ou modifie son effet. Il peut indiquer une distance (« à 200 m » : la règle commence plus loin), une étendue (« sur 2 km »), une catégorie de véhicules concernés (camions, bus) ou des horaires. Lis toujours le panneau et son panonceau ensemble : un stationnement interdit « 8 h – 19 h » ne l’est plus la nuit, et un danger « sur 3 km » dure trois kilomètres.",
+          "why": "Ignorer un panonceau, c’est appliquer une règle au mauvais endroit, au mauvais moment ou au mauvais véhicule."
+        }
+      ],
+      "example": "En ville, tu aperçois un triangle avec un piéton puis, un peu plus loin, un rond « 30 ». Tu lâches l’accélérateur dès le triangle, tu cherches les piétons sur les trottoirs et tu es déjà à 30 km/h au niveau du rond.",
+      "traps": [
+        "Lire le dessin sans tenir compte de la forme et de la couleur.",
+        "Croire qu’un panneau de danger est placé au niveau du danger.",
+        "Oublier le panonceau qui décale l’entrée en vigueur ou limite la règle à certains véhicules.",
+        "Penser qu’une limitation s’arrête à la prochaine intersection : elle dure jusqu’au panneau qui la modifie."
+      ],
+      "safety": "À l’examen, ne pas respecter un panneau d’interdiction ou d’obligation (sens interdit, STOP, feu rouge) est une erreur éliminatoire. Détecter tard te force à freiner fort : regarde loin, en haut et sur les côtés.",
+      "takeaway": "Forme et couleur d’abord, puis le dessin, puis le panonceau : je sais quoi faire et à partir d’où.",
+      "tags": [
+        "Signalisation",
+        "Panneaux",
+        "Anticipation"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 2A.",
+      "video": {
+        "title": "La signalisation verticale · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=Delphine+Ciotat+signalisation"
+      },
+      "references": [
+        "intersections"
+      ]
+    },
+    {
+      "id": "c2-marquages",
+      "code": "2.1b",
+      "group": "C2",
+      "title": "Lire les marquages au sol",
+      "minutes": 7,
+      "intro": "Les lignes peintes sur la chaussée te disent si tu peux franchir, dépasser ou t’arrêter. Elles se lisent comme les panneaux : la forme du trait compte, sa couleur aussi.",
+      "objective": "Reconnaître chaque ligne et savoir, à tout moment, si tu as le droit de la franchir.",
+      "steps": [
+        {
+          "title": "Continue ou discontinue : le droit de franchir",
+          "explanation": "La ligne continue est un mur : tu ne la franchis pas et tu ne la chevauches pas, sauf pour dépasser un cycliste, un piéton ou un engin lent lorsque la visibilité le permet. La ligne discontinue, avec des traits courts et de longs espaces (3 m de trait pour 10 m de vide), autorise le franchissement : changement de voie, dépassement, tourne-à-gauche. Autorisé ne veut pas dire sans risque : tu restes responsable de la sécurité de la manœuvre.",
+          "why": "La ligne continue protège une zone où tu ne vois pas assez loin pour dépasser.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 152' width='340' height='152'><rect x='0.5' y='0.5' width='339' height='151' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='14' y='10' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='26' width='200' height='4' fill='#FFFFFF'/><text x='226' y='26' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Ligne continue</text><text x='226' y='39' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>ne pas franchir</text><rect x='14' y='56' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='72' width='30' height='4' fill='#FFFFFF'/><rect x='84' y='72' width='30' height='4' fill='#FFFFFF'/><rect x='154' y='72' width='30' height='4' fill='#FFFFFF'/><text x='226' y='72' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Ligne discontinue</text><text x='226' y='85' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>franchissement autorisé</text><rect x='14' y='102' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='115' width='200' height='3' fill='#FFFFFF'/><rect x='14' y='122.5' width='30' height='3' fill='#FFFFFF'/><rect x='84' y='122.5' width='30' height='3' fill='#FFFFFF'/><rect x='154' y='122.5' width='30' height='3' fill='#FFFFFF'/><text x='226' y='118' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Ligne mixte</text><text x='226' y='131' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>regarde la ligne de ton côté</text></svg>",
+            "caption": "Pour une ligne mixte, c’est la ligne la plus proche de toi qui compte.",
+            "alt": "Trois chaussées vues de dessus : ligne continue, discontinue, puis continue doublée d’une discontinue."
+          }
+        },
+        {
+          "title": "La ligne mixte : lis celle qui est de ton côté",
+          "explanation": "Une ligne continue doublée d’une discontinue : seule la ligne la plus proche de toi compte. Si la discontinue est de ton côté, tu peux franchir pour dépasser ou tourner ; si c’est la continue, c’est interdit. Elle sert à autoriser le dépassement dans un sens mais pas dans l’autre, par exemple dans une montée ou avant un virage.",
+          "why": "Les deux sens de circulation n’ont pas la même visibilité : la ligne mixte s’adapte à chacun."
+        },
+        {
+          "title": "Dissuasion et avertissement : des traits plus serrés",
+          "explanation": "Quand les traits se rapprochent (3 m de trait pour 1,33 m d’espace), la route te prévient. La ligne de dissuasion signale une zone où dépasser est dangereux : la franchir est déconseillé mais pas interdit, par exemple pour doubler un engin agricole ou un vélo sans danger. La ligne d’avertissement annonce l’approche d’une ligne continue : on ne commence plus de dépassement, on peut seulement terminer celui en cours. Les trois flèches de rabattement intercalées te demandent de te rabattre ; au milieu d’une voie, elles annoncent qu’elle va disparaître.",
+          "why": "Ces lignes te laissent le temps de finir ou d’abandonner une manœuvre avant la zone interdite.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 152' width='340' height='152'><rect x='0.5' y='0.5' width='339' height='151' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='14' y='10' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='26' width='30' height='4' fill='#FFFFFF'/><rect x='57' y='26' width='30' height='4' fill='#FFFFFF'/><rect x='100' y='26' width='30' height='4' fill='#FFFFFF'/><rect x='143' y='26' width='30' height='4' fill='#FFFFFF'/><rect x='186' y='26' width='28' height='4' fill='#FFFFFF'/><text x='226' y='26' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Dissuasion</text><text x='226' y='39' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>déconseillé de franchir</text><rect x='14' y='56' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='72' width='30' height='4' fill='#FFFFFF'/><rect x='57' y='72' width='30' height='4' fill='#FFFFFF'/><rect x='100' y='72' width='30' height='4' fill='#FFFFFF'/><rect x='143' y='72' width='30' height='4' fill='#FFFFFF'/><rect x='186' y='72' width='28' height='4' fill='#FFFFFF'/><path d='M60,88 L74,83 L60,78' fill='none' stroke='#FFFFFF' stroke-width='2.5'/><path d='M120,88 L134,83 L120,78' fill='none' stroke='#FFFFFF' stroke-width='2.5'/><path d='M180,88 L194,83 L180,78' fill='none' stroke='#FFFFFF' stroke-width='2.5'/><text x='226' y='72' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Avertissement + flèches</text><text x='226' y='85' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>rabats-toi, la continue arrive</text><rect x='14' y='102' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='116' width='30' height='8' fill='#FFFFFF'/><rect x='57' y='116' width='30' height='8' fill='#FFFFFF'/><rect x='100' y='116' width='30' height='8' fill='#FFFFFF'/><rect x='143' y='116' width='30' height='8' fill='#FFFFFF'/><rect x='186' y='116' width='28' height='8' fill='#FFFFFF'/><text x='226' y='118' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Traits larges</text><text x='226' y='131' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>voie spéciale, sortie, bus</text></svg>",
+            "caption": "Des traits serrés annoncent toujours une zone plus dangereuse.",
+            "alt": "Lignes à traits serrés, ligne d’avertissement avec trois flèches de rabattement, ligne à traits larges."
+          }
+        },
+        {
+          "title": "Rive, bande d’arrêt d’urgence et marquages jaunes",
+          "explanation": "La ligne de rive délimite le bord de la chaussée : sur route, elle sépare la voie de l’accotement ; sur autoroute et route à chaussées séparées, elle sépare la voie de la bande d’arrêt d’urgence, réservée aux urgences. Les traits larges délimitent les voies spéciales : voie de bus, voie d’accélération ou de sortie. Le jaune est provisoire (travaux) et prime sur le blanc. Sur un trottoir ou le bord de la chaussée, une ligne jaune continue interdit l’arrêt et le stationnement, une ligne jaune discontinue interdit seulement le stationnement.",
+          "why": "En zone de travaux, les lignes blanches peuvent encore être visibles : c’est le jaune que tu suis.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 340 152' width='340' height='152'><rect x='0.5' y='0.5' width='339' height='151' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='14' y='10' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='11' width='20' height='6' fill='#FFFFFF'/><rect x='48' y='11' width='20' height='6' fill='#FFFFFF'/><rect x='82' y='11' width='20' height='6' fill='#FFFFFF'/><rect x='116' y='11' width='20' height='6' fill='#FFFFFF'/><rect x='150' y='11' width='20' height='6' fill='#FFFFFF'/><rect x='184' y='11' width='20' height='6' fill='#FFFFFF'/><rect x='14' y='26' width='200' height='4' fill='#FFFFFF' opacity='0.35'/><text x='226' y='26' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Ligne de rive</text><text x='226' y='39' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>bord de la chaussée ou BAU</text><rect x='14' y='56' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='72' width='200' height='4' fill='#F5C400'/><text x='226' y='72' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Jaune continue</text><text x='226' y='85' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>travaux, ou arrêt interdit</text><rect x='14' y='102' width='200' height='36' rx='4' fill='#4A4A4A'/><rect x='14' y='118' width='12' height='4' fill='#F5C400'/><rect x='36' y='118' width='12' height='4' fill='#F5C400'/><rect x='58' y='118' width='12' height='4' fill='#F5C400'/><rect x='80' y='118' width='12' height='4' fill='#F5C400'/><rect x='102' y='118' width='12' height='4' fill='#F5C400'/><rect x='124' y='118' width='12' height='4' fill='#F5C400'/><rect x='146' y='118' width='12' height='4' fill='#F5C400'/><rect x='168' y='118' width='12' height='4' fill='#F5C400'/><rect x='190' y='118' width='12' height='4' fill='#F5C400'/><rect x='212' y='118' width='2' height='4' fill='#F5C400'/><text x='226' y='118' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='700' fill='#1E1E1E'>Jaune discontinue</text><text x='226' y='131' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='400' fill='#6B6B6B'>stationnement interdit</text></svg>",
+            "caption": "Le marquage jaune est temporaire et passe avant le marquage blanc.",
+            "alt": "Ligne de rive, ligne jaune continue, ligne jaune discontinue."
+          }
+        }
+      ],
+      "example": "Hors agglomération, tu suis un tracteur. La ligne devient serrée avec des flèches : tu ne commences pas le dépassement et tu restes derrière jusqu’à retrouver une ligne discontinue et une bonne visibilité.",
+      "traps": [
+        "Commencer un dépassement sur une ligne d’avertissement.",
+        "Lire la ligne la plus éloignée d’une ligne mixte.",
+        "Suivre le marquage blanc en zone de travaux balisée en jaune."
+      ],
+      "safety": "Franchir ou chevaucher une ligne continue en dehors des cas prévus est une faute grave à l’examen comme sur la route : tu circules alors sur la voie de ceux qui arrivent en face.",
+      "takeaway": "Plus les traits sont serrés, plus je me méfie ; c’est la ligne de mon côté qui décide.",
+      "tags": [
+        "Signalisation",
+        "Marquage",
+        "Dépassement"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 2A.",
+      "video": {
+        "title": "Les marquages au sol · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=Delphine+Ciotat+marquage+au+sol"
+      },
+      "references": [
+        "depassement"
+      ]
+    },
+    {
+      "id": "c2-feux-agents",
+      "code": "2.1c",
+      "group": "C2",
+      "title": "Feux, signaux lumineux, agents et indices de la route",
+      "minutes": 7,
+      "intro": "Au-delà des panneaux, la route te parle avec des lumières, des gestes et des indices : un feu stop qui s’allume, un ballon qui roule, un clignotant. Savoir les lire, c’est voir la situation avant qu’elle arrive.",
+      "objective": "Respecter la hiérarchie des signaux et utiliser les indices pour anticiper.",
+      "steps": [
+        {
+          "title": "Qui commande ? La hiérarchie des signaux",
+          "explanation": "Quand plusieurs signaux se contredisent, l’ordre est toujours le même : d’abord l’agent qui règle la circulation, puis les feux, puis les panneaux, enfin les marquages au sol. Un agent peut te faire passer au rouge ou t’arrêter au vert : c’est lui qu’il faut suivre. De même, un feu qui fonctionne passe avant le STOP placé au même carrefour ; le STOP ne s’applique que si le feu est éteint ou clignote en jaune.",
+          "why": "La signalisation la plus récente et la plus humaine s’adapte à la situation du moment."
+        },
+        {
+          "title": "Les gestes des agents",
+          "explanation": "Bras levé verticalement : arrêt pour tous les usagers, sauf ceux déjà engagés dans le carrefour qui doivent le dégager. Bras tendus à l’horizontale (ou un seul bras) : arrêt pour ceux qui arrivent face ou dos à l’agent ; ceux qui arrivent de ses côtés peuvent passer. Un balancement du bras ou un signe de la main t’invite à avancer dans la direction montrée. Un coup de sifflet attire l’attention avant un geste.",
+          "why": "Comprendre le geste du premier coup évite l’hésitation au milieu du carrefour.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 170' width='320' height='170'><rect x='0.5' y='0.5' width='319' height='169' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><circle cx='55' cy='40' r='9' fill='#1E1E1E'/><path d='M55,50 L55,92 M55,92 L46,120 M55,92 L64,120' stroke='#1E1E1E' stroke-width='5' stroke-linecap='round'/><path d='M55,58 L61,20 M55,58 L43,80' stroke='#1E1E1E' stroke-width='5' stroke-linecap='round'/><text x='55' y='140' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Bras levé</text><text x='55' y='154' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='9' font-weight='500' fill='#6B6B6B' text-anchor='middle'>arrêt pour tous</text><circle cx='160' cy='40' r='9' fill='#1E1E1E'/><path d='M160,50 L160,92 M160,92 L151,120 M160,92 L169,120' stroke='#1E1E1E' stroke-width='5' stroke-linecap='round'/><path d='M130,58 L190,58' stroke='#1E1E1E' stroke-width='5' stroke-linecap='round'/><text x='160' y='140' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Bras tendus</text><text x='160' y='154' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='9' font-weight='500' fill='#6B6B6B' text-anchor='middle'>arrêt face et dos</text><circle cx='265' cy='40' r='9' fill='#1E1E1E'/><path d='M265,50 L265,92 M265,92 L256,120 M265,92 L274,120' stroke='#1E1E1E' stroke-width='5' stroke-linecap='round'/><path d='M265,58 L291,48 M265,58 L253,80' stroke='#1E1E1E' stroke-width='5' stroke-linecap='round'/><text x='265' y='140' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Bras qui balance</text><text x='265' y='154' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='9' font-weight='500' fill='#6B6B6B' text-anchor='middle'>passe dans ce sens</text></svg>",
+            "caption": "Les gestes de l’agent passent avant les feux et les panneaux.",
+            "alt": "Silhouettes d’un agent : bras levé, bras tendus à l’horizontale, bras qui fait signe de passer."
+          }
+        },
+        {
+          "title": "Les feux tricolores et clignotants",
+          "explanation": "Rouge : arrêt absolu, avant la ligne. Jaune fixe : arrêt obligatoire, sauf si tu ne peux plus t’arrêter en sécurité (trop près, freinage brutal, véhicule collé derrière). Vert : tu passes, avec prudence et sans t’engager si tu risques de rester bloqué au milieu. À l’approche d’un feu vert depuis longtemps, lâche l’accélérateur, contrôle derrière et prépare le pied au-dessus du frein. Le jaune clignotant renforce un danger et te laisse appliquer la règle des panneaux. Le rouge clignotant (souvent deux feux alternés) impose l’arrêt : passage à niveau, tramway, pont mobile, sortie de véhicules prioritaires. Les panneaux à messages variables (PMV) t’informent d’un bouchon, d’un accident ou d’une vitesse conseillée.",
+          "why": "Le feu vert ancien peut passer au jaune à tout moment : l’anticiper évite la décision trop tardive.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 328 154' width='328' height='154'><rect x='0.5' y='0.5' width='327' height='153' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><text x='164' y='20' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#6B6B6B' text-anchor='middle'>SIGNAUX LUMINEUX</text><g transform='translate(60,72)'><rect x='-11' y='-28' width='22' height='56' rx='6' fill='#1E1E1E'/><circle cy='0' r='8' fill='#F5C400'/><circle cy='0' r='13' fill='none' stroke='#F5C400' stroke-width='2' stroke-dasharray='3 3'/></g><text x='60' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Jaune</text><text x='60' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>clignotant</text><g transform='translate(164,72)'><rect x='-26' y='-14' width='52' height='28' rx='6' fill='#1E1E1E'/><circle cx='-12' r='8' fill='#C8102E'/><circle cx='12' r='8' fill='#5A1A1A'/></g><text x='164' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Rouge</text><text x='164' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>clignotant</text><g transform='translate(268,72)'><rect x='-30' y='-18' width='60' height='36' rx='4' fill='#1E1E1E'/><text x='0' y='-2' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='8' font-weight='700' fill='#FFB000' text-anchor='middle'>BOUCHON</text><text x='0' y='10' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='8' font-weight='700' fill='#FFB000' text-anchor='middle'>À 2 KM</text></g><text x='268' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Message</text><text x='268' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>variable</text></svg>",
+            "caption": "Le rouge clignotant impose l’arrêt ; le jaune clignotant demande la prudence.",
+            "alt": "Feu jaune clignotant, feu rouge clignotant à deux lampes, panneau à messages variables."
+          }
+        },
+        {
+          "title": "Les indices formels et informels",
+          "explanation": "Un indice formel n’a qu’une signification : feux stop qui s’allument, clignotant, panneau, marquage de bus, barrière de passage à niveau. Un indice informel peut vouloir dire plusieurs choses et demande de prévoir plusieurs scénarios : un ballon qui roule (un enfant peut suivre), des feux de détresse (panne, bouchon, accident), une portière entrouverte, un bus arrêté, un feu tricolore qui clignote. Entraîne-toi en conduite commentée : dis à voix haute ce que tu vois et ce qui pourrait arriver.",
+          "why": "Anticiper, c’est réagir à l’indice plutôt qu’au danger lui-même."
+        }
+      ],
+      "example": "Un bus est arrêté à droite, feux de détresse allumés, devant un passage piéton. Tu en déduis qu’un piéton peut traverser devant le bus : tu ralentis, tu te prépares à t’arrêter et tu passes en regardant sous et devant le bus.",
+      "traps": [
+        "Passer au jaune fixe alors qu’un arrêt était possible.",
+        "Appliquer le STOP alors que le feu fonctionne, ou ignorer l’agent parce que le feu est vert.",
+        "Ne voir qu’une explication possible à un indice informel."
+      ],
+      "safety": "Le franchissement d’un feu rouge ou le non-respect de l’injonction d’un agent est éliminatoire à l’examen.",
+      "takeaway": "Agent, puis feu, puis panneau, puis marquage ; et chaque indice me prépare un scénario.",
+      "tags": [
+        "Signalisation",
+        "Feux",
+        "Anticipation"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 2A et 2D.",
+      "video": {
+        "title": "Les feux et les agents · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=Delphine+Ciotat+feux+tricolores"
+      },
+      "references": [
+        "intersections",
+        "examen"
+      ]
+    },
+    {
       "id": "c2-placement",
       "code": "2.2",
       "group": "C2",
@@ -350,7 +561,12 @@
         {
           "title": "Lis les panneaux et les flèches",
           "explanation": "Cherche les directions, les flèches au sol et les voies réservées. En marche normale, garde la droite ; les indications de direction et l’organisation du carrefour peuvent demander un autre placement. Prépare-le dès que la signalisation et la circulation le permettent.",
-          "why": "Choisir tôt laisse du temps pour observer et rejoindre la voie sans forcer."
+          "why": "Choisir tôt laisse du temps pour observer et rejoindre la voie sans forcer.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 230' width='320' height='230'><rect x='0.5' y='0.5' width='319' height='229' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='60' y='10' width='200' height='190' fill='#4A4A4A'/><rect x='125' y='16' width='4' height='22' fill='#FFFFFF'/><rect x='191' y='16' width='4' height='22' fill='#FFFFFF'/><rect x='125' y='54' width='4' height='22' fill='#FFFFFF'/><rect x='191' y='54' width='4' height='22' fill='#FFFFFF'/><rect x='125' y='92' width='4' height='22' fill='#FFFFFF'/><rect x='191' y='92' width='4' height='22' fill='#FFFFFF'/><rect x='125' y='130' width='4' height='22' fill='#FFFFFF'/><rect x='191' y='130' width='4' height='22' fill='#FFFFFF'/><rect x='125' y='168' width='4' height='22' fill='#FFFFFF'/><rect x='191' y='168' width='4' height='22' fill='#FFFFFF'/><path d='M92,60 L92,30 M86,38 L92,28 L98,38' stroke='#FFFFFF' stroke-width='3' fill='none'/><path d='M160,60 L160,30 M154,38 L160,28 L166,38' stroke='#FFFFFF' stroke-width='3' fill='none'/><path d='M226,60 L226,40 Q226,30 238,30 M232,24 L240,30 L232,36' stroke='#FFFFFF' stroke-width='3' fill='none'/><g transform='translate(226,160) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(92,130) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><text x='226' y='196' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#FFFFFF' text-anchor='middle'>à droite</text><text x='92' y='196' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#FFFFFF' text-anchor='middle'>à gauche</text><text x='160' y='218' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Choisis ta voie d’après les flèches, tôt et en sécurité</text></svg>",
+            "caption": "Choisis ta voie selon les flèches au sol, tôt.",
+            "alt": "Chaussée à trois voies avec flèches au sol, voiture placée dans la voie de droite pour tourner à droite."
+          }
         },
         {
           "title": "Prépare ton changement de voie",
@@ -394,6 +610,16 @@
       "intro": "La limitation donne une vitesse maximale. La bonne allure dépend aussi de ce que tu vois, de l’adhérence et des personnes autour de toi.",
       "objective": "Relier ta vitesse à la visibilité, à l’adhérence et aux usagers.",
       "steps": [
+        {
+          "title": "Connais les limites de vitesse",
+          "explanation": "En agglomération : 50 km/h, souvent 30 km/h en zone 30, et 20 km/h en zone de rencontre où les piétons sont prioritaires. Hors agglomération : 80 km/h sur les routes à double sens sans séparation centrale, 90 km/h seulement là où des panneaux l’indiquent. Routes à chaussées séparées : 110 km/h (100 par pluie). Autoroute : 130 km/h (110 par pluie). En permis probatoire, tu roules à 80, 100 et 110 km/h au maximum. Quand la visibilité est inférieure à 50 m, c’est 50 km/h partout.",
+          "why": "La limite est un maximum. L’allure adaptée dépend ensuite de ce que tu vois et de qui est autour.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 432 154' width='432' height='154'><rect x='0.5' y='0.5' width='431' height='153' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><text x='216' y='20' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#6B6B6B' text-anchor='middle'>LIMITATIONS</text><g transform='translate(60,72)'><rect x='-27' y='-30' width='54' height='60' rx='5' fill='#FFFFFF' stroke='#1E1E1E' stroke-width='1.5'/><rect x='-22' y='-25' width='44' height='26' rx='3' fill='#1C4FA0'/><circle cx='-10' cy='-17' r='3' fill='#FFFFFF'/><rect x='2' y='-14' width='14' height='8' rx='2' fill='#FFFFFF'/><circle cy='15' r='10' fill='#FFFFFF' stroke='#C8102E' stroke-width='3'/><text x='0' y='19' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='800' fill='#1E1E1E' text-anchor='middle'>20</text></g><text x='60' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Zone de</text><text x='60' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>rencontre</text><g transform='translate(164,72)'><circle r='27' fill='#FFFFFF' stroke='#C8102E' stroke-width='6'/><text x='0' y='8' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='22' font-weight='800' fill='#1E1E1E' text-anchor='middle'>30</text></g><text x='164' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Zone 30</text><g transform='translate(268,72)'><circle r='27' fill='#FFFFFF' stroke='#C8102E' stroke-width='6'/><text x='0' y='8' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='22' font-weight='800' fill='#1E1E1E' text-anchor='middle'>50</text></g><text x='268' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Agglo</text><g transform='translate(372,72)'><circle r='27' fill='#FFFFFF' stroke='#6B6B6B' stroke-width='2'/><text x='0' y='8' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='20' font-weight='800' fill='#6B6B6B' text-anchor='middle'>50</text><path d='M-19,19 L19,-19' stroke='#6B6B6B' stroke-width='5'/></g><text x='372' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Fin de</text><text x='372' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>limitation</text></svg>",
+            "caption": "Une limitation s’applique dès le panneau et jusqu’à celui qui la modifie.",
+            "alt": "Panneaux zone de rencontre, 30, 50 et fin de limitation 50."
+          }
+        },
         {
           "title": "Distingue limite et allure adaptée",
           "explanation": "La vitesse maximale autorisée est un plafond. Ton allure réelle peut devoir être bien plus basse près d’un passage piéton masqué, d’une intersection ou sur une chaussée glissante. Lis les changements de limitation.",
@@ -454,7 +680,12 @@
         {
           "title": "Cède, puis tourne progressivement",
           "explanation": "Pour tourner à gauche, cède notamment aux véhicules venant en face et aux cycles sur les pistes que tu traverses, sauf organisation différente par la signalisation. Pour les deux directions, cherche les piétons et les cyclistes concernés. Tourne seulement quand tu peux passer sans leur couper la route.",
-          "why": "Changer de direction crée des conflits de trajectoires, même lorsque ton feu est vert."
+          "why": "Changer de direction crée des conflits de trajectoires, même lorsque ton feu est vert.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240' width='320' height='240'><rect x='0.5' y='0.5' width='319' height='239' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='126' y='0' width='68' height='220' fill='#4A4A4A'/><rect x='50' y='76' width='220' height='68' fill='#4A4A4A'/><rect x='158' y='0' width='4' height='76' fill='#F5C400' opacity='0.0'/><rect x='158' y='150' width='4' height='12' fill='#FFFFFF'/><rect x='158' y='172' width='4' height='12' fill='#FFFFFF'/><rect x='158' y='194' width='4' height='12' fill='#FFFFFF'/><rect x='158' y='216' width='4' height='12' fill='#FFFFFF'/><g transform='translate(172,186) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M168,168 L164,130 Q160,100 120,96 L40,96' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(38,96) rotate(-90)' d='M0,-7 L6,4 L-6,4 Z' fill='#C8102E'/><g transform='translate(146,40) rotate(180)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M146,58 L146,70' fill='none' stroke='#6B6B6B' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><text x='255' y='190' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#8E2B3E' text-anchor='middle'>près de l’axe</text><text x='160' y='228' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Cède à ceux d’en face, puis tourne</text></svg>",
+            "caption": "Pour tourner à gauche, place-toi près de l’axe et cède à ceux d’en face.",
+            "alt": "Carrefour vu de dessus : voiture qui tourne à gauche en cédant à un véhicule venant en face."
+          }
         }
       ],
       "example": "Tu tournes à gauche et un véhicule arrive en face. Tu attends dans une position sûre sans le forcer à freiner, puis tu tournes quand l’espace et les autres priorités le permettent.",
@@ -496,7 +727,12 @@
         {
           "title": "Identifie le régime de priorité",
           "explanation": "Lis les feux, panneaux et marquages qui organisent le carrefour. En l’absence de règle particulière, cède aux véhicules venant de droite. Une sortie de propriété, de parking ou un accès traversant un trottoir doit céder aux usagers de la route : ne la confonds pas avec une rue ordinaire.",
-          "why": "La priorité dépend du régime du carrefour, pas de la largeur ou de l’apparence principale d’une rue."
+          "why": "La priorité dépend du régime du carrefour, pas de la largeur ou de l’apparence principale d’une rue.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240' width='320' height='240'><rect x='0.5' y='0.5' width='319' height='239' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='130' y='0' width='60' height='220' fill='#4A4A4A'/><rect x='50' y='80' width='220' height='60' fill='#4A4A4A'/><g transform='translate(145,180) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(232,125) rotate(-90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#1C4FA0' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M216,125 L120,125' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(118,125) rotate(-90)' d='M0,-7 L6,4 L-6,4 Z' fill='#1C4FA0'/><text x='262' y='158' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#1C4FA0' text-anchor='middle'>prioritaire</text><text x='90' y='190' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#8E2B3E' text-anchor='middle'>toi : tu cèdes</text><text x='160' y='228' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Sans panneau : celui qui vient de ta droite passe</text></svg>",
+            "caption": "Sans panneau ni feu, le véhicule qui vient de ta droite passe en premier.",
+            "alt": "Carrefour vu de dessus : un véhicule arrive par la droite et passe en premier."
+          }
         },
         {
           "title": "Franchis avec une allure qui permet de céder",
@@ -574,6 +810,80 @@
       ]
     },
     {
+      "id": "c2-stop-cedez",
+      "code": "2.4d",
+      "group": "C2",
+      "title": "STOP, cédez-le-passage et route prioritaire",
+      "minutes": 8,
+      "intro": "Toutes les intersections ne fonctionnent pas pareil. Avant de franchir, tu dois savoir qui passe en premier. Le panneau te le dit, à condition de le détecter assez tôt.",
+      "objective": "Détecter l’intersection, identifier son régime de priorité et la franchir avec la bonne décision.",
+      "steps": [
+        {
+          "title": "Détecte l’intersection avant le panneau",
+          "explanation": "Une intersection se devine souvent avant d’être signalée : plaque de nom de rue, passage piéton, interruption de la rangée d’arbres ou des façades, bordure de trottoir arrondie, véhicule qui tourne, panneau directionnel, zone d’ombre entre deux bâtiments. Dès qu’un de ces indices apparaît, lève le pied et cherche le panneau.",
+          "why": "Une intersection détectée tôt te laisse le temps de ralentir sans freinage brusque."
+        },
+        {
+          "title": "Le STOP : arrêt complet, toujours",
+          "explanation": "Panneau octogonal rouge et ligne continue au sol. Tu marques un arrêt complet, roues immobiles, au niveau de la ligne, même si la route paraît vide. Puis tu observes à gauche, à droite, encore à gauche, et tu cèdes le passage à tous les usagers de la route que tu rejoins. Si la visibilité est mauvaise à la ligne, avance ensuite doucement jusqu’à voir, en restant prêt à t’arrêter.",
+          "why": "L’arrêt complet t’oblige à prendre le temps de regarder. Un arrêt incomplet est éliminatoire à l’examen.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240' width='320' height='240'><rect x='0.5' y='0.5' width='319' height='239' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='130' y='0' width='60' height='220' fill='#4A4A4A'/><rect x='50' y='80' width='220' height='60' fill='#4A4A4A'/><rect x='130' y='146' width='30' height='5' fill='#FFFFFF'/><g transform='translate(205,175)'><path d='M-12,-29 L12,-29 L29,-12 L29,12 L12,29 L-12,29 L-29,12 L-29,-12 Z' fill='#C8102E' stroke='#FFFFFF' stroke-width='2'/><text x='0' y='6' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='15' font-weight='800' fill='#FFFFFF' text-anchor='middle'>STOP</text></g><g transform='translate(145,172) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(60,95) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(260,125) rotate(-90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M145,150 L145,140' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><text x='160' y='228' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Arrêt complet à la ligne, puis regarde des deux côtés</text></svg>",
+            "caption": "Au STOP, roues immobiles à la ligne, puis observation des deux côtés.",
+            "alt": "Carrefour vu de dessus : voiture arrêtée à la ligne du STOP, deux véhicules arrivant de gauche et de droite."
+          }
+        },
+        {
+          "title": "Le cédez-le-passage : arrêt seulement si nécessaire",
+          "explanation": "Triangle pointe en bas et ligne discontinue. Tu cèdes le passage à droite comme à gauche, mais l’arrêt n’est obligatoire que si quelqu’un arrive ou si tu ne vois pas assez. Arrive lentement, avec un rapport de boîte adapté, pour avoir le temps d’évaluer la distance et la vitesse de ceux qui viennent. Si un véhicule devrait ralentir pour te laisser passer, tu n’as pas assez de place : attends.",
+          "why": "Céder le passage, c’est ne jamais obliger un prioritaire à freiner ou à dévier.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 240' width='320' height='240'><rect x='0.5' y='0.5' width='319' height='239' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='130' y='0' width='60' height='220' fill='#4A4A4A'/><rect x='50' y='80' width='220' height='60' fill='#4A4A4A'/><rect x='130' y='147' width='6' height='4' fill='#FFFFFF'/><rect x='140' y='147' width='6' height='4' fill='#FFFFFF'/><rect x='150' y='147' width='6' height='4' fill='#FFFFFF'/><g transform='translate(205,175)'><path d='M-30,-22 L30,-22 L0,30 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/></g><g transform='translate(145,178) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(80,95) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M145,160 L145,120 Q145,95 175,95 L230,95' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(232,95) rotate(90)' d='M0,-7 L6,4 L-6,4 Z' fill='#C8102E'/><text x='160' y='228' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Ralentis et cède : l’arrêt n’est pas obligatoire</text></svg>",
+            "caption": "Au cédez-le-passage, on ralentit et on ne s’arrête que si nécessaire.",
+            "alt": "Carrefour vu de dessus : voiture qui approche d’une ligne discontinue avec un panneau cédez-le-passage."
+          }
+        },
+        {
+          "title": "Route prioritaire et priorité ponctuelle",
+          "explanation": "Le losange jaune t’indique que tu es sur une route à caractère prioritaire : les usagers des routes qui la croisent doivent te céder le passage, jusqu’au losange barré qui en annonce la fin. Le triangle avec une croix épaisse annonce une priorité ponctuelle, valable seulement pour la prochaine intersection. Être prioritaire ne dispense pas de prudence : ralentis légèrement, regarde de chaque côté pour anticiper un refus de priorité et évite de dépasser à l’approche du carrefour.",
+          "why": "Ta priorité n’empêche pas les autres de se tromper : tu dois pouvoir éviter le refus de priorité.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 536 154' width='536' height='154'><rect x='0.5' y='0.5' width='535' height='153' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><text x='268' y='20' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#6B6B6B' text-anchor='middle'>RÉGIMES DE PRIORITÉ</text><g transform='translate(60,72)'><path d='M-12,-29 L12,-29 L29,-12 L29,12 L12,29 L-12,29 L-29,12 L-29,-12 Z' fill='#C8102E' stroke='#FFFFFF' stroke-width='2'/><text x='0' y='6' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='15' font-weight='800' fill='#FFFFFF' text-anchor='middle'>STOP</text></g><text x='60' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>STOP</text><g transform='translate(164,72)'><path d='M-30,-22 L30,-22 L0,30 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/></g><text x='164' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Cédez le</text><text x='164' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>passage</text><g transform='translate(268,72)'><rect x='-20' y='-20' width='40' height='40' transform='rotate(45)' fill='#FFFFFF' stroke='#1E1E1E' stroke-width='1.5'/><rect x='-13' y='-13' width='26' height='26' transform='rotate(45)' fill='#F5C400'/></g><text x='268' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Route</text><text x='268' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>prioritaire</text><g transform='translate(372,72)'><rect x='-20' y='-20' width='40' height='40' transform='rotate(45)' fill='#FFFFFF' stroke='#1E1E1E' stroke-width='1.5'/><rect x='-13' y='-13' width='26' height='26' transform='rotate(45)' fill='#F5C400'/><path d='M-17,17 L17,-17' stroke='#1E1E1E' stroke-width='4'/></g><text x='372' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Fin de route</text><text x='372' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>prioritaire</text><g transform='translate(476,72)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><path d='M0,16 L0,-14' fill='none' stroke='#1E1E1E' stroke-width='6' stroke-linecap='round' stroke-linejoin='round'/><path d='M-13,2 L13,2' fill='none' stroke='#1E1E1E' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/></g><text x='476' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Priorité</text><text x='476' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>ponctuelle</text></svg>",
+            "caption": "Ces cinq panneaux règlent la priorité aux intersections.",
+            "alt": "STOP, cédez-le-passage, losange jaune, losange barré, triangle à croix épaisse."
+          }
+        },
+        {
+          "title": "Franchis avec la bonne décision",
+          "explanation": "Juste avant de t’engager, refais un dernier contrôle dans la direction d’où peut venir le danger, puis décide : je passe ou j’attends. Si tu passes, fais-le franchement, sans hésiter au milieu de l’intersection. Si un piéton traverse la rue dans laquelle tu tournes, il est prioritaire. Quand un usager te fait signe de passer alors qu’il est prioritaire, vérifie quand même qu’aucun autre ne surgit.",
+          "why": "Une décision tardive ou hésitante surprend les autres et crée le conflit."
+        }
+      ],
+      "example": "Tu arrives à un STOP dans une rue bordée de voitures garées. À la ligne, tu ne vois rien à gauche : après l’arrêt complet, tu avances au pas jusqu’à voir, puis tu t’engages seulement quand la voie est libre des deux côtés.",
+      "traps": [
+        "Ralentir fortement au STOP sans immobiliser les roues.",
+        "S’arrêter systématiquement au cédez-le-passage même quand la voie est libre, et surprendre le véhicule qui suit.",
+        "Rouler vite sur une route prioritaire en comptant sur les autres."
+      ],
+      "safety": "Le non-respect d’un STOP, d’un cédez-le-passage ou de la priorité à droite qui oblige un usager à freiner ou à dévier est une erreur éliminatoire.",
+      "takeaway": "Je détecte, j’identifie le panneau, je cède sans obliger personne à freiner.",
+      "tags": [
+        "Priorité",
+        "Intersection",
+        "Signalisation"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 2D.",
+      "video": {
+        "title": "Les intersections et les priorités · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=Delphine+Ciotat+stop+c%C3%A9dez+le+passage"
+      },
+      "references": [
+        "intersections",
+        "examen"
+      ]
+    },
+    {
       "id": "c2-giratoire",
       "code": "2.5",
       "group": "C2",
@@ -590,7 +900,12 @@
         {
           "title": "Choisis ton placement",
           "explanation": "Utilise la signalisation. À défaut d’indication particulière, rester à droite est une référence simple ; pour une sortie située à gauche par rapport à ton entrée, tu peux te placer à gauche dans un giratoire à plusieurs voies si les conditions le permettent. Ce n’est pas une obligation automatique.",
-          "why": "La voie intérieure peut faciliter le trajet, mais impose ensuite de préparer un retour à droite en sécurité."
+          "why": "La voie intérieure peut faciliter le trajet, mais impose ensuite de préparer un retour à droite en sécurité.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 250' width='320' height='250'><rect x='0.5' y='0.5' width='319' height='249' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='140' y='190' width='40' height='40' fill='#4A4A4A'/><rect x='140' y='0' width='40' height='34' fill='#4A4A4A'/><rect x='0' y='92' width='82' height='40' fill='#4A4A4A'/><rect x='238' y='92' width='82' height='40' fill='#4A4A4A'/><circle cx='160' cy='112' r='82' fill='#4A4A4A'/><circle cx='160' cy='112' r='34' fill='#8BC48A'/><circle cx='160' cy='112' r='58' fill='none' stroke='#FFFFFF' stroke-width='2' stroke-dasharray='10 8'/><path d='M166,200 Q178,160 202,138 Q216,112 200,82 Q170,56 132,70 Q110,82 96,104 L70,104' fill='none' stroke='#8E2B3E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(66,104) rotate(-90)' d='M0,-7 L6,4 L-6,4 Z' fill='#8E2B3E'/><path d='M174,200 Q182,160 214,134 L242,128' fill='none' stroke='#2E9E4F' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(246,128) rotate(75)' d='M0,-7 L6,4 L-6,4 Z' fill='#2E9E4F'/><text x='270' y='160' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#2E9E4F' text-anchor='middle'>vers la droite :</text><text x='270' y='173' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#2E9E4F' text-anchor='middle'>reste à droite</text><text x='55' y='66' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#8E2B3E' text-anchor='middle'>vers la gauche :</text><text x='55' y='79' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#8E2B3E' text-anchor='middle'>voie de gauche</text><text x='160' y='238' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Priorité aux véhicules déjà engagés dans l’anneau</text></svg>",
+            "caption": "Choisis ta voie selon ta sortie et cède aux véhicules déjà sur l’anneau.",
+            "alt": "Giratoire vu de dessus : trajectoire pour sortir à droite et trajectoire pour sortir à gauche."
+          }
         },
         {
           "title": "Prépare ta sortie et tes contrôles",
@@ -625,6 +940,409 @@
       "references": [
         "giratoire",
         "placement"
+      ]
+    },
+    {
+      "id": "c3-croiser-depasser",
+      "code": "3.2",
+      "group": "C3",
+      "title": "Croiser, dépasser et être dépassé",
+      "minutes": 8,
+      "intro": "Croiser sur une route étroite, doubler un véhicule lent, se laisser dépasser : ces situations mettent deux véhicules côte à côte. Elles se préparent, avec de l’espace et du temps.",
+      "objective": "Croiser et dépasser en sécurité, et faciliter le dépassement des autres.",
+      "steps": [
+        {
+          "title": "Croiser sur une route étroite",
+          "explanation": "Sur une route rétrécie, évalue le gabarit : ta voiture, celle d’en face et l’espace disponible. Serre à droite et ralentis. Si l’espace manque, celui qui a l’obstacle de son côté s’arrête et laisse passer l’autre. Les panneaux de passage étroit le précisent : sur le panneau rond, ta flèche (vers le haut) est rouge, tu cèdes à la circulation d’en face ; sur le panneau carré bleu, ta flèche est blanche, tu es prioritaire, mais tu restes prudent. En montagne, le véhicule qui descend cède en principe à celui qui monte.",
+          "why": "Croiser trop vite dans un passage étroit oblige l’un des deux à monter sur l’accotement.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 154' width='320' height='154'><rect x='0.5' y='0.5' width='319' height='153' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><text x='160' y='20' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#6B6B6B' text-anchor='middle'>PASSAGE ÉTROIT</text><g transform='translate(108,72)'><circle r='27' fill='#FFFFFF' stroke='#C8102E' stroke-width='6'/><path d='M-8,18 L-8,-8' fill='none' stroke='#C8102E' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(-8,-14) rotate(0) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#C8102E'/><path d='M9,-18 L9,8' fill='none' stroke='#1E1E1E' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(9,14) rotate(180) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#1E1E1E'/></g><text x='108' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Tu cèdes à</text><text x='108' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>ceux d’en face</text><g transform='translate(212,72)'><rect x='-27' y='-27' width='54' height='54' rx='5' fill='#1C4FA0'/><path d='M-8,18 L-8,-8' fill='none' stroke='#FFFFFF' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(-8,-14) rotate(0) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#FFFFFF'/><path d='M9,-18 L9,8' fill='none' stroke='#C8102E' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(9,14) rotate(180) scale(1)' d='M0,-9 L8,4 L-8,4 Z' fill='#C8102E'/></g><text x='212' y='124' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Tu es prioritaire</text><text x='212' y='137' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>sur ceux d’en face</text></svg>",
+            "caption": "La flèche rouge indique toujours qui doit céder.",
+            "alt": "Deux panneaux de passage étroit : rond à bord rouge pour céder, carré bleu pour être prioritaire."
+          }
+        },
+        {
+          "title": "Avant de dépasser : ai-je le droit, la place et le temps ?",
+          "explanation": "Vérifie la signalisation (pas de ligne continue ni d’interdiction de dépasser), la visibilité loin devant, et que personne n’est déjà en train de te dépasser. Garde une bonne distance avec le véhicule à doubler, pour voir devant lui. Si le dépassement demande d’accélérer longtemps ou si un virage approche, renonce.",
+          "why": "Un dépassement se décide avant de se déporter, pas au milieu de la voie de gauche."
+        },
+        {
+          "title": "Pendant et après : contrôle, dépasse franchement, rabats-toi",
+          "explanation": "Rétroviseurs, angle mort gauche, clignotant gauche, puis déporte-toi en douceur en accélérant. Laisse au moins 1 m en ville et 1,50 m hors agglomération avec un cycliste ou un piéton : pour eux, tu peux chevaucher la ligne continue si la voie d’en face est libre. Rabats-toi quand tu vois le véhicule dépassé en entier dans le rétroviseur intérieur, après rétroviseur droit et clignotant droit.",
+          "why": "Se rabattre trop tôt oblige le véhicule dépassé à freiner.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 210' width='320' height='210'><rect x='0.5' y='0.5' width='319' height='209' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='0' y='30' width='320' height='110' fill='#4A4A4A'/><rect x='10' y='83' width='30' height='4' fill='#FFFFFF'/><rect x='66' y='83' width='30' height='4' fill='#FFFFFF'/><rect x='122' y='83' width='30' height='4' fill='#FFFFFF'/><rect x='178' y='83' width='30' height='4' fill='#FFFFFF'/><rect x='234' y='83' width='30' height='4' fill='#FFFFFF'/><rect x='290' y='83' width='30' height='4' fill='#FFFFFF'/><g transform='translate(40,115) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(160,115) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M58,112 Q90,110 105,62 L215,58 Q240,60 260,110' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(264,114) rotate(160)' d='M0,-7 L6,4 L-6,4 Z' fill='#C8102E'/><text x='70' y='160' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#1E1E1E' text-anchor='middle'>1 contrôle</text><text x='160' y='160' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#1E1E1E' text-anchor='middle'>2 dépasse vite</text><text x='262' y='160' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#1E1E1E' text-anchor='middle'>3 rabats-toi</text><text x='160' y='178' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='500' fill='#6B6B6B' text-anchor='middle'>quand le véhicule dépassé est entier dans le rétro</text></svg>",
+            "caption": "Les trois temps du dépassement.",
+            "alt": "Route vue de dessus : trajectoire de dépassement d’un véhicule, en trois étapes."
+          }
+        },
+        {
+          "title": "Le dépassement par la droite et être dépassé",
+          "explanation": "On dépasse par la gauche. Par la droite, c’est permis seulement si le véhicule devant tourne à gauche en laissant la place, en files ininterrompues quand la voie de droite avance plus vite, ou quand des voies sont affectées à des directions différentes. Quand on te dépasse, deux obligations : ne pas accélérer et serrer à droite si possible.",
+          "why": "Accélérer pendant qu’on te dépasse allonge sa manœuvre et peut le mettre face à un véhicule en sens inverse."
+        }
+      ],
+      "example": "Sur une départementale, tu suis un cycliste. La ligne est continue mais la route d’en face est dégagée et droite : tu chevauches la ligne en laissant 1,50 m, puis tu te rabats quand le cycliste est entièrement visible dans ton rétroviseur intérieur.",
+      "traps": [
+        "Coller le véhicule à doubler, ce qui masque la vue devant lui.",
+        "Se rabattre dès que l’avant de sa voiture dépasse l’autre.",
+        "Accélérer quand on est soi-même dépassé."
+      ],
+      "safety": "Un dépassement dangereux (manque de visibilité, ligne continue, véhicule en face) est éliminatoire à l’examen.",
+      "takeaway": "Je vérifie le droit, la place et le temps ; je dépasse franchement, je me rabats sans gêner.",
+      "tags": [
+        "Dépassement",
+        "Croisement",
+        "Distances"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 3B.",
+      "video": {
+        "title": "Le dépassement · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=Delphine+Ciotat+d%C3%A9passement"
+      },
+      "references": [
+        "depassement"
+      ]
+    },
+    {
+      "id": "c3-virages",
+      "code": "3.3",
+      "group": "C3",
+      "title": "Passer les virages et conduire en pente",
+      "minutes": 7,
+      "intro": "Un virage se prépare en ligne droite. La pente, elle, change la façon de freiner. Dans les deux cas, c’est l’allure choisie avant qui fait la sécurité.",
+      "objective": "Aborder un virage à la bonne vitesse et maîtriser la voiture en montée comme en descente.",
+      "steps": [
+        {
+          "title": "Repère le virage et son annonce",
+          "explanation": "Le panneau de virage est placé 50 m avant en agglomération et 150 m avant hors agglomération. Les balises à chevrons blancs et rouges, posées dans l’extérieur du virage, te montrent son tracé et sa difficulté : plus il y en a, plus il est serré. Regarde aussi le relief, les poteaux, la végétation : ils dessinent la courbe avant que tu la voies.",
+          "why": "Plus tu lis le virage tôt, plus tu as de temps pour ralentir en ligne droite.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 432 128' width='432' height='128'><rect x='0.5' y='0.5' width='431' height='127' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><g transform='translate(60,46)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><path d='M-4,14 L-4,0 Q-4,-8 6,-12' fill='none' stroke='#1E1E1E' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(7,-12) rotate(70) scale(0.7)' d='M0,-9 L8,4 L-8,4 Z' fill='#1E1E1E'/></g><text x='60' y='98' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Virage</text><g transform='translate(164,46)'><rect x='-28' y='-16' width='56' height='32' rx='3' fill='#FFFFFF' stroke='#1E1E1E' stroke-width='1.5'/><path d='M-20,-10 L-6,0 L-20,10 M-2,-10 L12,0 L-2,10' fill='none' stroke='#C8102E' stroke-width='5'/></g><text x='164' y='98' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Balise</text><text x='164' y='111' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>de virage</text><g transform='translate(268,46)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><path d='M-18,16 L18,16 L-18,-4 Z' fill='#1E1E1E'/><text x='4' y='12' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='9' font-weight='700' fill='#FFFFFF' text-anchor='middle'>10%</text></g><text x='268' y='98' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Descente</text><text x='268' y='111' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>dangereuse</text><g transform='translate(372,46)'><rect x='-27' y='-27' width='54' height='54' rx='5' fill='#1C4FA0' stroke='#FFFFFF' stroke-width='2'/><path d='M-12,18 L-12,-6 Q-12,-12 -4,-14 L14,-16' fill='none' stroke='#FFFFFF' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/><path d='M2,-22 L18,-16 L4,-10' fill='#FFFFFF'/></g><text x='372' y='98' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Voie de</text><text x='372' y='111' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>détresse</text></svg>",
+            "caption": "Les panneaux et balises qui annoncent virages et pentes.",
+            "alt": "Panneau virage, balise à chevrons, descente dangereuse, voie de détresse."
+          }
+        },
+        {
+          "title": "Ralentis avant, maintiens pendant, accélère à la sortie",
+          "explanation": "Freine et choisis ton rapport en ligne droite, avant d’entrer dans le virage. Dans la courbe, garde une allure constante, légèrement accélérée, et reste dans ta voie : à droite dans un virage à gauche si tu manques de visibilité, sans couper la trajectoire. Regarde loin, vers la sortie du virage : les mains suivent le regard. Réaccélère progressivement quand tu vois la sortie et que la route se redresse.",
+          "why": "La force centrifuge te pousse vers l’extérieur : freiner fort dans la courbe déséquilibre la voiture.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 220' width='320' height='220'><rect x='0.5' y='0.5' width='319' height='219' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><path d='M30,210 L30,120 Q30,40 140,40 L320,40 L320,90 L140,90 Q80,90 80,140 L80,210 Z' fill='#4A4A4A'/><g transform='translate(240,150)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><path d='M-4,14 L-4,0 Q-4,-8 6,-12' fill='none' stroke='#1E1E1E' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/><path transform='translate(7,-12) rotate(70) scale(0.7)' d='M0,-9 L8,4 L-8,4 Z' fill='#1E1E1E'/></g><text x='200' y='200' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='9.5' font-weight='600' fill='#6B6B6B' text-anchor='middle'>50 m avant en ville · 150 m hors agglo</text><path d='M55,205 L55,140' fill='none' stroke='#8E2B3E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path d='M55,138 Q55,66 140,64 L300,64' fill='none' stroke='#2E9E4F' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(304,64) rotate(90)' d='M0,-7 L6,4 L-6,4 Z' fill='#2E9E4F'/><text x='200' y='24' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#2E9E4F' text-anchor='middle'>regarde la sortie, puis réaccélère</text><text x='120' y='150' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#8E2B3E' text-anchor='middle'>freine avant</text></svg>",
+            "caption": "Freine en ligne droite, regarde la sortie, réaccélère en sortant.",
+            "alt": "Virage vu de dessus avec zone de freinage avant la courbe et regard vers la sortie."
+          }
+        },
+        {
+          "title": "En descente : le frein moteur",
+          "explanation": "Dans une longue descente, utilise le frein moteur : rétrograde et laisse la voiture retenue par le moteur, en freinant par petites touches. En voiture électrique ou hybride, la régénération joue le même rôle. Freiner en continu échauffe les freins jusqu’à les rendre inefficaces. Si les freins lâchent sur une route de montagne, la voie de détresse, en gravier, permet d’arrêter la voiture.",
+          "why": "Des freins surchauffés perdent leur efficacité au moment où tu en as le plus besoin."
+        },
+        {
+          "title": "Croiser en pente",
+          "explanation": "Sur une route étroite en pente, si le croisement est difficile, c’est le véhicule qui descend qui s’arrête et, si nécessaire, recule : il est plus facile de repartir en descente qu’en montée. Les panneaux de passage étroit peuvent fixer une autre règle. En montée, garde de l’élan et un rapport adapté pour ne pas caler.",
+          "why": "Démarrer en côte sur une route étroite est la manœuvre la plus délicate : on l’évite à celui qui monte."
+        }
+      ],
+      "example": "Hors agglomération, un panneau virage puis trois balises apparaissent. Tu passes de 80 à 50 km/h en ligne droite, tu rentres dans le virage en gardant cette allure en regardant la sortie, puis tu réaccélères quand la route se redresse.",
+      "traps": [
+        "Freiner au milieu du virage.",
+        "Fixer le bord de la route ou la voiture d’en face au lieu de la sortie.",
+        "Freiner sans arrêt dans une longue descente."
+      ],
+      "safety": "Dans un virage sans visibilité, reste bien dans ta voie : un véhicule peut arriver en face en coupant la courbe.",
+      "takeaway": "Je ralentis avant, je regarde la sortie, je réaccélère en sortant ; en descente, le moteur freine avec moi.",
+      "tags": [
+        "Virage",
+        "Trajectoire",
+        "Pente"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 3C.",
+      "video": {
+        "title": "Les virages · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=Delphine+Ciotat+virage"
+      },
+      "references": [
+        "allure"
+      ]
+    },
+    {
+      "id": "c3-usagers",
+      "code": "3.4",
+      "group": "C3",
+      "title": "Partager la route avec les autres usagers",
+      "minutes": 8,
+      "intro": "Piétons, cyclistes, trottinettes, deux-roues motorisés, camions, véhicules prioritaires : chacun a ses fragilités et ses contraintes. Les connaître te permet de prévoir leurs réactions.",
+      "objective": "Adapter ton allure, ta trajectoire et ton attention selon les usagers autour de toi.",
+      "steps": [
+        {
+          "title": "Les piétons",
+          "explanation": "Un enfant est petit, peu visible entre les voitures garées, et ne mesure pas bien le danger : près des écoles et des parcs, attends-toi à ce qu’il traverse sans regarder. Une personne âgée traverse lentement et peut mal juger ta vitesse. Un piéton concentré sur son téléphone ou avec un casque ne t’entend pas arriver. Le piéton qui s’engage ou manifeste l’intention de traverser est prioritaire : arrête-toi.",
+          "why": "Le piéton n’a aucune protection : à 50 km/h, un choc est souvent mortel, à 30 km/h il l’est beaucoup moins."
+        },
+        {
+          "title": "Les cyclistes et les trottinettes",
+          "explanation": "Ils sont silencieux, peu visibles dans les rétroviseurs et peuvent faire un écart pour éviter un trou ou une portière. Ils remontent parfois les files et peuvent circuler sur certains sens interdits (double sens cyclable). Laisse 1 m en ville et 1,50 m hors agglomération pour les dépasser. Avant de tourner à droite ou d’ouvrir ta portière, vérifie ton rétroviseur et ton angle mort.",
+          "why": "La majorité des accrochages avec des vélos viennent d’un tourne-à-droite ou d’une portière ouverte sans regarder."
+        },
+        {
+          "title": "Motos, scooters et poids lourds",
+          "explanation": "Un deux-roues motorisé accélère vite et sa vitesse est difficile à estimer : regarde-le deux fois avant de couper sa route. Un poids lourd ou un bus prend de la place, surtout en tournant et dans les giratoires, et voit mal autour de lui : s’il ne te voit pas dans ses rétroviseurs, il ne sait pas que tu es là. Ne reste pas dans ses angles morts, sur les côtés et juste derrière.",
+          "why": "Tu dois être vu pour être pris en compte : décale-toi pour apparaître dans ses rétroviseurs."
+        },
+        {
+          "title": "Les véhicules d’intérêt général",
+          "explanation": "Police, gendarmerie, pompiers, SAMU et SMUR, douanes, transport de détenus : avec gyrophare bleu et sirène deux tons, ils sont prioritaires. Tu dois leur céder le passage et faciliter leur passage, en te rangeant à droite sans freinage brutal. Ambulances privées, dépanneurs d’urgence, véhicules gaz et électricité, chasse-neige : ils n’ont pas la priorité, mais tu dois faciliter leur passage. Ne monte jamais sur un trottoir ni ne passe un feu rouge pour les laisser passer sans t’assurer que c’est sûr.",
+          "why": "Un véhicule prioritaire en intervention compte sur ta réaction prévisible."
+        }
+      ],
+      "example": "Tu remontes une rue en ville quand un ballon roule entre deux voitures garées. Tu freines et tu te prépares à t’arrêter : un enfant peut suivre le ballon sans regarder.",
+      "traps": [
+        "Tourner à droite sans regarder le cycliste qui arrive dans l’angle mort.",
+        "Se placer à côté d’un camion dans un giratoire.",
+        "Freiner brutalement en entendant une sirène, au lieu de se ranger calmement."
+      ],
+      "safety": "Les usagers vulnérables ne pardonnent pas l’erreur. À l’examen, ne pas céder le passage à un piéton engagé est éliminatoire.",
+      "takeaway": "Je sais comment chacun peut réagir et je lui laisse de la place.",
+      "tags": [
+        "Usagers vulnérables",
+        "Partage de la route",
+        "Anticipation"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 3D.",
+      "video": {
+        "title": "Les usagers vulnérables · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=s%C3%A9curit%C3%A9+routi%C3%A8re+usagers+vuln%C3%A9rables"
+      },
+      "references": [
+        "pietons"
+      ]
+    },
+    {
+      "id": "c3-circulation-dense",
+      "code": "3.6",
+      "group": "C3",
+      "title": "Conduire dans une file et en circulation dense",
+      "minutes": 5,
+      "intro": "Dans les bouchons et les files serrées, tout le monde roule près des autres. C’est là que les accrochages arrivent : un freinage surprise, un deux-roues entre les files, un piéton qui traverse entre deux voitures.",
+      "objective": "Garder une marge, rester attentif aux deux-roues et aux piétons, et avertir quand c’est utile.",
+      "steps": [
+        {
+          "title": "Garde de l’espace, même lentement",
+          "explanation": "En file, garde au moins deux secondes avec le véhicule de devant tant que ça roule, et à l’arrêt, vois ses pneus toucher la route. Regarde plus loin que la voiture qui te précède : les feux stop deux ou trois voitures devant t’annoncent le ralentissement. Avance au point de patinage (ou en laissant rouler doucement en boîte automatique) plutôt qu’en accélérations et freinages successifs.",
+          "why": "Une distance régulière évite l’effet accordéon qui provoque les collisions arrière."
+        },
+        {
+          "title": "Surveille les deux-roues et les piétons",
+          "explanation": "Les motos, scooters et vélos remontent entre les files, des deux côtés. Avant de changer de voie ou de te décaler, regarde le rétroviseur et l’angle mort. Les piétons traversent parfois entre deux voitures arrêtées : sois très vigilant près des arrêts de bus et des passages piétons, même si la file est à l’arrêt.",
+          "why": "En bouchon, ce qui surgit vient souvent d’un espace que tu croyais vide."
+        },
+        {
+          "title": "Avertis quand c’est utile",
+          "explanation": "Si la file s’arrête brusquement sur voie rapide, allume brièvement tes feux de détresse pour prévenir ceux qui arrivent derrière. Le klaxon reste réservé au danger immédiat ; en ville, il est interdit sauf nécessité. Ne bloque pas une intersection : n’y entre que si tu peux la dégager.",
+          "why": "Ton signal donne une seconde d’avance au conducteur qui suit."
+        }
+      ],
+      "example": "Sur le périphérique, la file freine d’un coup. Tu ralentis, tu allumes tes feux de détresse quelques secondes, et tu regardes ton rétroviseur avant de te décaler pour laisser passer une moto qui remonte entre les deux voies de gauche.",
+      "traps": [
+        "Coller la voiture de devant parce qu’on roule lentement.",
+        "S’engager dans un carrefour encombré et le bloquer.",
+        "Changer de file sans vérifier l’angle mort."
+      ],
+      "safety": "Un accrochage à faible vitesse reste un accident : la marge vaut aussi dans les bouchons.",
+      "takeaway": "Je garde ma marge, je regarde loin et je surveille les deux-roues.",
+      "tags": [
+        "Circulation dense",
+        "Distances",
+        "Deux-roues"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 3F.",
+      "video": {
+        "title": "Conduire dans les embouteillages · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=conduire+embouteillages+auto-%C3%A9cole"
+      },
+      "references": [
+        "distance"
+      ]
+    },
+    {
+      "id": "c3-interfiles",
+      "code": "3.7",
+      "group": "C3",
+      "title": "La circulation inter-files des motos",
+      "minutes": 5,
+      "intro": "Dans les bouchons sur voie rapide, des motos et scooters peuvent remonter entre les files. Depuis janvier 2025, c’est autorisé de façon permanente, avec des règles précises. Les connaître t’aide à les anticiper.",
+      "objective": "Savoir où et quand un deux-roues peut circuler entre les files, et lui faciliter le passage.",
+      "steps": [
+        {
+          "title": "Où et quand c’est autorisé",
+          "explanation": "Uniquement sur les autoroutes et les routes à chaussées séparées par un terre-plein, avec au moins deux voies par sens, et dont la vitesse maximale autorisée est d’au moins 70 km/h (le périphérique parisien est inclus). Il faut que la circulation soit dense, en files sur toutes les voies. C’est interdit en zone de travaux et sur une chaussée enneigée ou verglacée.",
+          "why": "Ces conditions limitent la remontée aux situations où les voitures roulent lentement et en ligne."
+        },
+        {
+          "title": "Comment le motard doit circuler",
+          "explanation": "Seulement entre les deux voies les plus à gauche, à 50 km/h maximum, et à 30 km/h maximum si une file est à l’arrêt. Il n’a pas le droit de dépasser un autre deux-roues qui remonte déjà les files, et il doit reprendre sa place dès que la circulation redevient fluide. Seuls les deux et trois-roues de moins d’un mètre de large sont concernés.",
+          "why": "Tu sais donc où regarder : dans ton rétroviseur gauche si tu es dans l’une des deux voies de gauche.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 230' width='320' height='230'><rect x='0.5' y='0.5' width='319' height='229' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='40' y='10' width='240' height='190' fill='#4A4A4A'/><rect x='118' y='16' width='4' height='22' fill='#FFFFFF'/><rect x='198' y='16' width='4' height='22' fill='#FFFFFF'/><rect x='118' y='54' width='4' height='22' fill='#FFFFFF'/><rect x='198' y='54' width='4' height='22' fill='#FFFFFF'/><rect x='118' y='92' width='4' height='22' fill='#FFFFFF'/><rect x='198' y='92' width='4' height='22' fill='#FFFFFF'/><rect x='118' y='130' width='4' height='22' fill='#FFFFFF'/><rect x='198' y='130' width='4' height='22' fill='#FFFFFF'/><rect x='118' y='168' width='4' height='22' fill='#FFFFFF'/><rect x='198' y='168' width='4' height='22' fill='#FFFFFF'/><rect x='40' y='10' width='4' height='190' fill='#F5C400'/><g transform='translate(80,60) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(80,150) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(160,50) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(160,140) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(240,90) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><rect x='115' y='95' width='10' height='22' rx='4' fill='#F5C400' stroke='#1E1E1E'/><path d='M120,120 L120,40' fill='none' stroke='#F5C400' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(120,36) rotate(0)' d='M0,-7 L6,4 L-6,4 Z' fill='#F5C400'/><text x='120' y='214' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='1' font-weight='600' fill='#1E1E1E' text-anchor='middle'></text><text x='160' y='213' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Moto entre les 2 voies de gauche, 50 km/h max</text></svg>",
+            "caption": "La moto remonte entre les deux voies les plus à gauche.",
+            "alt": "Chaussée à trois voies vue de dessus : une moto remonte entre la voie de gauche et la voie du milieu."
+          }
+        },
+        {
+          "title": "Ton rôle d’automobiliste",
+          "explanation": "Quand tu es dans l’une des deux voies de gauche en bouchon, regarde souvent ton rétroviseur gauche ou droit selon ta voie. Si une moto arrive, reste bien dans ta voie, voire décale-toi légèrement pour lui laisser de la place. Ne change pas de voie et n’ouvre pas ta portière sans contrôle. Évite tout mouvement brusque à son approche.",
+          "why": "Le motard freine et esquive moins bien qu’une voiture : ton comportement prévisible le protège."
+        }
+      ],
+      "example": "Sur l’A86 en bouchon, tu es sur la voie de gauche. Un phare apparaît dans ton rétroviseur droit, entre ta voie et celle du milieu : tu te décales un peu vers la gauche de ta voie et tu attends qu’il soit passé avant tout changement de file.",
+      "traps": [
+        "Croire que les motos peuvent remonter n’importe où.",
+        "Changer de voie en bouchon sans regarder l’angle mort.",
+        "Se décaler brusquement au dernier moment."
+      ],
+      "safety": "Un motard qui remonte les files est difficile à voir et arrive plus vite que les voitures : un contrôle de plus avant chaque déplacement latéral.",
+      "takeaway": "En bouchon sur voie rapide, je surveille l’espace entre les deux voies de gauche et je facilite le passage.",
+      "tags": [
+        "Inter-files",
+        "Deux-roues",
+        "Voie rapide"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 3G, mise à jour selon l’article R412-11-3 du Code de la route (2025).",
+      "video": {
+        "title": "La circulation inter-files · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=circulation+inter-files+s%C3%A9curit%C3%A9+routi%C3%A8re"
+      },
+      "references": [
+        "interfiles",
+        "distance"
+      ]
+    },
+    {
+      "id": "c3-visibilite",
+      "code": "3.8",
+      "group": "C3",
+      "title": "Conduire la nuit, sous la pluie et quand ça glisse",
+      "minutes": 7,
+      "intro": "La nuit, sous la pluie ou dans le brouillard, tu vois moins loin et tu es moins vu. Sur une route mouillée, la voiture freine moins bien. Tout se règle avec trois outils : les bons feux, une allure plus basse et une distance plus grande.",
+      "objective": "Choisir les feux adaptés et adapter ta conduite quand la visibilité ou l’adhérence baisse.",
+      "steps": [
+        {
+          "title": "Choisis les bons feux",
+          "explanation": "Feux de route sur route non éclairée, s’il n’y a personne devant ni en face. Tu passes en feux de croisement dès qu’un usager arrive en face, quand tu suis un véhicule, en agglomération éclairée et dès que la visibilité baisse (pluie, brouillard). Les feux de position seuls ne suffisent qu’en agglomération très bien éclairée, à l’arrêt ou en stationnement. Les feux de brouillard avant s’ajoutent par brouillard, chute de neige ou forte pluie ; le feu de brouillard arrière, uniquement par brouillard ou chute de neige, car il éblouit.",
+          "why": "Être vu compte autant que voir : beaucoup d’accidents de nuit viennent d’un véhicule mal éclairé.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 170' width='320' height='170'><rect x='0.5' y='0.5' width='319' height='169' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><circle cx='40' cy='30' r='9' fill='#F5C400' stroke='#1E1E1E'/><path d='M48,30 L120,16 L120,44 Z' fill='#F5C400' opacity='0.6'/><text x='134' y='28' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#1E1E1E'>route</text><text x='134' y='42' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' fill='#6B6B6B'>route sombre et personne en face</text><circle cx='40' cy='74' r='9' fill='#F5C400' stroke='#1E1E1E'/><path d='M48,74 L100,76 L100,88 Z' fill='#F5C400' opacity='0.6'/><text x='134' y='72' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#1E1E1E'>croisement</text><text x='134' y='86' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' fill='#6B6B6B'>usager en face ou ville éclairée</text><circle cx='40' cy='118' r='9' fill='#1E1E1E' stroke='#1E1E1E'/><circle cx='60' cy='118' r='9' fill='#C8102E'/><text x='134' y='116' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#1E1E1E'>brouillard AR</text><text x='134' y='130' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' fill='#6B6B6B'>brouillard ou neige uniquement</text></svg>",
+            "caption": "Chaque feu a son usage.",
+            "alt": "Schéma des feux de route, de croisement et du feu de brouillard arrière avec leur usage."
+          }
+        },
+        {
+          "title": "La nuit : fatigue et éblouissement",
+          "explanation": "Tu perçois moins les distances, les couleurs et le relief. La fatigue arrive plus vite et rend plus sensible à l’éblouissement : si un véhicule en face t’éblouit, regarde le bord droit de ta voie et ralentis. Il y a moins de monde sur la route, ce qui pousse à rouler plus vite : c’est l’inverse qu’il faut faire, car tu ne vois que ce qu’éclairent tes phares. Arrête-toi toutes les deux heures.",
+          "why": "À 90 km/h, tu parcours 25 m par seconde : il faut pouvoir t’arrêter dans la zone que tes phares éclairent."
+        },
+        {
+          "title": "Pluie, brouillard, neige : ralentis et éloigne-toi",
+          "explanation": "Par temps de pluie, les limites baissent : 110 km/h au lieu de 130 sur autoroute, 100 au lieu de 110 sur voie rapide, 80 au lieu de 90 là où le 90 est autorisé. Quand on voit à moins de 50 m, la vitesse maximale est de 50 km/h partout. Double ta distance de sécurité : sur route mouillée, il faut deux fois plus de distance pour s’arrêter. Utilise l’essuie-glace et le désembuage avant que la vue soit gênée.",
+          "why": "Ce n’est pas ta vitesse qui doit dicter ta distance, c’est la distance dont tu disposes pour t’arrêter."
+        },
+        {
+          "title": "Quand ça glisse : douceur sur toutes les commandes",
+          "explanation": "Sur chaussée mouillée, gras, feuilles, neige ou verglas, les pneus accrochent moins. Freine, accélère et tourne avec douceur, sans à-coup. L’aquaplaning survient quand les pneus ne peuvent plus évacuer l’eau : la direction devient légère. Ne freine pas brutalement, garde le volant droit et lève le pied jusqu’à retrouver l’adhérence. Plus tu roules vite et plus tes pneus sont usés, plus le risque augmente.",
+          "why": "Une action brusque sur un sol glissant fait perdre l’adhérence à la voiture."
+        }
+      ],
+      "example": "De nuit sur une départementale, tu es en feux de route. Une voiture arrive en face : tu passes en feux de croisement, tu regardes le bord droit de ta voie pour ne pas être ébloui, puis tu repasses en feux de route une fois qu’elle t’a croisé.",
+      "traps": [
+        "Garder le feu de brouillard arrière allumé sous la pluie.",
+        "Rouler aussi vite de nuit que de jour.",
+        "Freiner fort en sentant la direction devenir légère."
+      ],
+      "safety": "Si tu ne vois plus assez, ralentis fortement ou arrête-toi dans un endroit sûr : aucune destination ne vaut un accident.",
+      "takeaway": "Je vois et je suis vu ; je ralentis, je double ma distance, je suis doux sur les commandes.",
+      "tags": [
+        "Nuit",
+        "Intempéries",
+        "Adhérence",
+        "Feux"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 3H.",
+      "video": {
+        "title": "Conduire la nuit et sous la pluie · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=Delphine+Ciotat+conduite+de+nuit"
+      },
+      "references": [
+        "allure"
+      ]
+    },
+    {
+      "id": "c3-ouvrages",
+      "code": "3.9",
+      "group": "C3",
+      "title": "Tunnels, ponts, passages à niveau et tramway",
+      "minutes": 7,
+      "intro": "Certains endroits ont leurs propres règles parce qu’on ne peut pas s’en échapper facilement : un tunnel, une voie ferrée, un pont, les rails d’un tramway. Ils se préparent en lisant les panneaux.",
+      "objective": "Franchir les ouvrages routiers et les voies de tramway en respectant leurs règles particulières.",
+      "steps": [
+        {
+          "title": "Le passage à niveau",
+          "explanation": "Le triangle avec une barrière annonce un passage à niveau gardé (avec barrières) ; celui avec une locomotive, un passage sans barrière. Les feux rouges clignotants et la sonnerie imposent l’arrêt avant la ligne. Ne t’engage jamais sans être sûr de pouvoir dégager complètement la voie ferrée de l’autre côté, même si la circulation est lente. Attends que les barrières soient entièrement relevées et les feux éteints avant de repartir. On ne dépasse pas sur un passage à niveau, sauf un deux-roues quand il y a des barrières.",
+          "why": "Un train ne peut pas s’arrêter : il lui faut parfois plus d’un kilomètre.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 210' width='320' height='210'><rect x='0.5' y='0.5' width='319' height='209' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='130' y='0' width='60' height='210' fill='#4A4A4A'/><rect x='0' y='80' width='320' height='36' fill='#8A7F75'/><rect x='0' y='86' width='320' height='4' fill='#2A2A2A'/><rect x='0' y='106' width='320' height='4' fill='#2A2A2A'/><rect x='70' y='130' width='70' height='6' fill='#C8102E'/><rect x='182' y='60' width='70' height='6' fill='#C8102E'/><g transform='translate(160,158) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(250,160)'><rect x='-26' y='-14' width='52' height='28' rx='6' fill='#1E1E1E'/><circle cx='-12' r='8' fill='#C8102E'/><circle cx='12' r='8' fill='#5A1A1A'/></g><text x='160' y='193' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Ne t’engage que si tu peux dégager la voie ferrée</text></svg>",
+            "caption": "Ne t’engage que si tu peux dégager la voie ferrée.",
+            "alt": "Passage à niveau vu de dessus avec barrières, voie ferrée et feu rouge clignotant."
+          }
+        },
+        {
+          "title": "Le tramway",
+          "explanation": "Le tramway est prioritaire dans la plupart des cas, même quand il vient de ta gauche, et il ne peut pas s’écarter pour t’éviter. À ses traversées, le panneau de danger tramway et souvent un feu (rouge clignotant ou feu spécifique) imposent l’arrêt. Ne t’arrête jamais sur les rails. Quand il est à l’arrêt pour laisser monter ou descendre des passagers, tu ne le dépasses pas par le côté où les gens descendent.",
+          "why": "Un tramway pèse des dizaines de tonnes et freine sur une longue distance."
+        },
+        {
+          "title": "Le tunnel",
+          "explanation": "Allume tes feux de croisement avant d’entrer et retire tes lunettes de soleil. Respecte la limitation, souvent plus basse. Garde ta distance de sécurité, repérée dans certains tunnels par des balises bleues au mur : garde-en au moins deux entre toi et le véhicule de devant. Interdiction de t’arrêter, de stationner, de faire demi-tour ou marche arrière. En cas de panne, gare-toi sur une zone d’arrêt d’urgence ; en cas d’incendie, coupe le moteur, laisse la clé sur le contact, et rejoins à pied l’issue de secours la plus proche.",
+          "why": "Dans un tunnel, la fumée et la circulation rendent toute erreur plus grave.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 432 128' width='432' height='128'><rect x='0.5' y='0.5' width='431' height='127' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><g transform='translate(60,46)'><rect x='-27' y='-27' width='54' height='54' rx='5' fill='#1C4FA0' stroke='#FFFFFF' stroke-width='2'/><path d='M-18,18 L-18,0 Q0,-24 18,0 L18,18' fill='none' stroke='#FFFFFF' stroke-width='4'/></g><text x='60' y='98' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Tunnel</text><g transform='translate(164,46)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><path d='M-14,14 L-6,-8 L6,-8 L14,14' fill='none' stroke='#1E1E1E' stroke-width='3'/><rect x='-10' y='-14' width='20' height='6' fill='#1E1E1E'/></g><text x='164' y='98' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Passage à niveau</text><text x='164' y='111' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>avec barrières</text><g transform='translate(268,46)'><path d='M0,-30 L30,24 L-30,24 Z' fill='#FFFFFF' stroke='#C8102E' stroke-width='6' stroke-linejoin='round'/><rect x='-11' y='-8' width='22' height='18' rx='3' fill='#1E1E1E'/><rect x='-7' y='-4' width='14' height='6' fill='#FFFFFF'/><path d='M-6,-14 L6,-14 M0,-14 L0,-8' fill='none' stroke='#1E1E1E' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></g><text x='268' y='98' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Traversée</text><text x='268' y='111' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>de tramway</text><g transform='translate(372,46)'><rect x='-26' y='-14' width='52' height='28' rx='6' fill='#1E1E1E'/><circle cx='-12' r='8' fill='#C8102E'/><circle cx='12' r='8' fill='#5A1A1A'/></g><text x='372' y='98' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>Arrêt</text><text x='372' y='111' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10.5' font-weight='600' fill='#1E1E1E' text-anchor='middle'>obligatoire</text></svg>",
+            "caption": "Les panneaux qui annoncent les ouvrages.",
+            "alt": "Panneaux tunnel, passage à niveau, traversée de tramway, feu rouge clignotant."
+          }
+        },
+        {
+          "title": "Les ponts",
+          "explanation": "Un pont peut être étroit : lis les panneaux de passage étroit pour savoir qui cède. Il peut aussi être limité en poids ou en hauteur : ces panneaux concernent surtout les camions et les camping-cars, mais lis-les. Sur un pont exposé, le vent latéral peut déporter la voiture : tiens bien le volant et ralentis. Par temps froid, un pont gèle avant la route, car l’air circule dessous.",
+          "why": "Le verglas sur les ponts surprend souvent : la route était sèche juste avant."
+        }
+      ],
+      "example": "Tu es dans une file qui avance lentement vers un passage à niveau. Une voiture devant toi s’arrête juste après les rails : tu restes avant la ligne d’arrêt, car tu ne pourrais pas dégager entièrement la voie ferrée.",
+      "traps": [
+        "S’engager sur un passage à niveau parce que la file va avancer.",
+        "Oublier d’allumer les feux à l’entrée d’un tunnel.",
+        "S’arrêter sur les rails du tramway pour attendre un feu."
+      ],
+      "safety": "S’engager sur un passage à niveau sans pouvoir le dégager est une infraction grave et une cause d’accident mortel.",
+      "takeaway": "Je lis le panneau, je ne m’engage que si je peux sortir, je garde ma distance.",
+      "tags": [
+        "Passage à niveau",
+        "Tunnel",
+        "Tramway"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 3I.",
+      "video": {
+        "title": "Passages à niveau et tunnels · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=passage+%C3%A0+niveau+s%C3%A9curit%C3%A9+routi%C3%A8re"
+      },
+      "references": [
+        "intersections"
       ]
     },
     {
@@ -738,12 +1456,22 @@
         {
           "title": "Recule, braque, puis contre-braque",
           "explanation": "Pour un créneau à droite, commence à reculer depuis la position préparée avec l’enseignant. Braque à droite pour faire entrer l’arrière dans la place, puis contre-braque à gauche pour rapprocher l’avant. Le moment de chaque action dépend du véhicule, de la place et des repères travaillés. Surveille l’avant qui se déporte.",
-          "why": "Le sens des actions se comprend ; leur déclenchement ne se copie pas à partir d’un repère universel de vidéo."
+          "why": "Le sens des actions se comprend ; leur déclenchement ne se copie pas à partir d’un repère universel de vidéo.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 230' width='320' height='230'><rect x='0.5' y='0.5' width='319' height='229' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='0' y='20' width='320' height='130' fill='#4A4A4A'/><rect x='0' y='150' width='320' height='16' fill='#BDB6AE'/><g transform='translate(70,125) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(250,125) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(240,75) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M228,80 Q170,82 160,108 Q150,128 112,128' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(108,128) rotate(-90)' d='M0,-7 L6,4 L-6,4 Z' fill='#C8102E'/><circle cx='204' cy='92' r='5' fill='#F5C400'/><text x='204' y='112' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#FFFFFF' text-anchor='middle'>1 braque</text><circle cx='150' cy='120' r='5' fill='#F5C400'/><text x='150' y='104' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#FFFFFF' text-anchor='middle'>2 contre</text><text x='160' y='218' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Recule, braque à fond côté trottoir, puis contre-braque</text></svg>",
+            "caption": "Braque à fond côté trottoir, puis contre-braque.",
+            "alt": "Rue vue de dessus : trajectoire d’une voiture qui se gare en créneau entre deux véhicules."
+          }
         },
         {
           "title": "Contrôle et corrige",
           "explanation": "Si un usager arrive dans la zone de conflit, arrête-toi. Vérifie les espaces avec le trottoir et les voitures, puis corrige en prenant le temps nécessaire. Termine dans une position autorisée et stable.",
           "why": "Une correction calme est une compétence ; continuer sans marge pour éviter de recommencer crée le risque."
+        },
+        {
+          "title": "Le créneau à gauche, en sens unique",
+          "explanation": "Dans une rue à sens unique, tu peux te garer à gauche. La méthode est la même qu’à droite, mais en miroir : écarte-toi d’environ 50 à 80 cm du véhicule garé, recule jusqu’à ce que ta banquette arrière soit au niveau de son arrière, arrête-toi et contrôle. Au point de patinage, braque à fond à gauche jusqu’à ce que la voiture soit à environ 45°, puis contre-braque à fond à droite. Quand la voiture est parallèle au trottoir, remets les roues droites.",
+          "why": "Tout est inversé : si tu braques du mauvais côté, la voiture s’éloigne du trottoir au lieu de s’en approcher."
         }
       ],
       "example": "Tu vois que l’arrière approche trop du trottoir. Tu t’arrêtes, tu observes et tu ajustes. Tu ne montes pas dessus pour conserver le rythme de ta manœuvre.",
@@ -769,6 +1497,69 @@
       ]
     },
     {
+      "id": "manoeuvre-bataille",
+      "code": "M4",
+      "group": "Manœuvres",
+      "title": "Se garer en bataille et en épi",
+      "minutes": 7,
+      "intro": "Sur un parking ou dans une rue, tu dois savoir te ranger en bataille (perpendiculaire), avant ou arrière, et en épi (en biais). La méthode est toujours la même : avant, pendant et après la manœuvre.",
+      "objective": "Ranger la voiture dans une place sans toucher les autres véhicules, en contrôlant sans cesse autour de toi.",
+      "steps": [
+        {
+          "title": "Avant : choisis, annonce, contrôle",
+          "explanation": "Repère une place assez large et autorisée. Circule dans le sens prévu sur le parking et cède le passage à ceux qui circulent. Allume le clignotant du côté de la place et contrôle les rétroviseurs et les angles morts. La manœuvre se fait au point de patinage (ou au pied sur le frein en boîte automatique) : la voiture avance très lentement, ce qui te laisse le temps de regarder.",
+          "why": "Une manœuvre lente se corrige facilement ; une manœuvre rapide se termine sur un pare-chocs."
+        },
+        {
+          "title": "Bataille avant et épi",
+          "explanation": "En épi, garde environ 50 cm entre ta voiture et les véhicules garés. Commence à braquer quand ton rétroviseur arrive au niveau du marquage de la place, ou dès que tu aperçois le fond de la place, puis regarde au fond de la place pour entrer droit. En bataille avant, la méthode est la même, mais tu braques à fond, comme dans un tournant serré. Avance jusqu’à ce que le capot soit au niveau des voitures voisines, puis redresse les roues.",
+          "why": "Regarder où tu veux aller guide les mains : tu entres dans l’axe de la place.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 230' width='320' height='230'><rect x='0.5' y='0.5' width='319' height='229' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='0' y='20' width='320' height='80' fill='#4A4A4A'/><rect x='0' y='100' width='320' height='90' fill='#5B5B5B'/><path d='M50,100 L10,190' stroke='#FFFFFF' stroke-width='3'/><path d='M110,100 L70,190' stroke='#FFFFFF' stroke-width='3'/><path d='M170,100 L130,190' stroke='#FFFFFF' stroke-width='3'/><path d='M230,100 L190,190' stroke='#FFFFFF' stroke-width='3'/><path d='M290,100 L250,190' stroke='#FFFFFF' stroke-width='3'/><g transform='translate(240,60) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M224,62 Q170,64 160,100 L140,146' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(138,150) rotate(200)' d='M0,-7 L6,4 L-6,4 Z' fill='#C8102E'/><text x='160' y='213' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Épi : entre en avant, dans l’angle des lignes</text></svg>",
+            "caption": "En épi, on entre en marche avant, dans l’angle des lignes.",
+            "alt": "Parking en épi vu de dessus : trajectoire de la voiture entrant en biais dans une place."
+          }
+        },
+        {
+          "title": "Bataille arrière : la plus utilisée",
+          "explanation": "Écarte-toi d’environ 1 m des voitures garées. Avance jusqu’à ce que la ligne qui suit ta place soit au milieu de la vitre passagère avant, puis arrête-toi. Contrôle tout autour, engage la marche arrière, puis au point de patinage braque à fond du côté de la place en regardant par la lunette arrière. Surveille l’avant de ta voiture qui balaye la voie. Quand la voiture est parallèle aux lignes, redresse les roues et recule jusqu’au fond.",
+          "why": "En marche arrière, la voiture tourne autour des roues arrière : elle entre plus facilement dans une place étroite.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 230' width='320' height='230'><rect x='0.5' y='0.5' width='319' height='229' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='0' y='20' width='320' height='80' fill='#4A4A4A'/><rect x='0' y='100' width='320' height='90' fill='#5B5B5B'/><rect x='60' y='100' width='3' height='90' fill='#FFFFFF'/><rect x='110' y='100' width='3' height='90' fill='#FFFFFF'/><rect x='160' y='100' width='3' height='90' fill='#FFFFFF'/><rect x='210' y='100' width='3' height='90' fill='#FFFFFF'/><rect x='260' y='100' width='3' height='90' fill='#FFFFFF'/><g transform='translate(85,150) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(235,150) rotate(0)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(250,55) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M234,58 Q190,60 186,96 L186,150' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(186,154) rotate(180)' d='M0,-7 L6,4 L-6,4 Z' fill='#C8102E'/><text x='150' y='214' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='1' font-weight='600' fill='#1E1E1E' text-anchor='middle'></text><text x='160' y='213' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Bataille arrière : recule en vision directe, place dans l’axe</text></svg>",
+            "caption": "En bataille arrière, on recule en vision directe par la lunette arrière.",
+            "alt": "Parking en bataille vu de dessus : trajectoire de la voiture reculant dans une place."
+          }
+        },
+        {
+          "title": "Après : corrige et vérifie",
+          "explanation": "Si tu es mal placé, n’insiste pas : ressors un peu et reprends la trajectoire, c’est une correction normale et acceptée. Vérifie que tu es dans les lignes, sans dépasser sur la voie, et que tes portières pourront s’ouvrir. Immobilise la voiture, frein de stationnement, et regarde derrière toi avant d’ouvrir la portière.",
+          "why": "Une correction calme vaut mieux qu’une place forcée qui raye la voiture voisine."
+        }
+      ],
+      "example": "Sur un parking de supermarché, un piéton passe derrière toi pendant que tu recules. Tu t’arrêtes immédiatement, tu le laisses passer, tu refais tes contrôles et tu reprends au point de patinage.",
+      "traps": [
+        "Reculer en regardant uniquement la caméra ou les rétroviseurs.",
+        "Braquer trop tôt et frôler la voiture voisine.",
+        "Oublier que l’avant de la voiture balaye la voie pendant que tu recules."
+      ],
+      "safety": "Une manœuvre ne te donne aucune priorité : arrête-toi pour tout piéton ou véhicule qui arrive. Toucher un véhicule ou un piéton est éliminatoire.",
+      "takeaway": "Je vais lentement, je regarde dans le sens du déplacement, je corrige sans insister.",
+      "tags": [
+        "Manœuvre",
+        "Stationnement",
+        "Observation"
+      ],
+      "sourcePages": "Fiche moniteur Compétence 2G.",
+      "video": {
+        "title": "Le rangement en bataille · démonstrations",
+        "channel": "Recherche YouTube",
+        "url": "https://www.youtube.com/results?search_query=Delphine+Ciotat+rangement+bataille"
+      },
+      "references": [
+        "formation"
+      ]
+    },
+    {
       "id": "securite-rapide",
       "code": "S1",
       "group": "Sécurité",
@@ -780,7 +1571,12 @@
         {
           "title": "Observe tôt la voie à rejoindre",
           "explanation": "Cherche le trafic, les distances, la longueur de la voie et les limitations. Repère une possibilité d’insertion avant d’arriver au bout. Contrôle plusieurs fois si nécessaire, par regards brefs.",
-          "why": "L’espace disponible et la vitesse des autres évoluent pendant ton accélération."
+          "why": "L’espace disponible et la vitesse des autres évoluent pendant ton accélération.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 210' width='320' height='210'><rect x='0.5' y='0.5' width='319' height='209' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='0' y='20' width='320' height='90' fill='#4A4A4A'/><path d='M0,150 L210,110 L320,110 L320,130 L210,130 L0,175 Z' fill='#4A4A4A'/><rect x='10' y='63' width='30' height='4' fill='#FFFFFF'/><rect x='66' y='63' width='30' height='4' fill='#FFFFFF'/><rect x='122' y='63' width='30' height='4' fill='#FFFFFF'/><rect x='178' y='63' width='30' height='4' fill='#FFFFFF'/><rect x='234' y='63' width='30' height='4' fill='#FFFFFF'/><rect x='290' y='63' width='30' height='4' fill='#FFFFFF'/><rect x='200' y='108' width='18' height='4' fill='#FFFFFF'/><rect x='230' y='108' width='18' height='4' fill='#FFFFFF'/><rect x='260' y='108' width='18' height='4' fill='#FFFFFF'/><rect x='290' y='108' width='18' height='4' fill='#FFFFFF'/><g transform='translate(60,158) rotate(80)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M80,154 L200,122 Q250,112 290,90' fill='none' stroke='#C8102E' stroke-width='3' stroke-dasharray='6 4' stroke-linecap='round'/><path transform='translate(294,88) rotate(60)' d='M0,-7 L6,4 L-6,4 Z' fill='#C8102E'/><g transform='translate(170,88) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><text x='160' y='193' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Accélère sur la voie d’insertion, puis insère-toi</text></svg>",
+            "caption": "Prends de la vitesse sur la voie d’insertion et choisis ton espace.",
+            "alt": "Voie rapide vue de dessus : voiture qui accélère sur la voie d’insertion puis s’insère."
+          }
         },
         {
           "title": "Adapte ta vitesse à l’espace choisi",
@@ -791,6 +1587,11 @@
           "title": "Annonce, recontrôle et rejoins la voie",
           "explanation": "Annonce l’insertion assez tôt. Contrôle l’intérieur, l’extérieur et, juste avant le déplacement, l’angle mort du côté concerné. Cède aux véhicules déjà sur la voie. Insère-toi progressivement seulement si l’espace est suffisant, puis coupe le clignotant et garde une distance adaptée.",
           "why": "L’espace doit être encore libre au moment où tu te déplaces, même si tes premiers contrôles étaient favorables."
+        },
+        {
+          "title": "Circuler, s’arrêter en urgence et sortir",
+          "explanation": "Sur voie rapide, roule dans la voie de droite ; les autres servent à dépasser. Sur autoroute, la voie de gauche impose au moins 80 km/h par bonnes conditions. Garde au moins deux traits de bande d’arrêt d’urgence avec le véhicule de devant. Arrêt, marche arrière et demi-tour sont interdits ; la bande d’arrêt d’urgence ne sert qu’en cas de panne : feux de détresse, gilet enfilé avant de sortir, passagers derrière la glissière. Pour sortir, mets ton clignotant tôt, ne freine pas sur la voie principale, puis ralentis dans la voie de décélération.",
+          "why": "Ralentir sur la voie principale surprend ceux qui suivent à 130 km/h."
         }
       ],
       "example": "Une voiture est à ton niveau. Tu ne tournes pas pour l’obliger à se décaler : tu ajustes ton allure et recherches un autre espace.",
@@ -829,7 +1630,12 @@
         {
           "title": "Vérifie au moins deux secondes devant toi",
           "explanation": "En circulation, y compris en ville, garde au minimum la distance parcourue en deux secondes avec le véhicule qui précède. Quand il passe un repère fixe, compte deux secondes avant de passer au même endroit. Si tu arrives trop tôt, augmente l’écart progressivement. Laisse davantage de temps si les conditions se dégradent.",
-          "why": "Deux secondes sont un minimum, pas une garantie de pouvoir éviter tout accident ni une distance d’arrêt fixe."
+          "why": "Deux secondes sont un minimum, pas une garantie de pouvoir éviter tout accident ni une distance d’arrêt fixe.",
+          "figure": {
+            "svg": "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 320 200' width='320' height='200'><rect x='0.5' y='0.5' width='319' height='199' rx='14' fill='#FFFFFF' stroke='#E3D9DB'/><rect x='0' y='40' width='320' height='70' fill='#4A4A4A'/><rect x='10' y='73' width='30' height='4' fill='#FFFFFF'/><rect x='66' y='73' width='30' height='4' fill='#FFFFFF'/><rect x='122' y='73' width='30' height='4' fill='#FFFFFF'/><rect x='178' y='73' width='30' height='4' fill='#FFFFFF'/><rect x='234' y='73' width='30' height='4' fill='#FFFFFF'/><rect x='290' y='73' width='30' height='4' fill='#FFFFFF'/><g transform='translate(70,92) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#8E2B3E' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><g transform='translate(250,92) rotate(90)'><rect x='-9' y='-15' width='18' height='30' rx='5' fill='#6B6B6B' stroke='#1E1E1E' stroke-width='1'/><rect x='-7' y='-9' width='14' height='6' rx='2' fill='#CFE3F5'/></g><path d='M84,128 L236,128' stroke='#1E1E1E' stroke-width='2'/><path d='M84,122 L84,134 M236,122 L236,134' stroke='#1E1E1E' stroke-width='2'/><text x='160' y='148' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='12' font-weight='700' fill='#1E1E1E' text-anchor='middle'>au moins 2 secondes</text><text x='160' y='166' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='11' font-weight='600' fill='#6B6B6B' text-anchor='middle'>à 80 km/h : 8 × 3 = 24 m, × 2 = 48 m</text><rect x='242' y='14' width='5' height='26' fill='#6B6B6B'/><text x='244' y='12' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='9' font-weight='600' fill='#6B6B6B' text-anchor='middle'>repère</text><text x='160' y='188' font-family='-apple-system,Segoe UI,Helvetica,Arial,sans-serif' font-size='10' font-weight='600' fill='#6B6B6B' text-anchor='middle'>Compte à partir du repère : « un, deux »</text></svg>",
+            "caption": "Deux secondes minimum avec le véhicule de devant.",
+            "alt": "Route vue de dessus : deux voitures séparées de deux secondes, avec le calcul de distance à 80 km/h."
+          }
         },
         {
           "title": "Préserve l’espace latéral",
@@ -953,6 +1759,10 @@
     "depassement": {
       "label": "Code de la route · Dépassement, R414-4",
       "url": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006842216"
+    },
+    "interfiles": {
+      "label": "L’argus · Circulation inter-files, règles depuis janvier 2025",
+      "url": "https://www.largus.fr/actualite-automobile/circulation-inter-files-nouvelles-regles-depuis-le-11-janvier-2025-que-dit-le-code-de-la-route-30038243.html"
     },
     "examen": {
       "label": "Arrêté du 19 février 2010 · Erreurs éliminatoires, article 27",

@@ -16,11 +16,11 @@ const r = await build({
 const core = await import(
   `data:text/javascript;base64,${Buffer.from(r.outputFiles[0].contents).toString("base64")}`
 );
-test("the complete pedagogical module contains the iOS 19 lessons and 58 steps", () => {
-  assert.equal(core.courses.length, 19);
+test("the complete pedagogical module contains the iOS 31 lessons and 109 steps", () => {
+  assert.equal(core.courses.length, 31);
   assert.equal(
     core.courses.reduce((n, c) => n + c.steps.length, 0),
-    58,
+    109,
   );
   for (const c of core.courses) {
     assert.ok(c.objective && c.example && c.safety && c.takeaway);
