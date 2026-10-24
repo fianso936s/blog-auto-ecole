@@ -1,6 +1,6 @@
 import {productClient} from "./product-client";
 import * as ImagePicker from "expo-image-picker";
-import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from "expo-document-picker";
 import * as Crypto from "expo-crypto";
 import { Directory, File, Paths } from "expo-file-system";
 import { fetch as fileFetch } from "expo/fetch";
@@ -82,20 +82,15 @@ export async function importVideo(ownerId: string, title: string, routeId?: stri
     const name = a.fileName || a.uri.split("/").pop() || "video.mov";
     selected = { uri: a.uri, name: /\.(mp4|mov|m4v)$/i.test(name) ? name : `${name}.mov`, mimeType: a.mimeType };
   } else {
-    // The iOS photo library must be opened with ImagePicker, not the document picker.
-  // Await dismissal and resolve the selected asset before creating the remote draft.
-  const picker = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ["videos"],
-    allowsEditing: false,
-    quality: 1,
-  });
-  if (picker.canceled || !picker.assets?.length) return null;
-  const selected = picker.assets[0];
+    const picked = await DocumentPicker.getDocumentAsync({ type: ["video/mp4", "video/quicktime", "video/*"], copyToCacheDirectory: true });
+    if (picked.canceled || !picked.assets?.length) return null;
+    const asset = picked.assets[0];
+    selected = { uri: asset.uri, name: asset.name || "video.mp4", mimeType: asset.mimeType };
+  }
   if (!selected.uri) throw new Error("La vidéo sélectionnée n’est pas accessible.");
-  const fileName = selected.fileName || selected.uri.split("/").pop() || "video.mov";
-  const mime = selected.mimeType === "video/quicktime" || /\\.mov$/i.test(fileName)
+  const mime = selected.mimeType === "video/quicktime" || /\\.mov$/i.test(selected.name)
     ? "video/quicktime" : "video/mp4";
-  if (selected.mimeType && !["video/mp4", "video/quicktime", "application/octet-stream"].includes(selected.mimeType))
+  if (selected.mimeType && !["video/mp4", "video/quicktime", "video/x-m4v", "application/octet-stream"].includes(selected.mimeType))
     throw new Error("Format non pris en charge : choisissez une vidéo MP4 ou MOV.");
   const input = new File(selected.uri);
   const config = await fetchVideoConfig();
