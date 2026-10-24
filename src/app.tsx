@@ -324,7 +324,7 @@ const useApp = () => useContext(Context);
 function App() {
   const [profile, setProfile] = useState<Profile | null>(null),
     [loading, setLoading] = useState(true),
-    [tab, setTab] = useState("pedagogy"),
+    [tab, setTab] = useState("map"),
     [home,setHome] = useState(false),
     [guest, setGuest] = useState(false),
     [auth, setAuth] = useState<string | null>(null),
@@ -357,7 +357,7 @@ function App() {
   const logout = async () => {
     await api("/session/logout", "POST", {});
     setProfile(null);
-    setTab("pedagogy");
+    setTab("map");
     setGuest(false);
   };
   return (
@@ -374,7 +374,7 @@ function App() {
           <p>Ouverture de votre espace…</p>
         </div>
       ) : !profile && !guest ? (
-        <Welcome onAuth={setAuth} onExplore={() => setGuest(true)} />
+        <Welcome onAuth={setAuth} onExplore={() => { setTab("pedagogy"); setGuest(true); }} />
       ) : (
         <div className="shell">
           <aside className="sidebar">
@@ -465,6 +465,7 @@ function App() {
           onClose={() => setAuth(null)}
           onSuccess={async () => {
             setGuest(false);
+            setTab("map");
             setAuth(null);
             await reload();
           }}
@@ -551,12 +552,19 @@ function Welcome({
         </footer>
       </div>
       <div className="welcome-art" aria-hidden="true">
+        <div className="art-glow" />
+        <svg className="art-waves" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+          <path className="art-wave wave-1" d="M0 70 Q 50 56 100 70 T 200 70 Q 250 56 300 70 T 400 70 Q 450 56 500 70 T 600 70 Q 650 56 700 70 T 800 70" /><path className="art-wave wave-2" d="M0 120 Q 50 110 100 120 T 200 120 Q 250 110 300 120 T 400 120 Q 450 110 500 120 T 600 120 Q 650 110 700 120 T 800 120" /><path className="art-wave wave-3" d="M0 175 Q 50 159 100 175 T 200 175 Q 250 159 300 175 T 400 175 Q 450 159 500 175 T 600 175 Q 650 159 700 175 T 800 175" /><path className="art-wave wave-4" d="M0 230 Q 50 218 100 230 T 200 230 Q 250 218 300 230 T 400 230 Q 450 218 500 230 T 600 230 Q 650 218 700 230 T 800 230" />
+        </svg>
         <div className="art-road road-one" />
         <div className="art-road road-two" />
         <div className="art-road road-three" />
         <div className="art-park park-one" />
         <div className="art-park park-two" />
         <div className="art-route" />
+        <svg className="art-trace" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid slice">
+          <path d="M40 250 C 120 230, 150 150, 220 140 S 330 90, 370 40" />
+        </svg>
         <div className="art-pin">
           <Icon name="pin" size={38} />
         </div>
@@ -1104,6 +1112,19 @@ function MapCanvas({
     </>
   );
 }
+/** The last route opened on the map, resumed at its position next time the map opens. */
+const lastRouteStore = {
+  key: (user?: string) => `repere.lastRoute.${user || "guest"}`,
+  read(user?: string): { id: string; index: number } | null {
+    try { const v = JSON.parse(localStorage.getItem(this.key(user)) || "null"); return v && typeof v.id === "string" ? { id: v.id, index: Number(v.index) || 0 } : null; } catch { return null; }
+  },
+  write(user: string | undefined, value: { id: string; index: number }) {
+    try { localStorage.setItem(this.key(user), JSON.stringify(value)); } catch {}
+  },
+  clear(user?: string) {
+    try { localStorage.removeItem(this.key(user)); } catch {}
+  },
+};
 const blankSpot = (pos: { lat: number; lng: number }): MapSpot => ({
   id: crypto.randomUUID(),
   name: "",
@@ -1141,6 +1162,8 @@ function MapPage() {
     [favorites, setFavorites] = useState(false),
     [assign, setAssign] = useState<string | null>(null);
   const [cameraMode,setCameraMode]=useState<"pov"|"preview">("preview");
+  const resumed = useRef(false);
+  useEffect(()=>{if(route)lastRouteStore.write(profile?.id,{id:route.id,index});},[route?.id,index]);
   const [gpsFollow,setGpsFollow]=useState(false),[gpsPosition,setGpsPosition]=useState<{lat:number;lng:number}|null>(null);
 
   const [rec, setRec] = useState<"idle" | "recording" | "paused">("idle"),
@@ -1258,7 +1281,9 @@ function MapPage() {
       const r = await api<Route>(`/v1/routes/${id}`);
       setGpsFollow(false);setGpsPosition(null);
       setRoute(r);
-      setIndex(r.progress || 0);
+      const last = lastRouteStore.read(profile?.id);
+      setIndex(Math.min(Math.max(r.progress || 0, last?.id === id ? last.index : 0), Math.max(0, r.fixes.length - 1)));
+      lastRouteStore.write(profile?.id, { id, index: r.progress || 0 });
       setDirectory(false);
       setPlaying(false);
       handle.current.focus(r.fixes);
@@ -1427,6 +1452,7 @@ function MapPage() {
         navigationMode={rec!=="idle"&&cameraMode==="pov"}
         previewMode={rec!=="idle"&&cameraMode==="preview"}
         onSpot={chooseSpot}
+        onReady={()=>{const last=lastRouteStore.read(profile?.id);if(last&&!resumed.current&&!route){resumed.current=true;void openRoute(last.id);}}}
         onPosition={pos=>{setMapPos(pos);if(placing){setEditor(blankSpot(pos));setPlacing(false);}}}
         onLongPress={writer ? pos=>{setMapPos(pos);setPlacing(false);setEditor(blankSpot(pos));} : undefined}
         handle={handle}
@@ -1487,6 +1513,7 @@ function MapPage() {
               <button
                 className="icon-btn"
                 onClick={() => {
+                  lastRouteStore.clear(profile?.id);
                   setRoute(null);
                   setPlaying(false);
                 }}
