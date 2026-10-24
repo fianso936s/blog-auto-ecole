@@ -1,47 +1,47 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Alert,
   Pressable,
   RefreshControl,
   ScrollView,
+  Switch,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import * as Crypto from "expo-crypto";
 import * as DocumentPicker from "expo-document-picker";
 import * as Sharing from "expo-sharing";
+import * as Haptics from "expo-haptics";
 import { File, Paths } from "expo-file-system";
 import {
   difficulties,
-  categories,
   exportGpx,
   importGpx,
   formatDistance,
-  routeDuration,
   type Route,
   type RouteSummary,
   type RouteInput,
 } from "@repere/core";
 import { useApp } from "../state";
-import { colors, styles as s } from "../theme";
+import { colors, fonts, radius, styles as s } from "../theme";
 import {
+  Badge,
   Button,
   Chip,
+  Dropdown,
   Empty,
   Field,
   Icon,
-  IconButton,
   Sheet,
 } from "../components/UI";
 import { request } from "../services/auth";
-import { syncAll } from "../services/sync";
+import { syncAll, localSummary } from "../services/sync";
 import {
   directoryCenters,
   pickableCenters,
   NO_CENTER,
-  normalizeSearch,
   matchesRoute,
-  routeCenter,
 } from "../services/route-directory";
 import {
   putLocalRoute,
@@ -50,91 +50,225 @@ import {
   removeLocal,
   getLocal,
 } from "../services/local";
-import { localSummary } from "../services/sync";
-export function Library({ onMap }: { onMap: () => void }) {
-  const app = useApp();
-  const [search, setSearch] = useState(""),
-    [difficulty, setDifficulty] = useState("Tous"),
-    [category, setCategory] = useState("Toutes"),
-    [favorites, setFavorites] = useState(false),
-    [refreshing, setRefreshing] = useState(false),
-    [busyId, setBusyId] = useState<string | null>(null),
-    [edit, setEdit] = useState<RouteSummary | null>(null),
-    [editName, setEditName] = useState(""),
-    [description, setDescription] = useState(""),
-    [level, setLevel] = useState<RouteInput["difficulty"]>("Facile"),
-    [publish, setPublish] = useState(false),
-    [examCenter, setExamCenter] = useState(""),
-    [center, setCenter] = useState("Tous les centres");
-  const teacher = app.profile?.role !== "student";
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const filterCount =
-    Number(difficulty !== "Tous") +
-    Number(category !== "Toutes") +
-    Number(favorites) +
-    Number(center !== "Tous les centres");
-  async function synchronize() {
-    setRefreshing(true);
-    try {
-      const result = await syncAll(app.profile!.id);
-      await app.reloadLocal();
-      await app.refresh();
-      if (result.errors.length) throw new Error(result.errors[0]);
-      app.setMessage("Modifications synchronisées.");
-    } catch (e) {
-      error(e);
-    } finally {
-      setRefreshing(false);
-    }
+
+/** Any route the panel or the directory can act on (summary or full detail). */
+export type RouteLike = Omit<Route, "fixes" | "points">;
+type Draft = Pick<RouteInput, "name" | "description" | "difficulty" | "examCenter" | "status">;
+
+/** Same form as the website's RouteEditor: "Enregistrer et publier le parcours". */
+export function RouteEditorSheet({
+  initial,
+  summary,
+  onSave,
+  onDelete,
+  onClose,
+}: {
+  initial: Draft | null;
+  summary?: string;
+  onSave: (draft: Draft) => Promise<void>;
+  onDelete?: () => void;
+  onClose: () => void;
+}) {
+  const [draft, setDraft] = useState<Draft | null>(initial);
+  const [busy, setBusy] = useState(false),
+    [error, setError] = useState("");
+  const key = initial ? `${initial.name}|${initial.examCenter}|${initial.status}` : "";
+  const [seen, setSeen] = useState(key);
+  if (seen !== key) {
+    setSeen(key);
+    setDraft(initial);
+    setError("");
   }
-  function addMenu() {
-    Alert.alert("Ajouter un parcours", undefined, [
-      {
-        text: "Enregistrer",
-        onPress: () => {
-          app.select(null);
-          onMap();
-        },
-      },
-      { text: "Importer un GPX", onPress: () => void importFile() },
-      { text: "Annuler", style: "cancel" },
-    ]);
-  }
-  const allRoutes = useMemo(() => {
-    const map = new Map(app.routes.map((r) => [r.id, r]));
-    for (const r of app.locals.filter(
-      (r) => r.state !== "finished" || r.fixes.length >= 2,
-    ))
-      if (
-        !map.has(r.id) ||
-        r.state !== "finished" ||
-        r.syncedRevision !== r.revision
-      )
-        map.set(r.id, {
-          ...localSummary(r),
-          authorId: map.get(r.id)?.authorId || r.userId,
-          favorite: map.get(r.id)?.favorite || false,
-        });
-    return [...map.values()].sort((a, b) =>
-      b.createdAt.localeCompare(a.createdAt),
-    );
-  }, [app.routes, app.locals]);
-  const centers = useMemo(() => directoryCenters(allRoutes), [allRoutes]);
-  const merged = useMemo(
-    () =>
-      allRoutes.filter((r) =>
-        matchesRoute(r, { search, center, difficulty, category, favorites }),
-      ),
-    [allRoutes, search, center, difficulty, category, favorites],
+  const centers = useMemo(
+    () => [...new Set([...pickableCenters([]), ...(draft?.examCenter ? [draft.examCenter] : [])])],
+    [draft?.examCenter],
   );
+  const published = draft?.status === "published";
+  return (
+    <Sheet visible={!!initial} title="Enregistrer et publier le parcours" onClose={onClose}>
+      {draft && (
+        <>
+          {!!summary && <Text style={s.muted}>{summary}</Text>}
+          <Field
+            label="Nom du parcours"
+            value={draft.name}
+            onChangeText={(name) => setDraft({ ...draft, name })}
+            maxLength={120}
+          />
+          <Dropdown
+            label="Centre d’examen"
+            value={draft.examCenter || ""}
+            options={[{ id: "", label: "À classer" }, ...centers.map((c) => ({ id: c, label: c }))]}
+            onChange={(examCenter) => setDraft({ ...draft, examCenter })}
+          />
+          <Field
+            label="Description"
+            multiline
+            value={draft.description}
+            onChangeText={(description) => setDraft({ ...draft, description })}
+            maxLength={3000}
+          />
+          <Dropdown
+            label="Difficulté"
+            value={draft.difficulty}
+            options={difficulties.map((d) => ({ id: d, label: d }))}
+            onChange={(difficulty) => setDraft({ ...draft, difficulty })}
+          />
+          <View style={[s.between, { minHeight: 48 }]}>
+            <Text style={[s.body, { flex: 1, fontFamily: fonts.bodySemi }]}>Publier · visible par les élèves</Text>
+            <Switch
+              value={published}
+              onValueChange={(on) => setDraft({ ...draft, status: on ? "published" : "private" })}
+              trackColor={{ true: colors.wine, false: colors.line }}
+              accessibilityLabel="Publier · visible par les élèves"
+            />
+          </View>
+          <Text style={s.caption}>
+            Un parcours privé est visible par son auteur, l’administrateur et les élèves auxquels il est attribué.
+          </Text>
+          {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
+          <Button
+            icon="checkmark"
+            busy={busy}
+            disabled={!draft.name.trim()}
+            label={published ? "Enregistrer et publier" : "Enregistrer en privé"}
+            onPress={async () => {
+              setBusy(true);
+              setError("");
+              try {
+                await onSave({ ...draft, name: draft.name.trim(), examCenter: (draft.examCenter || "").trim() });
+              } catch (e) {
+                setError(e instanceof Error ? e.message : "Enregistrement impossible.");
+              } finally {
+                setBusy(false);
+              }
+            }}
+          />
+          {onDelete && (
+            <View style={{ paddingTop: 8, gap: 6, borderTopWidth: 1, borderColor: colors.line }}>
+              <Button
+                secondary
+                danger
+                compact
+                icon="trash-outline"
+                label="Supprimer ce parcours"
+                onPress={() =>
+                  Alert.alert(
+                    "Supprimer ce parcours ?",
+                    "Ce parcours, ses repères associés et ses attributions seront supprimés pour tous les appareils.",
+                    [
+                      { text: "Annuler", style: "cancel" },
+                      { text: "Supprimer", style: "destructive", onPress: onDelete },
+                    ],
+                  )
+                }
+              />
+            </View>
+          )}
+        </>
+      )}
+    </Sheet>
+  );
+}
+
+/** Same as the website's Assignments modal for a route: "Attribuer ce parcours". */
+function AssignSheet({ routeId, onClose }: { routeId: string | null; onClose: () => void }) {
+  const app = useApp();
+  const [students, setStudents] = useState<{ id: string; name: string; email: string; role?: string }[]>([]),
+    [selected, setSelected] = useState<string[]>([]),
+    [busy, setBusy] = useState(true),
+    [error, setError] = useState("");
+  useEffect(() => {
+    if (!routeId) return;
+    let alive = true;
+    setBusy(true);
+    setError("");
+    setStudents([]);
+    void Promise.all([
+      request<{ students: typeof students }>("/v1/students"),
+      request<{ students: string[] }>(`/v1/routes/${routeId}/assignments`),
+    ])
+      .then(([users, links]) => {
+        if (!alive) return;
+        setStudents(users.students.filter((p) => p.role === undefined || p.role === "student"));
+        setSelected(links.students);
+      })
+      .catch((e) => alive && setError(e instanceof Error ? e.message : "Chargement impossible."))
+      .finally(() => alive && setBusy(false));
+    return () => {
+      alive = false;
+    };
+  }, [routeId]);
+  return (
+    <Sheet visible={!!routeId} title="Attribuer ce parcours" onClose={onClose}>
+      <Text style={s.muted}>Choisissez les élèves autorisés.</Text>
+      {students.map((student) => {
+        const on = selected.includes(student.id);
+        return (
+          <Pressable
+            key={student.id}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: on }}
+            onPress={() => {
+              void Haptics.selectionAsync();
+              setSelected((a) => (on ? a.filter((id) => id !== student.id) : [...a, student.id]));
+            }}
+            style={({ pressed }) => [s.card, { flexDirection: "row", alignItems: "center", gap: 12, padding: 14, backgroundColor: pressed ? colors.cream : colors.paper }]}
+          >
+            <Icon name={on ? "checkbox" : "square-outline"} size={22} />
+            <View style={{ flex: 1 }}>
+              <Text style={[s.body, { fontFamily: fonts.bodySemi }]}>{student.name}</Text>
+              <Text style={s.caption}>{student.email}</Text>
+            </View>
+          </Pressable>
+        );
+      })}
+      {!busy && !students.length && !error && (
+        <Empty title="Aucun élève lié" description="Créez une invitation depuis Mon espace." />
+      )}
+      {!!error && <Text style={s.error}>{error}</Text>}
+      <Button
+        label="Enregistrer les accès"
+        busy={busy && !!students.length}
+        disabled={busy || !!error}
+        onPress={async () => {
+          setBusy(true);
+          try {
+            await request(`/v1/routes/${routeId}/assignments`, {
+              method: "PUT",
+              body: JSON.stringify({ students: selected }),
+            });
+            app.setMessage("Accès enregistrés.");
+            onClose();
+          } catch (e) {
+            setError(e instanceof Error ? e.message : "Enregistrement impossible.");
+          } finally {
+            setBusy(false);
+          }
+        }}
+      />
+    </Sheet>
+  );
+}
+
+/**
+ * Every route action of the website (open, publish, private, edit, assign, duplicate,
+ * GPX import/export, favourite, delete), shared by the map panel and the directory.
+ * Works offline first: changes go to the iPhone, then sync.
+ */
+export function useRouteTools() {
+  const app = useApp();
+  const [busyId, setBusyId] = useState<string | null>(null),
+    [editing, setEditing] = useState<RouteLike | null>(null),
+    [assignId, setAssignId] = useState<string | null>(null);
   const error = (e: unknown) =>
     app.setMessage(e instanceof Error ? e.message : "Action impossible.");
-  async function fetchRoute(r: RouteSummary) {
+  const canEdit = (r: RouteLike) =>
+    app.profile?.role !== "student" &&
+    (r.authorId === app.profile?.id || app.profile?.role === "admin");
+  async function fetchRoute(r: RouteLike): Promise<Route> {
     const local = app.locals.find((l) => l.id === r.id);
-    if (
-      local &&
-      (local.syncedRevision !== local.revision || local.state !== "finished")
-    )
+    if (local && (local.syncedRevision !== local.revision || local.state !== "finished"))
       return {
         ...routeInput(local),
         authorId: local.userId,
@@ -147,49 +281,43 @@ export function Library({ onMap }: { onMap: () => void }) {
       } as Route;
     return request<Route>(`/v1/routes/${r.id}`);
   }
-  async function open(r: RouteSummary) {
+  async function localize(r: RouteLike) {
+    if (!app.profile) return null;
+    return (await getLocal(r.id)) || putLocalRoute(app.profile.id, await fetchRoute(r));
+  }
+  async function push() {
+    const result = await syncAll(app.profile!.id);
+    if (result.errors.length) throw new Error(result.errors[0]);
+    await app.reloadLocal();
+    await app.refresh();
+  }
+  async function open(r: RouteLike, then?: () => void) {
     setBusyId(r.id);
     try {
       if (app.active && app.active.id !== r.id)
-        throw new Error(
-          "Terminez l’enregistrement en cours pour ouvrir ce parcours.",
-        );
-      const detail = await fetchRoute(r);
-      app.select(detail);
-      onMap();
+        throw new Error("Terminez l’enregistrement en cours pour ouvrir ce parcours.");
+      app.select(await fetchRoute(r));
+      then?.();
     } catch (e) {
       error(e);
     } finally {
       setBusyId(null);
     }
   }
-  async function localize(r: RouteSummary) {
-    if (!app.profile) return null;
-    const existing = await getLocal(r.id);
-    return existing || putLocalRoute(app.profile.id, await fetchRoute(r));
-  }
-  async function importFile() {
+  async function importFile(then?: () => void) {
     if (!app.profile) return;
     try {
       if (app.active)
-        throw new Error(
-          "Terminez l’enregistrement en cours avant d’importer un parcours.",
-        );
+        throw new Error("Terminez l’enregistrement en cours avant d’importer un parcours.");
       const pick = await DocumentPicker.getDocumentAsync({
-        type: [
-          "application/gpx+xml",
-          "application/xml",
-          "text/xml",
-          "application/octet-stream",
-        ],
+        type: ["application/gpx+xml", "application/xml", "text/xml", "application/octet-stream"],
         copyToCacheDirectory: true,
       });
       if (pick.canceled) return;
       const asset = pick.assets[0]!;
-      if (asset.size && asset.size > 8_000_000)
-        throw new Error("Fichier trop volumineux (8 Mo maximum).");
-      const file = new File(asset.uri);
-      const input = importGpx(await file.text(), Crypto.randomUUID());
+      if (asset.size && asset.size > 12 * 1024 * 1024)
+        throw new Error("Le fichier GPX est trop volumineux.");
+      const input = importGpx(await new File(asset.uri).text(), Crypto.randomUUID());
       const imported = await putLocalRoute(app.profile.id, input);
       await app.reloadLocal();
       app.select({
@@ -202,230 +330,83 @@ export function Library({ onMap }: { onMap: () => void }) {
         favorite: false,
         progress: 0,
       });
-      onMap();
-      void app.sync();
-      app.setMessage(
-        "GPX importé. Ce parcours est clairement identifié comme un import.",
-      );
+      then?.();
+      setEditing({ ...localSummary(imported), authorId: imported.userId, favorite: false } as RouteLike);
     } catch (e) {
       error(e);
     }
   }
-  async function exportFile(r: RouteSummary) {
+  async function exportFile(r: RouteLike) {
+    try {
+      const f = new File(Paths.cache, `parcours-${r.id.slice(0, 8)}.gpx`);
+      f.write(exportGpx(await fetchRoute(r)));
+      if (!(await Sharing.isAvailableAsync()))
+        throw new Error("Le partage est indisponible sur cet appareil.");
+      await Sharing.shareAsync(f.uri, { mimeType: "application/gpx+xml", UTI: "com.topografix.gpx" });
+    } catch (e) {
+      error(e);
+    }
+  }
+  async function toggleFavorite(r: RouteLike) {
+    try {
+      await request(`/v1/routes/${r.id}/favorite`, {
+        method: "POST",
+        body: JSON.stringify({ active: !r.favorite }),
+      });
+      void Haptics.selectionAsync();
+      if (app.selected?.id === r.id) app.select({ ...app.selected, favorite: !r.favorite });
+      await app.refresh();
+    } catch (e) {
+      error(e);
+    }
+  }
+  async function duplicate(r: RouteLike) {
     try {
       const detail = await fetchRoute(r);
-      const f = new File(Paths.cache, `repere-${r.id}.gpx`);
-      f.write(exportGpx(detail));
-      if (await Sharing.isAvailableAsync())
-        await Sharing.shareAsync(f.uri, {
-          mimeType: "application/gpx+xml",
-          UTI: "com.topografix.gpx",
-        });
-      else throw new Error("Le partage est indisponible sur cet appareil.");
-    } catch (e) {
-      error(e);
-    }
-  }
-  async function rename(r: RouteSummary, name: string) {
-    name = name.trim();
-    if (!name || name.length > 120) {
-      app.setMessage("Choisissez un nom de 1 à 120 caractères.");
-      return;
-    }
-    setBusyId(r.id);
-    try {
-      await localize(r);
-      await updateLocal(r.id, { name });
-      await app.reloadLocal();
-      await app.sync();
-      app.setMessage("Nom du parcours enregistré.");
-    } catch (e) {
-      error(e);
-    } finally {
-      setBusyId(null);
-    }
-  }
-  function menu(r: RouteSummary) {
-    const own = r.authorId === app.profile?.id || app.profile?.role === "admin";
-    const local = app.locals.find((l) => l.id === r.id);
-    Alert.alert(r.name, local?.error || "Parcours d’entraînement", [
-      ...(teacher && own
-        ? [
-            {
-              text: "Renommer",
-              onPress: () =>
-                Alert.prompt(
-                  "Renommer le parcours",
-                  "Nom du parcours",
-                  [
-                    { text: "Annuler", style: "cancel" },
-                    {
-                      text: "Enregistrer",
-                      onPress: (name?: string) => void rename(r, name || ""),
-                    },
-                  ],
-                  "plain-text",
-                  r.name,
-                ),
-            },
-          ]
-        : []),
-      { text: "Exporter le GPX", onPress: () => void exportFile(r) },
-      ...(teacher
-        ? [
-            {
-              text: "Dupliquer",
-              onPress: async () => {
-                try {
-                  const detail = await fetchRoute(r);
-                  const copy = {
-                    ...detail,
-                    id: Crypto.randomUUID(),
-                    version: 0,
-                    status: "private" as const,
-                    name: `${detail.name.slice(0, 100)} — copie`,
-                    points: detail.points.map((p) => ({
-                      ...p,
-                      id: Crypto.randomUUID(),
-                      validated: p.answer !== undefined && !!p.explanation,
-                      photos: p.photos.map((ph) => ({
-                        ...ph,
-                        id: Crypto.randomUUID(),
-                      })),
-                    })),
-                  };
-                  await putLocalRoute(app.profile!.id, copy);
-                  await app.reloadLocal();
-                  void app.sync();
-                } catch (e) {
-                  error(e);
-                }
-              },
-            },
-          ]
-        : []),
-      ...(teacher && own
-        ? [
-            {
-              text: "Modifier le parcours / centre",
-              onPress: () => {
-                setEdit(r);
-                setEditName(r.name);
-                setDescription(r.description);
-                setLevel(r.difficulty);
-                setPublish(r.status === "published");
-                setExamCenter(r.examCenter || "");
-              },
-            },
-            {
-              text: "Supprimer",
-              style: "destructive" as const,
-              onPress: () =>
-                Alert.alert(
-                  "Supprimer ce parcours ?",
-                  "Cette action supprime aussi ses points et les attributions.",
-                  [
-                    { text: "Annuler" },
-                    {
-                      text: "Supprimer",
-                      style: "destructive",
-                      onPress: async () => {
-                        try {
-                          if (r.version > 0)
-                            await request(`/v1/routes/${r.id}`, {
-                              method: "DELETE",
-                            });
-                          await removeLocal(r.id);
-                          if (app.selected?.id === r.id) app.select(null);
-                          await app.refresh();
-                          await app.reloadLocal();
-                        } catch (e) {
-                          error(e);
-                        }
-                      },
-                    },
-                  ],
-                ),
-            },
-          ]
-        : []),
-      { text: "Annuler", style: "cancel" },
-    ]);
-  }
-  const [students, setStudents] = useState<
-      { id: string; name: string; email: string }[]
-    >([]),
-    [assigned, setAssigned] = useState<string[]>([]),
-    [assignVisible, setAssignVisible] = useState(false);
-  async function assignments() {
-    if (!edit) return;
-    try {
-      if (edit.version === 0)
-        throw new Error("Synchronisez d’abord ce parcours.");
-      const [users, links] = await Promise.all([
-        request<{ students: typeof students }>("/v1/students"),
-        request<{ students: string[] }>(`/v1/routes/${edit.id}/assignments`),
-      ]);
-      setStudents(users.students);
-      setAssigned(links.students);
-      setAssignVisible(true);
-    } catch (e) {
-      error(e);
-    }
-  }
-  async function save() {
-    if (!edit || !editName.trim()) return;
-    setBusyId(edit.id);
-    try {
-      await localize(edit);
-      await updateLocal(edit.id, {
-        name: editName.trim(),
-        description,
-        difficulty: level,
-        examCenter: examCenter.trim(),
-        status: publish ? "published" : "private",
+      await putLocalRoute(app.profile!.id, {
+        ...detail,
+        id: Crypto.randomUUID(),
+        version: 0,
+        status: "private" as const,
+        name: `${detail.name.slice(0, 100)} — copie`,
+        points: detail.points.map((p) => ({
+          ...p,
+          id: Crypto.randomUUID(),
+          validated: p.answer !== undefined && !!p.explanation,
+          photos: p.photos.map((ph) => ({ ...ph, id: Crypto.randomUUID() })),
+        })),
       });
       await app.reloadLocal();
-      const result = await syncAll(app.profile!.id);
-      if (result.errors.length) throw new Error(result.errors[0]);
-      await app.refresh();
-      setEdit(null);
-      app.setMessage(
-        publish
-          ? "Parcours publié, visible par les élèves connectés."
-          : "Parcours enregistré.",
-      );
+      void app.sync();
+      app.setMessage("Parcours dupliqué.");
     } catch (e) {
       error(e);
-    } finally {
-      setBusyId(null);
     }
   }
-  async function changePublication(r: RouteSummary) {
+  /** Website: "Publier pour les élèves" / "Passer en privé" (private also removes student access). */
+  async function setPublished(r: RouteLike, publish: boolean) {
     if (!app.profile) return;
     setBusyId(r.id);
     try {
-      await localize(r);
-      const local = await getLocal(r.id);
+      const local = await localize(r);
       if (!local || local.state !== "finished")
         throw new Error("Terminez l’enregistrement avant de publier.");
-      await updateLocal(r.id, {
-        status: r.status === "published" ? "private" : "published",
-      });
-      await app.reloadLocal();
-      const result = await syncAll(app.profile.id);
-      if (result.errors.length) throw new Error(result.errors[0]);
+      if (!publish && r.version > 0)
+        await request(`/v1/routes/${r.id}/assignments`, {
+          method: "PUT",
+          body: JSON.stringify({ students: [] }),
+        });
+      await updateLocal(r.id, { status: publish ? "published" : "private" });
+      await push();
       const verified = await request<Route>(`/v1/routes/${r.id}`);
-      if (
-        verified.status !== (r.status === "published" ? "private" : "published")
-      )
+      if (verified.status !== (publish ? "published" : "private"))
         throw new Error("La publication n’a pas été confirmée. Réessayez.");
       if (app.selected?.id === r.id) app.select(verified);
-      await app.refresh();
+      void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       app.setMessage(
-        verified.status === "published"
-          ? "Publié : les élèves connectés peuvent ouvrir ce parcours et ses repères."
-          : "Publication retirée. Les attributions individuelles restent actives.",
+        publish
+          ? "Parcours publié : les élèves peuvent le sélectionner."
+          : "Parcours passé en privé : accès élèves retiré.",
       );
     } catch (e) {
       error(e);
@@ -433,512 +414,220 @@ export function Library({ onMap }: { onMap: () => void }) {
       setBusyId(null);
     }
   }
-  function confirmPublication(r: RouteSummary) {
-    Alert.alert(
-      r.status === "published"
-        ? "Retirer de la bibliothèque des élèves ?"
-        : "Publier pour les élèves ?",
-      r.status === "published"
-        ? "Les élèves auxquels il est attribué conserveront leur accès."
-        : "Le tracé GPS et ses repères seront accessibles à tous les comptes connectés de cette application.",
-      [
-        { text: "Annuler", style: "cancel" },
-        {
-          text: r.status === "published" ? "Retirer la publication" : "Publier",
-          onPress: () => void changePublication(r),
-        },
-      ],
-    );
+  async function remove(r: RouteLike) {
+    try {
+      if (r.version > 0) await request(`/v1/routes/${r.id}`, { method: "DELETE" });
+      await removeLocal(r.id);
+      if (app.selected?.id === r.id) app.select(null);
+      setEditing(null);
+      await app.refresh();
+      await app.reloadLocal();
+      app.setMessage("Parcours supprimé.");
+    } catch (e) {
+      error(e);
+    }
+  }
+  async function save(r: RouteLike, draft: Draft) {
+    await localize(r);
+    await updateLocal(r.id, draft);
+    await app.reloadLocal();
+    await push();
+    if (app.selected?.id === r.id) {
+      const fresh = await fetchRoute({ ...r, ...draft }).catch(() => null);
+      if (fresh) app.select(fresh);
+    }
+    setEditing(null);
+    app.setMessage("Parcours enregistré dans votre espace.");
+  }
+  const sheets = (
+    <>
+      <RouteEditorSheet
+        initial={
+          editing && {
+            name: editing.name,
+            description: editing.description,
+            difficulty: editing.difficulty,
+            examCenter: editing.examCenter || "",
+            status: editing.status,
+          }
+        }
+        onSave={(draft) => save(editing!, draft)}
+        onDelete={editing && canEdit(editing) ? () => void remove(editing) : undefined}
+        onClose={() => setEditing(null)}
+      />
+      <AssignSheet routeId={assignId} onClose={() => setAssignId(null)} />
+    </>
+  );
+  return {
+    busyId,
+    canEdit,
+    open,
+    importFile,
+    exportFile,
+    toggleFavorite,
+    duplicate,
+    setPublished,
+    edit: (r: RouteLike) => setEditing(r),
+    assign: (r: RouteLike) => {
+      if (r.version === 0) app.setMessage("Synchronisez d’abord ce parcours.");
+      else setAssignId(r.id);
+    },
+    sheets,
+  };
+}
+
+/** The website's "Les parcours" directory: search, centre, difficulty, favourites, route cards. */
+export function Library({ onMap }: { onMap: () => void }) {
+  const app = useApp();
+  const tools = useRouteTools();
+  const [search, setSearch] = useState(""),
+    [difficulty, setDifficulty] = useState("Tous"),
+    [center, setCenter] = useState("Tous les centres"),
+    [favorites, setFavorites] = useState(false),
+    [refreshing, setRefreshing] = useState(false);
+  const teacher = app.profile?.role !== "student";
+  const allRoutes = useMemo(() => {
+    const map = new Map(app.routes.map((r) => [r.id, r]));
+    for (const r of app.locals.filter((r) => r.state !== "finished" || r.fixes.length >= 2))
+      if (!map.has(r.id) || r.state !== "finished" || r.syncedRevision !== r.revision)
+        map.set(r.id, {
+          ...localSummary(r),
+          authorId: map.get(r.id)?.authorId || r.userId,
+          authorName: map.get(r.id)?.authorName || "Vous",
+          favorite: map.get(r.id)?.favorite || false,
+        });
+    return [...map.values()].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  }, [app.routes, app.locals]);
+  const centers = useMemo(
+    () => [
+      ...pickableCenters(allRoutes),
+      ...(directoryCenters(allRoutes).includes(NO_CENTER) ? [NO_CENTER] : []),
+    ],
+    [allRoutes],
+  );
+  const visible = useMemo(
+    () =>
+      allRoutes.filter((r) =>
+        matchesRoute(r, { search, center, difficulty, category: "Toutes", favorites }),
+      ),
+    [allRoutes, search, center, difficulty, favorites],
+  );
+  async function synchronize() {
+    setRefreshing(true);
+    try {
+      const result = await syncAll(app.profile!.id);
+      await app.reloadLocal();
+      await app.refresh();
+      if (result.errors.length) throw new Error(result.errors[0]);
+    } catch (e) {
+      app.setMessage(e instanceof Error ? e.message : "Synchronisation impossible.");
+    } finally {
+      setRefreshing(false);
+    }
   }
   return (
     <>
       <ScrollView
-        contentContainerStyle={s.content}
+        contentContainerStyle={[s.content, { gap: 14 }]}
+        keyboardShouldPersistTaps="handled"
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            tintColor={colors.wine}
-            onRefresh={() => void synchronize()}
-          />
+          <RefreshControl refreshing={refreshing} tintColor={colors.wine} onRefresh={() => void synchronize()} />
         }
       >
-        <View style={s.between}>
-          <View style={{ flex: 1, gap: 3 }}>
-            <Text style={[s.title, { fontSize: 26, lineHeight: 32 }]}>
-              Parcours
-            </Text>
-            <Text style={s.caption}>
-              {merged.length} parcours{filterCount ? " · liste filtrée" : ""}
-            </Text>
-          </View>
-          {teacher && (
-            <IconButton
-              name="add"
-              label="Ajouter un parcours ou importer un GPX"
-              onPress={addMenu}
-            />
-          )}
-        </View>
-        <Field
-          label="Rechercher"
-          value={search}
-          onChangeText={setSearch}
-          placeholder="Nom ou centre d’examen"
-        />
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ gap: 8 }}
-        >
-          {["Tous les centres", ...centers].map((c) => (
-            <Chip
-              key={c}
-              label={c}
-              tone="blue"
-              active={center === c}
-              onPress={() => setCenter(c)}
-            />
-          ))}
-        </ScrollView>
-        <View style={s.row}>
-          <View style={{ flex: 1 }}>
-            <Button
-              compact
-              secondary
-              icon="options-outline"
-              label={filterCount ? `Filtres · ${filterCount}` : "Filtres"}
-              onPress={() => setFiltersOpen(true)}
-            />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Button
-              compact
-              secondary
-              icon="sync-outline"
-              label="Synchroniser"
-              busy={refreshing}
-              onPress={() => void synchronize()}
+        <View style={{ flexDirection: "row", gap: 8, alignItems: "center" }}>
+          <View style={[s.field, { flex: 1, flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 0 }]}>
+            <Icon name="search" size={18} color={colors.muted} />
+            <TextInput
+              value={search}
+              onChangeText={setSearch}
+              placeholder="Rechercher un parcours…"
+              placeholderTextColor={colors.muted}
+              selectionColor={colors.wine}
+              accessibilityLabel="Rechercher un parcours"
+              returnKeyType="search"
+              autoCorrect={false}
+              style={{ flex: 1, minHeight: 50, fontFamily: fonts.body, fontSize: 16, color: colors.ink }}
             />
           </View>
         </View>
-        {merged.length === 0 ? (
-          <Empty
-            title={search || filterCount ? "Aucun résultat" : "Aucun parcours"}
-            description={
-              search || filterCount
-                ? "Modifiez la recherche ou les filtres."
-                : teacher
-                  ? "Touchez + pour enregistrer ou importer un parcours."
-                  : "Votre enseignant peut publier un parcours pour les élèves ou vous l’attribuer."
-            }
-          />
-        ) : (
-          merged.map((r) => {
-            const local = app.locals.find((l) => l.id === r.id),
-              dirty = local && local.revision !== local.syncedRevision;
-            return (
-              <Pressable
-                key={r.id}
-                accessibilityRole="button"
-                accessibilityLabel={`Ouvrir le parcours ${r.name}`}
-                onPress={() => void open(r)}
-                disabled={busyId === r.id}
-                style={({ pressed }) => [
-                  s.card,
-                  { opacity: pressed ? 0.8 : 1, padding: 16, gap: 8 },
-                ]}
-              >
-                <View style={s.between}>
-                  <View style={{ flex: 1, gap: 5 }}>
-                    <Text
-                      numberOfLines={2}
-                      style={[s.heading, { fontSize: 18 }]}
-                    >
-                      {r.name}
-                    </Text>
-                    <Text style={s.caption}>
-                      {r.source === "gpx" ? "GPX · " : ""}
-                      {dirty
-                        ? "Modifications en attente"
-                        : r.status === "published"
-                          ? "Visible par les élèves"
-                          : "Non publié"}{" "}
-                      · {r.difficulty}
-                    </Text>
-                  </View>
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Actions pour ${r.name}`}
-                    hitSlop={8}
-                    style={{
-                      width: 44,
-                      height: 44,
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                    onPress={(event) => {
-                      event.stopPropagation();
-                      menu(r);
-                    }}
-                  >
-                    <Icon name="ellipsis-horizontal" />
-                  </Pressable>
-                </View>
-                <Text
-                  style={[s.caption, { color: colors.blue, fontWeight: "600" }]}
-                >
-                  {routeCenter(r)}
-                </Text>
-                <Text style={s.muted}>
-                  {formatDistance(r.distance)}
-                  {r.duration > 0 ? ` · ${routeDuration(r)}` : ""} ·{" "}
-                  {r.pointCount} {r.pointCount === 1 ? "repère" : "repères"}
-                </Text>
-                <View style={s.between}>
-                  <View style={{ flex: 1 }}>
-                    <Text
-                      style={[
-                        s.caption,
-                        {
-                          color: dirty
-                            ? colors.wine
-                            : r.version > 0
-                              ? colors.green
-                              : colors.muted,
-                        },
-                      ]}
-                    >
-                      {local?.state === "paused"
-                        ? "En pause"
-                        : local?.state === "recording"
-                          ? "En cours"
-                          : dirty
-                            ? "À synchroniser"
-                            : r.version > 0
-                              ? "Synchronisé"
-                              : "Sur cet iPhone"}
-                    </Text>
-                  </View>
-                  <View style={s.row}>
-                    <Pressable
-                      accessibilityRole="button"
-                      style={{
-                        width: 44,
-                        height: 44,
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      accessibilityLabel={
-                        r.favorite
-                          ? "Retirer des favoris"
-                          : "Ajouter aux favoris"
-                      }
-                      hitSlop={10}
-                      onPress={async (event) => {
-                        event.stopPropagation();
-                        try {
-                          await request(`/v1/routes/${r.id}/favorite`, {
-                            method: "POST",
-                            body: JSON.stringify({ active: !r.favorite }),
-                          });
-                          await app.refresh();
-                        } catch (e) {
-                          error(e);
-                        }
-                      }}
-                    >
-                      <Icon
-                        name={r.favorite ? "heart" : "heart-outline"}
-                        size={21}
-                      />
-                    </Pressable>
-                  </View>
-                </View>
-                {teacher &&
-                  (r.authorId === app.profile?.id ||
-                    app.profile?.role === "admin") && (
-                    <Pressable
-                      accessibilityRole="button"
-                      accessibilityLabel={
-                        dirty
-                          ? `Synchroniser les modifications de ${r.name}`
-                          : r.status === "published"
-                            ? `Retirer la publication de ${r.name}`
-                            : `Publier ${r.name} pour les élèves`
-                      }
-                      accessibilityState={{
-                        disabled: busyId === r.id || refreshing,
-                        busy: busyId === r.id || refreshing,
-                      }}
-                      disabled={busyId === r.id || refreshing}
-                      onPress={(event) => {
-                        event.stopPropagation();
-                        if (dirty) void synchronize();
-                        else confirmPublication(r);
-                      }}
-                      style={({ pressed }) => ({
-                        minHeight: 46,
-                        borderRadius: 12,
-                        flexDirection: "row",
-                        gap: 8,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        backgroundColor: dirty
-                          ? colors.amberSoft
-                          : r.status === "published"
-                            ? colors.greenSoft
-                            : colors.wine,
-                        opacity: pressed ? 0.75 : 1,
-                      })}
-                    >
-                      <Icon
-                        name={
-                          dirty
-                            ? "sync-outline"
-                            : r.status === "published"
-                              ? "checkmark-circle-outline"
-                              : "people-outline"
-                        }
-                        size={18}
-                        color={
-                          dirty
-                            ? colors.amber
-                            : r.status === "published"
-                              ? colors.green
-                              : colors.paper
-                        }
-                      />
-                      <Text
-                        style={{
-                          fontSize: 14,
-                          fontWeight: "600",
-                          color: dirty
-                            ? colors.amber
-                            : r.status === "published"
-                              ? colors.green
-                              : colors.paper,
-                        }}
-                      >
-                        {busyId === r.id || refreshing
-                          ? "Enregistrement…"
-                          : dirty
-                            ? "Synchroniser les modifications"
-                            : r.status === "published"
-                              ? "Publié · gérer la visibilité"
-                              : "Publier pour les élèves"}
-                      </Text>
-                    </Pressable>
-                  )}
-                {!!local?.error && (
-                  <Text numberOfLines={2} style={s.error}>
-                    Synchronisation à reprendre. Touchez Synchroniser.
-                  </Text>
-                )}
-              </Pressable>
-            );
-          })
+        {teacher && (
+          <Button compact secondary icon="add" label="Importer GPX" onPress={() => void tools.importFile(onMap)} />
         )}
-      </ScrollView>
-      <Sheet
-        visible={filtersOpen}
-        title="Filtres"
-        onClose={() => setFiltersOpen(false)}
-      >
-        <Text style={s.label}>Difficulté</Text>
-        <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
-          {["Tous", ...difficulties].map((d) => (
-            <Chip
-              key={d}
-              label={d}
-              active={difficulty === d}
-              onPress={() => setDifficulty(d)}
-            />
-          ))}
-        </View>
-        <Text style={s.label}>Repères du parcours</Text>
-        <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
-          {["Toutes", ...categories].map((c) => (
-            <Chip
-              key={c}
-              label={c}
-              active={category === c}
-              onPress={() => setCategory(c)}
-            />
-          ))}
-        </View>
-        <Chip
-          label="Favoris uniquement"
-          active={favorites}
-          onPress={() => setFavorites((value) => !value)}
-        />
-        <Button
-          label={`Afficher ${merged.length} parcours`}
-          onPress={() => setFiltersOpen(false)}
-        />
-        {!!filterCount && (
-          <Button
-            label="Réinitialiser les filtres"
-            secondary
-            onPress={() => {
-              setDifficulty("Tous");
-              setCategory("Toutes");
-              setFavorites(false);
-              setCenter("Tous les centres");
-            }}
-          />
-        )}
-      </Sheet>
-      <Sheet
-        visible={!!edit}
-        title={assignVisible ? "Attribuer ce parcours" : "Votre parcours"}
-        onClose={() => {
-          if (assignVisible) setAssignVisible(false);
-          else setEdit(null);
-        }}
-      >
-        {assignVisible ? (
-          <>
-            {students
-              .filter(
-                (p) =>
-                  (p as any).role === undefined ||
-                  (p as any).role === "student",
-              )
-              .map((student) => (
-                <Pressable
-                  key={student.id}
-                  style={s.card}
-                  onPress={() =>
-                    setAssigned((a) =>
-                      a.includes(student.id)
-                        ? a.filter((id) => id !== student.id)
-                        : [...a, student.id],
-                    )
-                  }
-                >
-                  <View style={s.between}>
-                    <View style={{ flex: 1 }}>
-                      <Text style={s.body}>{student.name}</Text>
-                      <Text style={s.muted}>{student.email}</Text>
-                    </View>
-                    <Icon
-                      name={
-                        assigned.includes(student.id)
-                          ? "checkmark-circle"
-                          : "ellipse-outline"
-                      }
-                    />
-                  </View>
-                </Pressable>
-              ))}
-            {students.length === 0 && (
-              <Text style={s.muted}>
-                Invitez d’abord vos élèves depuis votre espace.
-              </Text>
-            )}
-            <Button
-              label="Enregistrer les attributions"
-              onPress={async () => {
-                try {
-                  await request(`/v1/routes/${edit!.id}/assignments`, {
-                    method: "PUT",
-                    body: JSON.stringify({ students: assigned }),
-                  });
-                  setAssignVisible(false);
-                  app.setMessage("Attributions enregistrées.");
-                } catch (e) {
-                  error(e);
-                }
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <Field
-              label="Nom"
-              value={editName}
-              onChangeText={setEditName}
-              maxLength={120}
-            />
-            <Field
-              label="Description"
-              multiline
-              value={description}
-              onChangeText={setDescription}
-              maxLength={3000}
-            />
-            <Field
+        <View style={{ flexDirection: "row", gap: 10 }}>
+          <View style={{ flex: 1 }}>
+            <Dropdown
               label="Centre d’examen"
-              value={examCenter}
-              onChangeText={setExamCenter}
-              placeholder="Ex. Nanterre ou Gennevilliers"
-              maxLength={100}
+              value={center}
+              options={["Tous les centres", ...centers].map((c) => ({ id: c, label: c }))}
+              onChange={setCenter}
             />
-            {true && (
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={{ gap: 8 }}
-              >
-                {pickableCenters(allRoutes)
-                  .map((c) => (
-                    <Chip
-                      key={c}
-                      label={c}
-                      tone="blue"
-                      active={
-                        normalizeSearch(examCenter) === normalizeSearch(c)
-                      }
-                      onPress={() => setExamCenter(c)}
-                    />
-                  ))}
-              </ScrollView>
-            )}
-            <Text style={s.caption}>
-              Choisissez un centre existant ou saisissez son nom.
-            </Text>
-            <Text style={s.label}>Difficulté</Text>
-            <View style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
-              {difficulties.map((d) => (
-                <Chip
-                  key={d}
-                  label={d}
-                  active={level === d}
-                  onPress={() => setLevel(d)}
-                />
-              ))}
-            </View>
-            <View style={s.row}>
-              <Chip
-                label="Brouillon privé"
-                active={!publish}
-                onPress={() => setPublish(false)}
-              />
-              <Chip
-                label="Visible par les élèves"
-                active={publish}
-                onPress={() => setPublish(true)}
-              />
-            </View>
-            <Text style={s.caption}>
-              {publish
-                ? "Tous les élèves connectés pourront consulter ce parcours."
-                : "Vous et vos élèves autorisés pourrez consulter ce parcours."}
-            </Text>
-            <Button
-              label="Enregistrer les modifications"
-              onPress={() => void save()}
-              busy={!!busyId}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Dropdown
+              label="Difficulté"
+              value={difficulty}
+              options={["Tous", ...difficulties].map((d) => ({ id: d, label: d }))}
+              onChange={setDifficulty}
             />
-            <Button
-              label="Attribuer à mes élèves"
-              secondary
-              icon="people-outline"
-              onPress={() => void assignments()}
-            />
-          </>
+          </View>
+        </View>
+        <View style={{ flexDirection: "row" }}>
+          <Chip label="Favoris" tone="amber" active={favorites} onPress={() => setFavorites((v) => !v)} />
+        </View>
+        {visible.map((r) => {
+          const local = app.locals.find((l) => l.id === r.id);
+          const pending = !!local && (local.revision !== local.syncedRevision || local.state !== "finished");
+          return (
+            <Pressable
+              key={r.id}
+              accessibilityRole="button"
+              accessibilityLabel={`Ouvrir le parcours ${r.name}`}
+              disabled={tools.busyId === r.id}
+              onPress={() => void tools.open(r, onMap)}
+              style={({ pressed }) => [
+                s.card,
+                { flexDirection: "row", alignItems: "center", gap: 14, padding: 16, transform: [{ scale: pressed ? 0.98 : 1 }] },
+              ]}
+            >
+              <View style={{ width: 44, height: 44, borderRadius: radius.sm, backgroundColor: colors.soft, alignItems: "center", justifyContent: "center" }}>
+                <Icon name="map-outline" size={20} />
+              </View>
+              <View style={{ flex: 1, gap: 6 }}>
+                <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+                  <Badge label={r.examCenter || "À classer"} tone="blue" />
+                  <Badge label={r.difficulty} />
+                  {r.status === "published" && <Badge label="Publié" tone="green" />}
+                  {r.favorite && <Badge label="Favori" tone="amber" />}
+                </View>
+                <Text numberOfLines={2} style={[s.heading, { fontSize: 17 }]}>{r.name}</Text>
+                <Text style={s.muted}>
+                  {formatDistance(r.distance)} · {Math.round(r.duration / 60)} min · {r.pointCount} repères
+                </Text>
+                <Text style={s.caption}>
+                  {r.authorName}
+                  {pending
+                    ? local!.state === "recording" ? " · En cours" : local!.state === "paused" ? " · En pause" : " · À synchroniser"
+                    : ""}
+                </Text>
+                {!!local?.error && (
+                  <Text numberOfLines={2} style={s.error}>Synchronisation à reprendre : tirez la liste vers le bas.</Text>
+                )}
+              </View>
+              <Icon name="arrow-forward" size={18} />
+            </Pressable>
+          );
+        })}
+        {!visible.length && (
+          <Empty
+            title={refreshing ? "Chargement des parcours…" : "Aucun parcours disponible"}
+            description="Les parcours publiés par votre enseignant apparaîtront ici."
+          />
         )}
-      </Sheet>
+        <Text style={s.caption}>
+          Les parcours sont des exemples d’entraînement, pas des itinéraires officiels d’examen.
+        </Text>
+      </ScrollView>
+      {tools.sheets}
     </>
   );
 }

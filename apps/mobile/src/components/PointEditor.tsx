@@ -358,7 +358,7 @@ export function PointEditor({
       onClose={onClose}
       title={target?.point ? "Votre repère" : "Un nouveau repère"}
     >
-      {target && <StreetViewButton key={target.point?.id || "new-point"} position={target} title={target.point?.name || "Repère"} kind="point" />}
+      {target && <StreetViewButton key={target.point?.id || "new-point"} label="Voir cet endroit dans Street View" position={target} title={target.point?.name || "Repère"} kind="point" />}
       <Text style={s.muted}>
         Position choisie sur la carte · {target?.lat.toFixed(5)},{" "}
         {target?.lng.toFixed(5)}

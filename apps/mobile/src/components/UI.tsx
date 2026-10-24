@@ -281,17 +281,20 @@ export function Dropdown<T extends string>({
   value,
   options,
   onChange,
+  inline = false,
 }: {
   label: string;
   value: T;
   options: readonly { id: T; label: string; section?: string }[];
   onChange: (id: T) => void;
+  /** Label inside the row, like the website's map filter ("Repères ▾"). */
+  inline?: boolean;
 }) {
   const [open, setOpen] = React.useState(false);
   const current = options.find((o) => o.id === value)?.label ?? value;
   return (
     <View style={{ gap: 8 }}>
-      <Text style={s.label}>{label}</Text>
+      {!inline && <Text style={s.label}>{label}</Text>}
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={`${label} : ${current}`}
@@ -299,10 +302,12 @@ export function Dropdown<T extends string>({
         onPress={() => setOpen(!open)}
         style={({ pressed }) => [
           s.field,
-          { flexDirection: "row", alignItems: "center", justifyContent: "space-between", borderColor: open ? colors.wine : colors.line, transform: [{ scale: pressed ? 0.99 : 1 }] },
+          { flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: 10, borderColor: open ? colors.wine : colors.line, transform: [{ scale: pressed ? 0.99 : 1 }] },
+          inline && { minHeight: 46, paddingVertical: 8, ...shadow.sm },
         ]}
       >
-        <Text style={{ fontFamily: fonts.bodySemi, fontSize: 16, color: colors.ink, flex: 1 }} numberOfLines={1}>{current}</Text>
+        {inline && <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12, letterSpacing: 1.2, color: colors.muted }}>{label.toUpperCase()}</Text>}
+        <Text style={{ fontFamily: fonts.bodySemi, fontSize: inline ? 15 : 16, color: colors.ink, flex: 1 }} numberOfLines={1}>{current}</Text>
         <Icon name={open ? "chevron-up" : "chevron-down"} size={18} />
       </Pressable>
       {open && (
@@ -327,6 +332,31 @@ export function Dropdown<T extends string>({
           })}
         </View>
       )}
+    </View>
+  );
+}
+/** Same as the website's .text-btn: a quiet wine action with an optional trailing icon. */
+export function LinkButton({ label, onPress, icon, disabled = false, tone = colors.wine }: { label: string; onPress: () => void; icon?: React.ComponentProps<typeof Ionicons>["name"]; disabled?: boolean; tone?: string }) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ disabled }}
+      disabled={disabled}
+      onPress={onPress}
+      hitSlop={4}
+      style={({ pressed }) => ({ minHeight: 44, flexDirection: "row", alignItems: "center", gap: 6, paddingHorizontal: 4, opacity: disabled ? 0.45 : 1, transform: [{ scale: pressed ? 0.96 : 1 }] })}
+    >
+      <Text style={{ fontFamily: fonts.bodySemi, fontSize: 14, color: tone }}>{label}</Text>
+      {icon && <Icon name={icon} size={15} color={tone} />}
+    </Pressable>
+  );
+}
+/** Same as the website's .badge: a small coloured pill. */
+export function Badge({ label, tone = "neutral" }: { label: string; tone?: Tone }) {
+  const palette = tone === "neutral" ? { ink: colors.wine, soft: colors.soft } : tones[tone];
+  return (
+    <View style={{ alignSelf: "flex-start", paddingHorizontal: 9, paddingVertical: 3, borderRadius: radius.pill, backgroundColor: palette.soft }}>
+      <Text style={{ fontFamily: fonts.bodyBold, fontSize: 12, lineHeight: 17, color: palette.ink }}>{label}</Text>
     </View>
   );
 }

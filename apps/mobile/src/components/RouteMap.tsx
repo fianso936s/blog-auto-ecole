@@ -52,6 +52,7 @@ export function RouteMap({
   show3DToggle = false,
   navigationMode = false,
   previewMode = false,
+  centerHandle,
 }: {
   fixes?: Fix[];
   routeKey?: string;
@@ -78,12 +79,23 @@ export function RouteMap({
   show3DToggle?: boolean;
   navigationMode?: boolean;
   previewMode?: boolean;
+  /** Filled with a reader of the map centre (website: "Utiliser le centre"). */
+  centerHandle?: React.MutableRefObject<(() => Promise<{ lat: number; lng: number } | null>) | null>;
 }) {
   const reducedMotion = useReducedMotion();
   const camera = useRef<CameraRef>(null),
     [mapReady, setMapReady] = useState(false),
     [error, setError] = useState(false);
   const map = useRef<MapRef>(null);
+  if (centerHandle)
+    centerHandle.current = async () => {
+      try {
+        const c = await map.current?.getCenter();
+        return c ? { lng: c[0], lat: c[1] } : null;
+      } catch {
+        return null;
+      }
+    };
   const panning = useRef(false);
   const longPressAt = useRef(0);
   async function pan(dx: number, dy: number) {

@@ -1222,7 +1222,7 @@ function MapPage() {
       difficulty: "Facile",
       status: "private",
       source: "gps",
-      duration: elapsed,
+      duration: Math.round(elapsed / 1000),
       fixes,
       points: recordPoints,
       version: 0,
@@ -1349,7 +1349,7 @@ function MapPage() {
       difficulty: "Facile",
       status: "private",
       source: "gps",
-      duration: elapsed,
+      duration: Math.round(elapsed / 1000),
       fixes,
       points: recordPoints,
       version: 0,
@@ -1769,7 +1769,7 @@ function MapPage() {
                     </div>
                     <h3>{r.name}</h3>
                     <p>
-                      {km(r.distance)} · {Math.round(r.duration / 60000)} min ·{" "}
+                      {km(r.distance)} · {Math.round(r.duration / 60)} min ·{" "}
                       {r.pointCount} repères
                     </p>
                     <small>{r.authorName}</small>

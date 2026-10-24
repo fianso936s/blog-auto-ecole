@@ -12,29 +12,37 @@ import {
   type StreetSnapshot,
 } from "../services/street-snapshot";
 import { colors, styles as s } from "../theme";
-import { Button, IconButton } from "./UI";
+import { Button, IconButton, LinkButton } from "./UI";
 import { ModalFrame } from "./ModalFrame";
+import product from "../../../../packages/product/product.json";
+
+/** Same free exploration as the website: Google's own Street View, with its arrows to move and turn. */
+export function exploreUrl(p: { lat: number; lng: number; heading?: number }) {
+  return `https://www.google.com/maps?layer=c&cbll=${p.lat},${p.lng}&cbp=11,${Math.round(p.heading || 0)},0,0,0&output=svembed`;
+}
+function exploreHtml(p: { lat: number; lng: number; heading?: number }) {
+  return `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><style>html,body{margin:0;height:100%;background:#1C1719}iframe{border:0;width:100%;height:100%;display:block}</style></head><body><iframe title="Street View libre" allowfullscreen src="${exploreUrl(p)}"></iframe></body></html>`;
+}
 
 export function StreetViewButton({
   position,
   title,
   kind,
   onBeforeOpen,
+  link = false,
+  label = "Voir Street View",
 }: {
   position: SnapshotPosition;
   title: string;
   kind: StreetSnapshot["kind"];
   onBeforeOpen?: () => void;
+  /** Quiet text action, like the website's "Street View →" in the route panel. */
+  link?: boolean;
+  label?: string;
 }) {
   const app = useApp();
   const [snapshot, setSnapshot] = useState<StreetSnapshot | null>(null);
-  return (
-    <>
-      <Button
-        label="Voir Street View"
-        secondary
-        icon="eye-outline"
-        onPress={() => {
+  const open = () => {
           if (!app.online) {
             Alert.alert(
               "Street View",
@@ -53,8 +61,14 @@ export function StreetViewButton({
           if (!selected) return;
           onBeforeOpen?.();
           setSnapshot(selected);
-        }}
-      />
+        };
+  return (
+    <>
+      {link ? (
+        <LinkButton label="Street View" icon="arrow-forward" onPress={open} />
+      ) : (
+        <Button label={label} secondary icon="eye-outline" onPress={open} />
+      )}
       {snapshot && (
         <StreetViewWindow target={snapshot} onClose={() => setSnapshot(null)} />
       )}
@@ -75,7 +89,8 @@ function StreetViewWindow({
   const [ready, setReady] = useState(false),
     [load, setLoad] = useState(0),
     [error, setError] = useState(""),
-    [nearby, setNearby] = useState<number | null>(null);
+    [nearby, setNearby] = useState<number | null>(null),
+    [explore, setExplore] = useState(false);
   const [active, setActive] = useState(AppState.currentState === "active");
   const reducedMotion = useReducedMotion();
   useEffect(() => {
@@ -86,7 +101,7 @@ function StreetViewWindow({
     return () => sub.remove();
   }, []);
   useEffect(() => {
-    if (!active || ready) return;
+    if (!active || ready || explore) return;
     const timer = setTimeout(
       () =>
         setError(
@@ -95,7 +110,7 @@ function StreetViewWindow({
       20000,
     );
     return () => clearTimeout(timer);
-  }, [active, ready, load]);
+  }, [active, ready, load, explore]);
   useEffect(() => {
     if (!active || !ready) return;
     const id = ++generation.current;
@@ -176,7 +191,27 @@ function StreetViewWindow({
           />
         </View>
         <View style={{ flex: 1 }}>
-          {active ? (
+          {active && explore ? (
+            <WebView<{}>
+              key="explore"
+              source={{ html: exploreHtml(target), baseUrl: product.webOrigin }}
+              javaScriptEnabled
+              allowsFullscreenVideo
+              scrollEnabled={false}
+              originWhitelist={["https://*", "about:*"]}
+              onShouldStartLoadWithRequest={(req) => {
+                if (req.isTopFrame === false) return req.url.startsWith("https://") || req.url === "about:blank";
+                if (req.url === "about:blank" || req.url.startsWith(product.webOrigin)) return true;
+                try {
+                  const url = new URL(req.url);
+                  if (req.navigationType === "click" && url.protocol === "https:" && (url.hostname === "google.com" || url.hostname.endsWith(".google.com")))
+                    void Linking.openURL(req.url).catch(() => {});
+                } catch {}
+                return false;
+              }}
+              style={{ flex: 1, backgroundColor: colors.ink }}
+            />
+          ) : active ? (
             <WebView<{}>
               ref={web}
               source={{ uri: `${API_URL}/streetview` }}
@@ -230,7 +265,19 @@ function StreetViewWindow({
           )}
         </View>
         <View style={{ padding: 12, gap: 8 }}>
-          {!!error && (
+          <Button
+            compact
+            secondary={!explore}
+            icon={explore ? "arrow-back" : "walk-outline"}
+            label={explore ? (target.kind === "route" ? "Revenir au parcours" : "Revenir au repère") : "Explorer librement"}
+            onPress={() => {
+              setError("");
+              setReady(false);
+              setExplore((v) => !v);
+            }}
+          />
+          {explore && <Text style={s.caption}>Touchez les flèches dans la rue pour avancer, reculer ou tourner.</Text>}
+          {!explore && !!error && (
             <>
               <Text accessibilityRole="alert" style={s.caption}>
                 {error}
