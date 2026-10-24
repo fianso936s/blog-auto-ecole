@@ -100,6 +100,14 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     ? {type:"fix", ...replayAnchor(route.fixes,index), paths, index}
     : {type:"snapshot", kind:"point", lat:target?.lat, lng:target?.lng, heading:0, index:0}, [route, target, index, paths]);
   const activePoint = route?.points.find(p => p.fixIndex === index);
+  // Free exploration: Google's own Street View with its arrows, from the current place on the route.
+  const [explore, setExplore] = useState(false);
+  const freePosition = useMemo(() => {
+    const r = request as { lat?: number; lng?: number; heading?: number };
+    const lat = Number(r.lat), lng = Number(r.lng);
+    return Number.isFinite(lat) && Number.isFinite(lng) ? { lat, lng, heading: Number(r.heading) || 0 } : null;
+  }, [request]);
+  useEffect(() => { if (mode !== "street") setExplore(false); }, [mode]);
   const save = async () => {
     if (!route || lastSaved.current === currentIndex.current) return;
     if (saving.current) {queuedSave.current=true; return;}
@@ -168,6 +176,11 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
           <button aria-label="Zoom avant" onClick={()=>setZoom(z=>Math.min(22,z+1))}>+</button>
         </div>
       </> : null}
+      {mode === "street" && explore && freePosition && <div className="player-explore">
+        <iframe key={`${freePosition.lat},${freePosition.lng}`} title="Street View libre : flèches pour avancer, reculer et tourner" allowFullScreen
+          src={`https://www.google.com/maps?layer=c&cbll=${freePosition.lat},${freePosition.lng}&cbp=11,${Math.round(freePosition.heading)},0,0,0&output=svembed`} />
+      </div>}
+      {mode === "street" && freePosition && <button className={`player-explore-toggle ${explore ? "active" : ""}`} onClick={()=>{setPlaying(false);setExplore(v=>!v);}}>{explore ? "← Revenir au parcours" : "Explorer librement"}</button>}
       {streetOpened && <div className="player-street-layer" aria-hidden={mode !== "street"} data-active={mode === "street"} inert={mode !== "street"}><StreetPane request={request} onState={setStreetState} active={mode === "street"} /></div>}
       {mode === "map" && !mapReady && <div className="player-loading" role="status">Préparation de la carte…</div>}
       {activePoint && <button className="player-point" onClick={()=>{setPlaying(false);onPoint?.(activePoint);}}><span>{activePoint.category}</span><strong>{activePoint.name}</strong><span>Lire le repère →</span></button>}
