@@ -67,16 +67,18 @@ export async function saveCapturedVideo(videoId:string, ownerId:string, saved:Sa
 export async function importVideo(ownerId: string, title: string, routeId?: string | null, source: "library" | "files" = "library") {
   let selected: { uri: string; name: string; mimeType?: string | null };
   if (source === "library") {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permission.granted && permission.accessPrivileges !== "limited")
-      throw new Error("Autorisez l’accès à vos photos et vidéos : Réglages › Le Repère Permis › Photos.");
-    const picked = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["videos"],
-      allowsEditing: false,
-      // HEVC iPhone videos are exported as H.264 so the website can play them too.
-      preferredAssetRepresentationMode: ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
-      videoExportPreset: ImagePicker.VideoExportPreset.H264_1920x1080,
-    });
+    // The system Photos picker needs no library permission, and handing over the original
+    // file (no forced re-encode) is what makes long iPhone clips load quickly and reliably.
+    let picked: ImagePicker.ImagePickerResult;
+    try {
+      picked = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["videos"],
+        allowsEditing: false,
+        preferredAssetRepresentationMode: ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Current,
+      });
+    } catch {
+      throw new Error("La Pellicule n’a pas pu fournir cette vidéo (elle est peut-être encore dans iCloud). Réessayez en Wi-Fi ou passez par Fichiers.");
+    }
     if (picked.canceled || !picked.assets[0]) return null;
     const a = picked.assets[0];
     const name = a.fileName || a.uri.split("/").pop() || "video.mov";
@@ -90,7 +92,7 @@ export async function importVideo(ownerId: string, title: string, routeId?: stri
   if (!selected.uri) throw new Error("La vidéo sélectionnée n’est pas accessible.");
   const mime = selected.mimeType === "video/quicktime" || /\.mov$/i.test(selected.name)
     ? "video/quicktime" : "video/mp4";
-  if (selected.mimeType && !["video/mp4", "video/quicktime", "video/x-m4v", "application/octet-stream"].includes(selected.mimeType))
+  if (selected.mimeType && !selected.mimeType.startsWith("video/") && selected.mimeType !== "application/octet-stream")
     throw new Error("Format non pris en charge : choisissez une vidéo MP4 ou MOV.");
   const input = new File(selected.uri);
   const config = await fetchVideoConfig();
