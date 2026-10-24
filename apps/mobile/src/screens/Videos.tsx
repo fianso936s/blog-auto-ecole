@@ -31,13 +31,26 @@ import {
 
 type Student = { id: string; name: string; email: string };
 type Audience = "private" | "all" | "selected";
-function Player({ uri }: { uri: string }) {
+/** Same player as the site. When the signed link expires, the page asks for a fresh one and resumes. */
+function Player({ uri, videoId }: { uri: string; videoId: string }) {
+  const web = React.useRef<WebView<{}>>(null);
+  const [html] = useState(() => recordedVideoHtml(uri));
   return (
-    <WebView
+    <WebView<{}>
+      ref={web}
       originWhitelist={["*"]}
-      source={{ html: recordedVideoHtml(uri) }}
+      source={{ html }}
       allowsInlineMediaPlayback
+      allowsFullscreenVideo
       mediaPlaybackRequiresUserAction={false}
+      onMessage={(event) => {
+        let data: { type?: string } = {};
+        try { data = JSON.parse(event.nativeEvent.data); } catch { return; }
+        if (data.type === "renew")
+          void playback(videoId)
+            .then((p) => web.current?.injectJavaScript(`window.__repereRenew&&window.__repereRenew(${JSON.stringify(p.url)});true;`))
+            .catch(() => {});
+      }}
       style={{ height: 420, backgroundColor: colors.paper }}
     />
   );
@@ -458,7 +471,7 @@ export function Videos() {
               {selected.route_name || "Séance pédagogique"} · {selected.visibility === "students" ? "Visible par les élèves autorisés" : "Privée"}
             </Text>
             {selected.state === "ready" && !viewUrl && <Button label="Lire la vidéo" icon="play" onPress={() => void play(selected)} busy={busy} />}
-            {!!viewUrl && <Player key={viewUrl} uri={viewUrl} />}
+            {!!viewUrl && <Player key={selected.id} uri={viewUrl} videoId={selected.id} />}
             <MetaLivePanel
               videoId={selected.id}
               liveStatus={selected.live_status || "idle"}

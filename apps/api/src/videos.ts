@@ -151,7 +151,8 @@ export function installVideos(app: Hono<Env>) {
     const p=c.get("profile");
     const v=await readableVideo(pool,p,idParam.parse(c.req.param("id")));
     if (v.state!=="ready"||!v.storage_key)throw new ApiError(404,"Aucun replay distant disponible.");
-    const signed=storageSign("GET",v.storage_key,undefined,300);
+    // One hour: a full lesson plays without the link expiring mid-way.
+    const signed=storageSign("GET",v.storage_key,undefined,3600);
     return c.json({ url:signed.url,expiresIn:signed.expiresIn,mimeType:v.mime_type,
       durationMs:v.duration_ms,routeId:v.route_id });
   });

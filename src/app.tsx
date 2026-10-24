@@ -2964,7 +2964,7 @@ function Videos() {
             setPlayer(null);
           }}
         >
-          <VideoPlayer key={player.url} src={player.url} onError={()=>notify("Ce navigateur ne peut pas lire ce format vidéo. Essayez le MP4 H.264.")}/>
+          <VideoPlayer key={player.id} src={player.url} renew={player.local ? undefined : async()=>(await api(`/v1/videos/${player.id}/playback`)).url} onError={()=>notify("Lecture impossible : vérifiez la connexion. Si le problème continue, la vidéo n’est peut-être pas en MP4 H.264.")}/>
         </Modal>
       )}
       {sharing && (
