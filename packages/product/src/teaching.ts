@@ -1,5 +1,6 @@
 export const SCHOOL_ZONE='Europe/Paris';
-export type TeacherSlot={id:string;teacherId:string;start:string;end:string;open:boolean;version:number};
+export type TeacherSlot={id:string;teacherId:string;start:string;end:string;open:boolean;version:number;studentId?:string|null;studentName?:string|null};
+export type BookableStudent={id:string;name:string;email:string};
 export function parisDay(date=new Date()){const p=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:SCHOOL_ZONE,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(date).map(p=>[p.type,p.value]));return `${p.year}-${p.month}-${p.day}`;}
 export function addDays(day:string,count:number){const date=new Date(day+'T12:00:00Z');date.setUTCDate(date.getUTCDate()+count);return date.toISOString().slice(0,10);}
 export function monday(date=new Date()){const day=parisDay(date),weekday=new Date(day+'T12:00:00Z').getUTCDay();return addDays(day,-((weekday+6)%7));}

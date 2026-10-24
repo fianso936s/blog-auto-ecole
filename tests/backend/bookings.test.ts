@@ -1,0 +1,50 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {PGlite} from '@electric-sql/pglite';
+import {Hono} from 'hono';
+import {ZodError} from 'zod';
+import {setTestPool} from '../../apps/api/src/db.ts';
+import {installTeaching,lessonTime} from '../../apps/api/src/teaching.ts';
+import {ApiError,type Env} from '../../apps/api/src/security.ts';
+test('a teacher or the director books a registered student on a slot, the teacher and student are e-mailed',async()=>{
+ process.env.NODE_ENV='test';process.env.RESEND_API_KEY='re_test';process.env.MAIL_FROM='Le Repère <planning@example.invalid>';
+ const sent:any[]=[];const realFetch=globalThis.fetch;
+ globalThis.fetch=(async(url:any,init:any)=>{assert.equal(String(url),'https://api.resend.com/emails');sent.push(JSON.parse(init.body));return new Response('{}',{status:200});}) as any;
+ const db=new PGlite();
+ await db.exec("CREATE ROLE repere_runtime;CREATE TABLE users(id text PRIMARY KEY,name text,role text,email text);CREATE TABLE teacher_students(teacher_id text,student_id text,PRIMARY KEY(teacher_id,student_id));INSERT INTO users VALUES('a','Directeur','admin','a@example.invalid'),('t','Prof','teacher','prof@example.invalid'),('o','Autre','teacher','o@example.invalid'),('s','Inès','student','ines@example.invalid'),('x','Hors groupe','student','x@example.invalid');INSERT INTO teacher_students VALUES('t','s');");
+ await db.exec(await readFile('db/migrations/017-teacher-slots.sql','utf8'));await db.exec(await readFile('db/migrations/018-slot-bookings.sql','utf8'));
+ const adapter={query:async(sql:string,args:any[])=>{if(sql.includes('pg_advisory_xact_lock'))return {rows:[],rowCount:0};const r=await db.query(sql,args);return {...r,rowCount:r.affectedRows??r.rows.length};},connect:async()=>({...adapter,release(){}})};setTestPool(adapter as any);
+ const app=new Hono<Env>();app.use('*',async(c,next)=>{c.set('profile',(await db.query('SELECT * FROM users WHERE id=$1',[c.req.header('x-fixture-user')||'t'])).rows[0] as any);await next();});app.onError((e,c)=>c.json({error:e.message},e instanceof ApiError?e.status as 400:e instanceof ZodError?400:500));installTeaching(app);
+ const call=async(path:string,user='t',method='GET',body?:unknown)=>{const r=await app.request('https://fixture.invalid/v1/'+path,{method,headers:{'x-fixture-user':user,'content-type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});return {status:r.status,body:await r.json() as any};};
+ try{
+  assert.deepEqual((await call('teaching/students')).body.students.map((s:any)=>s.id),['s'],'a teacher books from his own group');
+  assert.equal((await call('teaching/students?teacherId=t','a')).body.students.length,2,'the director sees every registered student');
+  const start=new Date(Date.now()+2*86400000).toISOString(),end=new Date(Date.parse(start)+3600000).toISOString();
+  const book={teacherId:'t',start,end,studentId:'s',expectedVersion:0};
+  assert.equal((await call('teaching/bookings','s','PUT',book)).status,403,'students cannot book from here');
+  assert.equal((await call('teaching/bookings','t','PUT',{...book,studentId:'x'})).status,403,'a teacher cannot book a student outside his group');
+  const booked=await call('teaching/bookings','t','PUT',book);
+  assert.equal(booked.status,200);assert.equal(booked.body.slot.studentId,'s');assert.equal(booked.body.slot.studentName,'Inès');assert.equal(booked.body.slot.open,true,'a closed hour opens when booked');
+  assert.deepEqual(booked.body.emails,{teacher:true,student:true});
+  assert.deepEqual(sent.map(m=>m.to[0]).sort(),['ines@example.invalid','prof@example.invalid']);
+  assert.match(sent.find(m=>m.to[0]==='prof@example.invalid').subject,/^Nouvelle réservation : Inès/);
+  const from=new Date(Date.parse(start)-3600000).toISOString(),to=new Date(Date.parse(end)+3600000).toISOString();
+  const list=await call('teaching/slots?teacherId=t&from='+encodeURIComponent(from)+'&to='+encodeURIComponent(to));
+  assert.equal(list.body.slots[0].studentName,'Inès');assert.equal(list.body.emails,true);
+  assert.equal((await call('teaching/slots','t','PUT',{teacherId:'t',start,end,open:false,expectedVersion:1})).status,409,'a booked hour cannot be closed');
+  assert.equal((await call('teaching/bookings','a','PUT',{...book,teacherId:'o',expectedVersion:0})).status,409,'the same student cannot have two lessons at once');
+  // The director books an unlinked student on another teacher: the student joins that teacher's group.
+  const later=new Date(Date.parse(start)+2*3600000).toISOString(),laterEnd=new Date(Date.parse(later)+3600000).toISOString();
+  assert.equal((await call('teaching/bookings','a','PUT',{teacherId:'o',start:later,end:laterEnd,studentId:'x',expectedVersion:0})).status,200);
+  assert.equal((await db.query("SELECT 1 FROM teacher_students WHERE teacher_id='o' AND student_id='x'")).rows.length,1);
+  sent.length=0;
+  const cancelled=await call('teaching/bookings','t','PUT',{...book,studentId:null,expectedVersion:1});
+  assert.equal(cancelled.status,200);assert.equal(cancelled.body.slot.studentId,null);assert.equal(cancelled.body.slot.open,true,'the hour stays available');
+  assert.ok(sent.every(m=>/annulée/.test(m.subject))&&sent.length===2);
+  assert.match(lessonTime('2026-10-27T09:00:00.000Z','2026-10-27T10:00:00.000Z'),/mardi 27 octobre de 10 h 00 à 11 h 00/);
+  delete process.env.RESEND_API_KEY;sent.length=0;
+  const quiet=await call('teaching/bookings','t','PUT',{...book,expectedVersion:2});
+  assert.equal(quiet.status,200);assert.deepEqual(quiet.body.emails,{teacher:null,student:null},'no e-mail service configured: booking still works');assert.equal(sent.length,0);
+ }finally{globalThis.fetch=realFetch;delete process.env.RESEND_API_KEY;delete process.env.MAIL_FROM;await db.close();}
+});

@@ -24,6 +24,10 @@ export default defineConfig({
         ...(process.env.MAP_STYLE_URL
           ? { MAP_STYLE_URL: process.env.MAP_STYLE_URL }
           : {}),
+        // Booking e-mails (Resend). Without both, bookings work and no e-mail is sent.
+        ...(process.env.RESEND_API_KEY && process.env.MAIL_FROM
+          ? { RESEND_API_KEY: process.env.RESEND_API_KEY, MAIL_FROM: process.env.MAIL_FROM }
+          : {}),
       },
     },
   },

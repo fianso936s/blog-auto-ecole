@@ -20,6 +20,8 @@ try {
     "db/migrations/009-private-videos.sql",
     "db/migrations/010-live-private-segments.sql",
     "db/migrations/011-webrtc-livekit.sql",
+    // 012–017 were applied outside this runner; only later files are listed.
+    "db/migrations/018-slot-bookings.sql",
   ]) {
     if (
       (

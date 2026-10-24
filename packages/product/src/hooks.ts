@@ -66,5 +66,18 @@ export function useTeacherSchedule(client:ProductClient,userId:string){
   catch(e){if(scope.current===key){await refresh();setError((e as Error).message);}}
   finally{working.current=false;setBusy('');}
  }
- return {teachers,teacherId,setTeacherId,week,setWeek,slots,loading,busy,error,toggle,refresh};
+ // Booking: pick a registered student, then the hour; open hours are the recommended ones.
+ const [students,setStudents]=useState<import('./teaching').BookableStudent[]>([]),[student,setStudent]=useState(''),[emails,setEmails]=useState<boolean|null>(null),[notice,setNotice]=useState('');
+ useEffect(()=>{let alive=true;setStudents([]);void client.bookableStudents(teacherId).then(r=>{if(!alive)return;setStudents(r.students);setEmails(r.emails);setStudent(id=>r.students.some(s=>s.id===id)?id:'');}).catch(()=>{if(alive){setStudents([]);setEmails(null);}});return()=>{alive=false;};},[client,teacherId]);
+ async function book(slot:{start:string;end:string},studentId:string|null){
+  if(working.current||loading)return false;working.current=true;setBusy(slot.start);setError('');setNotice('');const key=scope.current,previous=slots.find(s=>s.start===slot.start);
+  try{const result=await client.book({teacherId,start:slot.start,end:slot.end,studentId,expectedVersion:previous?.version||0});
+   if(scope.current===key)setSlots(values=>[...values.filter(s=>s.start!==slot.start),result.slot]);
+   const who=studentId?students.find(s=>s.id===studentId)?.name||'L’élève':'';const sent=[result.emails.teacher&&'l’enseignant',result.emails.student&&'l’élève'].filter(Boolean);
+   setNotice((studentId?`${who} est réservé(e).`:'Réservation annulée.')+(sent.length?` E-mail envoyé à ${sent.join(' et ')}.`:result.emails.teacher===null&&result.emails.student===null?' (E-mails automatiques non activés.)':' L’e-mail n’a pas pu partir.'));
+   return true;}
+  catch(e){if(scope.current===key){await refresh();setError((e as Error).message);}return false;}
+  finally{working.current=false;setBusy('');}
+ }
+ return {teachers,teacherId,setTeacherId,week,setWeek,slots,loading,busy,error,toggle,refresh,students,student,setStudent,emails,book,notice,setNotice};
 }

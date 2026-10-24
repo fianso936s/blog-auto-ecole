@@ -4002,6 +4002,69 @@ input[type="radio"] {
 .schedule-slot:disabled {
   cursor: default;
 }
+.schedule-slot[data-booked="true"] {
+  background: var(--wine);
+  border-color: var(--wine);
+  color: var(--paper);
+}
+.schedule-slot[data-booked="true"] span {
+  color: var(--paper);
+  font-weight: 650;
+  opacity: 0.92;
+}
+.schedule-slot[data-recommended="true"] {
+  box-shadow: 0 0 0 2px var(--green) inset;
+}
+.schedule-mode {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-md);
+  background: var(--cream);
+  border: 1px solid var(--line);
+  margin-bottom: 12px;
+}
+.schedule-mode button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--muted);
+  font-weight: 650;
+  font-size: 14px;
+  cursor: pointer;
+}
+.schedule-mode button[aria-pressed="true"] {
+  background: var(--paper);
+  color: var(--wine);
+  box-shadow: var(--shadow-sm);
+}
+.schedule-booking {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.schedule-notice {
+  padding: 10px 14px;
+  border-radius: var(--r-md);
+  background: var(--green-soft);
+  color: var(--ink);
+  font-weight: 600;
+}
+.schedule-days .day-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--wine);
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 700;
+}
 @media (max-width: 620px) {
   .teaching-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
