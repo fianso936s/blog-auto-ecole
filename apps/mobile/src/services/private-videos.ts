@@ -1,5 +1,5 @@
 import {productClient} from "./product-client";
-import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import * as ImagePicker from "expo-image-picker";
 import * as Crypto from "expo-crypto";
 import { Directory, File, Paths } from "expo-file-system";
@@ -82,14 +82,21 @@ export async function importVideo(ownerId: string, title: string, routeId?: stri
     const name = a.fileName || a.uri.split("/").pop() || "video.mov";
     selected = { uri: a.uri, name: /\.(mp4|mov|m4v)$/i.test(name) ? name : `${name}.mov`, mimeType: a.mimeType };
   } else {
-    const picker = await DocumentPicker.getDocumentAsync({
-      type: ["video/mp4", "video/quicktime", "public.movie"], copyToCacheDirectory: true,
-    });
-    if (picker.canceled || !picker.assets[0]) return null;
-    selected = picker.assets[0];
-  }
-  const mime = selected.mimeType === "video/quicktime" || /\.mov$/i.test(selected.name) ? "video/quicktime" : "video/mp4";
-  if (!/\.(mp4|mov|m4v)$/i.test(selected.name)) throw new Error("Choisissez une vidéo MP4 ou MOV.");
+    // The iOS photo library must be opened with ImagePicker, not the document picker.
+  // Await dismissal and resolve the selected asset before creating the remote draft.
+  const picker = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ["videos"],
+    allowsEditing: false,
+    quality: 1,
+  });
+  if (picker.canceled || !picker.assets?.length) return null;
+  const selected = picker.assets[0];
+  if (!selected.uri) throw new Error("La vidéo sélectionnée n’est pas accessible.");
+  const fileName = selected.fileName || selected.uri.split("/").pop() || "video.mov";
+  const mime = selected.mimeType === "video/quicktime" || /\\.mov$/i.test(fileName)
+    ? "video/quicktime" : "video/mp4";
+  if (selected.mimeType && !["video/mp4", "video/quicktime", "application/octet-stream"].includes(selected.mimeType))
+    throw new Error("Format non pris en charge : choisissez une vidéo MP4 ou MOV.");
   const input = new File(selected.uri);
   const config = await fetchVideoConfig();
   // No arbitrary local duration/file limit: large recordings may stay on the iPhone.
