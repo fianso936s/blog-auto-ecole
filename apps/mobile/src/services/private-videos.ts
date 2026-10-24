@@ -88,7 +88,7 @@ export async function importVideo(ownerId: string, title: string, routeId?: stri
     selected = { uri: asset.uri, name: asset.name || "video.mp4", mimeType: asset.mimeType };
   }
   if (!selected.uri) throw new Error("La vidéo sélectionnée n’est pas accessible.");
-  const mime = selected.mimeType === "video/quicktime" || /\\.mov$/i.test(selected.name)
+  const mime = selected.mimeType === "video/quicktime" || /\.mov$/i.test(selected.name)
     ? "video/quicktime" : "video/mp4";
   if (selected.mimeType && !["video/mp4", "video/quicktime", "video/x-m4v", "application/octet-stream"].includes(selected.mimeType))
     throw new Error("Format non pris en charge : choisissez une vidéo MP4 ou MOV.");
