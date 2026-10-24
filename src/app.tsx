@@ -2588,9 +2588,14 @@ async function videoStore(
     };
   });
 }
+// Videos picked in this tab: Safari can refuse to keep a large clip in IndexedDB,
+// the upload must still work from the file in memory.
+const sessionClips = new Map<string, { key: string; blob: Blob; name: string }>();
 async function localClip(owner: string, id: string) {
-  return videoStore("readonly", (s) => s.get(`${owner}:${id}`));
+  return sessionClips.get(`${owner}:${id}`) || videoStore("readonly", (s) => s.get(`${owner}:${id}`)).catch(() => null);
 }
+const videoMime = (file: { name: string; type?: string }) =>
+  file.type === "video/quicktime" || /\.mov$/i.test(file.name) ? "video/quicktime" : "video/mp4";
 function Videos() {
   const [livePublisher,setLivePublisher]=useState(false);
   const { profile, notify } = useApp(),
@@ -2647,7 +2652,7 @@ function Videos() {
   async function attach(file: File, title?: string) {
     setImporting(true);
     try {
-      if (!/\.(mp4|mov|m4v)$/i.test(file.name))
+      if (!/\.(mp4|mov|m4v)$/i.test(file.name) && !/^video\/(mp4|quicktime|x-m4v)$/.test(file.type))
         throw Error(
           "Le cloud accepte les vidéos MP4 et MOV. Téléchargez la capture WebM sur votre appareil si votre navigateur ne produit pas de MP4.",
         );
@@ -2655,16 +2660,14 @@ function Videos() {
       const created = await api("/v1/videos", "POST", {
         title: title || file.name.replace(/\.[^.]+$/, "").slice(0, 120),
       });
-      await videoStore("readwrite", (s) =>
-        s.put({
-          key: `${profile!.id}:${created.id}`,
-          blob: file,
-          name: file.name,
-        }),
-      );
+      const clip = { key: `${profile!.id}:${created.id}`, blob: file, name: file.name };
+      sessionClips.set(clip.key, clip);
+      await videoStore("readwrite", (s) => s.put(clip)).catch(() => {});
       setCapture(false);
       await refresh();
-      if(config?.uploadEnabled) await upload({...created,title:title||file.name} as Video);
+      const settings = await api("/v1/videos/config").catch(() => config);
+      if (settings) setConfig(settings);
+      if(settings?.uploadEnabled) await upload({...created,title:title||file.name} as Video, settings);
       else notify("Vidéo conservée dans ce navigateur. Le stockage distant n’est pas encore disponible.");
     } catch (e) {
       notify((e as Error).message);
@@ -2690,7 +2693,7 @@ function Videos() {
       notify((e as Error).message);
     }
   }
-  async function upload(v: Video) {
+  async function upload(v: Video, settings = config) {
     setProgress((p) => ({ ...p, [v.id]: 0 }));
     try {
       const local = await localClip(profile!.id, v.id);
@@ -2698,15 +2701,15 @@ function Videos() {
         throw Error(
           "La copie locale se trouve sur l’appareil qui a importé cette vidéo. Utilisez cet appareil ou importez un nouveau fichier.",
         );
-      if (!config?.uploadEnabled)
-        throw Error(config?.message || "Partage cloud indisponible.");
-      if (local.blob.size > config.maxFileBytes)
+      if (!settings?.uploadEnabled)
+        throw Error(settings?.message || "Partage cloud indisponible.");
+      if (local.blob.size > settings.maxFileBytes)
         throw Error(
           "La limite cloud est de 500 Mio par vidéo. La copie locale est conservée.",
         );
       if (v.state === "uploading")
-        await api(`/v1/videos/${v.id}/retry`, "POST", {});
-      const mime = /\.mov$/i.test(local.name) ? "video/quicktime" : "video/mp4";
+        await api(`/v1/videos/${v.id}/retry`, "POST", {}).catch(() => {});
+      const mime = videoMime({ name: local.name, type: local.blob.type });
       const ticket = await api(`/v1/videos/${v.id}/upload`, "POST", {
         bytes: local.blob.size,
         mimeType: mime,
@@ -2737,7 +2740,9 @@ function Videos() {
         x.onerror = () =>
           reject(
             Error(
-              "Envoi au stockage refusé ou interrompu. La copie reste dans ce navigateur.",
+              navigator.onLine
+                ? "Le stockage vidéo a refusé l’envoi depuis le site (autorisation CORS du stockage à vérifier). Réessayez depuis l’app iPhone en attendant."
+                : "Connexion coupée pendant l’envoi. Réessayez en Wi-Fi.",
             ),
           );
         x.timeout = 600000;
@@ -2746,10 +2751,14 @@ function Videos() {
         x.send(local.blob);
       });
       await api(`/v1/videos/${v.id}/complete`, "POST", {});
+      sessionClips.delete(`${profile!.id}:${v.id}`);
       notify("Vidéo envoyée. Choisissez maintenant qui peut la voir.");
       await refresh();
       setSharing(v.id);
     } catch (e) {
+      // Free the reservation so the next "Envoyer dans le cloud" starts cleanly.
+      await api(`/v1/videos/${v.id}/retry`, "POST", {}).catch(() => {});
+      void refresh();
       notify((e as Error).message);
     } finally {
       setProgress((p) => {
@@ -2799,7 +2808,7 @@ function Videos() {
                 disabled={importing}
                 hidden
                 type="file"
-                accept="video/mp4,video/quicktime,.mov,.m4v"
+                accept="video/*"
                 onChange={(e) => {
                   if (e.target.files?.[0]) void attach(e.target.files[0]);
                   e.target.value = "";

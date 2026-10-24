@@ -1,5 +1,6 @@
 import {productClient} from "./product-client";
 import * as DocumentPicker from "expo-document-picker";
+import * as ImagePicker from "expo-image-picker";
 import * as Crypto from "expo-crypto";
 import { Directory, File, Paths } from "expo-file-system";
 import { fetch as fileFetch } from "expo/fetch";
@@ -62,12 +63,31 @@ export async function saveCapturedVideo(videoId:string, ownerId:string, saved:Sa
   return file.uri;
 }
 
-export async function importVideo(ownerId: string, title: string, routeId?: string | null) {
-  const picker = await DocumentPicker.getDocumentAsync({
-    type: ["video/mp4", "video/quicktime", "public.movie"], copyToCacheDirectory: true,
-  });
-  if (picker.canceled || !picker.assets[0]) return null;
-  const selected = picker.assets[0];
+/** "library" = the Photos app (Pellicule), "files" = the Files app. */
+export async function importVideo(ownerId: string, title: string, routeId?: string | null, source: "library" | "files" = "library") {
+  let selected: { uri: string; name: string; mimeType?: string | null };
+  if (source === "library") {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (!permission.granted && permission.accessPrivileges !== "limited")
+      throw new Error("Autorisez l’accès à vos photos et vidéos : Réglages › Le Repère Permis › Photos.");
+    const picked = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["videos"],
+      allowsEditing: false,
+      // HEVC iPhone videos are exported as H.264 so the website can play them too.
+      preferredAssetRepresentationMode: ImagePicker.UIImagePickerPreferredAssetRepresentationMode.Compatible,
+      videoExportPreset: ImagePicker.VideoExportPreset.H264_1920x1080,
+    });
+    if (picked.canceled || !picked.assets[0]) return null;
+    const a = picked.assets[0];
+    const name = a.fileName || a.uri.split("/").pop() || "video.mov";
+    selected = { uri: a.uri, name: /\.(mp4|mov|m4v)$/i.test(name) ? name : `${name}.mov`, mimeType: a.mimeType };
+  } else {
+    const picker = await DocumentPicker.getDocumentAsync({
+      type: ["video/mp4", "video/quicktime", "public.movie"], copyToCacheDirectory: true,
+    });
+    if (picker.canceled || !picker.assets[0]) return null;
+    selected = picker.assets[0];
+  }
   const mime = selected.mimeType === "video/quicktime" || /\.mov$/i.test(selected.name) ? "video/quicktime" : "video/mp4";
   if (!/\.(mp4|mov|m4v)$/i.test(selected.name)) throw new Error("Choisissez une vidéo MP4 ou MOV.");
   const input = new File(selected.uri);
@@ -109,12 +129,24 @@ export async function uploadPrivateVideo(videoId: string, ownerId: string) {
     method: "POST",body:JSON.stringify({ bytes:file.size,mimeType:entry.mime }),
   });
   // expo/fetch supports Expo File as a streamed Blob; no full-video base64 / JS heap copy.
-  const response = await fileFetch(ticket.uploadUrl, {
-    method: "PUT", body: file, headers: ticket.headers,
-  });
-  if (!response.ok) throw new Error(`Échec de l’envoi vidéo (${response.status}). La copie sur l’iPhone est conservée.`);
-  await request(`/v1/videos/${videoId}/complete`, { method: "POST", body: "{}" });
-  return true;
+  try {
+    let response: Response;
+    try {
+      response = await fileFetch(ticket.uploadUrl, { method: "PUT", body: file, headers: ticket.headers }) as unknown as Response;
+    } catch {
+      throw new Error("Connexion coupée pendant l’envoi. Restez en Wi-Fi et réessayez : la vidéo est conservée sur l’iPhone.");
+    }
+    if (!response.ok)
+      throw new Error(response.status === 403
+        ? "Le stockage vidéo a refusé l’envoi (clés ou autorisation du stockage à vérifier). La vidéo reste sur l’iPhone."
+        : `Échec de l’envoi vidéo (${response.status}). La copie sur l’iPhone est conservée.`);
+    await request(`/v1/videos/${videoId}/complete`, { method: "POST", body: "{}" });
+    return true;
+  } catch (e) {
+    // Free the reservation so the next "Envoyer dans le cloud" starts cleanly.
+    await retryVideo(videoId).catch(() => {});
+    throw e;
+  }
 }
 export async function deletePrivateLocalCopy(videoId: string, ownerId: string) {
   const d = await localDb();

@@ -209,17 +209,19 @@ export function Videos() {
       setBusy(false);
     }
   }
-  async function create() {
+  async function create(source: "library" | "files") {
     if (!app.profile) return;
     setBusy(true);
     try {
-      const id = await importVideo(app.profile.id, title.trim() || "Leçon filmée", routeId || null);
+      const id = await importVideo(app.profile.id, title.trim() || "Leçon filmée", routeId || null, source);
       if (id) {
         setCreating(false);
         setTitle("");
         setRouteId("");
         await reload();
-        if (config?.uploadEnabled) {
+        const settings = await fetchVideoConfig().catch(() => config);
+        if (settings) setConfig(settings);
+        if (settings?.uploadEnabled) {
           const fresh = (await fetchVideos()).videos.find((v) => v.id === id);
           if (fresh) await sendToCloud(fresh);
         } else app.setMessage("Vidéo conservée sur cet iPhone. Le stockage distant n’est pas encore disponible.");
@@ -237,8 +239,10 @@ export function Videos() {
     try {
       if (!(await localFile(item.id, app.profile.id)))
         throw new Error("La copie locale se trouve sur l’appareil qui a importé cette vidéo. Utilisez cet appareil ou importez un nouveau fichier.");
-      if (!config?.uploadEnabled) throw new Error(config?.message || "Partage cloud indisponible.");
-      if (item.state === "uploading") await retryVideo(item.id);
+      const settings = await fetchVideoConfig();
+      setConfig(settings);
+      if (!settings.uploadEnabled) throw new Error(`${settings.message} La vidéo reste sur cet iPhone.`);
+      if (item.state === "uploading") await retryVideo(item.id).catch(() => {});
       await uploadPrivateVideo(item.id, app.profile.id);
       await reload();
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -439,7 +443,8 @@ export function Videos() {
         <Dropdown label="Parcours associé · facultatif" value={routeId} options={routeOptions} onChange={setRouteId} />
         <Text style={s.muted}>Choisissez une vidéo MP4 ou MOV. Elle reste privée.</Text>
         <Text style={s.caption}>L’envoi en ligne est limité à 500 Mio par fichier. La copie reste sur l’iPhone.</Text>
-        <Button label="Choisir une vidéo" icon="folder-open-outline" onPress={() => void create()} busy={busy} />
+        <Button label="Choisir dans la Pellicule" icon="images-outline" onPress={() => void create("library")} busy={busy} />
+        <Button label="Choisir dans Fichiers" secondary icon="folder-open-outline" onPress={() => void create("files")} disabled={busy} />
       </Sheet>
       <Sheet visible={!!selected} title={selected?.title || "Vidéo"} onClose={() => { setSelected(null); setViewUrl(""); }}>
         {selected && (
