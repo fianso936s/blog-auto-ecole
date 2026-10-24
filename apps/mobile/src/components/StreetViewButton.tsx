@@ -20,7 +20,7 @@ import product from "../../../../packages/product/product.json";
 export function exploreUrl(p: { lat: number; lng: number; heading?: number }) {
   return `https://www.google.com/maps?layer=c&cbll=${p.lat},${p.lng}&cbp=11,${Math.round(p.heading || 0)},0,0,0&output=svembed`;
 }
-function exploreHtml(p: { lat: number; lng: number; heading?: number }) {
+export function exploreHtml(p: { lat: number; lng: number; heading?: number }) {
   return `<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"><style>html,body{margin:0;height:100%;background:#1C1719}iframe{border:0;width:100%;height:100%;display:block}</style></head><body><iframe title="Street View libre" allowfullscreen src="${exploreUrl(p)}"></iframe></body></html>`;
 }
 

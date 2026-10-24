@@ -8,7 +8,7 @@ import { useApp } from "../state";
 import { request } from "../services/auth";
 import { pendingAction } from "../services/local";
 import { colors, styles as s } from "../theme";
-import { Button, Icon } from "./UI";
+import { Badge, Button, Icon } from "./UI";
 import { PhotoGallery } from "./PhotoGallery";
 
 type Correction = {
@@ -133,19 +133,13 @@ export function SpotLesson({ initial }: { initial: MapSpot }) {
     );
   return (
     <View style={{ gap: 18 }}>
-      <StreetViewButton
-        key={point.id}
-        title={point.name}
-        position={point}
-        kind="point"
-      />
-
-      <Text style={s.eyebrow}>
-        {point.category} ·{" "}
-        {point.status === "published"
-          ? "Partagé avec tous les élèves"
-          : "Partage de votre enseignant"}
-      </Text>
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+        <Badge label={point.category} />
+        {point.status === "published" && <Badge label="Visible par les élèves" tone="green" />}
+      </View>
+      {(!point.quiz || !!point.note) && (
+        <Text style={s.body}>{point.note || "Consultez les photos et les indications de votre enseignant."}</Text>
+      )}
       {(point.photos || []).map((ph, index) => (
         <Pressable
           key={ph.id}
@@ -180,14 +174,8 @@ export function SpotLesson({ initial }: { initial: MapSpot }) {
           Votre enseignant peut ajouter des photos à ce repère.
         </Text>
       )}
-      {!point.quiz && !!point.note && (
-        <View style={s.card}>
-          <Text style={s.heading}>À observer ici</Text>
-          <Text style={s.body}>{point.note}</Text>
-        </View>
-      )}
       {point.quiz && (
-        <View style={s.card}>
+        <View style={[s.card, { backgroundColor: colors.blueSoft, borderColor: colors.blueSoft }]}>
           <Text style={s.eyebrow}>
             {student ? "À VOUS DE JOUER" : "QUESTION PROPOSÉE AUX ÉLÈVES"}
           </Text>
@@ -263,7 +251,7 @@ export function SpotLesson({ initial }: { initial: MapSpot }) {
                   { color: result.correct ? colors.green : colors.red },
                 ]}
               >
-                {result.correct ? "Bonne réponse" : "À revoir ensemble"}
+                {result.correct ? "Bonne réponse !" : "Reprenons ce repère."}
               </Text>
               <Text style={s.body}>{result.explanation}</Text>
               <Text style={s.caption}>
@@ -285,6 +273,7 @@ export function SpotLesson({ initial }: { initial: MapSpot }) {
           )}
         </View>
       )}
+      <StreetViewButton key={point.id} label="Ouvrir Street View" title={point.name} position={point} kind="point" />
       <ContentSafety kind="spot" id={point.id} authorId={point.authorId} />
       <PhotoGallery
         title={point.name}

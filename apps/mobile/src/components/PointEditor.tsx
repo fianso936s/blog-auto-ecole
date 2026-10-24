@@ -22,8 +22,8 @@ import {
   type MapSpot,
   type Fix,
 } from "@repere/core";
-import { Button, Chip, Field, Sheet, Icon } from "./UI";
-import { colors, styles as s } from "../theme";
+import { Button, Dropdown, Field, Sheet, Icon } from "./UI";
+import { colors, fonts, styles as s } from "../theme";
 import { useApp } from "../state";
 import { request } from "../services/auth";
 import { SpotLesson } from "./SpotLesson";
@@ -345,7 +345,7 @@ export function PointEditor({
   }
   if (target && loadingPhotos)
     return (
-      <Sheet visible onClose={onClose} title="Votre repère">
+      <Sheet visible onClose={onClose} title="Modifier le repère">
         {target && <StreetViewButton position={target} title={target.point?.name || "Repère"} kind="point" />}
         <Text accessibilityRole="status" style={s.muted}>
           Chargement du repère et des photographies…
@@ -356,13 +356,9 @@ export function PointEditor({
     <Sheet
       visible={!!target}
       onClose={onClose}
-      title={target?.point ? "Votre repère" : "Un nouveau repère"}
+      title={target?.point ? "Modifier le repère" : "Un nouveau repère"}
     >
-      {target && <StreetViewButton key={target.point?.id || "new-point"} label="Voir cet endroit dans Street View" position={target} title={target.point?.name || "Repère"} kind="point" />}
-      <Text style={s.muted}>
-        Position choisie sur la carte · {target?.lat.toFixed(5)},{" "}
-        {target?.lng.toFixed(5)}
-      </Text>
+      {/* Same order as the website's SpotEditor. */}
       <Field
         label="Nom du repère"
         value={name}
@@ -370,121 +366,18 @@ export function PointEditor({
         placeholder="Ex. Priorité à droite peu visible"
         maxLength={120}
       />
-      <Text style={s.label}>Catégorie</Text>
-      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 8 }}>
-        {categories.map((c) => (
-          <Chip
-            key={c}
-            label={c}
-            active={category === c}
-            onPress={() => setCategory(c)}
-          />
-        ))}
-      </View>
-      <View style={s.card}>
-        <View style={s.between}>
-          <View style={{ flex: 1, gap: 5 }}>
-            <Text style={s.body}>Tous les élèves</Text>
-            <Text style={s.caption}>
-              {shared
-                ? "Visible sur la carte de tous les élèves connectés, avec ses photos et son quiz."
-                : "Repère privé. Activez le partage pour le rendre visible aux élèves."}
-            </Text>
-          </View>
-          <Switch
-            accessibilityLabel="Partager ce repère avec tous les élèves"
-            value={shared}
-            onValueChange={setShared}
-            trackColor={{ true: colors.wine, false: colors.line }}
-          />
-        </View>
-      </View>
-      <View style={s.card}>
-        <View style={s.between}>
-          <View style={{ flex: 1, gap: 5 }}>
-            <Text style={s.heading}>Une question pour apprendre</Text>
-            <Text style={s.caption}>
-              Facultatif · La correction apparaît après la réponse.
-            </Text>
-          </View>
-          <Switch
-            accessibilityLabel="Activer le quiz du repère"
-            value={validated}
-            onValueChange={setValidated}
-            trackColor={{ true: colors.wine, false: colors.line }}
-          />
-        </View>
-        {validated && (
-          <>
-            <Field
-              label="Votre question"
-              value={question}
-              onChangeText={setQuestion}
-              multiline
-              maxLength={1000}
-              placeholder="Que faut-il observer avant de s’engager ?"
-            />
-            <Text style={s.caption}>Cochez la bonne réponse.</Text>
-            {options.map((option, i) => (
-              <View key={i} style={s.row}>
-                <Pressable
-                  accessibilityRole="radio"
-                  accessibilityLabel={`Bonne réponse : choix ${i + 1}`}
-                  accessibilityState={{ checked: answer === i }}
-                  onPress={() => setAnswer(i)}
-                  style={{
-                    minWidth: 44,
-                    minHeight: 44,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <Icon
-                    name={answer === i ? "radio-button-on" : "radio-button-off"}
-                  />
-                </Pressable>
-                <View style={{ flex: 1 }}>
-                  <Field
-                    label={`Choix ${i + 1}`}
-                    value={option}
-                    onChangeText={(text) =>
-                      setOptions((a) => a.map((o, n) => (n === i ? text : o)))
-                    }
-                    maxLength={300}
-                  />
-                </View>
-                {options.length > 2 && (
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel={`Retirer le choix ${i + 1}`}
-                    onPress={() => {
-                      setOptions((a) => a.filter((_, n) => n !== i));
-                      setAnswer(0);
-                    }}
-                    style={{
-                      minWidth: 44,
-                      minHeight: 44,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Icon name="remove-circle-outline" />
-                  </Pressable>
-                )}
-              </View>
-            ))}
-            {options.length < 6 && (
-              <Button
-                label="Ajouter un choix"
-                secondary
-                onPress={() => setOptions((a) => [...a, ""])}
-              />
-            )}
-          </>
-        )}
-      </View>
+      <Dropdown
+        label="Catégorie"
+        value={category}
+        options={categories.map((c) => ({ id: c, label: c }))}
+        onChange={setCategory}
+      />
+      <Text style={s.muted}>
+        Position · {target?.lat.toFixed(5)}, {target?.lng.toFixed(5)}
+      </Text>
+      {target && <StreetViewButton key={target.point?.id || "new-point"} label="Voir cet endroit dans Street View" position={target} title={target.point?.name || "Repère"} kind="point" />}
       <Field
-        label={validated ? "Correction et explication" : "À observer ici"}
+        label={validated ? "Explication pédagogique · sert aussi de correction" : "Explication pédagogique"}
         value={note}
         onChangeText={setNote}
         multiline
@@ -503,61 +396,129 @@ export function PointEditor({
           onPress={() => setPhotoRetry((n) => n + 1)}
         />
       )}
-      <Text style={s.label}>Photographies · {photos.length}/6</Text>
-      <View style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
-        {photos.map((ph, index) => (
-          <Pressable
-            key={ph.id}
-            accessibilityRole="button"
-            accessibilityLabel={`Agrandir la photo ${index + 1}`}
-            onPress={() => setPhotoIndex(index)}
-            onLongPress={() =>
-              Alert.alert("Retirer la photo ?", "", [
-                { text: "Annuler" },
-                {
-                  text: "Retirer",
-                  style: "destructive",
-                  onPress: () =>
-                    setPhotos((a) => a.filter((x) => x.id !== ph.id)),
-                },
-              ])
-            }
-          >
-            <Image
-              source={{ uri: ph.dataUrl }}
-              style={{ width: 85, height: 85, borderRadius: 15 }}
-            />
-          </Pressable>
-        ))}
-      </View>
+      {photos.length > 0 && (
+        <View style={{ flexDirection: "row", gap: 10, flexWrap: "wrap" }}>
+          {photos.map((ph, index) => (
+            <View key={ph.id}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Agrandir la photo ${index + 1}`}
+                onPress={() => setPhotoIndex(index)}
+              >
+                <Image source={{ uri: ph.dataUrl }} style={{ width: 92, height: 92, borderRadius: 14 }} />
+              </Pressable>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={`Retirer la photo ${index + 1}`}
+                hitSlop={8}
+                onPress={() => setPhotos((a) => a.filter((x) => x.id !== ph.id))}
+                style={{ position: "absolute", top: 4, right: 4, width: 28, height: 28, borderRadius: 14, backgroundColor: "rgba(28,23,25,0.7)", alignItems: "center", justifyContent: "center" }}
+              >
+                <Icon name="close" size={16} color={colors.paper} />
+              </Pressable>
+            </View>
+          ))}
+        </View>
+      )}
       {photos.length < 6 && (
         <Button
-          label="Ajouter une photographie"
+          label={`Ajouter des photos · ${photos.length}/6`}
           icon="camera-outline"
           secondary
           onPress={() =>
             Alert.alert("Ajouter une photo", "", [
-              {
-                text: "Appareil photo",
-                onPress: () => void photo("camera"),
-              },
+              { text: "Appareil photo", onPress: () => void photo("camera") },
               { text: "Photothèque", onPress: () => void photo("library") },
               { text: "Annuler", style: "cancel" },
             ])
           }
         />
       )}
-
+      <View style={[s.between, { minHeight: 48 }]}>
+        <View style={{ flex: 1, gap: 3 }}>
+          <Text style={[s.body, { fontFamily: fonts.bodySemi }]}>Publier · visible par les élèves</Text>
+          <Text style={s.caption}>
+            {shared
+              ? "Visible sur la carte des élèves connectés, avec ses photos et son quiz."
+              : "Repère privé, visible par vous seul."}
+          </Text>
+        </View>
+        <Switch
+          accessibilityLabel="Publier · visible par les élèves"
+          value={shared}
+          onValueChange={setShared}
+          trackColor={{ true: colors.wine, false: colors.line }}
+        />
+      </View>
+      <View style={[s.between, { minHeight: 48 }]}>
+        <Text style={[s.body, { flex: 1, fontFamily: fonts.bodySemi }]}>Ajouter une question quiz</Text>
+        <Switch
+          accessibilityLabel="Ajouter une question quiz"
+          value={validated}
+          onValueChange={setValidated}
+          trackColor={{ true: colors.wine, false: colors.line }}
+        />
+      </View>
+      {validated && (
+        <View style={[s.card, { backgroundColor: colors.blueSoft, borderColor: colors.blueSoft }]}>
+          <Field
+            label="Question"
+            value={question}
+            onChangeText={setQuestion}
+            multiline
+            maxLength={1000}
+            placeholder="Que faut-il observer avant de s’engager ?"
+          />
+          <Text style={s.caption}>Bonne réponse : touchez le rond devant elle.</Text>
+          {options.map((option, i) => (
+            <View key={i} style={s.row}>
+              <Pressable
+                accessibilityRole="radio"
+                accessibilityLabel={`Bonne réponse : réponse ${i + 1}`}
+                accessibilityState={{ checked: answer === i }}
+                onPress={() => setAnswer(i)}
+                style={{ minWidth: 44, minHeight: 44, justifyContent: "center", alignItems: "center" }}
+              >
+                <Icon name={answer === i ? "radio-button-on" : "radio-button-off"} />
+              </Pressable>
+              <View style={{ flex: 1 }}>
+                <Field
+                  label={`Réponse ${i + 1}`}
+                  value={option}
+                  onChangeText={(text) => setOptions((a) => a.map((o, n) => (n === i ? text : o)))}
+                  maxLength={300}
+                />
+              </View>
+              {options.length > 2 && (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel={`Retirer la réponse ${i + 1}`}
+                  onPress={() => {
+                    setOptions((a) => a.filter((_, n) => n !== i));
+                    setAnswer(0);
+                  }}
+                  style={{ minWidth: 44, minHeight: 44, justifyContent: "center", alignItems: "center" }}
+                >
+                  <Icon name="remove-circle-outline" />
+                </Pressable>
+              )}
+            </View>
+          ))}
+          {options.length < 6 && (
+            <Button label="Ajouter une réponse" secondary compact icon="add" onPress={() => setOptions((a) => [...a, ""])} />
+          )}
+        </View>
+      )}
       <PhotoGallery
-        title={name || "Votre repère"}
+        title={name || "Repère"}
         photos={photos}
         index={photoIndex}
         onIndex={setPhotoIndex}
         onClose={() => setPhotoIndex(-1)}
       />
-      {!!error && <Text style={s.error}>{error}</Text>}
+      {!!error && <Text accessibilityRole="alert" style={s.error}>{error}</Text>}
       <Button
-        label="Enregistrer le repère"
+        label={busy ? "Enregistrement…" : "Enregistrer le repère"}
         icon="checkmark"
         onPress={() => void save()}
         busy={busy}
@@ -565,14 +526,15 @@ export function PointEditor({
       />
       {target?.point && (
         <Button
-          label="Supprimer ce repère"
+          label="Archiver ce repère"
           danger
           secondary
+          icon="archive-outline"
           onPress={() =>
-            Alert.alert("Supprimer ce repère ?", "", [
-              { text: "Annuler" },
+            Alert.alert("Archiver ce repère ?", "Ce repère ne sera plus visible dans les parcours ni sur la carte des élèves.", [
+              { text: "Annuler", style: "cancel" },
               {
-                text: "Supprimer",
+                text: "Archiver",
                 style: "destructive",
                 onPress: async () => {
                   if (!app.profile || !target?.point || busy) return;

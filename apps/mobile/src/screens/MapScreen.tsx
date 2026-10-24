@@ -19,7 +19,6 @@ import { Library, RouteEditorSheet, useRouteTools } from "./Library";
 import { RouteMap } from "../components/RouteMap";
 import { Badge, Button, Dropdown, Icon, IconButton, LinkButton } from "../components/UI";
 import { PointEditor, PointReader } from "../components/PointEditor";
-import { StreetViewButton } from "../components/StreetViewButton";
 import { useApp } from "../state";
 import { colors, fonts, radius, shadow, styles as s, tones, filterTone } from "../theme";
 import {
@@ -91,7 +90,7 @@ export function MapScreen() {
     [target, setTarget] = useState<React.ComponentProps<typeof PointEditor>["target"]>(null),
     [read, setRead] = useState<Point | MapSpot | null>(null),
     [saving, setSaving] = useState<{ id: string; summary: string; draft: Parameters<typeof RouteEditorSheet>[0]["initial"] } | null>(null),
-    [replay, setReplay] = useState(false),
+    [replay, setReplay] = useState<false | "map" | "street">(false),
     [followKey, setFollowKey] = useState(0),
     [placing, setPlacing] = useState(false),
     [category, setCategory] = useState("Tous");
@@ -340,7 +339,7 @@ export function MapScreen() {
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel="Lire le parcours"
-                  onPress={() => setReplay(true)}
+                  onPress={() => setReplay("map")}
                   style={({ pressed }) => [{ width: 48, height: 48, borderRadius: 24, backgroundColor: colors.wine, alignItems: "center", justifyContent: "center", transform: [{ scale: pressed ? 0.94 : 1 }] }, shadow.wine]}
                 >
                   <Icon name="play" size={20} color={colors.paper} />
@@ -354,7 +353,7 @@ export function MapScreen() {
               </View>
               <View style={{ flexDirection: "row", flexWrap: "wrap", columnGap: 12 }}>
                 {!!replayAnchor(chosen.fixes, 0) && (
-                  <StreetViewButton link title={chosen.name} kind="route" position={replayAnchor(chosen.fixes, 0)!} />
+                  <LinkButton label="Street View" icon="arrow-forward" onPress={() => setReplay("street")} />
                 )}
                 <LinkButton
                   label={chosen.favorite ? "Favori" : "Ajouter aux favoris"}
@@ -490,7 +489,7 @@ export function MapScreen() {
         }}
       />
       {tools.sheets}
-      {chosen && <Replay route={chosen} visible={replay} onClose={() => setReplay(false)} />}
+      {chosen && <Replay route={chosen} visible={!!replay} initialMode={replay || "map"} onClose={() => setReplay(false)} />}
     </View>
   );
 }

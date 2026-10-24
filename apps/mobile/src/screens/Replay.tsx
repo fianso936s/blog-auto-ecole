@@ -3,6 +3,7 @@ import { ContentSafety } from "../components/ContentSafety";
 import { MapModeBar } from "../components/MapModeBar";
 import { ModalFrame } from "../components/ModalFrame";
 import { StreetViewButton } from "../components/StreetViewButton";
+import { StreetPane } from "../components/StreetPane";
 import { PointReader } from "../components/PointEditor";
 import { PhotoGallery } from "../components/PhotoGallery";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -17,7 +18,7 @@ import {
   type Point,
 } from "@repere/core";
 import { useApp } from "../state";
-import { Button, Chip, IconButton, Sheet } from "../components/UI";
+import { Button, Chip, IconButton, Segmented, Sheet } from "../components/UI";
 import { RouteMap } from "../components/RouteMap";
 import { colors, styles as s } from "../theme";
 import { request } from "../services/auth";
@@ -26,12 +27,19 @@ export function Replay({
   route,
   visible,
   onClose,
+  initialMode = "map",
 }: {
   route: Route;
   visible: boolean;
   onClose: () => void;
+  /** Website player modes: "Carte" or "Street View" following the replay. */
+  initialMode?: "map" | "street";
 }) {
   const app = useApp();
+  const [mode, setMode] = useState<"map" | "street">(initialMode);
+  useEffect(() => {
+    if (visible) setMode(initialMode);
+  }, [visible, initialMode]);
   const indices = useMemo(
     () => replayIndices(route.fixes),
     [route.id, route.version],
@@ -238,6 +246,20 @@ export function Replay({
             />
           )}
         </MapModeBar>
+        <View style={{ paddingHorizontal: 14, paddingBottom: 8 }}>
+          <Segmented
+            label="Affichage du parcours"
+            value={mode}
+            onChange={(next) => {
+              setPlaying(false);
+              setMode(next);
+            }}
+            options={[
+              { id: "map", label: "Carte" },
+              { id: "street", label: "Street View" },
+            ]}
+          />
+        </View>
         <View style={{ flex: 1 }}>
           <RouteMap
             threeD={threeD}
@@ -252,11 +274,16 @@ export function Replay({
             styleUrl={app.config?.mapStyleUrl}
             follow
           />
-          <View style={{position:"absolute",top:12,left:12,flexDirection:"row",gap:8}}>
+          {mode === "map" && <View style={{position:"absolute",top:12,left:12,flexDirection:"row",gap:8}}>
             <Chip label="Vue GPS" active={pov&&!overview} onPress={()=>{setOverview(false);setThreeD(true);setPov(true);setRecenterKey(k=>k+1);}} />
             <Chip label="Aperçu" active={overview} onPress={()=>{setOverview(true);setPlaying(false);}} />
             {pov&&<IconButton name="locate-outline" label="Recentrer la vue GPS" onPress={()=>setRecenterKey(k=>k+1)}/>}
-          </View>
+          </View>}
+          {mode === "street" && visible && (
+            <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
+              <StreetPane fixes={route.fixes} index={index} active onPause={() => setPlaying(false)} />
+            </View>
+          )}
         </View>
         <View
           style={{
@@ -269,7 +296,7 @@ export function Replay({
         >
           <View style={s.between}>
             <Text numberOfLines={1} style={[s.caption, { flex: 1 }]}>
-              {fullscreen ? route.name : "Tracé enregistré · aucune déviation"}
+              {playing ? "Lecture du parcours" : "Parcours en pause"}
             </Text>
             <Text style={s.caption}>{Math.round(progress * 100)} %</Text>
           </View>
@@ -304,7 +331,10 @@ export function Replay({
               {message}
             </Text>
           )}
-          <Button compact secondary label="Retour au départ" onPress={()=>{setPlaying(false);seen.current.clear();setQuiz(null);setIndex(0);void pendingAction(app.profile!.id,`/v1/routes/${route.id}/progress`,{fixIndex:0}).then(()=>app.sync());}}/>
+          <View style={[s.row, { gap: 8 }]}>
+            <View style={{ flex: 1 }}><Button compact secondary label="Retour au départ" onPress={()=>{setPlaying(false);seen.current.clear();setQuiz(null);setIndex(0);void pendingAction(app.profile!.id,`/v1/routes/${route.id}/progress`,{fixIndex:0}).then(()=>app.sync());}}/></View>
+            <View style={{ flex: 1 }}><Button compact secondary label="Repère suivant" disabled={!availablePoints.some((p) => p.fixIndex > index)} onPress={()=>{setPlaying(false);const nextPoint=availablePoints.filter((p)=>p.fixIndex>index).sort((a,b)=>a.fixIndex-b.fixIndex)[0];if(nextPoint)move(nextPoint.fixIndex);}}/></View>
+          </View>
           <View style={[s.row, { gap: 8 }]}>
             <IconButton
               name="play-back"
@@ -350,14 +380,6 @@ export function Replay({
               }
             />
           </View>
-          {visible && fix && (
-            <StreetViewButton
-              title={route.name}
-              position={replayAnchor(route.fixes, index) || fix}
-              kind="route"
-              onBeforeOpen={() => setPlaying(false)}
-            />
-          )}
         </View>
         <Sheet visible={pointsOpen} title="Repères du parcours" onClose={() => setPointsOpen(false)}>
           {!availablePoints.length && <Text style={s.muted}>Aucun repère sur ce parcours.</Text>}
