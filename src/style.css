@@ -1866,7 +1866,7 @@ input[type="radio"] {
   cursor: pointer;
   text-align: left;
 }
-.player-point span {
+.player-point .guide-badge {
   font-size: 12px;
   font-weight: 700;
   color: var(--paper);
@@ -1875,8 +1875,86 @@ input[type="radio"] {
   padding: 4px 10px;
   flex-shrink: 0;
 }
-.player-point strong {
+.player-point .guide-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+.player-point .guide-text small {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.player-point .guide-text strong {
   font-size: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.player-point .guide-open {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--wine);
+  flex-shrink: 0;
+}
+.player-point[data-state="here"] {
+  outline: 3px solid var(--red);
+  outline-offset: 0;
+}
+.player-point[data-state="here"] .guide-text small {
+  color: var(--red);
+}
+/* On the map page the live card sits in the bottom stack, not over the map. */
+.player-point.live-guide {
+  position: static;
+  transform: none;
+  max-width: none;
+  width: 100%;
+  min-height: 56px;
+}
+.map-status.live-guide-off {
+  position: static;
+  max-width: none;
+}
+/* The repère to watch now: bigger, pulsing, with its name. */
+.map-pin.is-next {
+  width: 44px;
+  height: 44px;
+  font-size: 24px;
+  border-width: 4px;
+  box-shadow: 0 0 0 6px rgba(200, 40, 50, 0.22), 0 6px 16px rgba(28, 23, 25, 0.35);
+  animation: pin-next 1.6s var(--ease-out) infinite;
+  position: relative;
+}
+.map-pin.is-next::after {
+  content: attr(data-name);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background: var(--paper);
+  color: var(--ink, #1c1719);
+  font-family: var(--font-body, inherit);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  box-shadow: var(--shadow-md);
+  pointer-events: none;
+}
+@keyframes pin-next {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(200, 40, 50, 0.28), 0 6px 16px rgba(28, 23, 25, 0.35); }
+  50% { box-shadow: 0 0 0 12px rgba(200, 40, 50, 0.08), 0 6px 16px rgba(28, 23, 25, 0.35); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .map-pin.is-next { animation: none; }
 }
 .player-notice {
   position: absolute;
@@ -1938,7 +2016,7 @@ input[type="radio"] {
     gap: 8px;
     padding: 10px;
   }
-  .player-point span:first-child {
+  .player-point .guide-badge {
     display: none;
   }
 }

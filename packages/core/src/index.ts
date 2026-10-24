@@ -465,3 +465,4 @@ export {
   type LearningCounts,
   type LearningStats,
 } from "./learning";
+export {cumulativeDistance,upcomingPoint,positionOnRoute,guideLabel,GUIDE_HERE_METERS,GUIDE_SOON_METERS,type RouteGuide,type GuideState} from "./route-guide";

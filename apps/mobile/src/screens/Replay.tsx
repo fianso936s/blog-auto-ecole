@@ -12,6 +12,9 @@ import { useReducedMotion } from "react-native-reanimated";
 import * as Crypto from "expo-crypto";
 import {
   crossedPoints,
+  cumulativeDistance,
+  upcomingPoint,
+  guideLabel,
   replayAnchor,
   replayIndices,
   type Route,
@@ -85,6 +88,9 @@ export function Replay({
   const reducedMotion = useReducedMotion();
   const fix = route.fixes[index];
   const [pov,setPov]=useState(true),[overview,setOverview]=useState(false),[recenterKey,setRecenterKey]=useState(0);
+  // Live repère: the one reached or the next one ahead, with its distance along the route.
+  const along=useMemo(()=>cumulativeDistance(route.fixes),[route.id,route.version]);
+  const guide=useMemo(()=>upcomingPoint(availablePoints,index,along),[availablePoints,index,along]);
   const bearing=useMemo(()=>pov?replayBearing(route.fixes,index):null,[pov,route.fixes,index]);
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state) => {
@@ -270,19 +276,54 @@ export function Replay({
             course={bearing}
             navigationMode={pov && threeD && !overview}
             previewMode={overview}
+            zoomControls={mode === "map"}
+            highlightId={guide?.point.id}
             recenterKey={recenterKey}
             styleUrl={app.config?.mapStyleUrl}
             follow
           />
           {mode === "map" && <View style={{position:"absolute",top:12,left:12,flexDirection:"row",gap:8}}>
             <Chip label="Vue GPS" active={pov&&!overview} onPress={()=>{setOverview(false);setThreeD(true);setPov(true);setRecenterKey(k=>k+1);}} />
-            <Chip label="Aperçu" active={overview} onPress={()=>{setOverview(true);setPlaying(false);}} />
+            <Chip label={overview?"← Quitter l’aperçu":"Aperçu"} active={overview} onPress={()=>{if(overview){setOverview(false);setRecenterKey(k=>k+1);}else{setOverview(true);setPlaying(false);}}} />
             {pov&&<IconButton name="locate-outline" label="Recentrer la vue GPS" onPress={()=>setRecenterKey(k=>k+1)}/>}
           </View>}
           {mode === "street" && visible && (
             <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
               <StreetPane fixes={route.fixes} index={index} active onPause={() => setPlaying(false)} />
             </View>
+          )}
+          {guide && !quiz && (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`${guide.state === "here" ? "Repère" : "Prochain repère"}, ${guideLabel(guide)} : ${guide.point.name}. Lire le repère`}
+              accessibilityLiveRegion="polite"
+              onPress={() => inspect(guide.point)}
+              style={({ pressed }) => ({
+                position: "absolute",
+                left: 12,
+                right: 72,
+                bottom: 12,
+                minHeight: 56,
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                paddingVertical: 10,
+                paddingHorizontal: 14,
+                borderRadius: 18,
+                backgroundColor: colors.paper,
+                borderWidth: guide.state === "here" ? 3 : 1,
+                borderColor: guide.state === "here" ? colors.red : colors.line,
+                opacity: pressed ? 0.8 : 1,
+              })}
+            >
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={[s.caption, { fontWeight: "700", color: guide.state === "here" ? colors.red : colors.muted }]}>
+                  {guide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(guide)}
+                </Text>
+                <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "700", color: colors.ink }}>{guide.point.name}</Text>
+              </View>
+              <Text style={{ fontSize: 14, fontWeight: "700", color: colors.wine }}>Lire →</Text>
+            </Pressable>
           )}
         </View>
         <View

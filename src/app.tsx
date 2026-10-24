@@ -10,6 +10,7 @@ import React, {
   useState,
   useEffect,
   useRef,
+  useMemo,
   useCallback,
   createContext,
   useContext,
@@ -28,6 +29,10 @@ import {
   heading,
   importGpx,
   exportGpx,
+  cumulativeDistance,
+  upcomingPoint,
+  positionOnRoute,
+  guideLabel,
   type Profile,
   type Route,
   type RouteInput,
@@ -907,6 +912,7 @@ function MapCanvas({
   pitch = 0,
   navigationMode = false,
   previewMode = false,
+  highlightId,
   onSpot,
   onPosition,
   onLongPress,
@@ -921,6 +927,7 @@ function MapCanvas({
   pitch?: number;
   navigationMode?: boolean;
   previewMode?: boolean;
+  highlightId?: string;
   onSpot: (p: any) => void;
   onPosition: (p: { lat: number; lng: number }) => void;
   onLongPress?: (p: { lat: number; lng: number }) => void;
@@ -933,7 +940,8 @@ function MapCanvas({
     [ready, setReady] = useState(false),
     [failed, setFailed] = useState(false),
     callbacks = useRef({ onSpot, onPosition, onReady, onLongPress }),
-    resumeAt=useRef(0), lastBearing=useRef(0);
+    resumeAt=useRef(0), lastBearing=useRef(0), userZoom=useRef<number|null>(null),
+    pins=useRef(new Map<string, HTMLElement>());
   callbacks.current = { onSpot, onPosition, onReady, onLongPress };
   useEffect(() => {
     let map: maplibregl.Map;
@@ -991,6 +999,8 @@ function MapCanvas({
       });
       map.on("dragstart",()=>{resumeAt.current=Date.now()+MAP_RECENTER_DELAY;});
       map.on("zoomstart",(e)=>{if(e.originalEvent)resumeAt.current=Date.now()+MAP_RECENTER_DELAY;});
+      // The driver's own zoom (pinch, +/−) is kept when the map recentres.
+      map.on("zoomend",(e)=>{if(e.originalEvent)userZoom.current=map.getZoom();});
       // Long press (touch) or right click places a marker, like the iPhone app.
       let pressTimer = 0, pressStart: { x: number; y: number } | null = null, pressedAt = 0;
       const cancelPress = () => { window.clearTimeout(pressTimer); pressStart = null; };
@@ -1038,9 +1048,10 @@ function MapCanvas({
   }, [pitch, ready, navigationMode, previewMode]);
   useEffect(()=>{
     if(!ready||(!recording.length&&!location))return;
-    const follow=()=>{if(previewMode)return;const f=recording.at(-1)||location;if(!f||Date.now()<resumeAt.current)return;const prev=recording.at(-2);if(navigationMode&&prev&&(f.lat!==prev.lat||f.lng!==prev.lng)){const rad=Math.PI/180;lastBearing.current=Math.atan2(Math.sin((f.lng-prev.lng)*rad)*Math.cos(f.lat*rad),Math.cos(prev.lat*rad)*Math.sin(f.lat*rad)-Math.sin(prev.lat*rad)*Math.cos(f.lat*rad)*Math.cos((f.lng-prev.lng)*rad))/rad;}mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:navigationMode?18:Math.max(16,mapRef.current!.getZoom()),pitch:navigationMode?(pitch?80:0):pitch,bearing:navigationMode?lastBearing.current:(typeof mapRef.current?.getBearing === "function" ? mapRef.current.getBearing() : 0),duration:800,essential:true});};
+    const follow=()=>{if(previewMode)return;const f=recording.at(-1)||location;if(!f||Date.now()<resumeAt.current)return;const prev=recording.at(-2);if(navigationMode&&prev&&(f.lat!==prev.lat||f.lng!==prev.lng)){const rad=Math.PI/180;lastBearing.current=Math.atan2(Math.sin((f.lng-prev.lng)*rad)*Math.cos(f.lat*rad),Math.cos(prev.lat*rad)*Math.sin(f.lat*rad)-Math.sin(prev.lat*rad)*Math.cos(f.lat*rad)*Math.cos((f.lng-prev.lng)*rad))/rad;}mapRef.current?.easeTo({center:[f.lng,f.lat],zoom:userZoom.current??(navigationMode?18:Math.max(16,mapRef.current!.getZoom())),pitch:navigationMode?(pitch?80:0):pitch,bearing:navigationMode?lastBearing.current:(typeof mapRef.current?.getBearing === "function" ? mapRef.current.getBearing() : 0),duration:800,essential:true});};
     follow();const timer=setInterval(follow,1000);return()=>clearInterval(timer);
   },[ready,recording,location,navigationMode,previewMode,pitch]);
+  useEffect(()=>{userZoom.current=null;},[navigationMode,previewMode]);
   useEffect(() => {
     if(!ready||!previewMode||recording.length<2)return;
     handle.current.focus(recording);
@@ -1069,6 +1080,8 @@ function MapCanvas({
       const b = document.createElement("button");
       b.className = `map-pin ${tone(p.category)}`;
       b.ariaLabel = p.name;
+      b.dataset.name = p.name;
+      pins.current.set(p.id, b);
       b.textContent = p.category === "Priorité" ? "!" : "•";
       b.addEventListener("click", (e) => {
         e.stopPropagation();
@@ -1080,8 +1093,16 @@ function MapCanvas({
           .addTo(m),
       );
     }
-    return () => markers.forEach((x) => x.remove());
+    return () => {markers.forEach((x) => x.remove());pins.current.clear();};
   }, [spots, route, ready]);
+  useEffect(() => {
+    const pin = highlightId ? pins.current.get(highlightId) : undefined;
+    if (!pin) return;
+    pin.classList.add("is-next");
+    const marker = pin.closest(".maplibregl-marker") as HTMLElement | null;
+    if (marker) marker.style.zIndex = "5";
+    return () => {pin.classList.remove("is-next");if(marker)marker.style.zIndex="";};
+  }, [highlightId, spots, route, ready]);
   useEffect(() => {
     if (!ready || !route) return;
     const f = route.fixes[index];
@@ -1412,6 +1433,10 @@ function MapPage() {
       notify((e as Error).message);
     }
   }
+  // Driving the open route with GPS: the repère reached or the next one, live.
+  const routeAlong = useMemo(() => route ? cumulativeDistance(route.fixes) : [], [route?.id, route?.version]);
+  const liveIndex = route && gpsFollow && gpsPosition ? positionOnRoute(route.fixes, gpsPosition) : null;
+  const liveGuide = route && liveIndex !== null ? upcomingPoint(route.points, liveIndex, routeAlong) : null;
   const visibleRoutes = routes.filter((r) =>
     matchesRoute(r, {
       search,
@@ -1434,6 +1459,7 @@ function MapPage() {
         pitch={pitch}
         navigationMode={rec!=="idle"&&cameraMode==="pov"}
         previewMode={rec!=="idle"&&cameraMode==="preview"}
+        highlightId={liveGuide?.point.id}
         onSpot={chooseSpot}
         onPosition={pos=>{setMapPos(pos);if(placing){setEditor(blankSpot(pos));setPlacing(false);}}}
         onLongPress={writer ? pos=>{setMapPos(pos);setPlacing(false);setEditor(blankSpot(pos));} : undefined}
@@ -1484,6 +1510,16 @@ function MapPage() {
       )}
       {placing && <div className="map-placement" role="status"><strong>Touchez la carte à l’endroit du repère</strong><div className="row"><button className="btn secondary" onClick={()=>{const c=handle.current.map?.getCenter();setEditor(blankSpot(c?{lat:c.lat,lng:c.lng}:mapPos));setPlacing(false);}}>Utiliser le centre</button><button className="text-btn" onClick={()=>setPlacing(false)}>Annuler</button></div></div>}
       <div className="map-bottom" hidden={placing}>
+        {liveGuide && (
+          <button className="player-point live-guide" data-state={liveGuide.state} aria-live="polite" onClick={() => void chooseSpot(liveGuide.point)}>
+            <span className="guide-badge">{liveGuide.point.category}</span>
+            <span className="guide-text"><small>{liveGuide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(liveGuide)}</small><strong>{liveGuide.point.name}</strong></span>
+            <span className="guide-open">Lire →</span>
+          </button>
+        )}
+        {route && gpsFollow && gpsPosition && liveIndex === null && (
+          <div className="map-status live-guide-off" role="status">Vous êtes hors du parcours : rapprochez-vous du tracé pour voir les repères en direct.</div>
+        )}
         {route && (
           <div className="replay-panel">
             <div className="spread">

@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, useCallback } from "react";
 import { api } from "./shared/api";
-import { geometry, type Route, type Point } from "./shared/core";
+import { geometry, cumulativeDistance, upcomingPoint, guideLabel, type Route, type Point } from "./shared/core";
 import { replayAnchor } from "./shared/street-replay";
 
 export const STREET_ORIGIN = "https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech";
@@ -99,7 +99,24 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
   const request = useMemo(() => route
     ? {type:"fix", ...replayAnchor(route.fixes,index), paths, index}
     : {type:"snapshot", kind:"point", lat:target?.lat, lng:target?.lng, heading:0, index:0}, [route, target, index, paths]);
-  const activePoint = route?.points.find(p => p.fixIndex === index);
+  const along = useMemo(() => route ? cumulativeDistance(route.fixes) : [], [route?.id, route?.version]);
+  // Live repère: the one reached or the next one ahead, with its distance along the route.
+  const guide = useMemo(() => route ? upcomingPoint(route.points, index, along) : null, [route, index, along]);
+  const overviewRef = useRef(false); overviewRef.current = overview;
+  const minZoom = 10, maxZoom = 22;
+  function zoomBy(delta: number) {
+    const m = map.current.map;
+    if (overview) { m?.easeTo({zoom: Math.max(minZoom, Math.min(maxZoom, m.getZoom() + delta)), duration: 250}); return; }
+    setZoom(z => Math.max(minZoom, Math.min(maxZoom, z + delta)));
+  }
+  // A pinch or the map's own +/− keeps its zoom while following the route.
+  useEffect(() => {
+    const m = map.current.map;
+    if (!mapReady || typeof m?.on !== "function") return;
+    const keep = (e: any) => { if (e.originalEvent && !overviewRef.current) setZoom(Math.max(minZoom, Math.min(maxZoom, Math.round(m.getZoom() * 2) / 2))); };
+    m.on("zoomend", keep);
+    return () => { m.off("zoomend", keep); };
+  }, [mapReady]);
   // Free exploration: Google's own Street View with its arrows, from the current place on the route.
   const [explore, setExplore] = useState(false);
   const freePosition = useMemo(() => {
@@ -167,13 +184,13 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     </header>
     <div className="player-stage">
       {mode === "map" && route ? <>
-        <MapView spots={noRecording} route={route} recording={noRecording} index={index} pitch={overview?0:pitch} navigationMode={!overview && !!pitch} previewMode={overview} handle={map} onReady={onMapReady} onPosition={()=>{}} onSpot={(p:Point)=>{setPlaying(false);onPoint?.(p);}} />
+        <MapView spots={noRecording} route={route} recording={noRecording} index={index} pitch={overview?0:pitch} navigationMode={!overview && !!pitch} previewMode={overview} highlightId={guide?.point.id} handle={map} onReady={onMapReady} onPosition={()=>{}} onSpot={(p:Point)=>{setPlaying(false);onPoint?.(p);}} />
         <div className="player-dimension" role="group" aria-label="Vue du parcours" style={{display:"flex",gap:6,alignItems:"center"}}>
           <button aria-pressed={!overview&&!!pitch} onClick={()=>{setOverview(false);setPitch(80);}}>3D</button>
           <button aria-pressed={!overview&&!pitch} onClick={()=>{setOverview(false);setPitch(0);}}>2D</button>
-          <button aria-pressed={overview} onClick={()=>{setOverview(true);setPlaying(false);}}>Aperçu</button>
-          <button aria-label="Zoom arrière" onClick={()=>setZoom(z=>Math.max(12,z-1))}>−</button>
-          <button aria-label="Zoom avant" onClick={()=>setZoom(z=>Math.min(22,z+1))}>+</button>
+          <button aria-pressed={overview} onClick={()=>{if(overview)setOverview(false);else{setOverview(true);setPlaying(false);}}}>{overview ? "← Quitter l’aperçu" : "Aperçu"}</button>
+          <button aria-label="Zoom arrière" onClick={()=>zoomBy(-1)}>−</button>
+          <button aria-label="Zoom avant" onClick={()=>zoomBy(1)}>+</button>
         </div>
       </> : null}
       {mode === "street" && explore && freePosition && <div className="player-explore">
@@ -183,7 +200,11 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
       {mode === "street" && freePosition && <button className={`player-explore-toggle ${explore ? "active" : ""}`} onClick={()=>{setPlaying(false);setExplore(v=>!v);}}>{explore ? "← Revenir au parcours" : "Explorer librement"}</button>}
       {streetOpened && <div className="player-street-layer" aria-hidden={mode !== "street"} data-active={mode === "street"} inert={mode !== "street"}><StreetPane request={request} onState={setStreetState} active={mode === "street"} /></div>}
       {mode === "map" && !mapReady && <div className="player-loading" role="status">Préparation de la carte…</div>}
-      {activePoint && <button className="player-point" onClick={()=>{setPlaying(false);onPoint?.(activePoint);}}><span>{activePoint.category}</span><strong>{activePoint.name}</strong><span>Lire le repère →</span></button>}
+      {guide && !explore && <button className="player-point" data-state={guide.state} aria-live="polite" onClick={()=>{setPlaying(false);onPoint?.(guide.point);}}>
+        <span className="guide-badge">{guide.point.category}</span>
+        <span className="guide-text"><small>{guide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(guide)}</small><strong>{guide.point.name}</strong></span>
+        <span className="guide-open">Lire →</span>
+      </button>}
     </div>
     {route && <footer className="player-controls">
       <button className="player-play" aria-label={playing?"Mettre en pause":"Lire le parcours"} onClick={()=>{if(overview){setOverview(false);setPitch(80);}if(index>=route.fixes.length-1) seek(0);setPlaying(p=>!p);}}>{playing?"Ⅱ":"▶"}</button>

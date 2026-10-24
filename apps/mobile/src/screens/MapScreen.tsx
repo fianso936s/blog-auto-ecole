@@ -8,6 +8,10 @@ import {
   formatDistance,
   formatDuration,
   replayAnchor,
+  cumulativeDistance,
+  upcomingPoint,
+  positionOnRoute,
+  guideLabel,
   type MapSpot,
   type NativeLocation,
   type Point,
@@ -134,6 +138,10 @@ export function MapScreen() {
     return discoverPoints(app.spots, points, "", category).filter((p) => !hidden.has(p.id));
   }, [app.spots, app.archivedPointIds, points, category]);
   const position = active?.lastPosition || location;
+  // Driving the open route with GPS: the repère reached or the next one, live.
+  const routeAlong = useMemo(() => (chosen ? cumulativeDistance(chosen.fixes) : []), [chosen?.id, chosen?.version]);
+  const liveIndex = chosen && !active && gpsFollow && location ? positionOnRoute(chosen.fixes, { lat: location.latitude, lng: location.longitude }) : null;
+  const liveGuide = chosen && liveIndex !== null ? upcomingPoint(chosen.points.filter((p) => !app.archivedPointIds.includes(p.id)), liveIndex, routeAlong) : null;
   const state = active?.state;
   const own = !!chosen && tools.canEdit(chosen);
   const routeCount = useMemo(
@@ -256,6 +264,7 @@ export function MapScreen() {
           follow={(!!active && cameraMode === "pov") || (gpsFollow && !!location && locatedRoute === app.selected)}
           navigationMode={!!active && cameraMode === "pov"}
           previewMode={!!active && cameraMode === "preview"}
+          highlightId={liveGuide?.point.id}
           recenterKey={followKey}
           centerHandle={center}
         />
@@ -323,6 +332,31 @@ export function MapScreen() {
       {/* Bottom: route panel, recording panel, creation buttons (website .map-bottom). */}
       {!placing && (
         <View pointerEvents="box-none" style={{ position: "absolute", left: 12, right: 12, bottom: 12, gap: 10 }}>
+          {liveGuide && !recording && (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={`${liveGuide.state === "here" ? "Repère" : "Prochain repère"}, ${guideLabel(liveGuide)} : ${liveGuide.point.name}. Lire le repère`}
+              accessibilityLiveRegion="polite"
+              onPress={() => openPoint(liveGuide.point)}
+              style={({ pressed }) => [
+                { minHeight: 56, flexDirection: "row", alignItems: "center", gap: 10, paddingVertical: 10, paddingHorizontal: 14, borderRadius: radius.lg, backgroundColor: colors.paper, borderWidth: liveGuide.state === "here" ? 3 : 1, borderColor: liveGuide.state === "here" ? colors.red : colors.line, opacity: pressed ? 0.8 : 1 },
+                shadow.md,
+              ]}
+            >
+              <View style={{ flex: 1, minWidth: 0 }}>
+                <Text style={[s.caption, { fontWeight: "700", color: liveGuide.state === "here" ? colors.red : colors.muted }]}>
+                  {liveGuide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(liveGuide)}
+                </Text>
+                <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "700", color: colors.ink }}>{liveGuide.point.name}</Text>
+              </View>
+              <Text style={{ fontSize: 14, fontWeight: "700", color: colors.wine }}>Lire →</Text>
+            </Pressable>
+          )}
+          {chosen && !recording && gpsFollow && location && liveIndex === null && (
+            <View style={[{ padding: 12, borderRadius: radius.md, backgroundColor: colors.paper }, shadow.md]}>
+              <Text style={s.caption}>Vous êtes hors du parcours : rapprochez-vous du tracé pour voir les repères en direct.</Text>
+            </View>
+          )}
           {chosen && !recording && (
             <View style={panel}>
               <View style={s.between}>

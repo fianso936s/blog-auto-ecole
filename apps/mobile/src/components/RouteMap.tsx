@@ -52,6 +52,8 @@ export function RouteMap({
   show3DToggle = false,
   navigationMode = false,
   previewMode = false,
+  zoomControls = false,
+  highlightId,
   centerHandle,
 }: {
   fixes?: Fix[];
@@ -79,6 +81,10 @@ export function RouteMap({
   show3DToggle?: boolean;
   navigationMode?: boolean;
   previewMode?: boolean;
+  /** Shows − / + buttons that work in every mode, Aperçu included. */
+  zoomControls?: boolean;
+  /** The repère to watch now: drawn bigger, with its name. */
+  highlightId?: string;
   /** Filled with a reader of the map centre (website: "Utiliser le centre"). */
   centerHandle?: React.MutableRefObject<(() => Promise<{ lat: number; lng: number } | null>) | null>;
 }) {
@@ -130,6 +136,18 @@ export function RouteMap({
   const lastPitch = useRef<boolean | null>(null);
   const previousPreview=useRef(false);
   const lastBearing=useRef(0);
+  // The driver's own zoom (pinch or − / +) is kept when the camera recentres.
+  const userZoom=useRef<number|null>(null);
+  useEffect(()=>{userZoom.current=null;},[navigationMode,previewMode,recenterKey]);
+  async function zoomBy(delta:number){
+    try{
+      const current=await map.current?.getZoom();
+      if(typeof current!=="number")return;
+      const next=Math.max(3,Math.min(20,current+delta));
+      if(!previewMode)userZoom.current=next;
+      camera.current?.zoomTo(next,{duration:reducedMotion?0:200});
+    }catch{}
+  }
   useEffect(() => {
     following.current = follow;
     if(resumeTimer.current)clearTimeout(resumeTimer.current);
@@ -167,7 +185,7 @@ export function RouteMap({
     if (point && following.current)
       camera.current?.easeTo({
         center: [point.lng, point.lat],
-        zoom: navigationMode ? 18 : course != null ? 17 : 16,
+        zoom: userZoom.current ?? (navigationMode ? 18 : course != null ? 17 : 16),
         bearing: navigationMode ? (course ?? lastBearing.current) : course ?? 0,
         pitch,
         duration: reducedMotion ? 0 : navigationMode ? 800 : 250,
@@ -219,6 +237,9 @@ export function RouteMap({
         onRegionWillChange={(e) => {
           if (e.nativeEvent.userInteraction) pauseFollow();
         }}
+        onRegionDidChange={(e) => {
+          if (e.nativeEvent.userInteraction && !previewMode) userZoom.current = e.nativeEvent.zoom;
+        }}
         onLongPress={(e) => {
           longPressAt.current = Date.now();
           const [lng, lat] = e.nativeEvent.lngLat;
@@ -262,35 +283,46 @@ export function RouteMap({
             />
           </GeoJSONSource>
         )}
-        {points.map((p) => (
+        {points.map((p) => {
+          const next = p.id === highlightId;
+          return (
           <Marker
-            key={p.id}
+            key={`${p.id}${next ? "-next" : ""}`}
             id={p.id}
             lngLat={[p.lng, p.lat]}
+            anchor={next ? "bottom" : "center"}
             onPress={(e) => {
               e.stopPropagation();
               onPoint?.(p);
             }}
           >
-            <View
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 22,
-                backgroundColor: tones[filterTone(p.category)].ink,
-                borderColor: colors.paper,
-                borderWidth: 3,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              accessible
-              accessibilityLabel={`${p.category} : ${p.name}`}
-              accessibilityRole="button"
-            >
-              <Icon name={categoryIcons[p.category]} size={19} color={colors.paper} />
+            <View style={{ alignItems: "center" }}>
+              {next && (
+                <View style={{ backgroundColor: colors.paper, borderRadius: 14, paddingHorizontal: 10, paddingVertical: 4, marginBottom: 6, maxWidth: 220, borderWidth: 1, borderColor: colors.line }}>
+                  <Text numberOfLines={1} style={{ fontSize: 13, fontWeight: "700", color: colors.wine }}>{p.name}</Text>
+                </View>
+              )}
+              <View
+                style={{
+                  width: next ? 56 : 44,
+                  height: next ? 56 : 44,
+                  borderRadius: next ? 28 : 22,
+                  backgroundColor: tones[filterTone(p.category)].ink,
+                  borderColor: colors.paper,
+                  borderWidth: next ? 4 : 3,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                accessible
+                accessibilityLabel={`${next ? "Prochain repère, " : ""}${p.category} : ${p.name}`}
+                accessibilityRole="button"
+              >
+                <Icon name={categoryIcons[p.category]} size={next ? 24 : 19} color={colors.paper} />
+              </View>
             </View>
           </Marker>
-        ))}
+          );
+        })}
         {position && (
           <Marker
             id="actual-gps"
@@ -334,6 +366,31 @@ export function RouteMap({
           </Marker>
         )}
       </Map>
+      {zoomControls && (
+        <View pointerEvents="box-none" style={{ position: "absolute", right: 12, top: "38%", gap: 8 }}>
+          {([[-1, "remove", "Zoom arrière (dézoomer)"], [1, "add", "Zoom avant"]] as const).map(([delta, icon, label]) => (
+            <Pressable
+              key={icon}
+              accessibilityRole="button"
+              accessibilityLabel={label}
+              onPress={() => void zoomBy(delta)}
+              style={({ pressed }) => ({
+                width: 48,
+                height: 48,
+                borderRadius: 16,
+                alignItems: "center",
+                justifyContent: "center",
+                backgroundColor: colors.paper,
+                borderWidth: 1,
+                borderColor: colors.line,
+                opacity: pressed ? 0.65 : 1,
+              })}
+            >
+              <Icon name={icon} size={24} />
+            </Pressable>
+          ))}
+        </View>
+      )}
       {showPanControls && (
         <View
           pointerEvents="box-none"
