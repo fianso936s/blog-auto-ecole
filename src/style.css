@@ -4524,6 +4524,9 @@ details[open] > :not(summary) {
   height: 100%;
   pointer-events: none;
 }
+.art-waves {
+  will-change: transform;
+}
 .art-wave {
   fill: none;
   stroke: var(--blush);
@@ -4555,7 +4558,7 @@ details[open] > :not(summary) {
   opacity: 0.5;
   animation: trace-run 3.2s linear infinite;
 }
-/* Lane markings slide along each road like passing traffic. */
+/* Lane markings: static. Moving stripes on a rotated road shimmer on phones. */
 .art-road {
   overflow: hidden;
 }
@@ -4564,17 +4567,9 @@ details[open] > :not(summary) {
   position: absolute;
   top: calc(50% - 1px);
   left: 0;
-  width: 200%;
+  width: 100%;
   height: 2px;
-  background: repeating-linear-gradient(90deg, rgba(242, 216, 196, 0.35) 0 18px, transparent 18px 44px);
-  animation: lane-run 6s linear infinite;
-}
-.road-two::after {
-  animation-duration: 8s;
-  animation-direction: reverse;
-}
-.road-three::after {
-  animation-duration: 5s;
+  background: repeating-linear-gradient(90deg, rgba(242, 216, 196, 0.28) 0 18px, transparent 18px 44px);
 }
 .art-park {
   animation: park-float 12s ease-in-out infinite alternate;
@@ -4598,9 +4593,6 @@ details[open] > :not(summary) {
 @keyframes trace-run {
   to { stroke-dashoffset: -32; }
 }
-@keyframes lane-run {
-  to { transform: translateX(-44px); }
-}
 @keyframes park-float {
   from { translate: 0 0; }
   to { translate: 14px -10px; }
@@ -4613,7 +4605,6 @@ details[open] > :not(summary) {
   .art-glow,
   .art-wave,
   .art-trace path,
-  .art-road::after,
   .art-park {
     animation: none !important;
   }
