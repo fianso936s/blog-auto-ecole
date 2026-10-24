@@ -91,7 +91,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
   close.current = onClose; progress.current = onProgress; note.current = notify;
   const [index, setIndex] = useState(Math.min(Math.max(0, initialIndex), (route?.fixes.length || 1)-1)),
     [playing, setPlaying] = useState(autoplay), [mode, setMode] = useState<Mode>(initialMode),
-    [pitch, setPitch] = useState(80), [overview,setOverview] = useState(false), [zoom,setZoom] = useState(19), [streetState, setStreetState] = useState("loading"),
+    [pitch, setPitch] = useState(80), [overview,setOverview] = useState(false), [zoom,setZoom] = useState(18), [streetState, setStreetState] = useState("loading"),
     [mapReady, setMapReady] = useState(false), [streetOpened, setStreetOpened] = useState(initialMode === "street");
   const onMapReady = useCallback(() => setMapReady(true), []);
   currentIndex.current = index;
@@ -109,13 +109,20 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     if (overview) { m?.easeTo({zoom: Math.max(minZoom, Math.min(maxZoom, m.getZoom() + delta)), duration: 250}); return; }
     setZoom(z => Math.max(minZoom, Math.min(maxZoom, z + delta)));
   }
-  // A pinch or the map's own +/− keeps its zoom while following the route.
+  // A pinch, the wheel or the map's own +/− keeps its zoom while following, even during playback:
+  // the camera never moves while a finger is on the map, then keeps the zoom the driver chose.
+  const touching = useRef(false), userZoom = useRef(zoom);
+  userZoom.current = zoom;
   useEffect(() => {
     const m = map.current.map;
     if (!mapReady || typeof m?.on !== "function") return;
-    const keep = (e: any) => { if (e.originalEvent && !overviewRef.current) setZoom(Math.max(minZoom, Math.min(maxZoom, Math.round(m.getZoom() * 2) / 2))); };
-    m.on("zoomend", keep);
-    return () => { m.off("zoomend", keep); };
+    const live = (e: any) => { if (e.originalEvent && !overviewRef.current) userZoom.current = Math.max(minZoom, Math.min(maxZoom, m.getZoom())); };
+    const keep = (e: any) => { if (e.originalEvent && !overviewRef.current) setZoom(Math.max(minZoom, Math.min(maxZoom, Math.round(m.getZoom() * 4) / 4))); };
+    const down = () => { touching.current = true; };
+    const up = (e: any) => { if (!e.originalEvent?.touches?.length) { touching.current = false; keep({originalEvent: true}); } };
+    m.on("zoom", live); m.on("zoomend", keep);
+    m.on("touchstart", down); m.on("touchend", up); m.on("touchcancel", up);
+    return () => { m.off("zoom", live); m.off("zoomend", keep); m.off("touchstart", down); m.off("touchend", up); m.off("touchcancel", up); };
   }, [mapReady]);
   // Free exploration: Google's own Street View with its arrows, from the current place on the route.
   const [explore, setExplore] = useState(false);
@@ -161,7 +168,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
   useEffect(() => {
     if (!route || mode !== "map" || !mapReady || overview) return;
     const anchor = replayAnchor(route.fixes,index);
-    if (anchor) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom,pitch: pitch ? 80 : 0,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
+    if (anchor && !touching.current) map.current.map?.easeTo({center:[anchor.lng,anchor.lat],bearing:anchor.heading,zoom:userZoom.current,pitch: pitch ? 80 : 0,duration:window.matchMedia("(prefers-reduced-motion: reduce)").matches ? 0 : 650});
   }, [index,mode,pitch,mapReady,overview,zoom]);
   useEffect(()=>{if(!route||!mapReady||mode!=="map"||!overview)return;map.current.focus(route.fixes);map.current.map?.easeTo({pitch:0,bearing:0,duration:650});},[overview,mapReady,mode,route?.id]);
   function seek(value: number) {setPlaying(false);currentIndex.current=value;setIndex(value);}

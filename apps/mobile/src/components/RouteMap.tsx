@@ -237,6 +237,9 @@ export function RouteMap({
         onRegionWillChange={(e) => {
           if (e.nativeEvent.userInteraction) pauseFollow();
         }}
+        onRegionIsChanging={(e) => {
+          if (e.nativeEvent.userInteraction && !previewMode) { userZoom.current = e.nativeEvent.zoom; pauseFollow(); }
+        }}
         onRegionDidChange={(e) => {
           if (e.nativeEvent.userInteraction && !previewMode) userZoom.current = e.nativeEvent.zoom;
         }}
