@@ -2810,7 +2810,7 @@ function Videos() {
                 type="file"
                 accept="video/*"
                 onChange={(e) => {
-                  if (e.target.files?.[0]) void attach(e.target.files[0]);
+                  if (e.target.files?.[0]) { notify(`Vidéo reçue (${Math.round(e.target.files[0].size / 1048576)} Mo) : envoi en cours, gardez cette page ouverte.`); void attach(e.target.files[0]); }
                   e.target.value = "";
                 }}
               />
