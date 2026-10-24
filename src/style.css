@@ -4499,6 +4499,10 @@ details[open] > :not(summary) {
   }
   .art-route,
   .art-pin {
+    animation: none !important;
+  }
+}
+
 /* ——— Landing art: always alive, quietly ———
    Slow, looping, decorative; it frames the logo and never competes with the copy. */
 .art-glow {
