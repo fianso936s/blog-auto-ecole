@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, useCallback } from "react";
 import { api } from "./shared/api";
-import { geometry, cumulativeDistance, upcomingPoint, guideLabel, pointComment, type Route, type Point } from "./shared/core";
+import { geometry, cumulativeDistance, upcomingPoint, guideLabel, pointComment, pointsAlongRoute, type Route, type Point } from "./shared/core";
 import { replayAnchor } from "./shared/street-replay";
 
 export const STREET_ORIGIN = "https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech";
@@ -80,8 +80,8 @@ export function StreetPane({request, onState, active = true}: {
   </div>;
 }
 
-export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "map", autoplay = false, MapView, onClose, onPoint, onProgress, notify}: {
-  route?: Route; target?: Target; initialIndex?: number; initialMode?: Mode; autoplay?: boolean;
+export function ReplayPlayer({route, target, spots = noRecording, initialIndex = 0, initialMode = "map", autoplay = false, MapView, onClose, onPoint, onProgress, notify}: {
+  route?: Route; target?: Target; spots?: {id:string;lat:number;lng:number;name:string;category:string}[]; initialIndex?: number; initialMode?: Mode; autoplay?: boolean;
   MapView: React.ComponentType<any>; onClose: () => void; onPoint?: (point: Point) => void;
   onProgress?: (index: number) => void; notify: (message: string) => void;
 }) {
@@ -101,7 +101,10 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     : {type:"snapshot", kind:"point", lat:target?.lat, lng:target?.lng, heading:0, index:0}, [route, target, index, paths]);
   const along = useMemo(() => route ? cumulativeDistance(route.fixes) : [], [route?.id, route?.version]);
   // Live repère: the one reached or the next one ahead, with its distance along the route.
-  const guide = useMemo(() => route ? upcomingPoint(route.points, index, along) : null, [route, index, along]);
+  // Every repère of the base lying on the track (spots, other routes' repères), not only this route's own.
+  const allPoints = useMemo(() => route ? pointsAlongRoute(route.fixes, route.points, spots) : [], [route?.id, route?.version, route?.points, spots]);
+  const extraSpots = useMemo(() => { const own = new Set(route?.points.map(p => p.id)); return allPoints.filter(p => !own.has(p.id)); }, [allPoints, route?.points]);
+  const guide = useMemo(() => route ? upcomingPoint(allPoints, index, along) : null, [route, allPoints, index, along]);
   const overviewRef = useRef(false); overviewRef.current = overview;
   const minZoom = 10, maxZoom = 22;
   function zoomBy(delta: number) {
@@ -191,7 +194,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
     </header>
     <div className="player-stage">
       {mode === "map" && route ? <>
-        <MapView spots={noRecording} route={route} recording={noRecording} index={index} pitch={overview?0:pitch} navigationMode={!overview && !!pitch} previewMode={overview} highlightId={guide?.point.id} handle={map} onReady={onMapReady} onPosition={()=>{}} onSpot={(p:Point)=>{setPlaying(false);onPoint?.(p);}} />
+        <MapView spots={extraSpots} route={route} recording={noRecording} index={index} pitch={overview?0:pitch} navigationMode={!overview && !!pitch} previewMode={overview} highlightId={guide?.point.id} handle={map} onReady={onMapReady} onPosition={()=>{}} onSpot={(p:Point)=>{setPlaying(false);onPoint?.(p);}} />
         <div className="player-dimension" role="group" aria-label="Vue du parcours" style={{display:"flex",gap:6,alignItems:"center"}}>
           <button aria-pressed={!overview&&!!pitch} onClick={()=>{setOverview(false);setPitch(80);}}>3D</button>
           <button aria-pressed={!overview&&!pitch} onClick={()=>{setOverview(false);setPitch(0);}}>2D</button>
@@ -207,7 +210,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
       {mode === "street" && freePosition && <button className={`player-explore-toggle ${explore ? "active" : ""}`} onClick={()=>{setPlaying(false);setExplore(v=>!v);}}>{explore ? "← Revenir au parcours" : "Explorer librement"}</button>}
       {streetOpened && <div className="player-street-layer" aria-hidden={mode !== "street"} data-active={mode === "street"} inert={mode !== "street"}><StreetPane request={request} onState={setStreetState} active={mode === "street"} /></div>}
       {mode === "map" && !mapReady && <div className="player-loading" role="status">Préparation de la carte…</div>}
-      {guide && !explore && <button className="player-point" data-state={guide.state} aria-live="polite" onClick={()=>{setPlaying(false);onPoint?.(guide.point);}}>
+      {guide && !explore && <button className="player-point" data-state={guide.state} aria-live="polite" onClick={()=>{setPlaying(false);onPoint?.(guide.point as any);}}>
         <span className="guide-badge">{guide.point.category}</span>
         <span className="guide-text"><small>{guide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(guide)}</small><strong>{guide.point.name}</strong>{pointComment(guide.point as any) && <em className="guide-note">{pointComment(guide.point as any)}</em>}</span>
         <span className="guide-open">Lire →</span>
@@ -219,7 +222,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
         <input id="player-position" aria-label="Position dans le parcours" type="range" min={0} max={route.fixes.length-1} value={index} onChange={e=>seek(Number(e.target.value))} onPointerUp={()=>void save()} onKeyUp={()=>void save()} />
       </div>
       <div className="player-actions"><button className="player-restart" onClick={restart}>Retour au départ</button>
-      <button className="player-next" disabled={!route.points.some(p=>p.fixIndex>index)} onClick={()=>{const next=route.points.filter(p=>p.fixIndex>index).sort((a,b)=>a.fixIndex-b.fixIndex)[0];if(next)seek(next.fixIndex);}}>Repère suivant</button></div>
+      <button className="player-next" disabled={!allPoints.some(p=>p.fixIndex>index)} onClick={()=>{const next=allPoints.find(p=>p.fixIndex>index);if(next)seek(next.fixIndex);}}>Repère suivant</button></div>
     </footer>}
   </dialog>;
 }

@@ -82,3 +82,34 @@ export function guideLabel(guide: { meters: number; state: GuideState }) {
 export function pointComment(p: { note?: string; question?: string; explanation?: string }) {
   return (p.note || p.question || p.explanation || "").trim();
 }
+
+/** A spot of the shared map is "on" the route when it lies this close to the track. */
+export const ON_ROUTE_METERS = 35;
+
+/**
+ * Every repère the driver meets on this route: the route's own repères plus
+ * all the map's repères (spots, repères of other routes) lying along the track,
+ * each placed at the fix where the route passes closest to it.
+ */
+export function pointsAlongRoute<R extends { id: string; fixIndex: number }, S extends { id: string; lat: number; lng: number }>(
+  fixes: Fix[],
+  routePoints: R[],
+  spots: S[],
+  maxMeters = ON_ROUTE_METERS,
+): (R | (S & { fixIndex: number }))[] {
+  const out: (R | (S & { fixIndex: number }))[] = [...routePoints];
+  if (!fixes.length) return out;
+  const known = new Set(routePoints.map((p) => p.id));
+  // Cheap pre-filter: the track's bounding box widened by maxMeters.
+  let minLat = Infinity, maxLat = -Infinity, minLng = Infinity, maxLng = -Infinity;
+  for (const f of fixes) { minLat = Math.min(minLat, f.lat); maxLat = Math.max(maxLat, f.lat); minLng = Math.min(minLng, f.lng); maxLng = Math.max(maxLng, f.lng); }
+  const dLat = maxMeters / 111320, dLng = maxMeters / (111320 * Math.cos(((minLat + maxLat) / 2) * Math.PI / 180) || 1);
+  for (const s of spots) {
+    if (known.has(s.id)) continue;
+    if (s.lat < minLat - dLat || s.lat > maxLat + dLat || s.lng < minLng - dLng || s.lng > maxLng + dLng) continue;
+    let best = -1, min = Infinity;
+    for (let i = 0; i < fixes.length; i++) { const d = distance(fixes[i]!, s); if (d < min) { min = d; best = i; } }
+    if (best >= 0 && min <= maxMeters) { out.push({ ...s, fixIndex: best }); known.add(s.id); }
+  }
+  return out.sort((a, b) => a.fixIndex - b.fixIndex);
+}

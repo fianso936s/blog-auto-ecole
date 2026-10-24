@@ -34,6 +34,7 @@ import {
   positionOnRoute,
   guideLabel,
   pointComment,
+  pointsAlongRoute,
   type Profile,
   type Route,
   type RouteInput,
@@ -1437,7 +1438,8 @@ function MapPage() {
   // Driving the open route with GPS: the repère reached or the next one, live.
   const routeAlong = useMemo(() => route ? cumulativeDistance(route.fixes) : [], [route?.id, route?.version]);
   const liveIndex = route && gpsFollow && gpsPosition ? positionOnRoute(route.fixes, gpsPosition) : null;
-  const liveGuide = route && liveIndex !== null ? upcomingPoint(route.points, liveIndex, routeAlong) : null;
+  const routeAllPoints = useMemo(() => route ? pointsAlongRoute(route.fixes, route.points, spots) : [], [route?.id, route?.version, route?.points, spots]);
+  const liveGuide = route && liveIndex !== null ? upcomingPoint(routeAllPoints, liveIndex, routeAlong) : null;
   const visibleRoutes = routes.filter((r) =>
     matchesRoute(r, {
       search,
@@ -1834,7 +1836,7 @@ function MapPage() {
           </div>
         </Modal>
       )}
-      {player && route && <ReplayPlayer route={route} initialIndex={index} initialMode={player} autoplay={player === "map"} MapView={MapCanvas} notify={notify} onClose={()=>setPlayer(null)} onPoint={chooseSpot} onProgress={setIndex} />}
+      {player && route && <ReplayPlayer route={route} spots={spots} initialIndex={index} initialMode={player} autoplay={player === "map"} MapView={MapCanvas} notify={notify} onClose={()=>setPlayer(null)} onPoint={chooseSpot} onProgress={setIndex} />}
       {point && (
         <SpotDetails
           point={point}

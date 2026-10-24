@@ -13,6 +13,7 @@ import {
   positionOnRoute,
   guideLabel,
   pointComment,
+  pointsAlongRoute,
   type MapSpot,
   type NativeLocation,
   type Point,
@@ -142,7 +143,12 @@ export function MapScreen() {
   // Driving the open route with GPS: the repère reached or the next one, live.
   const routeAlong = useMemo(() => (chosen ? cumulativeDistance(chosen.fixes) : []), [chosen?.id, chosen?.version]);
   const liveIndex = chosen && !active && gpsFollow && location ? positionOnRoute(chosen.fixes, { lat: location.latitude, lng: location.longitude }) : null;
-  const liveGuide = chosen && liveIndex !== null ? upcomingPoint(chosen.points.filter((p) => !app.archivedPointIds.includes(p.id)), liveIndex, routeAlong) : null;
+  const routeAllPoints = useMemo(() => {
+    if (!chosen) return [];
+    const hidden = new Set(app.archivedPointIds);
+    return pointsAlongRoute(chosen.fixes, chosen.points.filter((p) => !hidden.has(p.id)), app.spots.filter((sp) => !hidden.has(sp.id)));
+  }, [chosen?.id, chosen?.version, chosen?.points, app.spots, app.archivedPointIds]);
+  const liveGuide = chosen && liveIndex !== null ? upcomingPoint(routeAllPoints, liveIndex, routeAlong) : null;
   const state = active?.state;
   const own = !!chosen && tools.canEdit(chosen);
   const routeCount = useMemo(

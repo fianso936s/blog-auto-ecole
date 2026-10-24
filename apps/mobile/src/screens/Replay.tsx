@@ -16,6 +16,8 @@ import {
   upcomingPoint,
   guideLabel,
   pointComment,
+  pointsAlongRoute,
+  type MapSpot,
   replayAnchor,
   replayIndices,
   type Route,
@@ -60,10 +62,10 @@ export function Replay({
   const [playing, setPlaying] = useState(false),
     [speed, setSpeed] = useState(1),
     [message, setMessage] = useState("");
-  const [inspected, setInspected] = useState<Point | null>(null);
+  const [inspected, setInspected] = useState<Point | MapSpot | null>(null);
   const [pointsOpen, setPointsOpen] = useState(false);
   const availablePoints = useMemo(() => route.points.filter(point => !app.archivedPointIds.includes(point.id)), [route.points, app.archivedPointIds]);
-  function inspect(point: Point) {
+  function inspect(point: Point | MapSpot) {
     setPlaying(false);
     setPointsOpen(false);
     setInspected(point);
@@ -91,7 +93,9 @@ export function Replay({
   const [pov,setPov]=useState(true),[overview,setOverview]=useState(false),[recenterKey,setRecenterKey]=useState(0);
   // Live repère: the one reached or the next one ahead, with its distance along the route.
   const along=useMemo(()=>cumulativeDistance(route.fixes),[route.id,route.version]);
-  const guide=useMemo(()=>upcomingPoint(availablePoints,index,along),[availablePoints,index,along]);
+  // Every repère of the base lying on the track (spots, other routes' repères), not only this route's own.
+  const allPoints=useMemo(()=>pointsAlongRoute(route.fixes,availablePoints,app.spots.filter(sp=>!app.archivedPointIds.includes(sp.id))),[route.id,route.version,availablePoints,app.spots,app.archivedPointIds]);
+  const guide=useMemo(()=>upcomingPoint(allPoints,index,along),[allPoints,index,along]);
   const bearing=useMemo(()=>pov?replayBearing(route.fixes,index):null,[pov,route.fixes,index]);
   useEffect(() => {
     const sub = AppState.addEventListener("change", (state) => {
@@ -271,8 +275,8 @@ export function Replay({
           <RouteMap
             threeD={threeD}
             fixes={route.fixes}
-            points={availablePoints}
-            onPoint={(point) => inspect(point as Point)}
+            points={allPoints}
+            onPoint={(point) => inspect(point)}
             focus={fix}
             course={bearing}
             navigationMode={pov && threeD && !overview}
@@ -376,7 +380,7 @@ export function Replay({
           )}
           <View style={[s.row, { gap: 8 }]}>
             <View style={{ flex: 1 }}><Button compact secondary label="Retour au départ" onPress={()=>{setPlaying(false);seen.current.clear();setQuiz(null);setIndex(0);void pendingAction(app.profile!.id,`/v1/routes/${route.id}/progress`,{fixIndex:0}).then(()=>app.sync());}}/></View>
-            <View style={{ flex: 1 }}><Button compact secondary label="Repère suivant" disabled={!availablePoints.some((p) => p.fixIndex > index)} onPress={()=>{setPlaying(false);const nextPoint=availablePoints.filter((p)=>p.fixIndex>index).sort((a,b)=>a.fixIndex-b.fixIndex)[0];if(nextPoint)move(nextPoint.fixIndex);}}/></View>
+            <View style={{ flex: 1 }}><Button compact secondary label="Repère suivant" disabled={!allPoints.some((p) => p.fixIndex > index)} onPress={()=>{setPlaying(false);const nextPoint=allPoints.find((p)=>p.fixIndex>index);if(nextPoint)move(nextPoint.fixIndex);}}/></View>
           </View>
           <View style={[s.row, { gap: 8 }]}>
             <IconButton
@@ -425,8 +429,8 @@ export function Replay({
           </View>
         </View>
         <Sheet visible={pointsOpen} title="Repères du parcours" onClose={() => setPointsOpen(false)}>
-          {!availablePoints.length && <Text style={s.muted}>Aucun repère sur ce parcours.</Text>}
-          {availablePoints.map(point => <Pressable key={point.id} accessibilityRole="button" accessibilityLabel={`Consulter ${point.name}`} onPress={() => inspect(point)} style={[s.card, {minHeight: 44}]}><Text style={s.heading}>{point.name}</Text><Text style={s.caption}>{point.category}</Text></Pressable>)}
+          {!allPoints.length && <Text style={s.muted}>Aucun repère sur ce parcours.</Text>}
+          {allPoints.map(point => <Pressable key={point.id} accessibilityRole="button" accessibilityLabel={`Consulter ${point.name}`} onPress={() => inspect(point)} style={[s.card, {minHeight: 44}]}><Text style={s.heading}>{point.name}</Text><Text style={s.caption}>{point.category}</Text></Pressable>)}
         </Sheet>
         <View style={{paddingHorizontal: 14, paddingBottom: 6}}><ContentSafety kind="route" id={route.id} authorId={route.authorId} onBlocked={onClose}/></View>
         <PointReader point={visible ? inspected : null} onClose={() => setInspected(null)} />
