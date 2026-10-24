@@ -244,9 +244,13 @@ export function Videos() {
       if (!settings.uploadEnabled) throw new Error(`${settings.message} La vidéo reste sur cet iPhone.`);
       if (item.state === "uploading") await retryVideo(item.id).catch(() => {});
       await uploadPrivateVideo(item.id, app.profile.id);
+      // A completed upload is immediately available to the teacher’s linked students.
+      // Never grant access to arbitrary users: the API verifies each teacher/student relationship.
+      const recipients = (await request<{ students: Student[] }>("/v1/students")).students.map(student => student.id);
+      if (recipients.length) await saveGrants(item.id, recipients, true);
       await reload();
       void Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      app.setMessage("Vidéo envoyée. Choisissez maintenant qui peut la voir.");
+      app.setMessage(recipients.length ? "Vidéo publiée : vos élèves peuvent la sélectionner et la revoir." : "Vidéo envoyée en privé. Ajoutez des élèves pour la publier.");
       const fresh = (await fetchVideos()).videos.find((v) => v.id === item.id);
       if (fresh) await choose(fresh);
     } catch (e) {
