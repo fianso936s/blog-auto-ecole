@@ -1112,19 +1112,6 @@ function MapCanvas({
     </>
   );
 }
-/** The last route opened on the map, resumed at its position next time the map opens. */
-const lastRouteStore = {
-  key: (user?: string) => `repere.lastRoute.${user || "guest"}`,
-  read(user?: string): { id: string; index: number } | null {
-    try { const v = JSON.parse(localStorage.getItem(this.key(user)) || "null"); return v && typeof v.id === "string" ? { id: v.id, index: Number(v.index) || 0 } : null; } catch { return null; }
-  },
-  write(user: string | undefined, value: { id: string; index: number }) {
-    try { localStorage.setItem(this.key(user), JSON.stringify(value)); } catch {}
-  },
-  clear(user?: string) {
-    try { localStorage.removeItem(this.key(user)); } catch {}
-  },
-};
 const blankSpot = (pos: { lat: number; lng: number }): MapSpot => ({
   id: crypto.randomUUID(),
   name: "",
@@ -1162,8 +1149,6 @@ function MapPage() {
     [favorites, setFavorites] = useState(false),
     [assign, setAssign] = useState<string | null>(null);
   const [cameraMode,setCameraMode]=useState<"pov"|"preview">("preview");
-  const resumed = useRef(false);
-  useEffect(()=>{if(route)lastRouteStore.write(profile?.id,{id:route.id,index});},[route?.id,index]);
   const [gpsFollow,setGpsFollow]=useState(false),[gpsPosition,setGpsPosition]=useState<{lat:number;lng:number}|null>(null);
 
   const [rec, setRec] = useState<"idle" | "recording" | "paused">("idle"),
@@ -1281,9 +1266,7 @@ function MapPage() {
       const r = await api<Route>(`/v1/routes/${id}`);
       setGpsFollow(false);setGpsPosition(null);
       setRoute(r);
-      const last = lastRouteStore.read(profile?.id);
-      setIndex(Math.min(Math.max(r.progress || 0, last?.id === id ? last.index : 0), Math.max(0, r.fixes.length - 1)));
-      lastRouteStore.write(profile?.id, { id, index: r.progress || 0 });
+      setIndex(r.progress || 0);
       setDirectory(false);
       setPlaying(false);
       handle.current.focus(r.fixes);
@@ -1452,7 +1435,6 @@ function MapPage() {
         navigationMode={rec!=="idle"&&cameraMode==="pov"}
         previewMode={rec!=="idle"&&cameraMode==="preview"}
         onSpot={chooseSpot}
-        onReady={()=>{const last=lastRouteStore.read(profile?.id);if(last&&!resumed.current&&!route){resumed.current=true;void openRoute(last.id);}}}
         onPosition={pos=>{setMapPos(pos);if(placing){setEditor(blankSpot(pos));setPlacing(false);}}}
         onLongPress={writer ? pos=>{setMapPos(pos);setPlacing(false);setEditor(blankSpot(pos));} : undefined}
         handle={handle}
@@ -1513,7 +1495,6 @@ function MapPage() {
               <button
                 className="icon-btn"
                 onClick={() => {
-                  lastRouteStore.clear(profile?.id);
                   setRoute(null);
                   setPlaying(false);
                 }}
@@ -1895,6 +1876,8 @@ function MapPage() {
           initial={(draft || routeEditor)!}
           recovered={recovered}
           onClose={() => {
+            // Closing the saved-route prompt dismisses it for good, so it does not reopen at each visit.
+            if (draft) { try { localStorage.removeItem(`repere.gps.${profile!.id}`); } catch {} setRecovered(false); }
             setDraft(null);
             setRouteEditor(null);
           }}
