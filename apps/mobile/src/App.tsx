@@ -29,9 +29,10 @@ const tabs = product.navigation.map(t=>({...t,icon:nativeIcons[t.id as keyof typ
 function Shell() {
   const app = useApp();
   const [fontsReady, fontError] = useFonts({ DMSans_400Regular, DMSans_500Medium, DMSans_600SemiBold, DMSans_700Bold, Manrope_700Bold, Manrope_800ExtraBold });
-  const [tab, setTab] = useState<(typeof tabs)[number]["id"]>("pedagogy");
+  const [tab, setTab] = useState<(typeof tabs)[number]["id"]>("map");
   const [home,setHome]=useState(false);
-  useEffect(()=>{setHome(app.profile?.role === "student");},[app.profile?.id]);
+  const [guest,setGuest]=useState(false);
+  useEffect(()=>{setHome(app.profile?.role === "student");if(app.profile){setGuest(false);setTab("map");}},[app.profile?.id]);
   useEffect(()=>{const open=(url:string|null)=>{if(url?.startsWith("reperespot://meta-live")){setHome(false);setTab("videos");app.setMessage("Ouvrez la connexion Meta pour lancer le direct depuis vos lunettes.");}};void Linking.getInitialURL().then(open);const sub=Linking.addEventListener("url",event=>open(event.url));return()=>sub.remove();},[]);
   useEffect(() => {
     if (!app.loading && (fontsReady || fontError)) void SplashScreen.hideAsync();
@@ -54,13 +55,22 @@ function Shell() {
       edges={tab === "map" && app.profile ? ["bottom"] : ["top", "bottom"]}
     >
       <StatusBar style="dark" />
-      {!app.profile ? (
-        <Welcome />
+      {!app.profile && !guest ? (
+        <Welcome onExplore={()=>{setTab("pedagogy");setGuest(true);}} />
       ) : (
         <>
           <View style={{ flex: 1 }}>
-            {app.profile.role === "student" && !home && <Pressable accessibilityRole="button" onPress={()=>setHome(true)} style={({pressed})=>({alignSelf:"flex-start",minHeight:44,marginHorizontal:16,marginTop:8,marginBottom:4,paddingHorizontal:16,flexDirection:"row",alignItems:"center",gap:6,borderRadius:radius.pill,backgroundColor:colors.paper,borderWidth:1,borderColor:colors.line,transform:[{scale:pressed?0.97:1}],...shadow.sm})}><Icon name="chevron-back" size={16} color={colors.ink}/><Text style={{color:colors.ink,fontFamily:fonts.bodySemi,fontSize:14}}>Accueil</Text></Pressable>}
-            {home ? <StudentHome user={app.profile.id} name={app.profile.name} go={id=>{setTab(id);setHome(false);}}/> : tab === "pedagogy" ? (
+            {!app.profile && (
+              <View style={{ marginHorizontal: 12, marginTop: 8, marginBottom: 4, paddingVertical: 10, paddingLeft: 16, paddingRight: 10, borderRadius: radius.md, backgroundColor: colors.night, flexDirection: "row", alignItems: "center", gap: 12 }}>
+                <Text style={{ flex: 1, color: colors.blush, fontFamily: fonts.body, fontSize: 13, lineHeight: 18 }}>Retrouvez vos parcours et votre enseignant dans votre espace.</Text>
+                <Pressable accessibilityRole="button" onPress={() => void app.login("signin")} style={({ pressed }) => ({ minHeight: 44, paddingHorizontal: 14, borderRadius: radius.sm, backgroundColor: colors.paper, flexDirection: "row", alignItems: "center", gap: 6, transform: [{ scale: pressed ? 0.97 : 1 }] })}>
+                  <Text style={{ color: colors.wine, fontFamily: fonts.bodyBold, fontSize: 14 }}>Se connecter</Text>
+                  <Icon name="arrow-forward" size={15} />
+                </Pressable>
+              </View>
+            )}
+            {app.profile?.role === "student" && !home && <Pressable accessibilityRole="button" onPress={()=>setHome(true)} style={({pressed})=>({alignSelf:"flex-start",minHeight:44,marginHorizontal:16,marginTop:8,marginBottom:4,paddingHorizontal:16,flexDirection:"row",alignItems:"center",gap:6,borderRadius:radius.pill,backgroundColor:colors.paper,borderWidth:1,borderColor:colors.line,transform:[{scale:pressed?0.97:1}],...shadow.sm})}><Icon name="chevron-back" size={16} color={colors.ink}/><Text style={{color:colors.ink,fontFamily:fonts.bodySemi,fontSize:14}}>Accueil</Text></Pressable>}
+            {home && app.profile ? <StudentHome user={app.profile.id} name={app.profile.name} go={id=>{setTab(id);setHome(false);}}/> : tab === "pedagogy" ? (
               <Pedagogy />
             ) : tab === "map" ? (
               <MapScreen />
@@ -116,7 +126,7 @@ function Shell() {
                 accessibilityRole="tab"
                 accessibilityLabel={t.label}
                 accessibilityState={{ selected: !home && tab === t.id }}
-                onPress={() => {if (home || tab !== t.id) void Haptics.selectionAsync();setHome(false);setTab(t.id);}}
+                onPress={() => {if (!app.profile && t.id !== "pedagogy") { void app.login("signin"); return; } if (home || tab !== t.id) void Haptics.selectionAsync();setHome(false);setTab(t.id);}}
                 style={({ pressed }) => ({
                   flex: 1,
                   minHeight: 54,

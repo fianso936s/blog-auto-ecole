@@ -35,14 +35,14 @@ export function StudyOverview({reading,quizzes,plan,choose}:{reading:Reading;qui
 }
 
 /** Mirrors the website's LessonQuiz. */
-export function LessonQuiz({course,onChanged}:{course:Course;onChanged:()=>void}){
+export function LessonQuiz({course,onChanged,signedIn=true,onLogin}:{course:Course;onChanged:()=>void;signedIn?:boolean;onLogin?:()=>void}){
  const {quiz,answers,result,error,busy,start,submit,choose,answered}=useProductQuiz(course.id,productClient,()=>Crypto.randomUUID(),onChanged);
  useEffect(()=>{if(result)void Haptics.notificationAsync(result.passed?Haptics.NotificationFeedbackType.Success:Haptics.NotificationFeedbackType.Warning);},[result]);
  return <View style={{backgroundColor:colors.cream,borderRadius:radius.lg,padding:20,gap:12}} accessibilityLabel="Quiz de compréhension">
   <Text style={[s.heading,{fontSize:22}]}>As-tu compris cette fiche ?</Text>
   <Text style={s.muted}>Deux questions sur « {course.title} », avec une explication après tes réponses.</Text>
   {!!error&&<Text accessibilityRole="alert" style={s.error}>{error}</Text>}
-  {!quiz?<Button label={busy?'Chargement…':'Faire le quiz'} onPress={()=>void start()} busy={busy}/>:<>
+  {!signedIn?<Button secondary label="Me connecter pour faire le quiz" onPress={()=>onLogin?.()}/>:!quiz?<Button label={busy?'Chargement…':'Faire le quiz'} onPress={()=>void start()} busy={busy}/>:<>
    {quiz.questions.map((q,index)=>{const correction=result?.corrections.find(c=>c.id===q.id);return <View key={q.id} style={{gap:8,marginVertical:6}}>
     <Text style={{fontFamily:fonts.displayBold,fontSize:17,lineHeight:24,color:colors.ink}}>{index+1}. {q.question}</Text>
     {q.options.map((option,i)=>{const on=answers[q.id]===i;return <Pressable key={i} accessibilityRole="radio" accessibilityLabel={option} accessibilityState={{checked:on,disabled:busy||!!result}} disabled={busy||!!result} onPress={()=>{void Haptics.selectionAsync();choose(q.id,i);}} style={({pressed})=>({minHeight:56,padding:16,borderWidth:1.5,borderColor:on?colors.wine:colors.line,borderRadius:radius.md,backgroundColor:on?colors.soft:colors.paper,flexDirection:'row',gap:12,alignItems:'flex-start',transform:[{scale:pressed?0.99:1}]})}>

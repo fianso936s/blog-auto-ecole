@@ -20,9 +20,9 @@ const groups = [
 /** Mirrors the website's Fiches page: heading, tabs, Mon suivi, picker card, reading card, pagination. */
 export function Pedagogy() {
   const app = useApp();
-  const userId = app.profile!.id;
-  const teacher = app.profile?.role !== "student";
-  usePublishedCourses(productTransport, true);
+  const userId = app.profile?.id ?? null;
+  const teacher = !!app.profile && app.profile.role !== "student";
+  usePublishedCourses(productTransport, !!app.profile);
   const learning = useProductLearning(userId, productClient, nativeReadingStorage);
   const { reading, loading, busy } = learning;
   const [view, setView] = useState<"lessons" | "students">("lessons");
@@ -70,9 +70,9 @@ export function Pedagogy() {
               <Button compact secondary label="Réessayer" onPress={() => void learning.refresh()} />
             </View>
           )}
-          <Disclosure title={`Mon suivi · ${count} fiches lues`}>
+          {!!app.profile && <Disclosure title={`Mon suivi · ${count} fiches lues`}>
             <StudyOverview reading={reading} quizzes={learning.quizzes} plan={learning.plan} choose={(id) => { setOnlyReview(false); choose(id, true); }} />
-          </Disclosure>
+          </Disclosure>}
 
           <View style={[s.card, { padding: 18, gap: 12 }]} accessibilityLabel="Choix de la fiche">
             <View style={s.between}>
@@ -202,7 +202,7 @@ export function Pedagogy() {
                 </Pressable>
               </View>
 
-              <LessonQuiz key={selected.id} course={selected} onChanged={() => void learning.refresh()} />
+              <LessonQuiz key={selected.id} course={selected} signedIn={!!app.profile} onLogin={() => void app.login("signin")} onChanged={() => void learning.refresh()} />
 
               <View accessibilityLabel="Navigation entre les fiches" style={{ flexDirection: "row", gap: 10, paddingTop: 16, borderTopWidth: 1, borderColor: colors.line }}>
                 {[
@@ -224,7 +224,7 @@ export function Pedagogy() {
             </View>
           )}
           <Text style={s.caption}>
-            {learning.error ? "Le suivi n’est pas encore synchronisé. Réessaie avec une connexion stable." : "Ton suivi est enregistré dans ton espace connecté."} La maîtrise se travaille en voiture avec ton enseignant.
+            {!app.profile ? "En découverte, ta lecture est enregistrée sur cet iPhone." : learning.error ? "Le suivi n’est pas encore synchronisé. Réessaie avec une connexion stable." : "Ton suivi est enregistré dans ton espace connecté."} La maîtrise se travaille en voiture avec ton enseignant.
           </Text>
         </>
       )}
