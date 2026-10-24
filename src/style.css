@@ -2549,7 +2549,6 @@ input[type="radio"] {
   *,
   *:before,
   *:after {
-    animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
   }
@@ -4329,4 +4328,177 @@ input[type="radio"] {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   user-select: none;
+}
+
+/* ——— Motion (Repère v2) ———
+   Only on occasional or first-time moments; core navigation and map data never move.
+   Transform + opacity only. Curves and durations come from the tokens in :root. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes settle-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes sheet-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes route-draw {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes pin-drop {
+  0% {
+    opacity: 0;
+    transform: translateY(-28px) rotate(-45deg) scale(0.9);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(3px) rotate(-45deg) scale(1);
+  }
+  100% {
+    transform: rotate(-45deg);
+  }
+}
+@keyframes ring-pulse {
+  from {
+    box-shadow: 0 0 0 0 rgba(63, 118, 99, 0.35);
+  }
+  to {
+    box-shadow: 0 0 0 14px rgba(63, 118, 99, 0);
+  }
+}
+
+/* 1. Landing — first visit, the delight budget: copy rises in order, the route draws, the pin lands. */
+.welcome-center > * {
+  animation: rise-in 560ms var(--ease-out) both;
+}
+.welcome-center > :nth-child(1) { animation-delay: 60ms; }
+.welcome-center > :nth-child(2) { animation-delay: 120ms; }
+.welcome-center > :nth-child(3) { animation-delay: 180ms; }
+.welcome-center > :nth-child(4) { animation-delay: 240ms; }
+.welcome-center > :nth-child(5) { animation-delay: 300ms; }
+.welcome-center > :nth-child(6) { animation-delay: 360ms; }
+.welcome-art {
+  animation: fade-in 600ms ease both;
+}
+.art-route {
+  animation: route-draw 1100ms var(--ease-in-out) 250ms both;
+}
+.art-pin {
+  animation: pin-drop 620ms var(--ease-out) 1050ms both;
+}
+.art-caption {
+  animation: rise-in 600ms var(--ease-out) 700ms both;
+}
+
+/* 2. Student home and list pages — opened a few times a day: cards arrive in a short cascade. */
+.student-welcome > *,
+.student-shortcuts,
+.student-more {
+  animation: rise-in 480ms var(--ease-out) both;
+}
+.student-welcome > :nth-child(2) { animation-delay: 40ms; }
+.student-welcome > :nth-child(3) { animation-delay: 80ms; }
+.student-welcome > :nth-child(4) { animation-delay: 120ms; }
+.student-shortcuts { animation-delay: 160ms; }
+.student-more { animation-delay: 240ms; }
+.video-card,
+.route-card,
+.course-card {
+  animation: rise-in 380ms var(--ease-out) both;
+}
+:is(.video-card, .route-card, .course-card):nth-child(2) { animation-delay: 50ms; }
+:is(.video-card, .route-card, .course-card):nth-child(3) { animation-delay: 100ms; }
+:is(.video-card, .route-card, .course-card):nth-child(4) { animation-delay: 150ms; }
+:is(.video-card, .route-card, .course-card):nth-child(5) { animation-delay: 200ms; }
+:is(.video-card, .route-card, .course-card):nth-child(n + 6) { animation-delay: 240ms; }
+
+/* 3. Choosing another fiche swaps the whole reading card (it is keyed): bridge it. */
+.lesson-reader {
+  animation: rise-in 300ms var(--ease-out) both;
+}
+
+/* 4. Quiz — corrections explain a state change; a passed quiz earns one small celebration. */
+.quiz-correction {
+  animation: rise-in 260ms var(--ease-out) both;
+}
+fieldset + fieldset .quiz-correction {
+  animation-delay: 80ms;
+}
+.quiz-result {
+  animation: settle-in 320ms var(--ease-out) 120ms both;
+}
+.quiz-result.passed {
+  padding: 18px 20px;
+  border-radius: var(--r-lg);
+  background: var(--green-soft);
+  animation:
+    settle-in 320ms var(--ease-out) 120ms both,
+    ring-pulse 900ms ease-out 360ms 1;
+}
+.quiz-result.passed > strong {
+  color: var(--green);
+}
+
+/* 5. Floating map panels appear from the edge they sit on. */
+.map-placement,
+.replay-panel,
+.record-panel {
+  animation: sheet-in 320ms var(--ease-drawer) both;
+}
+
+/* 6. Disclosures open instead of snapping. */
+details[open] > :not(summary) {
+  animation: rise-in 240ms var(--ease-out) both;
+}
+
+/* 7. Empty states, rare: settle in gently. */
+.empty {
+  animation: settle-in 360ms var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Keep the fades, drop the travel; nothing waits on a delay. */
+  .welcome-center > *,
+  .welcome-art,
+  .art-caption,
+  .student-welcome > *,
+  .student-shortcuts,
+  .student-more,
+  .video-card,
+  .route-card,
+  .course-card,
+  .lesson-reader,
+  .quiz-correction,
+  .quiz-result,
+  .map-placement,
+  .replay-panel,
+  .record-panel,
+  details[open] > :not(summary),
+  .empty {
+    animation: fade-in 200ms ease both !important;
+    animation-delay: 0ms !important;
+  }
+  .art-route,
+  .art-pin {
+    animation: none !important;
+  }
 }
