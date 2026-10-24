@@ -284,7 +284,7 @@ export function Dropdown<T extends string>({
 }: {
   label: string;
   value: T;
-  options: readonly { id: T; label: string }[];
+  options: readonly { id: T; label: string; section?: string }[];
   onChange: (id: T) => void;
 }) {
   const [open, setOpen] = React.useState(false);
@@ -307,21 +307,103 @@ export function Dropdown<T extends string>({
       </Pressable>
       {open && (
         <View style={[s.card, { padding: 6, gap: 2 }]}>
-          {options.map((o) => {
+          {options.map((o, i) => {
             const active = o.id === value;
+            const header = o.section && o.section !== options[i - 1]?.section ? o.section : null;
             return (
+              <React.Fragment key={o.id}>
+              {header && <Text style={[s.eyebrow, { paddingHorizontal: 12, paddingTop: i ? 12 : 6, paddingBottom: 4, color: colors.muted }]}>{header.toUpperCase()}</Text>}
               <Pressable
-                key={o.id}
                 accessibilityRole="button"
                 accessibilityState={{ selected: active }}
                 onPress={() => { void Haptics.selectionAsync(); onChange(o.id); setOpen(false); }}
                 style={({ pressed }) => ({ minHeight: 46, paddingHorizontal: 12, borderRadius: radius.sm, flexDirection: "row", alignItems: "center", justifyContent: "space-between", backgroundColor: active ? colors.soft : pressed ? colors.cream : "transparent" })}
               >
-                <Text style={{ fontFamily: active ? fonts.bodyBold : fonts.body, fontSize: 15, color: active ? colors.wine : colors.ink }}>{o.label}</Text>
+                <Text style={{ flex: 1, fontFamily: active ? fonts.bodyBold : fonts.body, fontSize: 15, lineHeight: 20, paddingVertical: 10, color: active ? colors.wine : colors.ink }}>{o.label}</Text>
                 {active && <Icon name="checkmark" size={18} />}
               </Pressable>
+              </React.Fragment>
             );
           })}
+        </View>
+      )}
+    </View>
+  );
+}
+/** Same as the website's <details> blocks: a titled row that opens its content beneath. */
+export function Disclosure({
+  title,
+  children,
+  tone,
+  card = true,
+}: {
+  title: string;
+  children: ReactNode;
+  tone?: string;
+  card?: boolean;
+}) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <View style={card ? [s.card, { padding: 0, gap: 0, overflow: "hidden" }] : { borderBottomWidth: 1, borderColor: colors.line }}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityState={{ expanded: open }}
+        onPress={() => setOpen(!open)}
+        style={({ pressed }) => ({ minHeight: 54, paddingHorizontal: card ? 18 : 2, flexDirection: "row", alignItems: "center", gap: 10, backgroundColor: pressed ? colors.cream : "transparent" })}
+      >
+        <Text style={{ flex: 1, fontFamily: fonts.bodySemi, fontSize: 15, color: tone || colors.ink }}>{title}</Text>
+        <Icon name={open ? "chevron-up" : "chevron-down"} size={18} />
+      </Pressable>
+      {open && <View style={{ paddingHorizontal: card ? 18 : 2, paddingBottom: 16, gap: 10 }}>{children}</View>}
+    </View>
+  );
+}
+/** Same as the website's segmented tabs (.course-tabs). */
+export function Segmented<T extends string>({
+  value,
+  options,
+  onChange,
+  label,
+}: {
+  value: T;
+  options: readonly { id: T; label: string }[];
+  onChange: (id: T) => void;
+  label: string;
+}) {
+  return (
+    <View accessibilityRole="tablist" accessibilityLabel={label} style={{ flexDirection: "row", gap: 2, padding: 4, borderRadius: radius.md, backgroundColor: colors.paper, borderWidth: 1, borderColor: colors.line }}>
+      {options.map((o) => {
+        const active = o.id === value;
+        return (
+          <Pressable
+            key={o.id}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: active }}
+            onPress={() => { if (!active) void Haptics.selectionAsync(); onChange(o.id); }}
+            style={({ pressed }) => ({ flex: 1, minHeight: 44, borderRadius: radius.sm, alignItems: "center", justifyContent: "center", paddingHorizontal: 8, backgroundColor: active ? colors.wine : pressed ? colors.cream : "transparent" })}
+          >
+            <Text style={{ fontFamily: fonts.bodySemi, fontSize: 15, color: active ? colors.paper : colors.muted, textAlign: "center" }}>{o.label}</Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+/** Page heading shared by every tab, as on the website: eyebrow, title with a wine dot, subtitle. */
+export function PageHeading({ eyebrow, title, subtitle, dot = false, icon }: { eyebrow: string; title: string; subtitle?: string; dot?: boolean; icon?: React.ComponentProps<typeof Ionicons>["name"] }) {
+  return (
+    <View style={{ flexDirection: "row", alignItems: "flex-start", gap: 12 }}>
+      <View style={{ flex: 1, gap: 8 }}>
+        <Text style={s.eyebrow}>{eyebrow}</Text>
+        <Text style={s.title} accessibilityRole="header">
+          {title}
+          {dot && <Text style={{ color: colors.wine }}>.</Text>}
+        </Text>
+        {!!subtitle && <Text style={s.subtitle}>{subtitle}</Text>}
+      </View>
+      {icon && (
+        <View style={{ width: 48, height: 48, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.line, backgroundColor: colors.paper, alignItems: "center", justifyContent: "center" }}>
+          <Icon name={icon} size={22} />
         </View>
       )}
     </View>
