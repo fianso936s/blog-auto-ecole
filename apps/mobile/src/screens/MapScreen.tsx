@@ -12,6 +12,7 @@ import {
   upcomingPoint,
   positionOnRoute,
   guideLabel,
+  pointComment,
   type MapSpot,
   type NativeLocation,
   type Point,
@@ -348,6 +349,7 @@ export function MapScreen() {
                   {liveGuide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(liveGuide)}
                 </Text>
                 <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "700", color: colors.ink }}>{liveGuide.point.name}</Text>
+                {!!pointComment(liveGuide.point as any) && <Text numberOfLines={liveGuide.state === "here" ? 5 : 2} style={{ fontSize: 14, lineHeight: 19, color: colors.ink, marginTop: 2 }}>{pointComment(liveGuide.point as any)}</Text>}
               </View>
               <Text style={{ fontSize: 14, fontWeight: "700", color: colors.wine }}>Lire →</Text>
             </Pressable>

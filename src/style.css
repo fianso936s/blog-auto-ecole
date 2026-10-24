@@ -1894,6 +1894,20 @@ input[type="radio"] {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+.player-point .guide-note {
+  font-style: normal;
+  font-size: 14px;
+  line-height: 1.35;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  white-space: normal;
+}
+.player-point[data-state="here"] .guide-note {
+  -webkit-line-clamp: 5;
+}
 .player-point .guide-open {
   font-size: 13px;
   font-weight: 700;

@@ -15,6 +15,7 @@ import {
   cumulativeDistance,
   upcomingPoint,
   guideLabel,
+  pointComment,
   replayAnchor,
   replayIndices,
   type Route,
@@ -321,6 +322,7 @@ export function Replay({
                   {guide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(guide)}
                 </Text>
                 <Text numberOfLines={1} style={{ fontSize: 16, fontWeight: "700", color: colors.ink }}>{guide.point.name}</Text>
+                {!!pointComment(guide.point as any) && <Text numberOfLines={guide.state === "here" ? 5 : 2} style={{ fontSize: 14, lineHeight: 19, color: colors.ink, marginTop: 2 }}>{pointComment(guide.point as any)}</Text>}
               </View>
               <Text style={{ fontSize: 14, fontWeight: "700", color: colors.wine }}>Lire →</Text>
             </Pressable>

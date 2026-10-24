@@ -77,3 +77,8 @@ export function guideLabel(guide: { meters: number; state: GuideState }) {
   const m = guide.meters;
   return `Dans ${m < 1000 ? `${Math.max(10, Math.round(m / 10) * 10)} m` : `${(m / 1000).toFixed(1).replace(".", ",")} km`}`;
 }
+
+/** The teacher's comment on a repère: a spot's note, or a route repère's text. */
+export function pointComment(p: { note?: string; question?: string; explanation?: string }) {
+  return (p.note || p.question || p.explanation || "").trim();
+}

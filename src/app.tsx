@@ -33,6 +33,7 @@ import {
   upcomingPoint,
   positionOnRoute,
   guideLabel,
+  pointComment,
   type Profile,
   type Route,
   type RouteInput,
@@ -1513,7 +1514,7 @@ function MapPage() {
         {liveGuide && (
           <button className="player-point live-guide" data-state={liveGuide.state} aria-live="polite" onClick={() => void chooseSpot(liveGuide.point)}>
             <span className="guide-badge">{liveGuide.point.category}</span>
-            <span className="guide-text"><small>{liveGuide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(liveGuide)}</small><strong>{liveGuide.point.name}</strong></span>
+            <span className="guide-text"><small>{liveGuide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(liveGuide)}</small><strong>{liveGuide.point.name}</strong>{pointComment(liveGuide.point as any) && <em className="guide-note">{pointComment(liveGuide.point as any)}</em>}</span>
             <span className="guide-open">Lire →</span>
           </button>
         )}
@@ -1998,8 +1999,7 @@ function SpotDetails({
           )}
         </div>
         <p>
-          {point.note ||
-            point.explanation ||
+          {pointComment(point) ||
             "Consultez les photos et les indications de votre enseignant."}
         </p>
         <div className="photo-grid">

@@ -1,6 +1,6 @@
 import React, { useEffect, useLayoutEffect, useMemo, useRef, useState, useCallback } from "react";
 import { api } from "./shared/api";
-import { geometry, cumulativeDistance, upcomingPoint, guideLabel, type Route, type Point } from "./shared/core";
+import { geometry, cumulativeDistance, upcomingPoint, guideLabel, pointComment, type Route, type Point } from "./shared/core";
 import { replayAnchor } from "./shared/street-replay";
 
 export const STREET_ORIGIN = "https://br-fragrant-lake-b9utxdv6-spotapi.compute.c-7.eu-central-1.aws.neon.tech";
@@ -209,7 +209,7 @@ export function ReplayPlayer({route, target, initialIndex = 0, initialMode = "ma
       {mode === "map" && !mapReady && <div className="player-loading" role="status">Préparation de la carte…</div>}
       {guide && !explore && <button className="player-point" data-state={guide.state} aria-live="polite" onClick={()=>{setPlaying(false);onPoint?.(guide.point);}}>
         <span className="guide-badge">{guide.point.category}</span>
-        <span className="guide-text"><small>{guide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(guide)}</small><strong>{guide.point.name}</strong></span>
+        <span className="guide-text"><small>{guide.state === "here" ? "Repère" : "Prochain repère"} · {guideLabel(guide)}</small><strong>{guide.point.name}</strong>{pointComment(guide.point as any) && <em className="guide-note">{pointComment(guide.point as any)}</em>}</span>
         <span className="guide-open">Lire →</span>
       </button>}
     </div>
