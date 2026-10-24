@@ -22,6 +22,7 @@ try {
     "db/migrations/011-webrtc-livekit.sql",
     // 012–017 were applied outside this runner; only later files are listed.
     "db/migrations/018-slot-bookings.sql",
+    "db/migrations/019-spot-proposals.sql",
   ]) {
     if (
       (

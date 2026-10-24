@@ -1,0 +1,46 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {PGlite} from '@electric-sql/pglite';
+import {Hono} from 'hono';
+import {ZodError} from 'zod';
+import {setTestPool} from '../../apps/api/src/db.ts';
+import {installProposals} from '../../apps/api/src/proposals.ts';
+import {ApiError,type Env} from '../../apps/api/src/security.ts';
+test('students propose repères on a route or an exam centre, their teacher reviews and publishes them',async()=>{
+ process.env.NODE_ENV='test';process.env.RESEND_API_KEY='re_test';process.env.MAIL_FROM='Le Repère <planning@example.invalid>';
+ const sent:any[]=[];const realFetch=globalThis.fetch;globalThis.fetch=(async(_u:any,init:any)=>{sent.push(JSON.parse(init.body));return new Response('{}');}) as any;
+ const db=new PGlite();
+ await db.exec(`CREATE ROLE repere_runtime;CREATE TABLE users(id text PRIMARY KEY,name text,role text,email text);
+  CREATE TABLE teacher_students(teacher_id text,student_id text,PRIMARY KEY(teacher_id,student_id));
+  CREATE TABLE routes(id uuid PRIMARY KEY,name text,exam_center text,status text);CREATE TABLE assignments(route_id uuid,student_id text);
+  INSERT INTO users VALUES('a','Directeur','admin','a@example.invalid'),('t','Prof','teacher','prof@example.invalid'),('o','Autre','teacher','o@example.invalid'),('s','Inès','student','ines@example.invalid'),('n','Nouvel','student',null);
+  INSERT INTO teacher_students VALUES('t','s');
+  INSERT INTO routes VALUES('10000000-0000-4000-8000-000000000001','Parcours 1','Gennevilliers','published'),('10000000-0000-4000-8000-000000000002','Privé','Nanterre','private');`);
+ await db.exec(await readFile('db/migrations/019-spot-proposals.sql','utf8'));
+ setTestPool({query:async(sql:string,args:any[])=>{const r=await db.query(sql,args);return {...r,rowCount:r.affectedRows??r.rows.length};}} as any);
+ const app=new Hono<Env>();app.use('*',async(c,next)=>{c.set('profile',(await db.query('SELECT * FROM users WHERE id=$1',[c.req.header('x-fixture-user')])).rows[0] as any);await next();});app.onError((e,c)=>c.json({error:e.message},e instanceof ApiError?e.status as 400:e instanceof ZodError?400:500));installProposals(app);
+ const call=async(path:string,user:string,method='GET',body?:unknown)=>{const r=await app.request('https://fixture.invalid/v1/'+path,{method,headers:{'x-fixture-user':user,'content-type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)});return {status:r.status,body:await r.json() as any};};
+ const base={name:'Stop masqué',category:'Priorité',lat:48.92,lng:2.29,remark:'On le voit tard'};
+ try{
+  assert.equal((await call('proposals','t','POST',{...base,id:'20000000-0000-4000-8000-000000000001',examCenter:'Nanterre'})).status,403,'teachers add repères directly');
+  assert.equal((await call('proposals','s','POST',{...base,id:'20000000-0000-4000-8000-000000000001'})).status,400,'a route or a centre is required');
+  assert.equal((await call('proposals','s','POST',{...base,id:'20000000-0000-4000-8000-000000000001',routeId:'10000000-0000-4000-8000-000000000002'})).status,404,'a private route stays hidden');
+  const onRoute=await call('proposals','s','POST',{...base,id:'20000000-0000-4000-8000-000000000001',routeId:'10000000-0000-4000-8000-000000000001'});
+  assert.equal(onRoute.status,201);assert.equal(onRoute.body.proposal.routeName,'Parcours 1');assert.equal(onRoute.body.proposal.examCenter,'Gennevilliers');
+  assert.deepEqual(sent.map(m=>m.to[0]),['prof@example.invalid'],'the student\'s teacher is e-mailed');assert.match(sent[0].subject,/Nouveau repère proposé par Inès/);
+  sent.length=0;
+  await call('proposals','n','POST',{...base,id:'20000000-0000-4000-8000-000000000002',examCenter:'Nanterre'});
+  assert.deepEqual(sent.map(m=>m.to[0]),['a@example.invalid'],'a student without teacher reaches the director');
+  assert.equal((await call('proposals','t')).body.proposals.length,1,'a teacher reviews his own students only');
+  assert.equal((await call('proposals','o')).body.proposals.length,0);
+  assert.equal((await call('proposals','a')).body.proposals.length,2,'the director reviews everything');
+  assert.equal((await call('proposals','s')).body.proposals.length,1,'a student sees his own proposals');
+  assert.equal((await call('proposals/20000000-0000-4000-8000-000000000001/resolve','o','POST',{status:'rejected'})).status,404);
+  assert.equal((await call('proposals/20000000-0000-4000-8000-000000000001/resolve','t','POST',{status:'accepted'})).status,400);
+  assert.equal((await call('proposals/20000000-0000-4000-8000-000000000001/resolve','t','POST',{status:'accepted',spotId:'30000000-0000-4000-8000-000000000001'})).status,200);
+  assert.equal((await call('proposals','t')).body.proposals.length,0,'published proposals leave the queue');
+  assert.equal((await call('proposals','s')).body.proposals[0].status,'accepted');
+  assert.equal((await call('proposals/20000000-0000-4000-8000-000000000002/resolve','a','POST',{status:'rejected'})).status,200);
+ }finally{globalThis.fetch=realFetch;delete process.env.RESEND_API_KEY;delete process.env.MAIL_FROM;await db.close();}
+});

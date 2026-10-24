@@ -1172,6 +1172,8 @@ function MapPage() {
     [favorites, setFavorites] = useState(false),
     [assign, setAssign] = useState<string | null>(null);
   const [cameraMode,setCameraMode]=useState<"pov"|"preview">("preview");
+  const [proposeAt,setProposeAt]=useState<{lat:number;lng:number}|null>(null),[proposalsOpen,setProposalsOpen]=useState(false),
+    [pendingProposals,setPendingProposals]=useState<number|null>(null),[accepting,setAccepting]=useState<Proposal|null>(null);
   const [gpsFollow,setGpsFollow]=useState(false),[gpsPosition,setGpsPosition]=useState<{lat:number;lng:number}|null>(null);
 
   const [rec, setRec] = useState<"idle" | "recording" | "paused">("idle"),
@@ -1200,6 +1202,7 @@ function MapPage() {
         api<{ routes: RouteSummary[] }>("/v1/routes"),
       ]);
       if (s.status === "fulfilled") setSpots(s.value.spots);
+      if (writer) void api<{ proposals: unknown[] }>("/v1/proposals").then((r) => setPendingProposals(r.proposals.length)).catch(() => setPendingProposals(null));
       if (r.status === "fulfilled") setRoutes(r.value.routes);
       setLoadError([s, r].filter(x=>x.status === "rejected").map(x=>(x as PromiseRejectedResult).reason.message).join(" "));
     } finally { refreshing.current=false; setLoading(false); }
@@ -1464,8 +1467,8 @@ function MapPage() {
         previewMode={rec!=="idle"&&cameraMode==="preview"}
         highlightId={liveGuide?.point.id}
         onSpot={chooseSpot}
-        onPosition={pos=>{setMapPos(pos);if(placing){setEditor(blankSpot(pos));setPlacing(false);}}}
-        onLongPress={writer ? pos=>{setMapPos(pos);setPlacing(false);setEditor(blankSpot(pos));} : undefined}
+        onPosition={pos=>{setMapPos(pos);if(placing){if(writer)setEditor(blankSpot(pos));else setProposeAt(pos);setPlacing(false);}}}
+        onLongPress={pos=>{setMapPos(pos);setPlacing(false);if(writer)setEditor(blankSpot(pos));else setProposeAt(pos);}}
         handle={handle}
       />}
       <div className="map-top">
@@ -1511,7 +1514,7 @@ function MapPage() {
           )}
         </div>
       )}
-      {placing && <div className="map-placement" role="status"><strong>Touchez la carte à l’endroit du repère</strong><div className="row"><button className="btn secondary" onClick={()=>{const c=handle.current.map?.getCenter();setEditor(blankSpot(c?{lat:c.lat,lng:c.lng}:mapPos));setPlacing(false);}}>Utiliser le centre</button><button className="text-btn" onClick={()=>setPlacing(false)}>Annuler</button></div></div>}
+      {placing && <div className="map-placement" role="status"><strong>Touchez la carte à l’endroit du repère</strong><div className="row"><button className="btn secondary" onClick={()=>{const c=handle.current.map?.getCenter(),at=c?{lat:c.lat,lng:c.lng}:mapPos;if(writer)setEditor(blankSpot(at));else setProposeAt(at);setPlacing(false);}}>Utiliser le centre</button><button className="text-btn" onClick={()=>setPlacing(false)}>Annuler</button></div></div>}
       <div className="map-bottom" hidden={placing}>
         {liveGuide && (
           <button className="player-point live-guide" data-state={liveGuide.state} aria-live="polite" onClick={() => void chooseSpot(liveGuide.point)}>
@@ -1713,7 +1716,7 @@ function MapPage() {
             </p>
           </div>
         ) : (
-          writer && (
+          writer ? (
             <div className="map-creation">
               <Button
                 icon="plus"
@@ -1723,6 +1726,17 @@ function MapPage() {
               </Button>
               <Button secondary icon="locate" onClick={startRecording}>
                 Enregistrer
+              </Button>
+              {pendingProposals !== null && (
+                <Button secondary icon="map" onClick={() => setProposalsOpen(true)}>
+                  Propositions{pendingProposals ? ` (${pendingProposals})` : ""}
+                </Button>
+              )}
+            </div>
+          ) : (
+            <div className="map-creation">
+              <Button icon="plus" onClick={() => {setPlacing(true);setPlaying(false);}}>
+                Proposer un repère
               </Button>
             </div>
           )
@@ -1836,6 +1850,20 @@ function MapPage() {
           </div>
         </Modal>
       )}
+      {proposeAt && (
+        <ProposalForm pos={proposeAt} routes={routes} defaultRouteId={route?.id} onClose={() => setProposeAt(null)}
+          onSent={() => {setProposeAt(null);notify("Merci ! Ta proposition est envoyée à ton moniteur.");}} />
+      )}
+      {proposalsOpen && (
+        <ProposalsPanel onClose={() => setProposalsOpen(false)} onChanged={setPendingProposals}
+          onFocus={(p) => {setProposalsOpen(false);handle.current.map?.flyTo({center:[p.lng,p.lat],zoom:18});}}
+          onComplete={(p) => {
+            setProposalsOpen(false);
+            handle.current.map?.flyTo({center:[p.lng,p.lat],zoom:18});
+            setAccepting(p);
+            setEditor({...blankSpot({lat:p.lat,lng:p.lng}),name:p.name,category:p.category as MapSpot["category"],note:p.remark,status:"published",shareWithStudents:true});
+          }} />
+      )}
       {player && route && <ReplayPlayer route={route} spots={spots} initialIndex={index} initialMode={player} autoplay={player === "map"} MapView={MapCanvas} notify={notify} onClose={()=>setPlayer(null)} onPoint={chooseSpot} onProgress={setIndex} />}
       {point && (
         <SpotDetails
@@ -1856,9 +1884,14 @@ function MapPage() {
       {editor && (
         <SpotEditor
           initial={editor}
-          onClose={() => setEditor(null)}
+          onClose={() => {setEditor(null);setAccepting(null);}}
           onSave={async (s) => {
             await api(`/v1/spots/${s.id}`, "PUT", s);
+            if (accepting) {
+              await api(`/v1/proposals/${accepting.id}/resolve`, "POST", { status: "accepted", spotId: s.id });
+              setAccepting(null);
+              setPendingProposals((n) => (n ? n - 1 : n));
+            }
             const routeFixes = rec !== "idle" ? fixes : route?.fixes;
             if (routeFixes?.length) {
               let nearest = 0,
@@ -2129,6 +2162,72 @@ async function imagePhoto(file: File): Promise<Photo> {
   } finally {
     URL.revokeObjectURL(url);
   }
+}
+type Proposal = { id: string; studentName: string; name: string; category: string; lat: number; lng: number; remark: string; routeId: string | null; routeName: string | null; examCenter: string | null; status: string; createdAt: string };
+/** A student proposes a repère: name, category, an optional remark, and the route or exam centre it belongs to. */
+function ProposalForm({ pos, routes, defaultRouteId, onClose, onSent }: { pos: { lat: number; lng: number }; routes: RouteSummary[]; defaultRouteId?: string; onClose: () => void; onSent: () => void }) {
+  const [name, setName] = useState(""), [category, setCategory] = useState<string>(categories[0]), [remark, setRemark] = useState(""),
+    [target, setTarget] = useState(defaultRouteId ? `route:${defaultRouteId}` : ""), [busy, setBusy] = useState(false), [error, setError] = useState("");
+  async function submit(e: React.FormEvent) {
+    e.preventDefault(); setError("");
+    if (!target) { setError("Indique le parcours ou le centre d’examen concerné."); return; }
+    setBusy(true);
+    try {
+      const [kind, value] = [target.slice(0, target.indexOf(":")), target.slice(target.indexOf(":") + 1)];
+      await api("/v1/proposals", "POST", { id: crypto.randomUUID(), name: name.trim(), category, lat: pos.lat, lng: pos.lng, remark: remark.trim(), routeId: kind === "route" ? value : null, examCenter: kind === "center" ? value : null });
+      onSent();
+    } catch (err) { setError((err as Error).message); } finally { setBusy(false); }
+  }
+  return (
+    <Modal title="Proposer un repère" onClose={onClose}>
+      <form className="stack" onSubmit={submit}>
+        <p className="caption">Ton moniteur reçoit ta proposition, complète le commentaire et la publie sur la carte.</p>
+        <Field label="Nom du repère"><input required maxLength={120} value={name} onChange={(e) => setName(e.target.value)} placeholder="Ex. Stop caché après le virage" /></Field>
+        <Field label="Catégorie"><select value={category} onChange={(e) => setCategory(e.target.value)}>{categories.map((c) => <option key={c} value={c}>{c}</option>)}</select></Field>
+        <Field label="Parcours ou centre d’examen">
+          <select required value={target} onChange={(e) => setTarget(e.target.value)}>
+            <option value="">Choisir…</option>
+            {routes.length > 0 && <optgroup label="Parcours">{routes.map((r) => <option key={r.id} value={`route:${r.id}`}>{r.name}{r.examCenter ? ` · ${r.examCenter}` : ""}</option>)}</optgroup>}
+            <optgroup label="Centre d’examen">{pickableCenters(routes).map((c) => <option key={c} value={`center:${c}`}>{c}</option>)}</optgroup>
+          </select>
+        </Field>
+        <Field label="Ta remarque (facultatif)"><textarea maxLength={1000} rows={3} value={remark} onChange={(e) => setRemark(e.target.value)} placeholder="Ce que tu as remarqué à cet endroit" /></Field>
+        {error && <p className="error" role="alert">{error}</p>}
+        <Button type="submit" disabled={busy} icon="check">{busy ? "Envoi…" : "Envoyer la proposition"}</Button>
+      </form>
+    </Modal>
+  );
+}
+/** Teacher's queue of student proposals: look, complete and publish, or decline. */
+function ProposalsPanel({ onClose, onFocus, onComplete, onChanged }: { onClose: () => void; onFocus: (p: Proposal) => void; onComplete: (p: Proposal) => void; onChanged: (count: number) => void }) {
+  const [items, setItems] = useState<Proposal[] | null>(null), [error, setError] = useState(""), [busy, setBusy] = useState("");
+  const load = useCallback(async () => { try { const r = await api<{ proposals: Proposal[] }>("/v1/proposals"); setItems(r.proposals); onChanged(r.proposals.length); } catch (e) { setError((e as Error).message); setItems([]); } }, []);
+  useEffect(() => { void load(); }, [load]);
+  async function decline(p: Proposal) {
+    if (!window.confirm(`Refuser la proposition « ${p.name} » de ${p.studentName} ?`)) return;
+    setBusy(p.id);
+    try { await api(`/v1/proposals/${p.id}/resolve`, "POST", { status: "rejected" }); await load(); } catch (e) { setError((e as Error).message); } finally { setBusy(""); }
+  }
+  return (
+    <Modal title="Repères proposés par les élèves" wide onClose={onClose}>
+      <div className="stack proposals">
+        {error && <p className="error" role="alert">{error}</p>}
+        {!items ? <p role="status">Chargement…</p> : !items.length ? <p>Aucune proposition en attente.</p> : items.map((p) => (
+          <article key={p.id} className="proposal">
+            <div className="row wrap"><Badge>{p.category}</Badge><Badge color="green">{p.routeName ? `Parcours : ${p.routeName}` : `Centre : ${p.examCenter}`}</Badge></div>
+            <h3>{p.name}</h3>
+            <p className="caption">Proposé par {p.studentName} · {new Date(p.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })}</p>
+            {p.remark && <p>« {p.remark} »</p>}
+            <div className="row wrap">
+              <Button icon="check" onClick={() => onComplete(p)}>Compléter et publier</Button>
+              <button className="text-btn" onClick={() => onFocus(p)}>Voir le lieu</button>
+              <button className="text-btn" disabled={busy === p.id} onClick={() => void decline(p)}>Refuser</button>
+            </div>
+          </article>
+        ))}
+      </div>
+    </Modal>
+  );
 }
 function SpotEditor({
   initial,

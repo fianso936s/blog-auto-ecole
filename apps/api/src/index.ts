@@ -1,5 +1,6 @@
 import {installMetaDevices} from "./meta-devices.js";
 import {installTeaching} from "./teaching.js";
+import {installProposals} from "./proposals.js";
 import productContent from "./product-content.json";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
@@ -228,6 +229,7 @@ export function createApp() {
   app.get("/v1/product/content",c=>c.json(productContent));
   installMetaDevices(app);
   installTeaching(app);
+  installProposals(app);
   installCourses(app);
   app.get("/v1/me", (c) => c.json(c.get("profile")));
   app.patch("/v1/me", async (c) => {

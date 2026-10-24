@@ -14,7 +14,7 @@
     "typecheck:api": "tsc --noEmit -p apps/api",
     "build:api": "node scripts/build-api.mjs",
     "build:ios": "npm run export:ios -w @repere/mobile",
-    "test:api": "node --import tsx --test tests/backend/courses.test.ts tests/backend/video-sharing.test.ts tests/backend/http-hardening.test.ts tests/backend/commercial-security.test.ts tests/backend/street-replay.test.ts tests/backend/streetview-renderer.test.ts tests/backend/teaching.test.ts tests/backend/bookings.test.ts tests/backend/egress.test.ts",
+    "test:api": "node --import tsx --test tests/backend/courses.test.ts tests/backend/video-sharing.test.ts tests/backend/http-hardening.test.ts tests/backend/commercial-security.test.ts tests/backend/street-replay.test.ts tests/backend/streetview-renderer.test.ts tests/backend/teaching.test.ts tests/backend/bookings.test.ts tests/backend/proposals.test.ts tests/backend/egress.test.ts",
     "ios:testflight": "cd apps/mobile && npx eas-cli build --platform ios --profile production --auto-submit",
     "product:generate": "node scripts/generate-product.mjs",
     "product:check": "node scripts/check-uniformity.mjs",

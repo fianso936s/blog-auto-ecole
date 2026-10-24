@@ -25,6 +25,8 @@ import { Library, RouteEditorSheet, useRouteTools } from "./Library";
 import { RouteMap } from "../components/RouteMap";
 import { Badge, Button, Dropdown, Icon, IconButton, LinkButton } from "../components/UI";
 import { PointEditor, PointReader } from "../components/PointEditor";
+import { ProposalSheet, ProposalsSheet, type Proposal } from "../components/Proposals";
+import * as Crypto from "expo-crypto";
 import { useApp } from "../state";
 import { colors, fonts, radius, shadow, styles as s, tones, filterTone } from "../theme";
 import {
@@ -102,6 +104,17 @@ export function MapScreen() {
     [category, setCategory] = useState("Tous");
   const [locatedRoute, setLocatedRoute] = useState<typeof app.selected | undefined>(undefined);
   const center = useRef<(() => Promise<{ lat: number; lng: number } | null>) | null>(null);
+  // Student proposals: a student proposes, the teacher completes and publishes.
+  const [proposeAt, setProposeAt] = useState<{ lat: number; lng: number } | null>(null),
+    [proposalsOpen, setProposalsOpen] = useState(false),
+    [pendingProposals, setPendingProposals] = useState<number | null>(null),
+    [accepting, setAccepting] = useState<Proposal | null>(null);
+  useEffect(() => {
+    if (!teacher) return;
+    let alive = true;
+    void request<{ proposals: unknown[] }>("/v1/proposals").then((r) => { if (alive) setPendingProposals(r.proposals.length); }).catch(() => { if (alive) setPendingProposals(null); });
+    return () => { alive = false; };
+  }, [teacher, app.spots]);
   useEffect(() => {
     if (!gpsFollow || app.active) return;
     let alive = true,
@@ -224,8 +237,12 @@ export function MapScreen() {
     }
   }
   function addPoint(p: { lat: number; lng: number }) {
-    if (!teacher) return;
     setPlacing(false);
+    if (!teacher) {
+      setProposeAt(p);
+      void Haptics.selectionAsync();
+      return;
+    }
     const routeId = active?.id || (own ? chosen?.id : undefined);
     setTarget({ ...p, routeId, fixes });
     void Haptics.selectionAsync();
@@ -265,7 +282,7 @@ export function MapScreen() {
           position={position}
           styleUrl={app.config?.mapStyleUrl}
           onTap={(p) => placing && addPoint(p)}
-          onLongPress={teacher ? addPoint : undefined}
+          onLongPress={addPoint}
           viewportPadding={{ top: 170, bottom: 230, left: 35, right: 35 }}
           onPoint={openPoint}
           follow={(!!active && cameraMode === "pov") || (gpsFollow && !!location && locatedRoute === app.selected)}
@@ -490,10 +507,17 @@ export function MapScreen() {
               </Text>
             </View>
           ) : (
-            teacher && (
+            teacher ? (
               <View pointerEvents="box-none" style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
                 <Button label="Ajouter un repère" icon="add" onPress={() => setPlacing(true)} />
                 <Button label="Enregistrer" secondary icon="locate-outline" busy={starting} onPress={() => void start()} />
+                {pendingProposals !== null && (
+                  <Button label={`Propositions${pendingProposals ? ` (${pendingProposals})` : ""}`} secondary icon="mail-outline" onPress={() => setProposalsOpen(true)} />
+                )}
+              </View>
+            ) : (
+              <View pointerEvents="box-none" style={{ flexDirection: "row", gap: 8, flexWrap: "wrap" }}>
+                <Button label="Proposer un repère" icon="add" onPress={() => setPlacing(true)} />
               </View>
             )
           )}
@@ -508,7 +532,35 @@ export function MapScreen() {
           <Library onMap={() => setDirectory(false)} />
         </ModalFrame>
       </Modal>
-      <PointEditor target={target} onClose={() => setTarget(null)} />
+      <PointEditor
+        target={target}
+        onClose={() => { setTarget(null); setAccepting(null); }}
+        onSaved={async (id) => {
+          if (!accepting) return;
+          await request(`/v1/proposals/${accepting.id}/resolve`, { method: "POST", body: JSON.stringify({ status: "accepted", spotId: id }) });
+          setAccepting(null);
+          setPendingProposals((n) => (n ? n - 1 : n));
+          app.setMessage("Proposition publiée sur la carte.");
+        }}
+      />
+      <ProposalSheet
+        at={proposeAt}
+        routes={app.routes}
+        defaultRouteId={chosen?.id}
+        onClose={() => setProposeAt(null)}
+        onSent={() => { setProposeAt(null); app.setMessage("Merci ! Ta proposition est envoyée à ton moniteur."); }}
+      />
+      <ProposalsSheet
+        visible={proposalsOpen}
+        onClose={() => setProposalsOpen(false)}
+        onChanged={setPendingProposals}
+        onFocus={(p) => { setProposalsOpen(false); setRead({ id: p.id, name: p.name, category: p.category, lat: p.lat, lng: p.lng, fixIndex: 0, question: p.remark, options: [], explanation: "", validated: false, photos: [] } as any); }}
+        onComplete={(p) => {
+          setProposalsOpen(false);
+          setAccepting(p);
+          setTarget({ lat: p.lat, lng: p.lng, fixes: [], point: { id: Crypto.randomUUID(), name: p.name, category: p.category, lat: p.lat, lng: p.lng, note: p.remark, status: "published", shareWithStudents: true, photos: [], quiz: null } as any });
+        }}
+      />
       <PointReader point={read} onClose={() => setRead(null)} />
       <RouteEditorSheet
         initial={saving?.draft ?? null}

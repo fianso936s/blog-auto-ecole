@@ -46,9 +46,12 @@ type Target = {
 export function PointEditor({
   target,
   onClose,
+  onSaved,
 }: {
   target: Target | null;
   onClose: () => void;
+  /** Called with the repère's id once it is saved (publishing a student's proposal). */
+  onSaved?: (id: string) => void | Promise<void>;
 }) {
   const app = useApp();
   const [name, setName] = useState(""),
@@ -335,6 +338,7 @@ export function PointEditor({
         }
       }
       await app.reloadLocal();
+      await onSaved?.(id);
       onClose();
       void app.sync();
     } catch (e) {

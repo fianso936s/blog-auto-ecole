@@ -4803,3 +4803,19 @@ details[open] > :not(summary) {
   background: var(--paper);
   color: var(--wine);
 }
+
+/* Student proposals reviewed by the teacher. */
+.proposals .proposal {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--paper);
+}
+.proposals .proposal h3 {
+  margin: 0;
+}
+.proposals .proposal p {
+  margin: 0;
+}
