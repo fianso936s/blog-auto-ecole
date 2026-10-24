@@ -268,8 +268,8 @@
         "explanation": "En permis probatoire, la vitesse maximale est de 110 km/h sur autoroute, 100 km/h sur route à chaussées séparées et 80 km/h sur les autres routes."
       }
     ],
-    "revision": "5357189ab4afee81",
-    "contentHash": "5357189ab4afee814c77cdb882ee7df46fbbef34f29d9c2152ae7917a95c017b"
+    "revision": "34adcade25dea036",
+    "contentHash": "34adcade25dea036c1756af92f81a865fc1a18ac0b6669f6a5718397073ab8d3"
   },
   {
     "id": "c2-tourner",
@@ -609,8 +609,8 @@
         "explanation": "Le panonceau précise ou modifie l’effet du panneau : ici, il décale son point de départ."
       }
     ],
-    "revision": "ec66f519346d3d84",
-    "contentHash": "ec66f519346d3d84a24318309e1847f8543d4bda70e17350969ad555dda601a3"
+    "revision": "ea8cc76df7993d98",
+    "contentHash": "ea8cc76df7993d986262b5a6bd79251d04ce0be40a3aa7c21f2e27b3a5cb94e7"
   },
   {
     "id": "c2-marquages",
@@ -660,8 +660,8 @@
         "explanation": "Le chevauchement d’une ligne continue est permis pour dépasser un cycliste, un piéton ou un engin lent, quand c’est sans danger."
       }
     ],
-    "revision": "5e0cc6ad358e581c",
-    "contentHash": "5e0cc6ad358e581c2348f04852deba9e1ec9879fe76b05d4dc08c485d5fa6fdd"
+    "revision": "c32e99b54fd69b0e",
+    "contentHash": "c32e99b54fd69b0e7631855a0c25ff0d427cd322ce10f4d92cbe7d602d5d7caa"
   },
   {
     "id": "c2-feux-agents",
@@ -711,8 +711,8 @@
         "explanation": "Un indice informel peut avoir plusieurs significations : on envisage le pire scénario, ici un enfant qui surgit."
       }
     ],
-    "revision": "ab4fc2a7f6e62094",
-    "contentHash": "ab4fc2a7f6e62094073b7879b57c3fc658797931c5a90c556fc4666815adbb76"
+    "revision": "251dc2c6518a9080",
+    "contentHash": "251dc2c6518a9080b24e68eb47842f409692b6782cd88876b7ce0b70d26ff32a"
   },
   {
     "id": "c2-stop-cedez",
@@ -762,8 +762,8 @@
         "explanation": "Être prioritaire ne dispense pas de prudence : tu dois pouvoir éviter un refus de priorité."
       }
     ],
-    "revision": "64414176db852aad",
-    "contentHash": "64414176db852aad6f9008f23e04488083a4b6e4c5bac752297a2ea8dd0dcef6"
+    "revision": "dcc5fe50509e099f",
+    "contentHash": "dcc5fe50509e099fc94e32d0b9f245084e68be0d33ea39679b177f6b75185ec3"
   },
   {
     "id": "manoeuvre-bataille",
@@ -864,8 +864,8 @@
         "explanation": "Sur ce panneau, la flèche rouge correspond au sens qui doit céder : ici, toi."
       }
     ],
-    "revision": "4a9c254e94a87170",
-    "contentHash": "4a9c254e94a87170796523601096c64016fa088ac94c1401454a77f02472d4ec"
+    "revision": "c8b862a04e38681f",
+    "contentHash": "c8b862a04e38681f4dc40cece6118d24a64a5bf7c90bcd946254515acd1d81e4"
   },
   {
     "id": "c3-virages",
@@ -915,8 +915,8 @@
         "explanation": "Le véhicule qui descend s’arrête et recule si nécessaire, sauf signalisation contraire."
       }
     ],
-    "revision": "d77d1a2f78af06b0",
-    "contentHash": "d77d1a2f78af06b0f26574065523cb56c557ef45ac08db0913ec23e6bf0f77e0"
+    "revision": "b986098691695787",
+    "contentHash": "b986098691695787ba00def6279885ceab8fde495ee3a1ccaff66fbf84f007a4"
   },
   {
     "id": "c3-usagers",
@@ -1148,7 +1148,7 @@
         "explanation": "Des passagers peuvent traverser : on ne dépasse pas un tramway à l’arrêt du côté de la descente."
       }
     ],
-    "revision": "e37a821cd48cb6dc",
-    "contentHash": "e37a821cd48cb6dcd3343ae06b1a204771c92e371d898e8f1067fa872d0e7570"
+    "revision": "4ca6350a52394252",
+    "contentHash": "4ca6350a5239425231d0488b1da149fc5810d8fb1be4b4a204df32a2a96f413f"
   }
 ]

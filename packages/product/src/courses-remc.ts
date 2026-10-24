@@ -34,13 +34,13 @@ export const remcCourses: Course[] = [
         title: "Les obligations : rond bleu, effet immédiat",
         explanation: "Un rond bleu t’impose une action : tourner dans une direction, aller tout droit, suivre le sens giratoire, emprunter une piste cyclable s’il s’agit d’un vélo. Comme les interdictions, l’obligation commence au panneau. Quand tu vois une flèche bleue, prépare ton placement tôt, car tu n’auras pas d’autre choix de direction. Un rond bleu barré de rouge annonce la fin de l’obligation.",
         why: "Repérer l’obligation tôt évite le changement de voie de dernière seconde.",
-        figure: fig(signRow([["tourneDroite", "Tourner à droite"], ["toutDroit", "Tout droit"], ["giratoire", "Sens giratoire"], ["pisteCyclable", "Piste cyclable"]], "OBLIGATION · effet immédiat"), "Famille obligation : un rond bleu t’impose une direction ou un usage.", "Panneaux ronds bleus : tourner à droite, tout droit, sens giratoire, piste cyclable."),
+        figure: fig(signRow([["directionDroite", "À droite à la|prochaine intersection"], ["toutDroitOuDroite", "Tout droit|ou à droite"], ["pisteCyclable", "Piste|cyclable"], ["chainesNeige", "Chaînes|à neige"]], "OBLIGATION · effet immédiat"), "Famille obligation : un rond bleu t’impose une direction ou un usage.", "Panneaux d’obligation officiels : direction à droite, tout droit ou à droite, piste cyclable, chaînes à neige."),
       },
       {
         title: "Les indications et les fins : à proximité",
         explanation: "Les carrés et rectangles bleus t’informent : impasse, passage piétons, stationnement, tunnel, voie de détresse. Ils sont placés à proximité de ce qu’ils signalent. Les entrées de zone (zone 30, zone de rencontre limitée à 20 km/h avec priorité aux piétons) valent dans toute la zone jusqu’au panneau de sortie. Les panneaux directionnels t’indiquent la route à suivre à la prochaine intersection ; ceux placés dans le carrefour confirment la direction. Enfin, les balises et bornes te repèrent sur route : la balise de musoir, rayée de rouge, signale l’endroit où deux voies se séparent.",
         why: "L’information arrive juste avant d’être utile : il faut la chercher activement, pas l’attendre.",
-        figure: fig(signRow([["impasse", "Impasse"], ["zone30", "Zone 30"], ["zoneRencontre", "Zone de|rencontre (20)"], ["musoir", "Balise|de musoir"]], "INDICATION"), "Famille indication : elle t’informe sur ce qui se trouve tout près.", "Panneaux d’indication : impasse, zone 30, zone de rencontre, balise de musoir."),
+        figure: fig(signRow([["impasse", "Impasse"], ["passagePietons", "Passage|piétons"], ["zone30", "Zone 30"], ["zoneRencontre", "Zone de|rencontre (20)"]], "INDICATION"), "Famille indication : elle t’informe sur ce qui se trouve tout près.", "Panneaux d’indication officiels : impasse, passage piétons, zone 30, zone de rencontre."),
       },
       {
         title: "Les panonceaux changent le sens du panneau",
@@ -132,7 +132,6 @@ export const remcCourses: Course[] = [
         title: "Les feux tricolores et clignotants",
         explanation: "Rouge : arrêt absolu, avant la ligne. Jaune fixe : arrêt obligatoire, sauf si tu ne peux plus t’arrêter en sécurité (trop près, freinage brutal, véhicule collé derrière). Vert : tu passes, avec prudence et sans t’engager si tu risques de rester bloqué au milieu. À l’approche d’un feu vert depuis longtemps, lâche l’accélérateur, contrôle derrière et prépare le pied au-dessus du frein. Le jaune clignotant renforce un danger et te laisse appliquer la règle des panneaux. Le rouge clignotant (souvent deux feux alternés) impose l’arrêt : passage à niveau, tramway, pont mobile, sortie de véhicules prioritaires. Les panneaux à messages variables (PMV) t’informent d’un bouchon, d’un accident ou d’une vitesse conseillée.",
         why: "Le feu vert ancien peut passer au jaune à tout moment : l’anticiper évite la décision trop tardive.",
-        figure: fig(signRow([["feuJaune", "Jaune|clignotant"], ["feuRougeClignotant", "Rouge|clignotant"], ["pmv", "Message|variable"]], "SIGNAUX LUMINEUX"), "Le rouge clignotant impose l’arrêt ; le jaune clignotant demande la prudence.", "Feu jaune clignotant, feu rouge clignotant à deux lampes, panneau à messages variables."),
       },
       {
         title: "Les indices formels et informels",
@@ -313,7 +312,7 @@ export const remcCourses: Course[] = [
         title: "Repère le virage et son annonce",
         explanation: "Le panneau de virage est placé 50 m avant en agglomération et 150 m avant hors agglomération. Les balises à chevrons blancs et rouges, posées dans l’extérieur du virage, te montrent son tracé et sa difficulté : plus il y en a, plus il est serré. Regarde aussi le relief, les poteaux, la végétation : ils dessinent la courbe avant que tu la voies.",
         why: "Plus tu lis le virage tôt, plus tu as de temps pour ralentir en ligne droite.",
-        figure: fig(signRow([["virage", "Virage"], ["baliseVirage", "Balise|de virage"], ["descente", "Descente|dangereuse"], ["voieDetresse", "Voie de|détresse"]]), "Les panneaux et balises qui annoncent virages et pentes.", "Panneau virage, balise à chevrons, descente dangereuse, voie de détresse."),
+        figure: fig(signRow([["virage", "Virage|à droite"], ["virageGauche", "Virage|à gauche"], ["glissante", "Chaussée|glissante"], ["voieDetresse", "Voie de|détresse"]]), "Les panneaux qui annoncent virages et dangers de la route.", "Panneaux officiels : virage à droite, virage à gauche, chaussée glissante, voie de détresse."),
       },
       {
         title: "Ralentis avant, maintiens pendant, accélère à la sortie",
@@ -533,7 +532,7 @@ export const remcCourses: Course[] = [
         title: "Le tunnel",
         explanation: "Allume tes feux de croisement avant d’entrer et retire tes lunettes de soleil. Respecte la limitation, souvent plus basse. Garde ta distance de sécurité, repérée dans certains tunnels par des balises bleues au mur : garde-en au moins deux entre toi et le véhicule de devant. Interdiction de t’arrêter, de stationner, de faire demi-tour ou marche arrière. En cas de panne, gare-toi sur une zone d’arrêt d’urgence ; en cas d’incendie, coupe le moteur, laisse la clé sur le contact, et rejoins à pied l’issue de secours la plus proche.",
         why: "Dans un tunnel, la fumée et la circulation rendent toute erreur plus grave.",
-        figure: fig(signRow([["tunnel", "Tunnel"], ["pn", "Passage à niveau|avec barrières"], ["tram", "Traversée|de tramway"], ["feuRougeClignotant", "Arrêt|obligatoire"]]), "Les panneaux qui annoncent les ouvrages.", "Panneaux tunnel, passage à niveau, traversée de tramway, feu rouge clignotant."),
+        figure: fig(signRow([["pn", "Passage à niveau|avec barrières"], ["pnSansBarriere", "Passage à niveau|sans barrières"], ["tram", "Traversée|de tramway"]]), "Les panneaux qui annoncent passages à niveau et tramway.", "Panneaux officiels : passage à niveau avec barrières, sans barrières, traversée de tramway."),
       },
       {
         title: "Les ponts",
@@ -566,7 +565,7 @@ export const remcEnrichments: Record<string, { figures?: Record<number, LessonFi
         title: "Connais les limites de vitesse",
         explanation: "En agglomération : 50 km/h, souvent 30 km/h en zone 30, et 20 km/h en zone de rencontre où les piétons sont prioritaires. Hors agglomération : 80 km/h sur les routes à double sens sans séparation centrale, 90 km/h seulement là où des panneaux l’indiquent. Routes à chaussées séparées : 110 km/h (100 par pluie). Autoroute : 130 km/h (110 par pluie). En permis probatoire, tu roules à 80, 100 et 110 km/h au maximum. Quand la visibilité est inférieure à 50 m, c’est 50 km/h partout.",
         why: "La limite est un maximum. L’allure adaptée dépend ensuite de ce que tu vois et de qui est autour.",
-        figure: fig(signRow([["zoneRencontre", "Zone de|rencontre"], ["limite30", "Zone 30"], ["limite50", "Agglo"], ["fin50", "Fin de|limitation"]], "LIMITATIONS"), "Une limitation s’applique dès le panneau et jusqu’à celui qui la modifie.", "Panneaux zone de rencontre, 30, 50 et fin de limitation 50."),
+        figure: fig(signRow([["zoneRencontre", "Zone de|rencontre"], ["zone30", "Zone 30"], ["limite50", "50 km/h"], ["fin50", "Fin de|limitation"]], "LIMITATIONS"), "Une limitation s’applique dès le panneau et jusqu’à celui qui la modifie.", "Panneaux officiels : zone de rencontre, zone 30, limitation à 50, fin de limitation à 50."),
       },
     }],
   },

@@ -3,6 +3,7 @@
  * SVG statiques, sans script ni ressource externe : ils s'affichent en <img> sur le site
  * et dans une WebView sur iOS. Formes et couleurs suivent la signalisation française.
  */
+import { officialSigns } from "./official-signs";
 export type LessonFigure = { svg: string; caption: string; alt: string };
 
 const RED = "#C8102E", BLUE = "#1C4FA0", YEL = "#F5C400", INK = "#1E1E1E", GREY = "#6B6B6B", ROAD = "#4A4A4A", GREEN = "#2E9E4F", PAPER = "#FFFFFF";
@@ -83,15 +84,39 @@ export const signs: Record<string, Sign> = {
   musoir: (cx, cy) => `<g transform='translate(${cx},${cy})'><rect x='-24' y='-24' width='48' height='48' rx='4' fill='${PAPER}' stroke='${INK}' stroke-width='1.5'/><path d='M-16,16 L0,-14 L16,16 M-8,16 L0,0 L8,16' fill='none' stroke='${RED}' stroke-width='4'/></g>`,
 };
 
+/** Place un panneau officiel (SVG Commons) centré en cx,cy, dans un carré de `size`. */
+export function official(code: string, cx: number, cy: number, size = 62): string {
+  const src = officialSigns[code];
+  if (!src) throw Error("Panneau officiel absent : " + code);
+  const open = /<svg[^>]*>/.exec(src)![0];
+  const vb = /viewBox="([^"]+)"/.exec(open)?.[1] ??
+    `0 0 ${/\swidth="([\d.]+)/.exec(open)?.[1] ?? 100} ${/\sheight="([\d.]+)/.exec(open)?.[1] ?? 100}`;
+  const inner = src.slice(open.length, src.lastIndexOf("</svg>"));
+  return `<svg x='${cx - size / 2}' y='${cy - size / 2}' width='${size}' height='${size}' viewBox='${vb}' preserveAspectRatio='xMidYMid meet' overflow='hidden'>${inner}</svg>`;
+}
+/** Correspondance entre les noms utilisés dans les fiches et les codes officiels. */
+const officialCode: Record<string, string> = {
+  virage: "A1a", virageGauche: "A1b", cassis: "A2a", retrecie: "A3", glissante: "A4", pn: "A7", pnSansBarriere: "A8", tram: "A9",
+  enfants: "A13a", pietons: "A13b", autreDanger: "A14", feux: "A17", intersection: "AB1", priorPonctuelle: "AB2", cedez: "AB3a",
+  stop: "AB4", prioritaire: "AB6", finPrioritaire: "AB7", giratoireDanger: "AB25", sensInterdit: "B1", interditGauche: "B2a",
+  interditDepasser: "B3", stationnementInterdit: "B6a1", arretInterdit: "B6d", limite30: "B14 (30)", limite50: "B14 (50)",
+  limite70: "B14 (70)", cedeFace: "B15", directionDroite: "B21c1", toutDroitOuDroite: "B21d1", droiteOuGauche: "B21e",
+  pisteCyclable: "B22a", chainesNeige: "B26", zone30: "B30 (30)", finInterdiction: "B31", fin50: "B33 (50)",
+  finInterditDepasser: "B34", finZone30: "B51 (30)", zoneRencontre: "B52", stationnement: "C1a", impasse: "C13a",
+  priorityFace: "C18", passagePietons: "C20a", autoroute: "C207", voieDetresse: "C26a",
+};
+const sign = (key: string, cx: number, cy: number, size?: number) =>
+  officialCode[key] ? official(officialCode[key], cx, cy, size) : (signs as Record<string, Sign>)[key](cx, cy);
+
 /** Rangée de panneaux avec leur légende. */
-export function signRow(items: [keyof typeof signs, string][], title?: string): string {
+export function signRow(items: [string, string][], title?: string): string {
   const cell = 104, w = Math.max(320, items.length * cell + 16), top = title ? 26 : 0, h = 128 + top;
   const start = (w - items.length * cell) / 2 + cell / 2;
   const body = (title ? label(w / 2, 20, title, 12, GREY, 700) : "") +
     items.map(([k, text], i) => {
       const x = start + i * cell;
       const lines = text.split("|");
-      return signs[k](x, top + 46) + lines.map((l, j) => label(x, top + 98 + j * 13, l, 10.5)).join("");
+      return sign(k, x, top + 46) + lines.map((l, j) => label(x, top + 98 + j * 13, l, 10.5)).join("");
     }).join("");
   return frame(w, h, body);
 }
@@ -99,7 +124,7 @@ export function signRow(items: [keyof typeof signs, string][], title?: string): 
 /* ---------- Marquages au sol (vue de dessus, une chaussée par ligne) ---------- */
 type Mark = "continue" | "discontinue" | "dissuasion" | "avertissement" | "mixte" | "rive" | "jauneContinue" | "jauneDiscontinue" | "large";
 export function markings(items: [Mark, string][]): string {
-  const rowH = 46, w = 340, h = items.length * rowH + 14;
+  const rowH = 46, w = 400, h = items.length * rowH + 14;
   const body = items.map(([type, text], i) => {
     const y = 10 + i * rowH, mid = y + 18;
     let line = "";
@@ -132,8 +157,8 @@ const cross = (cx: number, cy: number, half: number, arm: number) =>
 const caption = (w: number, h: number, text: string) => label(w / 2, h - 12, text, 10, GREY, 600);
 
 export const scenes = {
-  stopLigne: () => frame(320, 240, `${cross(160, 110, 30, 110)}<rect x='130' y='146' width='30' height='5' fill='${PAPER}'/>${signs.stop(205, 175)}${car(145, 172, 0, "#8E2B3E", "")}${car(60, 95, 90, GREY)}${car(260, 125, -90, GREY)}${path("M145,150 L145,140")}${caption(320, 240, "Arrêt complet à la ligne, puis regarde des deux côtés")}`),
-  cedezLigne: () => frame(320, 240, `${cross(160, 110, 30, 110)}${[130, 140, 150].map(x => `<rect x='${x}' y='147' width='6' height='4' fill='${PAPER}'/>`).join("")}${signs.cedez(205, 175)}${car(145, 178, 0, "#8E2B3E")}${car(80, 95, 90, GREY)}${path("M145,160 L145,120 Q145,95 175,95 L230,95")}${tip(232, 95, 90)}${caption(320, 240, "Ralentis et cède : l’arrêt n’est pas obligatoire")}`),
+  stopLigne: () => frame(320, 240, `${cross(160, 110, 30, 110)}<rect x='130' y='146' width='30' height='5' fill='${PAPER}'/>${sign("stop", 210, 178, 56)}${car(145, 172, 0, "#8E2B3E", "")}${car(60, 95, 90, GREY)}${car(260, 125, -90, GREY)}${path("M145,150 L145,140")}${caption(320, 240, "Arrêt complet à la ligne, puis regarde des deux côtés")}`),
+  cedezLigne: () => frame(320, 240, `${cross(160, 110, 30, 110)}${[130, 140, 150].map(x => `<rect x='${x}' y='147' width='6' height='4' fill='${PAPER}'/>`).join("")}${sign("cedez", 210, 178, 56)}${car(145, 178, 0, "#8E2B3E")}${car(80, 95, 90, GREY)}${path("M145,160 L145,120 Q145,95 175,95 L230,95")}${tip(232, 95, 90)}${caption(320, 240, "Ralentis et cède : l’arrêt n’est pas obligatoire")}`),
   prioriteDroite: () => frame(320, 240, `${cross(160, 110, 30, 110)}${car(145, 180, 0, "#8E2B3E", "")}${car(232, 125, -90, BLUE)}${path("M216,125 L120,125")}${tip(118, 125, -90, BLUE)}${label(262, 158, "prioritaire", 10, BLUE)}${label(90, 190, "toi : tu cèdes", 10, "#8E2B3E")}${caption(320, 240, "Sans panneau : celui qui vient de ta droite passe")}`),
   giratoire: () => {
     const c = `<circle cx='160' cy='112' r='82' fill='${ROAD}'/><circle cx='160' cy='112' r='34' fill='#8BC48A'/><circle cx='160' cy='112' r='58' fill='none' stroke='${PAPER}' stroke-width='2' stroke-dasharray='10 8'/>`;
@@ -158,8 +183,8 @@ export const scenes = {
     const armsD = i === 0 ? `M${x},58 L${x + 6},20 M${x},58 L${x - 12},80` : i === 1 ? `M${x - 30},58 L${x + 30},58` : `M${x},58 L${x + 26},48 M${x},58 L${x - 12},80`;
     return body + `<path d='${armsD}' stroke='${INK}' stroke-width='5' stroke-linecap='round'/>` + label(x, 140, t as string, 10.5) + label(x, 154, d as string, 9, GREY, 500);
   }).join("")}`),
-  virage: () => frame(320, 220, `<path d='M30,210 L30,120 Q30,40 140,40 L320,40 L320,90 L140,90 Q80,90 80,140 L80,210 Z' fill='${ROAD}'/>${signs.virage(240, 150)}${label(200, 200, "50 m avant en ville · 150 m hors agglo", 9.5, GREY)}${path("M55,205 L55,140", "#8E2B3E")}${path("M55,138 Q55,66 140,64 L300,64", GREEN)}${tip(304, 64, 90, GREEN)}${label(200, 24, "regarde la sortie, puis réaccélère", 10, GREEN)}${label(120, 150, "freine avant", 10, "#8E2B3E")}`),
-  pn: () => frame(320, 210, `<rect x='130' y='0' width='60' height='210' fill='${ROAD}'/><rect x='0' y='80' width='320' height='36' fill='#8A7F75'/>${[0, 1].map(i => `<rect x='0' y='${86 + i * 20}' width='320' height='4' fill='#2A2A2A'/>`).join("")}<rect x='70' y='130' width='70' height='6' fill='${RED}'/><rect x='182' y='60' width='70' height='6' fill='${RED}'/>${car(160, 158, 0, "#8E2B3E")}${signs.feuRougeClignotant(250, 160)}${caption(320, 205, "Ne t’engage que si tu peux dégager la voie ferrée")}`),
+  virage: () => frame(320, 220, `<path d='M30,210 L30,120 Q30,40 140,40 L320,40 L320,90 L140,90 Q80,90 80,140 L80,210 Z' fill='${ROAD}'/>${sign("virage", 240, 148, 58)}${label(200, 200, "50 m avant en ville · 150 m hors agglo", 9.5, GREY)}${path("M55,205 L55,140", "#8E2B3E")}${path("M55,138 Q55,66 140,64 L300,64", GREEN)}${tip(304, 64, 90, GREEN)}${label(200, 24, "regarde la sortie, puis réaccélère", 10, GREEN)}${label(120, 150, "freine avant", 10, "#8E2B3E")}`),
+  pn: () => frame(320, 210, `<rect x='130' y='0' width='60' height='210' fill='${ROAD}'/><rect x='0' y='80' width='320' height='36' fill='#8A7F75'/>${[0, 1].map(i => `<rect x='0' y='${86 + i * 20}' width='320' height='4' fill='#2A2A2A'/>`).join("")}<rect x='70' y='130' width='70' height='6' fill='${RED}'/><rect x='182' y='60' width='70' height='6' fill='${RED}'/>${car(160, 158, 0, "#8E2B3E")}${sign("pn", 250, 160, 56)}${caption(320, 205, "Ne t’engage que si tu peux dégager la voie ferrée")}`),
 };
 
 /** Ratio largeur/hauteur lu dans le viewBox, pour dimensionner le rendu iOS. */
